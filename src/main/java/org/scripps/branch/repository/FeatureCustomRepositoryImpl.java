@@ -95,8 +95,8 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 
 				features.put(featureObject.getUnique_id(), featureObject);
 
-				LOGGER.debug("FeatureObj: " + featureObject.toString());
-				LOGGER.debug("AttributeObj: " + attributeObject.toString());
+//				LOGGER.debug("FeatureObj: " + featureObject.toString());
+//				LOGGER.debug("AttributeObj: " + attributeObject.toString());
 
 			}
 			LOGGER.debug("Feature Counter =" + featureCounter);
