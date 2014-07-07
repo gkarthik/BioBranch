@@ -21,4 +21,11 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long>{
 	@Query("select A from Attribute A where feature_id= ?1 ")
 	List<Attribute> findByFeatureDbId(String db_id);
 	
+	@Query("select A from Attribute A where A.name=?1 and A.dataset =?2")
+	Attribute findByAttNameDataset(String att_name, String dataset);
+	
+	@Query("update Attribute set relieff=?1 where id=?2")
+	int updateRelief(float relieff, long id);
+
+	
 }
