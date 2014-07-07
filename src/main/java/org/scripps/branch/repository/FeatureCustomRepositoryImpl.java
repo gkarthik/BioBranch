@@ -46,7 +46,7 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 			Query q = em.createQuery(query);
 
 			List<?> list = q.getResultList();
-			LOGGER.debug("Feature Counter =");
+		//	LOGGER.debug("Feature Counter =");
 			Iterator<?> it = list.iterator();
 			int featureCounter = 0, attributeCounter = 0;
 
@@ -67,7 +67,7 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 
 				}
 
-				LOGGER.debug("Feature Counter : " + featureCounter);
+			//	LOGGER.debug("Feature Counter : " + featureCounter);
 
 				List<Attribute> atts = getDataset_attributes();
 				if (atts == null) {
