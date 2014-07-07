@@ -3,6 +3,7 @@ package org.scripps.branch.globalentity;
 import java.io.InputStream;
 
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.repository.FeatureCustomRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,7 @@ public class WekaObject implements ApplicationContextAware {
   private static int checktemp;
   
   @Autowired
-  @Qualifier("featureRepository")
-  FeatureRepository featurerepo;
+  FeatureCustomRepository featurerepo;
  
   @Override
   public void setApplicationContext(ApplicationContext appContext) throws BeansException {
