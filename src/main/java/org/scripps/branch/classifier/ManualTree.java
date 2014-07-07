@@ -1117,8 +1117,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 
 			// Else return normalized distribution
-			double[] normalizedDistribution = m_ClassDistribution
-					.clone();
+			double[] normalizedDistribution = m_ClassDistribution.clone();
 			Utils.normalize(normalizedDistribution);
 			return normalizedDistribution;
 		} else {
