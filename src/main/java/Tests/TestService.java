@@ -1,66 +1,71 @@
 package Tests;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.ejb.Stateful;
-import javax.ejb.TransactionManagement;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
-import javax.transaction.Transactional;
 
-import org.hibernate.jpa.internal.EntityManagerFactoryRegistry;
-import org.joda.time.DateTime;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Persistent;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
-
-
 public class TestService extends Feature {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestService.class);
-		
-//		  @PersistenceContext(unitName = "DEFAULTJPA", type = PersistenceContextType.EXTENDED)
-//	
-//		public static EntityManagerFactory emf = Persistence
-//				.createEntityManagerFactory("DEFAULTJPA");
-//		public static EntityManager em = emf.createEntityManager();
-//
-//	 
-	@PersistenceUnit(unitName="DEFAULTJPA")
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(TestService.class);
+
+	public static void main(String args[]) {
+
+		// loadFeatureTable();
+		TestService a = new TestService();
+		// FeatureService.getByUniqueId("17");
+		// / FeatureService.getByDbId(1);
+		// FeatureService.getByDataset("dream_breast_cancer", false);
+
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode features = a.getMetaBricClinicalFeatures(mapper);
+		String json_features;
+		try {
+			json_features = mapper.writeValueAsString(features);
+			System.out.println(json_features);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	// @PersistenceContext(unitName = "DEFAULTJPA", type =
+	// PersistenceContextType.EXTENDED)
+	//
+	// public static EntityManagerFactory emf = Persistence
+	// .createEntityManagerFactory("DEFAULTJPA");
+	// public static EntityManager em = emf.createEntityManager();
+	//
+	//
+	@PersistenceUnit(unitName = "DEFAULTJPA")
 	private EntityManager em;
-	
-	
-	
+
+	private List<Attribute> dataset_attributes;
+
 	public TestService() {
-	super();
-	
-}
+		super();
 
+	}
 
+	public List<Attribute> getDataset_attributes() {
+		return dataset_attributes;
+	}
 
-
-	public  ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
-
+	public ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
 
 		ObjectNode featureObject = mapper.createObjectNode();
 		String query = "select f.id,f.unique_id,f.short_name,"
@@ -104,37 +109,6 @@ public class TestService extends Feature {
 		}
 
 		return featureObject;
-	}
-
-
-
-
-	public static void main(String args[]) {
-
-		// loadFeatureTable();
-		TestService a =new TestService();
-		// FeatureService.getByUniqueId("17");
-		// / FeatureService.getByDbId(1);
-		// FeatureService.getByDataset("dream_breast_cancer", false);
-
-		ObjectMapper mapper = new ObjectMapper();
-		ObjectNode features = a.getMetaBricClinicalFeatures(mapper);
-		String json_features;
-		try {
-			json_features = mapper.writeValueAsString(features);
-			System.out.println(json_features);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-	}
-
-	private List<Attribute> dataset_attributes;
-
-	public List<Attribute> getDataset_attributes() {
-		return dataset_attributes;
 	}
 
 	public void setDataset_attributes(List<Attribute> dataset_attributes) {

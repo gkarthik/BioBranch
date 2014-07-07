@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 import org.joda.time.DateTime;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -25,39 +24,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Repository
 @Transactional
-public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
+public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureCustomRepositoryImpl.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FeatureCustomRepositoryImpl.class);
 
 	protected EntityManager em;
-	
-	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-		LOGGER.debug("entity manager set from Impl!");
-	}
-	
-	public void getEntityManager(EntityManager em) {
-		this.em = em;
-	}
-	
+
 	private List<Attribute> dataset_attributes;
 
-	public List<Attribute> getDataset_attributes() {
-		return dataset_attributes;
-	}
-
-	public void setDataset_attributes(List<Attribute> dataset_attributes) {
-		this.dataset_attributes = dataset_attributes;
-	}
 	@Override
 	public Map<String, Feature> getByDataset(String dataset,
 			boolean load_annotations_very_slowly) {
 
-
 		Map<String, Feature> features = new HashMap<String, Feature>();
-
-		
 
 		String query = "select f.id,f.unique_id,f.short_name,f.long_name,f.description,f.created,f.updated,"
 				+ "a.id,a.col_index,a.name,a.dataset,a.relieff,a.created,a.updated,a.feature"
@@ -67,7 +47,6 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
 
 		try {
 
-			
 			Query q = em.createQuery(query);
 
 			List<?> list = q.getResultList();
@@ -128,18 +107,25 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
 			LOGGER.debug("Attribute Counter =" + attributeCounter);
 
 			em.getTransaction().commit();
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return features;
-	
+
+	}
+
+	public List<Attribute> getDataset_attributes() {
+		return dataset_attributes;
+	}
+
+	public void getEntityManager(EntityManager em) {
+		this.em = em;
 	}
 
 	@Override
 	public ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
-
 
 		ObjectNode featureObject = mapper.createObjectNode();
 		String query = "select f.id,f.unique_id,f.short_name,"
@@ -149,7 +135,6 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
 
 		try {
 
-			
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
@@ -173,7 +158,7 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
 
 			featureObject.put("features", featureArrayNode);
 			em.getTransaction().commit();
-	
+
 			LOGGER.debug("FeatureCounter for getMetaBricClinicalFeatures :"
 					+ featureCounter);
 
@@ -183,7 +168,17 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository{
 		}
 
 		return featureObject;
-	
+
+	}
+
+	public void setDataset_attributes(List<Attribute> dataset_attributes) {
+		this.dataset_attributes = dataset_attributes;
+	}
+
+	@PersistenceContext
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+		LOGGER.debug("entity manager set from Impl!");
 	}
 
 }

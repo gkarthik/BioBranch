@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.scripps.branch.repository.FeatureCustomRepository;
-import org.scripps.branch.repository.FeatureRepository;
 
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -20,12 +19,8 @@ public class Weka {
 	String dataset;
 
 	public void buildWeka(InputStream train_stream, InputStream test_stream,
-			String dataset, FeatureCustomRepository featurerepo) throws Exception {
-		buildWeka(train_stream, test_stream, dataset, true, featurerepo);
-	}
-
-	public void buildWeka(InputStream train_stream, InputStream test_stream,
-			String dataset, boolean setFeatures, FeatureCustomRepository featurerepo) throws Exception {
+			String dataset, boolean setFeatures,
+			FeatureCustomRepository featurerepo) throws Exception {
 		setDataset(dataset);
 		// get the data
 		DataSource source = new DataSource(train_stream);
@@ -51,6 +46,12 @@ public class Weka {
 		if (setFeatures) {
 			setFeatures(featurerepo.getByDataset(dataset, false));
 		}
+	}
+
+	public void buildWeka(InputStream train_stream, InputStream test_stream,
+			String dataset, FeatureCustomRepository featurerepo)
+			throws Exception {
+		buildWeka(train_stream, test_stream, dataset, true, featurerepo);
 	}
 
 	public String getDataset() {

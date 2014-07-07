@@ -1,7 +1,6 @@
 package org.scripps.branch.config;
 
 import org.scripps.branch.globalentity.WekaObject;
-import org.scripps.branch.repository.AttributeRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,13 +13,19 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @Configuration
 @ComponentScan(basePackages = { "org.scripps.branch.entity",
 		"org.scripps.branch.service", "org.scripps.branch.repository",
-		"org.scripps.branch.utilities", "org.scripps.branch.globalentity", "org.scripps.branch.viz" })
+		"org.scripps.branch.utilities", "org.scripps.branch.globalentity",
+		"org.scripps.branch.viz" })
 @Import({ WebApplicationContext.class, PersistenceJPAConfig.class,
 		SecurityContext.class, SocialContext.class })
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
+
+	@Bean(name = "globalWeka")
+	public WekaObject initWekaInApplicationContext() {
+		return new WekaObject();
+	}
 
 	@Bean
 	public MessageSource messageSource() {
@@ -35,10 +40,5 @@ public class ApplicationContext {
 	@Bean
 	public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
-	}
-	
-	@Bean(name="globalWeka")
-	public WekaObject initWekaInApplicationContext() {
-		return new WekaObject();
 	}
 }
