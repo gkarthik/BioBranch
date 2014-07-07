@@ -67,7 +67,9 @@ dependencies {
 	compile 'org.springframework.security:spring-security-config:3.2.4.RELEASE'
 	compile 'org.springframework.security:spring-security-taglibs:3.2.4.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.4.RELEASE'
-
+	
+	//Springtest
+	compile 'org.springframework:spring-test:4.0.5.RELEASE'
 		
 	
 	compile 'org.apache.httpcomponents:httpclient:4.3.3'
@@ -109,9 +111,8 @@ dependencies {
 	// mysql db, change the version is you have different MySql installation
 	//compile 'mysql:mysql-connector-java:5.0.8'
 	compile 'org.sitemesh:sitemesh:3.0-alpha-1'
-	compile 'junit:junit:4.4'
-	compile 'org.mockito:mockito-all:1.8.4'
-	compile 'org.springframework:spring-test:3.1.1.RELEASE'
+	compile 'junit:junit:4.11'
+	compile 'org.glassfish.main.extras:glassfish-embedded-all:4.0'
 	compile 'com.github.springtestdbunit:spring-test-dbunit:1.1.0'
 	compile 'dbunit:dbunit:2.2'
 	//compile 'org.springframework:spring-dao:2.0.3'
@@ -138,7 +139,6 @@ dependencies {
 
 	providedCompile 'javax:javaee-web-api:6.0'
 	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
-	providedCompile 'javax.servlet:servlet-api:2.5'
 	
 	
 	compile 'javax.servlet:jstl:1.2'

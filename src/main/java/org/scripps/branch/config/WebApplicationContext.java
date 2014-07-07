@@ -22,7 +22,6 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 	private static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/Views/";
 	private static final String VIEW_RESOLVER_SUFFIX = ".jsp";
 
-	// changes by vyshakh
 	// @PropertySource("classpath:static/**")
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

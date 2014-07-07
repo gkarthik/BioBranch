@@ -9,3 +9,4 @@ glob:src/main/resources/dbConfig/hibernate.cfg.xml
 glob:.settings/*
 glob:.gradle/*
 glob:.hgignore~
+glob:.settings/*
