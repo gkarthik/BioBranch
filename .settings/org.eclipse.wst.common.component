@@ -110,9 +110,6 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.18.0-rc/45b0d00b78197d8a3047751443c09538117d188b/google-api-client-1.18.0-rc.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.glassfish.main.extras/glassfish-embedded-all/4.0/29c8f0e448949ff5720ffb4ddea113848c78b205/glassfish-embedded-all-4.0.jar">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.social/spring-social-web/1.1.0.RELEASE/393d7fd2e0d87dbc9c96ae2d6c432ea704c94a6d/spring-social-web-1.1.0.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>

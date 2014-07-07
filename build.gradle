@@ -15,8 +15,6 @@ repositories {
 	mavenRepo url: 'http://maven.springframework.org/snapshot'
 	mavenCentral()
 	mavenRepo url: 'http://maven.springframework.org/milestone'
-	mavenRepo url: 'https://repository.jboss.org/nexus/content/repositories/releases/'
-	mavenRepo url: 'http://download.java.net/maven/glassfish/org/glassfish/'
 }
 
 //
@@ -43,7 +41,6 @@ dependencies {
 	compile 'opensymphony:sitemesh:2.4.2'
 	compile 'com.efsavage.twitter.bootstrap:bootstrap-maven:2.0.4'
 	compile 'org.apache.commons:commons-math3:3.2'
-
 	
 	//spring framework
 	compile 'org.springframework:spring-core:4.0.5.RELEASE'
@@ -112,7 +109,6 @@ dependencies {
 	//compile 'mysql:mysql-connector-java:5.0.8'
 	compile 'org.sitemesh:sitemesh:3.0-alpha-1'
 	compile 'junit:junit:4.11'
-	compile 'org.glassfish.main.extras:glassfish-embedded-all:4.0'
 	compile 'com.github.springtestdbunit:spring-test-dbunit:1.1.0'
 	compile 'dbunit:dbunit:2.2'
 	//compile 'org.springframework:spring-dao:2.0.3'
