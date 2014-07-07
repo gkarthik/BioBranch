@@ -129,9 +129,6 @@ public class Feature {
 		return short_name;
 	}
 
-	public List<Tree> getTrees() {
-		return trees;
-	}
 
 	public String getUnique_id() {
 		return unique_id;
@@ -177,9 +174,7 @@ public class Feature {
 		this.short_name = short_name;
 	}
 
-	public void setTrees(List<Tree> trees) {
-		this.trees = trees;
-	}
+	
 
 	public void setUnique_id(String unique_id) {
 		this.unique_id = unique_id;
