@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 
 /*
@@ -30,7 +29,9 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "userconnection", indexes = { @Index(name = "userconnectionrank", columnList = ("userId,providerId,rank")) })
+@Table(name = "userconnection")
+// , indexes = { @Index(name = "userconnectionrank", columnList =
+// ("userId,providerId,rank")) })
 public class UserConnection implements Serializable {
 
 	/**

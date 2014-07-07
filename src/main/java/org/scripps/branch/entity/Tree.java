@@ -1,6 +1,5 @@
 package org.scripps.branch.entity;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -36,14 +35,13 @@ public class Tree {
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
 
-
 	// @OneToMany(cascade={CascadeType.ALL}, mappedBy = "treedb")
 	//
 	// private List<Tree_FeatureDB> treefeatures;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
-	//private Collection<Feature> featuredb;
+	// private Collection<Feature> featuredb;
 	private List<Feature> features;
 
 	@Column
@@ -73,6 +71,10 @@ public class Tree {
 		return created;
 	}
 
+	public List<Feature> getFeatures() {
+		return features;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -83,6 +85,10 @@ public class Tree {
 
 	public int getPrev_tree_id() {
 		return prev_tree_id;
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	public boolean isPrivate_tree() {
@@ -113,6 +119,10 @@ public class Tree {
 		this.created = created;
 	}
 
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -129,32 +139,20 @@ public class Tree {
 		this.private_tree = private_tree;
 	}
 
-	public void setUser_saved(boolean user_saved) {
-		this.user_saved = user_saved;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	public List<Feature> getFeatures() {
-		return features;
-	}
-
-	public void setFeatures(List<Feature> features) {
-		this.features = features;
+	public void setUser_saved(boolean user_saved) {
+		this.user_saved = user_saved;
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
 
-				.append("user_id", this.getUser())
-				.append("feature_id", this.getFeatures())
+		.append("user_id", this.getUser())
+				.append("feature", this.getFeatures())
 				.append("comment", this.getComment())
 				.append("user_saved", this.isUser_saved())
 				.append("prev_tree_id", this.getPrev_tree_id())

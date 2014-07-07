@@ -2,7 +2,6 @@ package org.scripps.branch.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -81,7 +80,6 @@ public class User extends BaseEntity<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Tree> trees_id;
 
-
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 
@@ -149,6 +147,50 @@ public class User extends BaseEntity<Long> {
 		return signInProvider;
 	}
 
+	public List<Tree> getTrees_id() {
+		return trees_id;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public void setSignInProvider(SocialMediaService signInProvider) {
+		this.signInProvider = signInProvider;
+	}
+
+	public void setTrees_id(List<Tree> trees_id) {
+		this.trees_id = trees_id;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
@@ -160,49 +202,5 @@ public class User extends BaseEntity<Long> {
 				.append("version", this.getVersion())
 				.append("background", this.getBackground())
 				.append("purpose", this.getPurpose()).toString();
-	}
-
-	public List<Tree> getTrees_id() {
-		return trees_id;
-	}
-
-	public void setTrees_id(List<Tree> trees_id) {
-		this.trees_id = trees_id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
-	public void setSignInProvider(SocialMediaService signInProvider) {
-		this.signInProvider = signInProvider;
-	}
-
-	public void setBackground(String background) {
-		this.background = background;
-	}
-
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
 	}
 }

@@ -59,5 +59,6 @@ public class ApplicationConfig implements WebApplicationInitializer {
 		sitemesh.addMappingForUrlPatterns(dispatcherTypes, true, "*.jsp");
 
 		servletContext.addListener(new ContextLoaderListener(rootContext));
+		
 	}
 }
