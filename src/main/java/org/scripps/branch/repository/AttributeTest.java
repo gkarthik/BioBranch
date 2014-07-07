@@ -1,5 +1,7 @@
 package org.scripps.branch.repository;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
 import javax.persistence.PersistenceContext;
@@ -32,7 +34,7 @@ public class AttributeTest {
     public void testFeatureUniqueId() {
         List<Attribute> attrList = attr.findByFeatureUniqueId("1960", "metabric_with_clinical");
         for(Attribute at : attrList){
-        	System.out.println(at.getName());
+        	assertEquals(at.getName(), "ILMN_1722781");
         }
     }
     
