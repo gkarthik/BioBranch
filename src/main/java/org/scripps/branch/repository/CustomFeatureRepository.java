@@ -9,7 +9,7 @@ import org.scripps.branch.entity.Feature;
 import org.springframework.data.jpa.repository.Query;
 
 @Transactional
-public interface Custom_Feature_Repository {
+public interface CustomFeatureRepository {
 
 //	@Query("insert into custom_feature(name,expression, description, user, dataset) values(1?,2?,3?,4?,5?)")
 //	public int insert(String name, String feature_exp, String description,
