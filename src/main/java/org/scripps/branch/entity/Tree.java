@@ -60,7 +60,7 @@ public class Tree {
 	private boolean private_tree = false;
 
 	@Column
-	private PGobject json_tree;
+	private String json_tree;
 
 	public String getComment() {
 		return comment;
@@ -78,7 +78,7 @@ public class Tree {
 		return id;
 	}
 
-	public PGobject getJson_tree() {
+	public String getJson_tree() {
 		return json_tree;
 	}
 
@@ -126,7 +126,7 @@ public class Tree {
 		this.id = id;
 	}
 
-	public void setJson_tree(PGobject json_tree) {
+	public void setJson_tree(String json_tree) {
 		this.json_tree = json_tree;
 	}
 

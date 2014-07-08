@@ -16,7 +16,7 @@ public interface FeatureRepository extends JpaRepository<Feature, Long> {
 	Feature getByDbId(long id);
 
 	// not tested -- s
-	@Query("select F,A from Feature F, Attribute A where A.dataset='metabric_with_clinical' and F.id = feature_id and F.unique_id like 'metabric%'")
+	@Query("select F from Feature F, Attribute A where A.dataset='metabric_with_clinical' and F.id = A.feature and F.unique_id like 'metabric%'")
 	Feature getMetaBricClinicalFeatures();
 
 	// updatebyuniqueid need to check if parameters to be passes
