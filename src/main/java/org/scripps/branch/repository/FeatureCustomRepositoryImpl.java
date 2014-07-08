@@ -130,5 +130,4 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 		LOGGER.debug("entity manager set from Impl!");
 	}
 
-	
 }
