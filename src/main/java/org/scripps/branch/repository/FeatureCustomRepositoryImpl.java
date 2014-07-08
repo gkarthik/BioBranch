@@ -130,51 +130,5 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 		LOGGER.debug("entity manager set from Impl!");
 	}
 
-	// @Override
-	// public ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
-	//
-	// ObjectNode featureObject = mapper.createObjectNode();
-	// String query = "select f.id,f.unique_id,f.short_name,"
-	// + "f.long_name,f.description" + " from Feature f, Attribute a "
-	// + "where a.dataset='metabric_with_clinical' and "
-	// + "f.id = feature_id and " + "f.unique_id like 'metabric%'";
-	//
-	// try {
-	//
-	// Query q = em.createQuery(query);
-	// List<?> list = q.getResultList();
-	// Iterator<?> it = list.iterator();
-	// int featureCounter = 0;
-	// ArrayNode featureArrayNode = mapper.createArrayNode();
-	//
-	// while (it.hasNext()) {
-	//
-	// Object[] result = (Object[]) it.next();
-	//
-	// ObjectNode fObj = mapper.createObjectNode();
-	//
-	// fObj.put("id", (long) result[0]);
-	// fObj.put("unique_id", (String) result[1]);
-	// fObj.put("short_name", (String) result[2]);
-	// fObj.put("long_name", (String) result[3]);
-	// fObj.put("description", (String) result[4]);
-	// featureArrayNode.add(fObj);
-	// featureCounter++;
-	// }
-	//
-	// featureObject.put("features", featureArrayNode);
-	// em.getTransaction().commit();
-	//
-	// LOGGER.debug("FeatureCounter for getMetaBricClinicalFeatures :"
-	// + featureCounter);
-	//
-	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// return featureObject;
-	//
-	// }
-
+	
 }
