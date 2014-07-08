@@ -33,29 +33,29 @@ public class AttributeTest {
 			assertEquals(at.getName(), "ILMN_1722781");
 		}
 	}
-	@Test
-	public void testfindByFeatureDbId() {
-		List<Attribute> attrList = attr.findByFeatureDbId(1849);
-		for (Attribute at : attrList) {
-			if(at.getDataset().equals("metabric_with_clinical")){
-				assertEquals(at.getId(), 93806);
-			}
-		}
-
-	}
 
 	@Test
 	public void testfindByAttNameDataset() {
-		List<Attribute> attrList= attr.findByAttNameDataset("ILMN_1722781", "metabric_with_clinical");
+		List<Attribute> attrList = attr.findByAttNameDataset("ILMN_1722781",
+				"metabric_with_clinical");
 
 		for (Attribute at : attrList) {
-			if(at.getDataset().equals("metabric_with_clinical")){
+			if (at.getDataset().equals("metabric_with_clinical")) {
 				assertEquals(at.getId(), 82099);
 			}
 		}
 
 	}
 
-	
+	@Test
+	public void testfindByFeatureDbId() {
+		List<Attribute> attrList = attr.findByFeatureDbId(1849);
+		for (Attribute at : attrList) {
+			if (at.getDataset().equals("metabric_with_clinical")) {
+				assertEquals(at.getId(), 93806);
+			}
+		}
+
+	}
 
 }
