@@ -1,12 +1,22 @@
 package org.scripps.branch.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,7 +30,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
 @EnableTransactionManagement
+@PropertySource("classpath:application.properties")
 public class PersistenceJPAConfig {
+	
+	@Autowired
+	Environment env;
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
@@ -31,17 +45,17 @@ public class PersistenceJPAConfig {
 	}
 
 	@Bean
-	public DataSource dataSource() {
+	public DataSource dataSource(){
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName("org.postgresql.Driver");
-		dataSource.setUrl("jdbc:postgresql://localhost:5432/branch_dev");
-		dataSource.setUsername("postgres");
-		dataSource.setPassword("prime");
+		dataSource.setDriverClassName(env.getProperty("db.driver"));
+		dataSource.setUrl(env.getProperty("db.url"));
+		dataSource.setUsername(env.getProperty("db.username"));
+		dataSource.setPassword(env.getProperty("db.password"));
 		return dataSource;
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws IOException {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
 		em.setPackagesToScan(new String[] { "org.scripps.branch.entity" });
@@ -66,4 +80,9 @@ public class PersistenceJPAConfig {
 
 		return transactionManager;
 	}
+	
+	@Bean
+	   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+	      return new PropertySourcesPlaceholderConfigurer();
+	   }
 }
