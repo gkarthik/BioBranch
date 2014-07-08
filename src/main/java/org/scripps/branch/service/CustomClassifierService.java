@@ -152,41 +152,41 @@
 //
 //	
 //	
-//	public FilteredClassifier getClassifierByDbId(int id, int classifierType,
-//			Weka weka, String dataset) throws Exception {
-//		
-//		
-//		String query = "select ccf from Custom_Classifier_Feature ccf where custom_classifier_id="+ id;
-//		String[] featuresDbId;
-//		
-//		
-//		try {
-//			em.getTransaction().begin();
-//			Query q = em.createQuery(query);
-//			List<?> list = q.getResultList();
-//			Iterator<?> it = list.iterator();
-//			int counter=0;
-//			while (it.hasNext()) {
-//				
-//				Custom_Classifier cc
-//			
-//				featuresDbId[counter]= 
-//				
-//			}
-//				
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		return buildCustomClasifier(weka, featureDbId, classifierType)
-//	}
-//	
+////	public FilteredClassifier getClassifierByDbId(int id, int classifierType,
+////			Weka weka, String dataset) throws Exception {
+////		
+////		
+////		String query = "select ccf from Custom_Classifier_Feature ccf where custom_classifier_id="+ id;
+////		String[] featuresDbId;
+////		
+////		
+////		try {
+////			em.getTransaction().begin();
+////			Query q = em.createQuery(query);
+////			List<?> list = q.getResultList();
+////			Iterator<?> it = list.iterator();
+////			int counter=0;
+////			while (it.hasNext()) {
+////				
+////				Custom_Classifier cc
+////			
+////				featuresDbId[counter]= 
+////				
+////			}
+////				
+////		
+////		
+////		
+////		
+////		
+////		
+////		
+////		
+////		
+////		
+////		return buildCustomClasifier(weka, featureDbId, classifierType)
+////	}
+////	
 //	
 //	
 //	
