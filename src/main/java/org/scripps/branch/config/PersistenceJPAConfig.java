@@ -1,6 +1,11 @@
 package org.scripps.branch.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -27,12 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
 public class PersistenceJPAConfig {
-
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
-
+	
 	@Autowired
 	Environment env;
 
@@ -45,7 +45,7 @@ public class PersistenceJPAConfig {
 	}
 
 	@Bean
-	public DataSource dataSource() {
+	public DataSource dataSource(){
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("db.driver"));
 		dataSource.setUrl(env.getProperty("db.url"));
@@ -55,8 +55,7 @@ public class PersistenceJPAConfig {
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
-			throws IOException {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws IOException {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
 		em.setPackagesToScan(new String[] { "org.scripps.branch.entity" });
@@ -81,4 +80,9 @@ public class PersistenceJPAConfig {
 
 		return transactionManager;
 	}
+	
+	@Bean
+	   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+	      return new PropertySourcesPlaceholderConfigurer();
+	   }
 }

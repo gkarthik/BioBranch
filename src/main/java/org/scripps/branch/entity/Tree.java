@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.postgresql.util.PGobject;
 
 @Entity
 @Table(name = "tree")

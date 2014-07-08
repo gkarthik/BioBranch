@@ -11,16 +11,19 @@ import org.springframework.data.jpa.repository.Query;
 @Transactional
 public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 
+	
+	@Query("select A from Attribute A, Feature F where A.feature=F.id and F.unique_id=?1 and A.dataset=?2")
+	List<Attribute> findByFeatureUniqueId(String unique_id, String dataset);
+	
+	@Query("select A from Attribute A where feature_id= ?1 ")
+	List<Attribute> findByFeatureDbId(long db_id);
+	
 	@Query("select A from Attribute A where A.name=?1 and A.dataset =?2")
 	List<Attribute> findByAttNameDataset(String att_name, String dataset);
 
-	@Query("select A from Attribute A where feature_id= ?1 ")
-	List<Attribute> findByFeatureDbId(long db_id);
-
-	@Query("select A from Attribute A, Feature F where A.feature=F.id and F.unique_id=?1 and A.dataset=?2")
-	List<Attribute> findByFeatureUniqueId(String unique_id, String dataset);
+	
 
 }
 
-// select * from Attribute A where A.name='ILMN_1722781' and A.dataset
-// ='metabric_with_clinical'
+
+//select * from Attribute A where A.name='ILMN_1722781' and A.dataset ='metabric_with_clinical'
