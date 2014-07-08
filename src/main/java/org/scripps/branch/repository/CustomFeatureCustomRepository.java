@@ -11,7 +11,7 @@ import org.scripps.branch.entity.Weka;
 import weka.core.Instances;
 
 @Transactional
-public interface Custom_Feature_CustomRepository {
+public interface CustomFeatureCustomRepository {
 
 	public void addInstances(Weka weka);
 

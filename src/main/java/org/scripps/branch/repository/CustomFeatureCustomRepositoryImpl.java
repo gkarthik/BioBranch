@@ -28,15 +28,13 @@ import weka.filters.unsupervised.attribute.AddExpression;
 
 @Repository
 @Transactional
-public class Custom_Feature_CustomRepositoryImpl implements
-Custom_Feature_CustomRepository {
+public class CustomFeatureCustomRepositoryImpl implements
+CustomFeatureCustomRepository {
 
 	@Autowired
 	AttributeRepository attr;
 	@Autowired
 	FeatureRepository feat;
-	@Autowired
-	Custom_Feature_Repository custF;
 
 	protected EntityManager em;
 
@@ -152,7 +150,7 @@ Custom_Feature_CustomRepository {
 					dataset);
 
 			if (hashMapObjTemp.containsKey("feature_id")) {
-				int cFeatureId = (int) hashMapObjTemp.get("feature_id");
+				int cFeatureId = (Integer) hashMapObjTemp.get("feature_id");
 				hashMapObj.put("exists", hashMapObjTemp.get("exists"));
 				hashMapObj.put("message", hashMapObjTemp.get("message"));
 
