@@ -80,6 +80,9 @@ public class User extends BaseEntity<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Tree> trees_id;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<Custom_Feature> user_id;
+
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 
@@ -151,6 +154,10 @@ public class User extends BaseEntity<Long> {
 		return trees_id;
 	}
 
+	public List<Custom_Feature> getUser_id() {
+		return user_id;
+	}
+
 	public void setBackground(String background) {
 		this.background = background;
 	}
@@ -189,6 +196,10 @@ public class User extends BaseEntity<Long> {
 
 	public void setTrees_id(List<Tree> trees_id) {
 		this.trees_id = trees_id;
+	}
+
+	public void setUser_id(List<Custom_Feature> user_id) {
+		this.user_id = user_id;
 	}
 
 	@Override
