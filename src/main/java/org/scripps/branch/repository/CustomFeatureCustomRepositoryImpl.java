@@ -29,7 +29,7 @@ import weka.filters.unsupervised.attribute.AddExpression;
 @Repository
 @Transactional
 public class CustomFeatureCustomRepositoryImpl implements
-		CustomFeatureCustomRepository {
+CustomFeatureCustomRepository {
 
 	@Autowired
 	AttributeRepository attr;
@@ -46,7 +46,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 		Custom_Feature cfObj = new Custom_Feature();
 		String query = "selecrt cf from Custom_Feature cf";
 		try {
-
+			
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
@@ -62,6 +62,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 				LOGGER.debug("Custom_Feat add Instance cfObj" + cfObj);
 			}
 			LOGGER.debug("Counter =" + counter);
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,7 +159,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 				//
 				try {
-
+				
 					Query q = em.createQuery(query);
 					List<?> list = q.getResultList();
 					Iterator<?> it = list.iterator();
@@ -175,6 +176,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 						LOGGER.debug("HashMapObj" + hashMapObj.toString());
 					}
 					LOGGER.debug("Counter =" + counter);
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -198,7 +200,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 	public HashMap<?, ?> findOrCreateCustomFeatureId(String name,
 			String feature_exp, String description, int userid,
 			List<Feature> features, Weka weka, String dataset) {
-
+		
 		HashMap hashMapObj = new HashMap();
 
 		int cFeatureId = 0;
@@ -211,6 +213,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			_attrExp.convertInfixToPostfix(feature_exp);
 
+		
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
@@ -251,6 +254,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			em.getTransaction().commit();
 
+
 			hashMapObj.put("feature_id", cFeatureId);
 			hashMapObj.put("exists", exists);
 			hashMapObj.put("messgages", message);
@@ -258,8 +262,8 @@ public class CustomFeatureCustomRepositoryImpl implements
 		} catch (Exception e) {
 			e.printStackTrace();
 			hashMapObj
-					.put("message",
-							"Expression could not be parsed.<br>Please check if all the attributes have been tagged. Refer to Help Section.");
+			.put("message",
+					"Expression could not be parsed.<br>Please check if all the attributes have been tagged. Refer to Help Section.");
 
 		}
 
@@ -282,7 +286,8 @@ public class CustomFeatureCustomRepositoryImpl implements
 		return hashMapObj;
 	}
 
-	// check how to insert user id of type userobject
+	
+	//check how to insert user id of type userobject
 	@Override
 	public int insert(String name, String feature_exp, String description,
 			int userid, List<Feature> features, String dataset) {
@@ -293,7 +298,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 		cfObj.setName(name);
 		cfObj.setExpression(feature_exp);
 		cfObj.setDescription(description);
-		// cfObj.setUser(userid);
+		//cfObj.setUser(userid);
 		cfObj.setDataset(dataset);
 
 		em.persist(cfObj);
