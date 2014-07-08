@@ -29,7 +29,7 @@ public class Tree {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
-	private String id;
+	private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
@@ -74,7 +74,7 @@ public class Tree {
 		return features;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -122,7 +122,7 @@ public class Tree {
 		this.features = features;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

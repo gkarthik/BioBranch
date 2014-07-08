@@ -63,8 +63,8 @@ public class JsonTree {
 					}
 				} else {
 					if (unique_id.asText().contains("custom_tree_")) {
-						ManualTree.addCustomTree(unique_id.asText(), weka,
-								custom_classifiers, dataset, attr);
+//						ManualTree.addCustomTree(unique_id.asText(), weka,
+//								custom_classifiers, dataset, attr);
 					}
 					options.put("attribute_name", unique_id.asText());
 				}

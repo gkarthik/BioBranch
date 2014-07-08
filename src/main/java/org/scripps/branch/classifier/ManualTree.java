@@ -23,6 +23,8 @@
 package org.scripps.branch.classifier;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -93,51 +95,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 	 * 
 	 */
 
-	public static void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers,
-			String dataset, AttributeRepository attr) {
-		System.out.println("ID befoire add: " + id);
-		System.out.println("Contains: " + custom_classifiers.containsKey(id));
-		if (!custom_classifiers.containsKey(id)) {
-			// Insert Tree query here.
-			TreeRepository t = null;
-			java.util.List<Tree> trees = t.findById(Integer.parseInt(id
-					.replace("custom_tree_", "")));
-			if (trees.size() == 1) {
-				for (Tree treeDb : trees) {
-					ManualTree tree = new ManualTree();
-					ObjectMapper mapper = new ObjectMapper();
-					// Not sure if it works
-					JsonNode rootNode = null;
-					try {
-						rootNode = mapper
-								.readTree((JsonParser) ((TreeNode) treeDb
-										.getJson_tree()).get("treestruct"));
-					} catch (JsonProcessingException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					JsonTree _t = new JsonTree();
-					if (!dataset.equals("mammal")) {
-						rootNode = _t.mapEntrezIdsToAttNames(weka, rootNode,
-								dataset, custom_classifiers, attr);
-					}
-					tree.setTreeStructure(rootNode);
-					tree.setListOfFc(custom_classifiers);
-					try {
-						tree.buildClassifier(weka.getTrain());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					custom_classifiers.put(id, tree);
-				}
-			}
-		}
-	}
+	
 
 	/** The subtrees appended to this tree. */
 	protected ManualTree[] m_Successors;
@@ -1038,6 +996,48 @@ public class ManualTree extends Classifier implements OptionHandler,
 		mp.put("orig_split_point", origSplitPoint);
 		return mp;
 	}
+	
+	/**
+	 * Adds Tree Classifiers to classifier hashmap.
+	 * 
+	 * @param id
+	 * @param weka
+	 * @param global object
+	 *            
+	 */
+	
+//	public static void addCustomTree(String id, Weka weka, LinkedHashMap<String,Classifier> custom_classifiers, String dataset){
+//		System.out.println("ID befoire add: "+id);
+//		System.out.println("Contains: "+custom_classifiers.containsKey(id));
+//		if(!custom_classifiers.containsKey(id)){
+//			JdbcConnection conn = new JdbcConnection();
+//			String query = "select json_tree from tree where id="+id.replace("custom_tree_", "");
+//			ResultSet rslt = conn.executeQuery(query);
+//			try {
+//				while(rslt.next()){
+//					try {
+//						ManualTree tree = new ManualTree();
+//						ObjectMapper mapper = new ObjectMapper();
+//						JsonNode rootNode = mapper.readTree(rslt.getString("json_tree")).get("treestruct");
+//						JsonTree t  = new JsonTree();
+//						if(!dataset.equals("mammal")){
+//							rootNode = t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
+//						}
+//						tree.setTreeStructure(rootNode);
+//						tree.setListOfFc(custom_classifiers);
+//						tree.buildClassifier(weka.getTrain());
+//						custom_classifiers.put(id, tree);
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 	/**
 	 * Computes class distribution of an instance using the decision tree.
