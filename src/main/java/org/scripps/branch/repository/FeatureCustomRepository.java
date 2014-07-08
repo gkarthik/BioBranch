@@ -12,6 +12,4 @@ public interface FeatureCustomRepository {
 	public Map<String, Feature> getByDataset(String dataset,
 			boolean load_annotations_very_slowly);
 
-	// public ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper);
-
 }
