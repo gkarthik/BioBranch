@@ -24,7 +24,7 @@ public class Custom_Feature {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	private int id;
+	private long id;
 
 	@Column
 	private String name;
@@ -64,7 +64,7 @@ public class Custom_Feature {
 		return expression;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

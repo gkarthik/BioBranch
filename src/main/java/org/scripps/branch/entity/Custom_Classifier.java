@@ -1,14 +1,48 @@
 package org.scripps.branch.entity;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+@Entity
+@Table(name = "custom_classifier")
 public class Custom_Classifier {
 
-	private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+
+	@Column
 	private String name;
+
+	@Column
 	private int type;
+
+	@Column
 	private String Description;
-	private int player_id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private User user;
+
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
 
 	public DateTime getCreated() {
@@ -19,7 +53,7 @@ public class Custom_Classifier {
 		return Description;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -27,12 +61,19 @@ public class Custom_Classifier {
 		return name;
 	}
 
-	public int getPlayer_id() {
-		return player_id;
-	}
-
 	public int getType() {
 		return type;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		DateTime now = DateTime.now();
+		this.created = now;
+
 	}
 
 	public void setCreated(DateTime created) {
@@ -51,12 +92,12 @@ public class Custom_Classifier {
 		this.name = name;
 	}
 
-	public void setPlayer_id(int player_id) {
-		this.player_id = player_id;
-	}
-
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

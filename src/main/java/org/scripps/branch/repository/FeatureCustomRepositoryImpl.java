@@ -102,7 +102,7 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 			LOGGER.debug("Feature Counter =" + featureCounter);
 			LOGGER.debug("Attribute Counter =" + attributeCounter);
 
-			//em.getTransaction().commit();
+			// em.getTransaction().commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
