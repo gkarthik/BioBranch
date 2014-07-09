@@ -49,7 +49,7 @@ public class Feature {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<Attribute> feature_id;
 
-	@ManyToMany(mappedBy = "features")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
