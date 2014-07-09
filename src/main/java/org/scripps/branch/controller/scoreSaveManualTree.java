@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
@@ -17,10 +18,13 @@ import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
+import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,30 +47,43 @@ public class scoreSaveManualTree {
 	@Autowired
 	@Qualifier("attributeRepository")
 	private AttributeRepository attr;
-
-	@Autowired
+	
+	@Autowired 
 	@Qualifier("treeRepository")
 	private TreeRepository treeRepo;
-
-	@Autowired
+	
+	@Autowired 
 	@Qualifier("featureRepository")
 	private FeatureRepository featureRepo;
+	
+	@Autowired
+	private HibernateAwareObjectMapper mapper;
 
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
-			HttpServletRequest request) throws Exception {
+			HttpServletRequest request) throws Exception{
+		String command = data.get("command").asText();
+		String result_json = "";
+		if(command.equals("scoretree") || command.equals("savetree")){
+			result_json = scoreSaveManualTree(data);
+		} else if(command.equals("get_clinical_features")){
+			result_json = getClinicalFeatures(data);
+		}
+		
+		return result_json;
+	}
+	
+	public String scoreSaveManualTree(JsonNode data) throws Exception{
 		Weka wekaObj = WekaObject.getWeka();
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
 		LinkedHashMap<String, Classifier> custom_classifiers = new LinkedHashMap<String, Classifier>();
-		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
-				data.get("dataset").asText(), custom_classifiers, attr);
+		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"), data.get("dataset").asText(), custom_classifiers, attr);
 		Evaluation eval = new Evaluation(wekaObj.getTrain());
 		eval.evaluateModel(readtree, wekaObj.getTrain());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
-		int numnodes = readtree.numNodes();
-		ObjectMapper mapper = new ObjectMapper();
+		int numnodes=readtree.numNodes();
 		ObjectNode result = mapper.createObjectNode();
 		result.put("pct_correct", eval.pctCorrect());
 		result.put("size", numnodes);
@@ -84,15 +101,30 @@ public class scoreSaveManualTree {
 		List<Feature> fList = new ArrayList();
 		t.getFeatures(treenode, fList, featureRepo);
 		Tree newTree = new Tree();
-		newTree.setComment(data.get("comment").asText());
-		Date date = new Date();
-		newTree.setCreated(new DateTime(date.getTime()));
-		newTree.setFeatures(fList);
-		newTree.setJson_tree(result_json);
-		newTree.setPrivate_tree(false);
-		newTree.setUser(null);
-		newTree.setUser_saved(false);
-		treeRepo.saveAndFlush(newTree);
+	    newTree.setComment(data.get("comment").asText());
+	    Date date= new Date();
+	    newTree.setCreated(new DateTime(date.getTime()));
+	    newTree.setFeatures(fList);
+	    newTree.setJson_tree(result_json);
+	    newTree.setPrivate_tree(false);
+	    newTree.setUser(null);
+	    newTree.setUser_saved(false);
+	    treeRepo.saveAndFlush(newTree);
 		return result_json;
+	}
+	
+	@Transactional
+	public String getClinicalFeatures(JsonNode data){
+		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
+//		System.out.println(fList.size());
+		String result_json = "";
+		try {
+			result_json = mapper.writeValueAsString(fList);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result_json;
+		
 	}
 }
