@@ -22,7 +22,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "custom_feature")
-public class Custom_Feature {
+public class CustomFeature {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
