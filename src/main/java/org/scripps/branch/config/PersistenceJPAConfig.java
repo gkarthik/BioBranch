@@ -50,7 +50,6 @@ public class PersistenceJPAConfig {
 		return properties;
 	}
 
-
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();

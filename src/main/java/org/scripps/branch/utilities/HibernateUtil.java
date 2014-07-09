@@ -1,9 +1,5 @@
 package org.scripps.branch.utilities;
 
-import java.io.File;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 //
 //@SuppressWarnings("deprecation")
 //public class HibernateUtil {
@@ -33,4 +29,4 @@ import org.hibernate.cfg.AnnotationConfiguration;
 //		getSessionFactory().close();
 //	}
 //
-//}
+// }

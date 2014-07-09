@@ -1,6 +1,5 @@
 package org.scripps.branch.config;
 
-import java.io.File;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -9,11 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
-import org.springframework.context.annotation.Import;
-import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -25,7 +20,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 public class ApplicationConfig implements WebApplicationInitializer {
 	private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 	private static final String DISPATCHER_SERVLET_MAPPING = "/";
-	
+
 	@Override
 	public void onStartup(ServletContext servletContext)
 			throws ServletException {
@@ -33,10 +28,10 @@ public class ApplicationConfig implements WebApplicationInitializer {
 		// lines out.
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		rootContext.register(ApplicationContext.class);
-		
-		servletContext.addFilter("OpenEntityManagerInViewFilter", OpenEntityManagerInViewFilter.class)
-        .addMappingForUrlPatterns(null, false, "/*");
 
+		servletContext.addFilter("OpenEntityManagerInViewFilter",
+				OpenEntityManagerInViewFilter.class).addMappingForUrlPatterns(
+				null, false, "/*");
 
 		// If you want to use the XML configuration, uncomment the following
 		// lines.
