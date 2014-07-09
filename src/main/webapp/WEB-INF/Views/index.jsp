@@ -1,186 +1,117 @@
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
-<html class="no-js">
-<!--<![endif]-->
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>The Cure: Play Games, Defeat Cancer</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width">
-
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/landing-style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cure</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+<link href='./css/bootstrap-tour.min.css' rel='stylesheet' type='text/css'>
+<link href='./css/bootstrap-switch.css' rel='stylesheet' type='text/css'>
+<link href='./css/style.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="./css/odometer-theme-train-station.css" />
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 </head>
 <body>
-	<!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
-        <![endif]-->
-
-	<!-- Add your site or application content here -->
-	<div id="topBar"></div>
-	<div id="main">
-
-		<h1>The Cure</h1>
-		<h2>Play Games, Defeat Cancer</h2>
-
-		<div id="column1">
-			<div id="sections" class="section">
-				<h3 class="about">About</h3>
-				<div id="about" style="display: none;">
-					<p>The Cure is a serious, biology-based card game. Assemble the
-						best hands and you can win - just like poker. The challenge with
-						The Cure is that we don't know the rules yet! Until you play, we
-						can't tell you if you have the equivalent of a royal flush or a
-						pair of 2s. By playing the game, you will be both teaching and
-						learning the rules of nature.</p>
-				</div>
-				<h3 class="background">Background</h3>
-				<div id="background" style="display: none;">
-					<p>Using the latest technology we can now assess the activity	<jsp:include page="/WEB-INF/layout/footer.jsp" />
-					
-						level of more than 20,000 known human genes and identify literally
-						millions of variations in every human genome. The challenge now is
-						to make use of all of this data. For example, if a woman has been
-						diagnosed with breast cancer we would like to be able to predict
-						whether the cancer will metastasize and how quickly because we can
-						use this information to make decisions about treatment - e.g.
-						whether or not she should receive chemotherapy. Given a collection
-						of samples from tumors that did and did not end up spreading, we
-						take measurements using all the technology at our disposal and
-						then attempt to identify consistent patterns. If a particular gene
-						is much more active than normal in all the samples that eventually
-						spread, this might be a good signal to look for in future
-						patients.</p>
-				</div>
-				<h3 class="challenge">Challenge</h3>
-				<div id="challenge" style="display: none;">
-					<p>
-						In seeking these patterns we are faced with two key problems,
-						reproducibility and a combinatorial explosion. First, it often
-						happens that patterns observed in one dataset do not appear with
-						the same strength in new datasets. This is partly caused by
-						natural biological variability and partly by the relative
-						immaturity of the measuring technology that is being applied.
-						Aside from reproducibility, the patterns themselves may be very
-						complex. It may take a unique combination of 25 different
-						variables to produce an excellent predictive pattern. The trouble
-						is that it is impossible to test all such potential combinations.
-						If we assume 20,000 human genes, there are on the order of 10<sup>82</sup>
-						possible 25 gene combinations! (People estimate that the <a
-							href="http://en.wikipedia.org/wiki/Observable_universe">total
-							number of atoms in the universe</a> is close to 10<sup>80</sup>.)
-					</p>
-				</div>
-				<h3 class="idea">The idea</h3>
-				<div id="idea" style="display: none;">
-					<p>One advantage when it comes to addressing these problems is
-						our increasing understanding of biology. Our knowledge of genes,
-						biological mechanisms and disease is growing exponentially and
-						much of this knowledge is available on the Web. When we start
-						looking for predictive patterns in a dataset such as the breast
-						cancer example, we can use this knowledge to guide our search.
-						TheCure was created as a fun way to solicit help in guiding the
-						search for stable patterns that can be used to make biologically
-						and medically important predictions. When people play TheCure they
-						use their knowledge (or their ability to search the Web or their
-						social networks) to make informed decisions about the best
-						combinations of variables (e.g. genes) to use to build predictive
-						patterns. These combos are the &lsquo;hands&rsquo; in TheCure card
-						game. Every time a game is played, the hands are evaluated and
-						stored. Eventually predictors will be developed using advanced
-						machine learning algorithms that are informed by the hands played
-						in the game.</p>
-				</div>
-				<h3 class="mission">
-					Current mission: <br /> <span class="pink">Griffith
-						MetaStudy</span>
-				</h3>
-				<div id="mission" style="display: none;">
-					<p>
-						The Cure team is currently working on creating the world&#8217;s
-						best genomics-driven predictor of breast cancer prognosis. To meet
-						this ambitious objective, we are currently recruiting players with
-						knowledge (or an interest in learning about) cancer biology. <a
-							href="login.jsp">Join us now!</a>
-					</p>
-				</div>
-				<h3 class="contact">Contact</h3>
-				<div id="contact" style="display: none;">
-					<p>
-						Please feel free to get in touch with us via email, twitter,
-						messenger pigeon etc. See our details on the <a href="contact.jsp">contact
-							page</a>.
-				</div>
-				<h3 class="faq">FAQ</h3>
-				<div id="faq" style="display: none;">
-					<ol>
-						<li><h4>Who can play?</h4>
-							<p>Anyone is welcome to play. The more you know about biology
-								and disease at the level of gene function, the better you are
-								likely to do, but you can also learn as you go. The game
-								provides a lot of information about the genes as well as links
-								off to related Web resources. We hope that anyone who plays will
-								learn something about gene function.</p></li>
-						<li><h4>How do you evaluate the quality of the data
-								provided by game players?</h4>
-							<p>The predictors generated using The Cure data are evaluated
-								for accuracy on independent test datasets - just like any other
-								predictor inferred by experts or by statistics would be. By
-								testing on real data, we can tell the good players apart from
-								those that are guessing randomly. Since each player action in
-								the game is associated with their account, it is then very easy
-								to filter out data that is not useful. This approach, while it
-								may seem strange for a scientific project, follows the
-								&lsquo;publish then filter&rsquo; approach that has made the Web
-								so successful. We hope that it encourages many people to share
-								their time and their intelligence with the project.</p></li>
-					</ol>
-				</div>
-
-			</div>
-		</div>
-		<div id="column2">
-
-			<div id="chart"></div>
-			<div id="action">
-
-				<form action="${contextPath}/login" method="GET">
-					<input class="playnow" type="submit" value="Play Now" />
-				</form>
-			</div>
-			<!--  <h4>Round 3 started! <br/>View results from <a href="round1.jsp"> Round 1</a>, <a href="round2.jsp"> Round 2 </a></h4> -->
-			<div id="twitterUserFeed">
-				<a class="twitter-timeline" href="https://twitter.com/genegame"
-					data-widget-id="245564915832721410">Tweets by @genegame</a>
-				<script>
-					!function(d, s, id) {
-						var js, fjs = d.getElementsByTagName(s)[0];
-						if (!d.getElementById(id)) {
-							js = d.createElement(s);
-							js.id = id;
-							js.src = "//platform.twitter.com/widgets.js";
-							fjs.parentNode.insertBefore(js, fjs);
-						}
-					}(document, "script", "twitter-wjs");
-				</script>
-			</div>
-
-		</div>
-
+<div id="loading-wrapper">
+	<div class="panel panel-default">
+	<div class="panel-heading">
+	<center>LOADING</center>
 	</div>
-
-	<script
-		src="${pageContext.request.contextPath}/static/js/jquery-1.8.0.min.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/static/js/jquery.plugins.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/static/js/underscore-min.js"></script>
-	<script src="${pageContext.request.contextPath}/static/js/d3.v2.min.js"></script>
-	<script src="${pageContext.request.contextPath}/static/js/cure.js"></script>
-	<jsp:include
-		page="${pageContext.request.contextPath}/static/js/analytics.js" />
-	<jsp:include page="/WEB-INF/layout/footer.jsp" />
-
+	<div class="panel-content">
+	<center>Drawing Nodes <span id="loadingCount"></span></center>
+	<div class="progress progress-striped active">
+	  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+	</div>
+	<center>Loading might take a while.</center>
+	</div>
+	</div>
+</div>
+<div id="NodeDetailsWrapper" class="blurCloseElement">
+	<div id="NodeDetailsContent"></div>
+</div>
+<div id="jsonSummary"></div>
+	<div class="container-fluid CureContainer">
+	<div class="alert alert-warning alert-dismissable" id="alertWrapper">
+  		 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  		<strong id="alertMsg"></strong>
+	</div>
+	<div id="InfoWrapper" class="panel panel-default">
+	<div class="panel-heading"><span>Data</span>
+	<span><button class="close">&times;</button></span>
+	</div>
+	<div class="panel-body">
+	Current Dataset: METABRIC <br /> <br />
+	<p>The version of the METABRIC dataset that is currently loaded contains 12 clinical features and expression values for 17,920 genes across 1,226 samples.  527 (43%) of the samples have recorded survival times greater than 10 years while the remaining 699 (57%) have less than 10 year survival.  Survival time is measured from the point of diagnosis.</p>
+<p>The 12 clinical features include: age, tumor size, # of lymph nodes positive, grade, histological type, ER_IHC_status, ER expression, PR expression, HER2_IHC_status, HER2_SNP6_state, HER2 expression, and Treatment.</p>   
+<p>The complete METABRIC dataset contains clinical traits, gene expression values, CNV profiles, and SNP genotypes derived from breast tumors collected from participants of the METABRIC trial. Details about the METABRIC cohort have been published here: Curtis C, et.al. The genomic and transcriptomic architecture of 2,000 breast tumours reveals novel subgroups. Nature. 2012 Apr 18;486(7403):346-52.</p>
+	</div>
+	</div>
+		<div class="row">
+				<div id="HelpText" class="HelpButton">
+					<button type="button" class="close">&times;</button>
+					<h3 class="renderPink">Help</h3>
+					<p>
+					<button class="btn btn-sm btn-default" id="taketour">Take Tour</button>
+						<img align="right" src="img/helpimage.png" width="500" />
+					<dl class="dl-horizontal">
+					  <dt>Add a Gene</dt>
+					  <dd>To choose a gene you can start typing the name in the text box. As you start typing a drop down will appear and you can choose a gene from the options shown.</dd>
+					  <dt>Add a Clinical Feature</dt>
+					  <dd>You can choose a clinical feature by clicking on <img width="30" src="./img/doctor.png">. Click on the text box that appears to view a drop down of the available clinical features.</dd>
+					  <dt>Gene and Clinical Feature Information</dt>
+					  <dd>To view information regarding the genes/clinical features in the drop down, hover on each option and a window will be shown. You can also use the 'up' and 'down' arrow keys to navigate up and down this drop down.</dd>
+					  <dt>Add a Gene/Clinical Feature to Leaf Nodes</dt>
+					  <dd>To add a node click on <button class="btn btn-small btn-link" type="button"><i class="glyphicon glyphicon-plus-sign"></i><span style="float: none;">Add</span></button> at the bottom of the leaf nodes. The same text box will appear at the bottom.</dd>
+					  <dt>Delete Node</dt>
+					  <dd>To remove a particular split node from the tree, click on <i class="glyphicon glyphicon-remove"></i> and the node along with its children will be deleted.</dd>
+					  <dt>Gene/Clinical Feature Information from Tree</dt>
+					  <dd>To view the information of a gene/clinical feature in the tree, simply click on the gene/clinical feature name in the node.</dd>
+					  <dt>Numerical data of Classification</dt>
+					  <dd>To view numerical data of classification, click on the square charts displayed along with every node.</dd>
+					  <dt>Outcomes</dt>
+					  <dd><font color="blue"><b>Y</b></font> represents a favorable outcome i.e., the cases are predicted to survive beyond ten years.<font color="red"><b>N</b></font> represents an unfavorable outcome i.e., the cases are not predicted to survive beyond ten years.</dd>
+					  <dt>Player Placeholder</dt>
+					  <dd>On top of each node, you can see a colored square representing the user who added that node. A list of users and their place holders is displayed on the right to serve as a key.</dd>
+					  <dt>Save Tree</dt>
+					  <dd>Once you build a tree, be sure to save it by clicking on the Save Button on the right. You can add a comment by typing in the comment box that will appear once you click save. In case you want to protect your tree you can also choose an option to save your tree as private in which case no other player will be able to view that tree but it will not be part of the score baord.</dd>
+					  <dt>Textual Description of Tree</dt>
+					  <dd>To view a textual description of the tree, click on Tree Explanation on the right.</dd>
+					  <dt>Profie</dt>
+					  <dd>You can see your badge collection and your tree collection in your profile page. To view your profile click on My Profile on the right panel.</dd>
+					</dl>						
+					</ul>
+					</p>
+				</div>
+				<div id="zoom-controls">
+				
+				</div>
+				<div id="PlayerTreeRegion"></div>
+				<div id="cure-panel-wrapper">
+						
+				</div>
+				<div id="GenePoolRegion">
+				</div>
+				<div id="FeatureBuilderRegion">
+				</div>
+  	<script type="text/javascript">
+    var cure_user_experience = "0",
+        cure_user_id = -1,
+        cure_user_name = "Guest",
+        cure_tree_id = null,
+        badge_desc = null,
+        badge_id = null,
+        base_url= document.location.href.split("cure2.0")[0],
+        _csb = [[null, null]];
+    <% if(request.getParameter("treeid")!=null){ %> 
+     	cure_tree_id = <%= request.getParameter("treeid") %>;
+    <% } %>
+  </script>
+  <% if(request.getParameter("ref")!=null){
+		if(request.getParameter("ref").equals("yako")){ %>
+	<script>_csb=[['token','R6TzQ7']];</script>
+	<% }
+		}%>
+	<script type="text/javascript" data-main="config" src="lib/require.js" charset="utf-8"></script>
 </body>
 </html>
