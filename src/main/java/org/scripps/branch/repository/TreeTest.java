@@ -46,10 +46,10 @@ public class TreeTest {
 	
 	@Test
     public void testFeatureUniqueId() throws SQLException {
-		User newUser= new User();
-		List<Tree> tree = t.findByUser(newUser);
-		System.out.println(tree.size());
-		//String json = tree.getJson_tree();
+//		User newUser= new User();
+//		List<Tree> tree = t.findByUser(newUser);
+//		System.out.println(tree.size());
+//		String json = tree.getJson_tree();
 //		System.out.println(tree.getComment().toString());
 //        Tree newTree = new Tree();
 //        newTree.setComment("First Tree!");
