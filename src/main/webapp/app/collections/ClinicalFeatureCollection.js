@@ -25,8 +25,8 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 		});
 	},
 	parseResponse : function(data) {
-		if(data.features.length > 0) {
-			this.add(data.features);
+		if(data.length > 0) {
+			this.add(data);
 		}
 	},
 	error : function(data) {
