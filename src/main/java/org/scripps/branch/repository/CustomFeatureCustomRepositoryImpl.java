@@ -44,7 +44,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 	@Override
 	public void addInstances(Weka weka) {
 		Custom_Feature cfObj = new Custom_Feature();
-		String query = "selecrt cf from Custom_Feature cf";
+		String query = "select cf from Custom_Feature cf";
 		try {
 
 			Query q = em.createQuery(query);

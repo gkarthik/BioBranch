@@ -3,12 +3,15 @@ package org.scripps.branch.entity;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -48,6 +51,10 @@ public class Feature {
 
 	@ManyToMany(mappedBy = "features")
 	private List<Tree> trees;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	private List<Custom_Feature> custom_feature;
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
