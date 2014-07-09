@@ -201,7 +201,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 		HashMap hashMapObj = new HashMap();
 
-		int cFeatureId = 0;
+		long cFeatureId = 0;
 
 		String query = "select cf from Custom_Feature cf";
 		AttributeExpression _attrExp = new AttributeExpression();
