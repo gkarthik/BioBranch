@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.scripps.branch.entity.Attribute;
-import org.scripps.branch.entity.Custom_Feature;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 	@Override
 	public void addInstances(Weka weka) {
-		Custom_Feature cfObj = new Custom_Feature();
+		CustomFeature cfObj = new CustomFeature();
 		String query = "select cf from Custom_Feature cf";
 		try {
 
@@ -54,7 +54,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			while (it.hasNext()) {
 
-				cfObj = (Custom_Feature) it.next();
+				cfObj = (CustomFeature) it.next();
 				evalAndAddNewFeatureValues("custom_feature_" + cfObj.getId(),
 						cfObj.getExpression(), weka.getTrain());
 
@@ -110,7 +110,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 		HashMap hashMapObj = new HashMap();
 		hashMapObj.put("success", true);
-		Custom_Feature cfObj = new Custom_Feature();
+		CustomFeature cfObj = new CustomFeature();
 		Instances data = weka.getTrain();
 
 		List<Feature> allFeature = new ArrayList<Feature>();
@@ -166,7 +166,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 					while (it.hasNext()) {
 
-						cfObj = (Custom_Feature) it.next();
+						cfObj = (CustomFeature) it.next();
 						hashMapObj.put("id", "custom_feature_" + cfObj.getId());
 						hashMapObj.put("description", cfObj.getDescription());
 						hashMapObj.put("name", cfObj.getName());
@@ -205,7 +205,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 		String query = "select cf from Custom_Feature cf";
 		AttributeExpression _attrExp = new AttributeExpression();
-		Custom_Feature cfObj = new Custom_Feature();
+		CustomFeature cfObj = new CustomFeature();
 
 		try {
 
@@ -222,7 +222,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			while (it.hasNext()) {
 
-				cfObj = (Custom_Feature) it.next();
+				cfObj = (CustomFeature) it.next();
 				exp = cfObj.getExpression();
 				_attrExp.convertInfixToPostfix(exp);
 

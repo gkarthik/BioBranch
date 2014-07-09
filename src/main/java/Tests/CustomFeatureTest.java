@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scripps.branch.config.PersistenceJPAConfig;
-import org.scripps.branch.entity.Custom_Feature;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ public class CustomFeatureTest {
 	
 	@Test
 	public void testGetMetaBricClinicalFeatures() {
-		List<Custom_Feature> cfList = cfr.searchCustomFeatures(" ");
-		for (Custom_Feature cf : cfList) {
+		List<CustomFeature> cfList = cfr.searchCustomFeatures(" ");
+		for (CustomFeature cf : cfList) {
 			if (1==1) {
 				assertEquals(1,1);
 				assertEquals(1,1);

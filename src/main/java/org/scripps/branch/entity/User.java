@@ -81,10 +81,10 @@ public class User extends BaseEntity<Long> {
 	private List<Tree> trees_id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Custom_Feature> user_id;
+	private List<CustomFeature> user_id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Custom_Classifier> users_id;
+	private List<CustomClassifier> users_id;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
@@ -157,11 +157,11 @@ public class User extends BaseEntity<Long> {
 		return trees_id;
 	}
 
-	public List<Custom_Feature> getUser_id() {
+	public List<CustomFeature> getUser_id() {
 		return user_id;
 	}
 
-	public List<Custom_Classifier> getUsers_id() {
+	public List<CustomClassifier> getUsers_id() {
 		return users_id;
 	}
 
@@ -205,11 +205,11 @@ public class User extends BaseEntity<Long> {
 		this.trees_id = trees_id;
 	}
 
-	public void setUser_id(List<Custom_Feature> user_id) {
+	public void setUser_id(List<CustomFeature> user_id) {
 		this.user_id = user_id;
 	}
 
-	public void setUsers_id(List<Custom_Classifier> users_id) {
+	public void setUsers_id(List<CustomClassifier> users_id) {
 		this.users_id = users_id;
 	}
 

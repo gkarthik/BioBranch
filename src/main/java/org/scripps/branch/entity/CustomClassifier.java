@@ -1,5 +1,7 @@
 package org.scripps.branch.entity;
 
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -19,7 +22,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "custom_classifier")
-public class Custom_Classifier {
+public class CustomClassifier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,6 +41,17 @@ public class Custom_Classifier {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
+	
+	@ManyToMany(mappedBy = "custom_classifier")
+	private List<Feature> feature;
+
+	public List<Feature> getFeature() {
+		return feature;
+	}
+
+	public void setFeature(List<Feature> feature) {
+		this.feature = feature;
+	}
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -84,7 +98,7 @@ public class Custom_Classifier {
 		Description = description;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
