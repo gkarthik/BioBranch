@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -27,8 +28,8 @@ public class Tree {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
-	private int id;
+	@Column(name = "id")
+	private long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
@@ -52,8 +53,9 @@ public class Tree {
 	@Column
 	private boolean user_saved;
 
-	@Column
-	private int prev_tree_id = -1;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "prev_tree_id", insertable = false, updatable = false)
+	private Tree prevTree;
 
 	@Column
 	private boolean private_tree = false;
@@ -73,7 +75,7 @@ public class Tree {
 		return features;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -81,8 +83,8 @@ public class Tree {
 		return json_tree;
 	}
 
-	public int getPrev_tree_id() {
-		return prev_tree_id;
+	public Tree getPrev_tree_id() {
+		return prevTree;
 	}
 
 	public User getUser() {
@@ -129,8 +131,8 @@ public class Tree {
 		this.json_tree = json_tree;
 	}
 
-	public void setPrev_tree_id(int prev_tree_id) {
-		this.prev_tree_id = prev_tree_id;
+	public void setPrev_tree_id(Tree newPrevTree) {
+		this.prevTree = newPrevTree;
 	}
 
 	public void setPrivate_tree(boolean private_tree) {
