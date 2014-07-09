@@ -7,7 +7,6 @@ import org.hibernate.cfg.AnnotationConfiguration;
 
 @SuppressWarnings("deprecation")
 public class HibernateUtil {
-
 	private static final SessionFactory sessionFactory = buildSessionFactory();
 
 	private static SessionFactory buildSessionFactory() {
@@ -32,5 +31,4 @@ public class HibernateUtil {
 		// Close caches and connection pools
 		getSessionFactory().close();
 	}
-
 }

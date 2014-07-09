@@ -1,5 +1,6 @@
 package org.scripps.branch.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -7,8 +8,9 @@ import javax.transaction.Transactional;
 import org.scripps.branch.entity.Feature;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-@Transactional
+@Repository
 public interface FeatureRepository extends JpaRepository<Feature, Long> {
 
 	@Query("select F from Feature F where F.unique_id =?1")
@@ -18,7 +20,8 @@ public interface FeatureRepository extends JpaRepository<Feature, Long> {
 	Feature getByDbId(long id);
 
 	// not tested -- s
+	@Transactional
 	@Query("select F from Feature F, Attribute A where A.dataset='metabric_with_clinical' and F.id = A.feature and F.unique_id like '%metabric%'")
-	List<Feature> getMetaBricClinicalFeatures();
+	ArrayList<Feature> getMetaBricClinicalFeatures();
 
 }
