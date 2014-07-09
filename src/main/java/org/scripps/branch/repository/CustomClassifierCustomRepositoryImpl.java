@@ -25,10 +25,10 @@ import weka.classifiers.trees.J48;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
-
 @Repository
 @Transactional
-public class CustomClassifierCustomRepositoryImpl implements CustomClassifierCustomRepository{
+public class CustomClassifierCustomRepositoryImpl implements
+		CustomClassifierCustomRepository {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FeatureCustomRepositoryImpl.class);
@@ -39,74 +39,6 @@ public class CustomClassifierCustomRepositoryImpl implements CustomClassifierCus
 	AttributeRepository attr;
 
 	CustomClassifierRepository ccr;
-
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public HashMap getClassifierDetailsByDbId(int id, String dataset,
-			LinkedHashMap<String, Classifier> custom_classifiers) {
-
-		HashMap hashMapObj =  new HashMap();
-		String query = "select cc from Custom_Classifier where id ="+id;
-		int counter=0,counterf=0;
-		CustomClassifier ccObj =new CustomClassifier();
-		HashMap featuresHashMap =new HashMap();
-
-
-		try {
-
-			Query q = em.createQuery(query);
-			List<?> list = q.getResultList();
-			Iterator<?> it = list.iterator();
-
-			while (it.hasNext()) {
-
-				ccObj = (CustomClassifier) it.next();
-
-				hashMapObj.put("id",ccObj.getId());
-				hashMapObj.put("name", ccObj.getName());
-				hashMapObj.put("type", ccObj.getType());
-				hashMapObj.put("description", ccObj.getDescription());
-				hashMapObj.put("player_id", ccObj.getUser());
-				hashMapObj.put("created", ccObj.getCreated());
-
-				counter++;
-			}
-
-			//custom_Classifier_feature to be done
-			String query2 = "select f.short_name, a.name "
-					+ "from Custom_Classifier_Feature ccf, Feature f, Attribute a"
-					+ "where custom_classifier_id = "+id
-					+ " and f.id = ccf.feature_id and "
-					+ "a.feature_id = f.id and a.dataset='"
-					+ dataset + "'";
-
-			q = em.createQuery(query2);
-			list = q.getResultList();
-			it = list.iterator();
-
-			while (it.hasNext()) {
-
-				Object[] obj = (Object[]) it.next();
-				featuresHashMap.put((String)obj[0], (String) obj[1]);
-				counterf++;
-
-			}
-
-			String classifierString =custom_classifiers.get("custom_classifier_"+id).toString();
-
-			hashMapObj.put("features", featuresHashMap);
-			hashMapObj.put("classifierString",classifierString);
-
-
-			LOGGER.debug("Counter feature =" + counterf);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		em.close();
-		return hashMapObj;
-	}
 
 	@Override
 	public FilteredClassifier buildCustomClassifier(Weka weka,
@@ -157,9 +89,75 @@ public class CustomClassifierCustomRepositoryImpl implements CustomClassifierCus
 	}
 
 	@Override
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb(){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public HashMap getClassifierDetailsByDbId(int id, String dataset,
+			LinkedHashMap<String, Classifier> custom_classifiers) {
 
-		String query="select CC from Custom_Classifier CC";
+		HashMap hashMapObj = new HashMap();
+		String query = "select cc from Custom_Classifier where id =" + id;
+		int counter = 0, counterf = 0;
+		CustomClassifier ccObj = new CustomClassifier();
+		HashMap featuresHashMap = new HashMap();
+
+		try {
+
+			Query q = em.createQuery(query);
+			List<?> list = q.getResultList();
+			Iterator<?> it = list.iterator();
+
+			while (it.hasNext()) {
+
+				ccObj = (CustomClassifier) it.next();
+
+				hashMapObj.put("id", ccObj.getId());
+				hashMapObj.put("name", ccObj.getName());
+				hashMapObj.put("type", ccObj.getType());
+				hashMapObj.put("description", ccObj.getDescription());
+				hashMapObj.put("player_id", ccObj.getUser());
+				hashMapObj.put("created", ccObj.getCreated());
+
+				counter++;
+			}
+
+			// custom_Classifier_feature to be done
+			String query2 = "select f.short_name, a.name "
+					+ "from Custom_Classifier_Feature ccf, Feature f, Attribute a"
+					+ "where custom_classifier_id = " + id
+					+ " and f.id = ccf.feature_id and "
+					+ "a.feature_id = f.id and a.dataset='" + dataset + "'";
+
+			q = em.createQuery(query2);
+			list = q.getResultList();
+			it = list.iterator();
+
+			while (it.hasNext()) {
+
+				Object[] obj = (Object[]) it.next();
+				featuresHashMap.put(obj[0], obj[1]);
+				counterf++;
+
+			}
+
+			String classifierString = custom_classifiers.get(
+					"custom_classifier_" + id).toString();
+
+			hashMapObj.put("features", featuresHashMap);
+			hashMapObj.put("classifierString", classifierString);
+
+			LOGGER.debug("Counter feature =" + counterf);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		em.close();
+		return hashMapObj;
+	}
+
+	@Override
+	public LinkedHashMap<String, Classifier> getClassifiersfromDb() {
+
+		String query = "select CC from Custom_Classifier CC";
 		Query q = em.createQuery(query);
 
 		List<?> list = q.getResultList();
@@ -176,7 +174,7 @@ public class CustomClassifierCustomRepositoryImpl implements CustomClassifierCus
 			id = obj.getId();
 			classifierType = obj.getType();
 			try {
-				listOfClassifiers.put("custom_classifier_"+id,
+				listOfClassifiers.put("custom_classifier_" + id,
 						ccr.getClassifierByCustomClassifierId(id));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -188,14 +186,15 @@ public class CustomClassifierCustomRepositoryImpl implements CustomClassifierCus
 	}
 
 	// to be done
-	//public HashMap getOrCreateClassifierId(List entrezIds, int classifierType,
-	//	String name, String description, int player_id, Weka weka,
-	//	String dataset, HashMap<String, Classifier> custom_classifiers)
-	//	
+	// public HashMap getOrCreateClassifierId(List entrezIds, int
+	// classifierType,
+	// String name, String description, int player_id, Weka weka,
+	// String dataset, HashMap<String, Classifier> custom_classifiers)
+	//
 
-	//check if necessary 
-	//	public int insertandAddCustomClassifier(String[] featureDbIds,
-	//			int classifierType, String name, String description, int player_id,
-	//			Weka weka, String dataset,
-	//			HashMap<String, Classifier> custom_classifiers)
+	// check if necessary
+	// public int insertandAddCustomClassifier(String[] featureDbIds,
+	// int classifierType, String name, String description, int player_id,
+	// Weka weka, String dataset,
+	// HashMap<String, Classifier> custom_classifiers)
 }

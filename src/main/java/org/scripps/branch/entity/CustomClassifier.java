@@ -41,17 +41,9 @@ public class CustomClassifier {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
-	
+
 	@ManyToMany(mappedBy = "custom_classifier")
 	private List<Feature> feature;
-
-	public List<Feature> getFeature() {
-		return feature;
-	}
-
-	public void setFeature(List<Feature> feature) {
-		this.feature = feature;
-	}
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -65,6 +57,10 @@ public class CustomClassifier {
 
 	public String getDescription() {
 		return Description;
+	}
+
+	public List<Feature> getFeature() {
+		return feature;
 	}
 
 	public long getId() {
@@ -96,6 +92,10 @@ public class CustomClassifier {
 
 	public void setDescription(String description) {
 		Description = description;
+	}
+
+	public void setFeature(List<Feature> feature) {
+		this.feature = feature;
 	}
 
 	public void setId(long id) {

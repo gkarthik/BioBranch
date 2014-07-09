@@ -55,34 +55,10 @@ public class Feature {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<CustomFeature> custom_feature;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
 	private List<CustomFeature> custom_classifier;
-
-	public List<Tree> getTrees() {
-		return trees;
-	}
-
-	public void setTrees(List<Tree> trees) {
-		this.trees = trees;
-	}
-
-	public List<CustomFeature> getCustom_feature() {
-		return custom_feature;
-	}
-
-	public void setCustom_feature(List<CustomFeature> custom_feature) {
-		this.custom_feature = custom_feature;
-	}
-
-	public List<CustomFeature> getCustom_classifier() {
-		return custom_classifier;
-	}
-
-	public void setCustom_classifier(List<CustomFeature> custom_classifier) {
-		this.custom_classifier = custom_classifier;
-	}
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
@@ -140,6 +116,14 @@ public class Feature {
 		return created;
 	}
 
+	public List<CustomFeature> getCustom_classifier() {
+		return custom_classifier;
+	}
+
+	public List<CustomFeature> getCustom_feature() {
+		return custom_feature;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -162,6 +146,10 @@ public class Feature {
 
 	public String getShort_name() {
 		return short_name;
+	}
+
+	public List<Tree> getTrees() {
+		return trees;
 	}
 
 	public String getUnique_id() {
@@ -188,6 +176,14 @@ public class Feature {
 		this.created = created;
 	}
 
+	public void setCustom_classifier(List<CustomFeature> custom_classifier) {
+		this.custom_classifier = custom_classifier;
+	}
+
+	public void setCustom_feature(List<CustomFeature> custom_feature) {
+		this.custom_feature = custom_feature;
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -206,6 +202,10 @@ public class Feature {
 
 	public void setShort_name(String short_name) {
 		this.short_name = short_name;
+	}
+
+	public void setTrees(List<Tree> trees) {
+		this.trees = trees;
 	}
 
 	public void setUnique_id(String unique_id) {
