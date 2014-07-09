@@ -38,7 +38,7 @@ public class PersistenceJPAConfig {
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.hbm2ddl.auto", "update");
+		properties.setProperty("hibernate.hbm2ddl.auto", "update");//CHange here to update to retain db / create to remake db schema
 		properties.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.PostgreSQLDialect");
 		return properties;

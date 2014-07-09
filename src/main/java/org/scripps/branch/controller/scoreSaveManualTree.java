@@ -85,7 +85,7 @@ public class scoreSaveManualTree {
 		List<Feature> fList = new ArrayList();
 		t.getFeatures(treenode, fList, featureRepo);
 		Tree newTree = new Tree();
-	    newTree.setComment("First Tree!");
+	    newTree.setComment(data.get("comment").asText());
 	    Date date= new Date();
 	    newTree.setCreated(new DateTime(date.getTime()));
 	    newTree.setFeatures(fList);
