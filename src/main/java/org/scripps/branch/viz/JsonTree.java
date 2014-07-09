@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.FeatureRepository;
 
 import weka.classifiers.Classifier;
 
@@ -105,5 +107,21 @@ public class JsonTree {
 		}
 		return tree;
 	}
-
+	
+	public List<Feature> getFeatures(JsonNode node, List<Feature> fList, FeatureRepository f){
+		ObjectNode options = (ObjectNode)node.get("options");		
+		if(options!=null){
+			JsonNode unique_id = options.get("unique_id");
+			if(unique_id!=null){
+				fList.add(f.findByUniqueId(unique_id.asText()));
+			}
+		}
+		ArrayNode children = (ArrayNode)node.get("children");
+		if(children!=null){
+			for(JsonNode child : children){
+				getFeatures(child, fList, f);
+			}
+		}
+		return fList;
+	}
 }
