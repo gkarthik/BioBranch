@@ -51,7 +51,7 @@ public class Feature {
 
 	@ManyToMany(mappedBy = "features")
 	private List<Tree> trees;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<Custom_Feature> custom_feature;
