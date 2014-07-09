@@ -50,7 +50,7 @@ public class Custom_Feature {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
-	
+
 	@ManyToMany(mappedBy = "custom_feature")
 	private List<Feature> feature;
 
