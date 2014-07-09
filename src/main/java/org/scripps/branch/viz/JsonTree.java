@@ -44,6 +44,24 @@ public class JsonTree {
 		// System.out.println(node.toString());
 	}
 
+	public List<Feature> getFeatures(JsonNode node, List<Feature> fList,
+			FeatureRepository f) {
+		ObjectNode options = (ObjectNode) node.get("options");
+		if (options != null) {
+			JsonNode unique_id = options.get("unique_id");
+			if (unique_id != null) {
+				fList.add(f.findByUniqueId(unique_id.asText()));
+			}
+		}
+		ArrayNode children = (ArrayNode) node.get("children");
+		if (children != null) {
+			for (JsonNode child : children) {
+				getFeatures(child, fList, f);
+			}
+		}
+		return fList;
+	}
+
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
 			String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
@@ -106,22 +124,5 @@ public class JsonTree {
 			e.printStackTrace();
 		}
 		return tree;
-	}
-	
-	public List<Feature> getFeatures(JsonNode node, List<Feature> fList, FeatureRepository f){
-		ObjectNode options = (ObjectNode)node.get("options");		
-		if(options!=null){
-			JsonNode unique_id = options.get("unique_id");
-			if(unique_id!=null){
-				fList.add(f.findByUniqueId(unique_id.asText()));
-			}
-		}
-		ArrayNode children = (ArrayNode)node.get("children");
-		if(children!=null){
-			for(JsonNode child : children){
-				getFeatures(child, fList, f);
-			}
-		}
-		return fList;
 	}
 }

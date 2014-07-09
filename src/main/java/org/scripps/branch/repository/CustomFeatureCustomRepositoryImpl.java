@@ -21,15 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.SMO;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.classifiers.trees.J48;
 import weka.core.AttributeExpression;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.AddExpression;
-import weka.filters.unsupervised.attribute.Remove;
 
 @Repository
 @Transactional
@@ -276,7 +271,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 		this.em = em;
 	}
 
-	//to be done 
+	// to be done
 	@SuppressWarnings("rawtypes")
 	@Override
 	public HashMap<?, ?> getTestCase(String id, Weka weka) {
@@ -288,39 +283,36 @@ public class CustomFeatureCustomRepositoryImpl implements
 		return hashMapObj;
 	}
 
-	// check how to insert user id of type userobject ---- insert to be done in service?
+	// check how to insert user id of type userobject ---- insert to be done in
+	// service?
 	@Override
 	public int insert(String name, String feature_exp, String description,
 			int userid, List<Feature> features, String dataset) {
 
 		int id = 0;
-//		em.getTransaction().begin();
-//		Custom_Feature cfObj = new Custom_Feature();
-//		cfObj.setName(name);
-//		cfObj.setExpression(feature_exp);
-//		cfObj.setDescription(description);
-//		// cfObj.setUser(userid);
-//		cfObj.setDataset(dataset);
-//
-//		em.persist(cfObj);
-//		em.getTransaction().commit();
-//
-//		while (!em.contains(cfObj)) {
-//
-//			id = cfObj.getId();
-//		}
-//
-//		em.close();
-//
-//		// work needed for custom_Featurwe_feature
+		// em.getTransaction().begin();
+		// Custom_Feature cfObj = new Custom_Feature();
+		// cfObj.setName(name);
+		// cfObj.setExpression(feature_exp);
+		// cfObj.setDescription(description);
+		// // cfObj.setUser(userid);
+		// cfObj.setDataset(dataset);
+		//
+		// em.persist(cfObj);
+		// em.getTransaction().commit();
+		//
+		// while (!em.contains(cfObj)) {
+		//
+		// id = cfObj.getId();
+		// }
+		//
+		// em.close();
+		//
+		// // work needed for custom_Featurwe_feature
 
 		return id;
 	}
 
-	
-	
-	
-	
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
