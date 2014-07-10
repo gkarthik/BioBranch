@@ -23,7 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
+@EnableJpaRepositories(basePackages = { "org.scripps.branch.repository", "org.scripps.branch.service" })
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
 public class PersistenceJPAConfig {

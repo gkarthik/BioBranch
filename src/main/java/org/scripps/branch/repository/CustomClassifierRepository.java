@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface CustomClassifierRepository extends
 		JpaRepository<CustomClassifier, Long> {
 
-	@Query("select C.feature from Custom_Classifier C where C.id=?1")
+	@Query("select C.feature from CustomClassifier C where C.id=?1")
 	List<Feature> getClassifierByCustomClassifierId(long id);
 
 	@Query("select CC from CustomClassifier CC where name LIKE ('%' || (:name) || '%')) or description LIKE ('%' || (:name) || '%'))")
