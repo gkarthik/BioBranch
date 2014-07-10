@@ -18,8 +18,6 @@ public interface FeatureRepository extends JpaRepository<Feature, Long> {
 	@Query("select F from Feature F where F.id=?1")
 	Feature getByDbId(long id);
 
-	// not tested -- s
-	@Transactional
 	@Query("select F from Feature F, Attribute A where A.dataset='metabric_with_clinical' and F.id = A.feature and F.unique_id like '%metabric%'")
 	ArrayList<Feature> getMetaBricClinicalFeatures();
 

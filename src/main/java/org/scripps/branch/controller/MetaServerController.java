@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
-public class scoreSaveManualTree {
+public class MetaServerController {
 
 	@Autowired
 	private WekaObject weka;
@@ -55,22 +55,7 @@ public class scoreSaveManualTree {
 
 	@Autowired
 	private HibernateAwareObjectMapper mapper;
-
-	@Transactional
-	public String getClinicalFeatures(JsonNode data) {
-		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
-		// System.out.println(fList.size());
-		String result_json = "";
-		try {
-			result_json = mapper.writeValueAsString(fList);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result_json;
-
-	}
-
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
 			HttpServletRequest request) throws Exception {
@@ -84,7 +69,7 @@ public class scoreSaveManualTree {
 
 		return result_json;
 	}
-
+	
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
 		Weka wekaObj = WekaObject.getWeka();
 		JsonTree t = new JsonTree();
@@ -123,6 +108,19 @@ public class scoreSaveManualTree {
 		newTree.setUser(null);
 		newTree.setUser_saved(false);
 		treeRepo.saveAndFlush(newTree);
+		return result_json;
+	}
+	
+	public String getClinicalFeatures(JsonNode data) {
+		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
+		// System.out.println(fList.size());
+		String result_json = "";
+		try {
+			result_json = mapper.writeValueAsString(fList);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result_json;
 	}
 }

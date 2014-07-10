@@ -8,20 +8,20 @@
 <head>
 <title><spring:message code="spring.social.mvc.normal.title" /></title>
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/bootstrap.css" />
+	href="./css/bootstrap.css" />
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/bootstrap-theme.css" />
+	href="./css/bootstrap-theme.css" />
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/font-awesome.css" />
+	href="./css/font-awesome.css" />
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/style.css" />
+	href="./css/style.css" />
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/static/js/vendor/jquery-2.0.3.js"></script>
+	src="./js/vendor/jquery-2.0.3.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/static/js/vendor/bootstrap.js"></script>
+	src="./js/vendor/bootstrap.js"></script>
 
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/landing-style.css">
+	href="./css/landing-style.css">
 	<sitemesh:write property="head" />
 </head>
 <body>

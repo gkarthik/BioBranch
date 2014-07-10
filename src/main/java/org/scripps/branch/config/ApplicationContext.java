@@ -2,8 +2,6 @@ package org.scripps.branch.config;
 
 import java.io.File;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.context.MessageSource;
@@ -14,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 
 @Configuration
 @ComponentScan(basePackages = { "org.scripps.branch.entity",

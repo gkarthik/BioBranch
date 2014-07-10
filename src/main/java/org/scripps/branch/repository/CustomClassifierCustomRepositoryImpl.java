@@ -37,7 +37,8 @@ public class CustomClassifierCustomRepositoryImpl implements
 
 	@Autowired
 	AttributeRepository attr;
-
+	
+	@Autowired
 	CustomClassifierRepository ccr;
 
 	@Override
@@ -174,8 +175,8 @@ public class CustomClassifierCustomRepositoryImpl implements
 			id = obj.getId();
 			classifierType = obj.getType();
 			try {
-				listOfClassifiers.put("custom_classifier_" + id,
-						ccr.getClassifierByCustomClassifierId(id));
+//				listOfClassifiers.put("custom_classifier_" + id,
+//						ccr.getClassifierByCustomClassifierId(id));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
