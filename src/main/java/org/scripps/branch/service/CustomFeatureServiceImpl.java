@@ -1,9 +1,11 @@
 package org.scripps.branch.service;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,7 @@ import org.scripps.branch.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import weka.core.AttributeExpression;
 import weka.core.Instance;
@@ -145,5 +148,40 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 					}
 			}
 		return attIndex;
+	}
+	
+	public void addInstanceValues(Weka weka){
+		List<CustomFeature> cfList = cfeatureRepo.findAll();
+		for(CustomFeature cf : cfList){
+			evalAndAddNewFeatureValues("custom_feature_"+cf.getId(), cf.getExpression(), weka.getTrain());
+		}
+	}
+	
+	@Transactional
+	public HashMap getTestCase(String id, Weka weka){
+		HashMap mp = new HashMap();
+		id = id.replace("custom_feature_", "");
+		CustomFeature cf = cfeatureRepo.findById(Long.valueOf(id));
+		Instances data = weka.getTrain();
+		String att_name = "";
+		int attIndex = 0;
+		Random rand = new Random(); 
+		int instanceIndex = rand.nextInt(data.numInstances()); 
+		HashMap feature_values = new HashMap();
+		List<Feature> fList = cf.getFeatures();
+		for(Feature _feature: fList){
+			List<Attribute> attrs = _feature.getAttributes();
+			att_name = "";
+			for(Attribute attr: attrs){
+				att_name = attr.getName();
+			}
+			attIndex = data.attribute(att_name).index();
+			feature_values.put(_feature.getShort_name(), data.instance(instanceIndex).value(attIndex));
+		}
+		mp.put("features", feature_values);
+		attIndex = data.attribute("custom_feature_"+id).index();
+		mp.put("custom_feature", data.instance(instanceIndex).value(attIndex));
+		mp.put("sample", instanceIndex);
+		return mp;
 	}
 }
