@@ -79,7 +79,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 		    	          dataType : 'json',
 		    	          contentType : "application/json; charset=utf-8",
 		    	          success : function(data){
-		    	          	response( $.map( data.trees, function( item ) {
+		    	          	response( $.map( data, function( item ) {
 		    	          		return {
 		    	          		  label: item.player_name+": "+item.comment+" | Created: "+item.created,
 		    	          		  value: item.name,

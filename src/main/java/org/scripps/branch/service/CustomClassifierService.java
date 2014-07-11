@@ -22,4 +22,5 @@ public interface CustomClassifierService {
 	public LinkedHashMap<String, Classifier> getClassifiersfromDb(Weka weka, String dataset);
 	public FilteredClassifier getandBuildClassifier(CustomClassifier cc, Weka weka, String dataset);
 	public HashMap getClassifierDetails(long id, String dataset, LinkedHashMap<String, Classifier> custom_classifiers);
+	public void addCustomTree(String id, Weka weka,	LinkedHashMap<String, Classifier> custom_classifiers, String dataset);
 }

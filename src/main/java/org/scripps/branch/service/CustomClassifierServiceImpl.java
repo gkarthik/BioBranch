@@ -1,5 +1,6 @@
 package org.scripps.branch.service;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -10,18 +11,26 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
+import org.scripps.branch.utilities.HibernateAwareObjectMapper;
+import org.scripps.branch.viz.JsonTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
@@ -46,6 +55,12 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
+	TreeRepository treeRepo;
+	
+	@Autowired
+	HibernateAwareObjectMapper mapper;
 	
 	@Override
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType, String name, String description,  int player_id, Weka weka, String dataset, HashMap<String,Classifier> custom_classifiers){
@@ -200,6 +215,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return buildCustomClasifier(weka, featuresDbId, cc.getType());
 	}
 	
+	@Override
 	public HashMap getClassifierDetails(long id, String dataset, LinkedHashMap<String, Classifier> custom_classifiers){
 		HashMap mp = new HashMap();
 		CustomClassifier cc = ccRepo.findById(id);
@@ -217,4 +233,33 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return mp;
 	}
 	
+	public void addCustomTree(String id, Weka weka,	LinkedHashMap<String, Classifier> custom_classifiers, String dataset) {
+		System.out.println("ID befoire add: " + id);
+		System.out.println("Contains: " + custom_classifiers.containsKey(id));
+		if (!custom_classifiers.containsKey(id)) {
+			Tree t = treeRepo.findById(Long.valueOf(id.replace("custom_tree_", "")));
+						ManualTree tree = new ManualTree();
+						JsonNode rootNode = null;
+						try {
+							rootNode = mapper.readTree(t.getJson_tree()).get("treestruct");
+						} catch (JsonProcessingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						JsonTree jtree = new JsonTree();
+						rootNode = jtree.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers, attrRepo, this);
+						tree.setTreeStructure(rootNode);
+						tree.setListOfFc(custom_classifiers);
+						try {
+							tree.buildClassifier(weka.getTrain());
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						custom_classifiers.put(id, tree);
+		}
+	}
 }
