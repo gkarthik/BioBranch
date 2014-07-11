@@ -15,10 +15,12 @@ import org.scripps.branch.config.SecurityContext;
 import org.scripps.branch.config.SocialContext;
 import org.scripps.branch.config.WebApplicationContext;
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
@@ -47,6 +49,9 @@ public class CustomClassifierTest {
 	@Autowired
 	private CustomClassifierService ser;
 	
+	@Autowired
+	private CustomClassifierRepository cClassifierRepo;
+	
 	@Test
 	public void addCustomClassifier() {
 		//113130,699,11065
@@ -57,5 +62,11 @@ public class CustomClassifierTest {
 		entrezIds.add("699");
 		HashMap mp = ser.getOrCreateClassifier(entrezIds, 0, "Test 2", "Test Classifier 2", -1, wekaobj, "metabric_with_clinical", custom_classifiers);
 		assertEquals(mp==null, false);
+	}
+	
+	@Test
+	public void searchCustomClassifier(){
+		List<CustomClassifier> cclist = cClassifierRepo.searchCustomClassifiers("test");
+		assertEquals(cclist==null, false);
 	}
 }

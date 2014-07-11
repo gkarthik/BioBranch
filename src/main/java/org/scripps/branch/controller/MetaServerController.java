@@ -109,7 +109,7 @@ public class MetaServerController {
 				HashMap mp = cClassifierService.getOrCreateClassifier(entrezIds, classifierType, name, description, player_id, weka.getWeka(), dataset, weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			} else if(command.equals("custom_classifier_search")) {
-				ArrayList<CustomClassifier> cclist = cClassifierRepo.searchCustomClassifiers(data.get("query").asText());
+				List<CustomClassifier> cclist = cClassifierRepo.searchCustomClassifiers(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cclist);
 			} else if(command.equals("custom_classifier_getById")) {
 				HashMap mp = cClassifierService.getClassifierDetails(data.get("id").asLong(), data.get("dataset").asText(), weka.getCustomClassifierObject());
