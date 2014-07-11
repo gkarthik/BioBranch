@@ -10,15 +10,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
+import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
@@ -65,6 +68,13 @@ public class MetaServerController {
 	@Autowired
 	private CustomFeatureRepository cfeatureRepo;
 	
+	@Autowired
+	private CustomClassifierRepository cClassifierRepo;
+	
+	@Autowired
+	private CustomClassifierService cClassifierService;
+	
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
 			HttpServletRequest request) throws Exception {
@@ -82,21 +92,38 @@ public class MetaServerController {
 				List<CustomFeature> cfList = cfeatureRepo.searchCustomFeatures(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cfList);
 			} else if(command.equals("custom_feature_testcase")) {
-				HashMap mp = cfeatureService.getTestCase(data.get("id").asText(), WekaObject.getWeka());
+				HashMap mp = cfeatureService.getTestCase(data.get("id").asText(), weka.getWeka());
 				result_json = mapper.writeValueAsString(mp);
-//				 command : "custom_feature_testcase",
-//	    	        id: this.model.get('options').get('unique_id'),
-//	    	        dataset: "metabric_with_clinical"
+			}
+		} else if(command.contains("custom_classifier_")) {
+			if(command.equals("custom_classifier_create")){
+				List entrezIds = new ArrayList();
+				for(JsonNode el : data.path("unique_ids")){
+					entrezIds.add(el.asText());
+				}
+				String name = data.get("name").asText();
+				String description = data.get("description").asText();
+				int player_id = data.get("user_id").asInt();
+				int classifierType = data.get("type").asInt();
+				String dataset = data.get("dataset").asText();
+				HashMap mp = cClassifierService.getOrCreateClassifier(entrezIds, classifierType, name, description, player_id, weka.getWeka(), dataset, weka.getCustomClassifierObject());
+				result_json = mapper.writeValueAsString(mp);
+			} else if(command.equals("custom_classifier_search")) {
+				ArrayList<CustomClassifier> cclist = cClassifierRepo.searchCustomClassifiers(data.get("query").asText());
+				result_json = mapper.writeValueAsString(cclist);
+			} else if(command.equals("custom_classifier_getById")) {
+				HashMap mp = cClassifierService.getClassifierDetails(data.get("id").asLong(), data.get("dataset").asText(), weka.getCustomClassifierObject());
+				result_json = mapper.writeValueAsString(mp);
 			}
 		}
 		return result_json;
 	}
 	
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
-		Weka wekaObj = WekaObject.getWeka();
+		Weka wekaObj = weka.getWeka();
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
-		LinkedHashMap<String, Classifier> custom_classifiers = new LinkedHashMap<String, Classifier>();
+		LinkedHashMap<String, Classifier> custom_classifiers = weka.getCustomClassifierObject();
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				data.get("dataset").asText(), custom_classifiers, attr);
 		Evaluation eval = new Evaluation(wekaObj.getTrain());

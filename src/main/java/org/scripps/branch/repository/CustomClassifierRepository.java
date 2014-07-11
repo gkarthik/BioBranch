@@ -14,7 +14,8 @@ public interface CustomClassifierRepository extends
 	@Query("select C.feature from CustomClassifier C where C.id=?1")
 	List<Feature> getClassifierByCustomClassifierId(long id);
 
-	@Query("select CC from CustomClassifier CC where name LIKE ('%' || (:name) || '%')) or description LIKE ('%' || (:name) || '%'))")
+	@Query("select CC from CustomClassifier CC where name LIKE concat('%',concat(:name,'%')) or description LIKE concat('%',concat(:name,'%'))")
 	ArrayList<CustomClassifier> searchCustomClassifiers(String name);
-
+	
+	CustomClassifier findById(long id);
 }
