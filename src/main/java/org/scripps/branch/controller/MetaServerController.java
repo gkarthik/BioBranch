@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomFeatureService;
@@ -60,6 +62,9 @@ public class MetaServerController {
 	@Autowired
 	private CustomFeatureService cfeatureService;
 	
+	@Autowired
+	private CustomFeatureRepository cfeatureRepo;
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
 			HttpServletRequest request) throws Exception {
@@ -73,15 +78,11 @@ public class MetaServerController {
 			if(command.equals("custom_feature_create")){
 				HashMap mp = cfeatureService.findOrCreateCustomFeature(data.get("name").asText(), data.get("expression").asText(), data.get("description").asText(), data.get("user_id").asLong(), data.get("dataset").asText(), weka.getWeka());
 				result_json = mapper.writeValueAsString(mp);
-//				command : "custom_feature_create",
-//    	        name: feature_name,
-//    	        expression: feature_exp,
-//    	        description: $(this.ui.featureExpression).val(),
-//    	        dataset: "metabric_with_clinical",
-//    	        user_id: Cure.Player.get('id')
+			} else if(command.equals("custom_feature_search")) {
+				List<CustomFeature> cfList = cfeatureRepo.searchCustomFeatures(data.get("query").asText());
+				result_json = mapper.writeValueAsString(cfList);
 			}
 		}
-
 		return result_json;
 	}
 	
