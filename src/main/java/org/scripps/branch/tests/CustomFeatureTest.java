@@ -13,9 +13,11 @@ import org.scripps.branch.config.SecurityContext;
 import org.scripps.branch.config.SocialContext;
 import org.scripps.branch.config.WebApplicationContext;
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.service.CustomFeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,13 +39,23 @@ public class CustomFeatureTest {
 	private CustomFeatureService ser;
 	
 	@Autowired
-	private WekaObject weka;
+	private CustomFeatureRepository cfRepo;
+	
+//	@Autowired
+//	private WekaObject weka;
+//	
+//	@Test
+//	public void addCustomFeature() {
+//		Weka wekaobj = weka.getWeka();
+//		HashMap mp = ser.findOrCreateCustomFeature("Test", "@1960", "EGR3", -1, "metabric_with_clinical", wekaobj);
+//		assertEquals(mp==null, false);
+//	}
 	
 	@Test
-	public void addCustomFeature() {
-		Weka wekaobj = weka.getWeka();
-		HashMap mp = ser.findOrCreateCustomFeature("Test", "@1960", "EGR3", -1, "metabric_with_clinical", wekaobj);
-		assertEquals(mp==null, false);
+	public void searchCustomFeature() {
+		List<CustomFeature> cfList = cfRepo.searchCustomFeatures("test");
+		System.out.println(cfList.size());
+		assertEquals(cfList==null, false);
 	}
 
 }
