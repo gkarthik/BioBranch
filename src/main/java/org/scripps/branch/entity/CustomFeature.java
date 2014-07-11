@@ -24,14 +24,6 @@ import org.joda.time.DateTime;
 @Table(name = "custom_feature")
 public class CustomFeature {
 
-	public CustomFeature(String name, String expression, String description, String dataset, User user, List<Feature> fList){
-		this.setDataset(dataset);
-		this.setExpression(expression);
-		this.setDescription(description);
-		this.setUser(user);
-		this.setFeatures(fList);
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")

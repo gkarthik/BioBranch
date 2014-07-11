@@ -4,6 +4,7 @@ import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.FeatureCustomRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
@@ -33,7 +34,6 @@ public class WekaObject implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext appContext)
 			throws BeansException {
 		ctx = appContext;
-		checktemp = 5;
 		Weka wekaObj = new Weka();
 		if (wekaObj.getTrain() == null) {
 			Resource train_file = ctx
@@ -47,6 +47,5 @@ public class WekaObject implements ApplicationContextAware {
 			}
 		}
 		weka = wekaObj;
-		// System.out.println("Instances: "+weka.getTrain().numInstances());
 	}
 }

@@ -9,6 +9,6 @@ import weka.core.Instances;
 
 @Service
 public interface CustomFeatureService {
-	public HashMap findOrCreateCustomFeature(String feature_name, String exp, String description, int user_id, String dataset, Weka weka);	
+	public HashMap findOrCreateCustomFeature(String feature_name, String exp, String description, long user_id, String dataset, Weka weka);	
 	public int evalAndAddNewFeatureValues(String name, String exp, Instances data);
 }

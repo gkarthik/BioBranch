@@ -8,6 +8,7 @@ import org.scripps.branch.service.UserRepositoryDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -81,9 +82,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.hasRole("USER")
 				// Adds the SocialAuthenticationFilter to Spring Security's
 				// filter chain.
-				.and().apply(new SpringSocialConfigurer());
-//				.and()
-//				.antMatcher("/MetaServer").csrf().disable();
+				.and().apply(new SpringSocialConfigurer())
+				.and()
+				.antMatcher("/MetaServer").csrf().disable();
 	}
 
 	@Override

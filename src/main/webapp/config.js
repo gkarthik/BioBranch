@@ -84,7 +84,8 @@ require.config({
     });
 
 // Starting the app
-require([ "csb", "app/core" ], function(csb, Cure) {
+require([ "jquery", "csb", "app/core" ], function($, csb, Cure) {
+	
 	Cure.start({
 	  "height" : 300,
 	  "width" : window.innerWidth - 365,
