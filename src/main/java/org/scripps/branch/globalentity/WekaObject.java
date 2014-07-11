@@ -2,6 +2,7 @@ package org.scripps.branch.globalentity;
 
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.FeatureCustomRepository;
+import org.scripps.branch.service.CustomFeatureService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +30,9 @@ public class WekaObject implements ApplicationContextAware {
 
 	@Autowired
 	FeatureCustomRepository featurerepo;
+	
+	@Autowired
+	CustomFeatureService cfService;
 
 	@Override
 	public void setApplicationContext(ApplicationContext appContext)
@@ -46,6 +50,7 @@ public class WekaObject implements ApplicationContextAware {
 				e.printStackTrace();
 			}
 		}
+		cfService.addInstanceValues(wekaObj);
 		weka = wekaObj;
 	}
 }

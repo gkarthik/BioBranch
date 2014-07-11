@@ -47,7 +47,7 @@ public class Feature {
 	private long id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<Attribute> feature_id;
+	private List<Attribute> attributes;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
@@ -102,7 +102,7 @@ public class Feature {
 	}
 
 	public void addAttribute(Attribute attribute) {
-		this.feature_id.add(attribute);
+		this.attributes.add(attribute);
 		if (attribute.getFeature() != this) {
 			attribute.setFeature(this);
 		}
@@ -128,8 +128,8 @@ public class Feature {
 		return description;
 	}
 
-	public List<Attribute> getFeature_id() {
-		return feature_id;
+	public List<Attribute> getAttributes() {
+		return attributes;
 	}
 
 	public Long getId() {
@@ -188,8 +188,8 @@ public class Feature {
 		this.description = description;
 	}
 
-	public void setFeature_id(List<Attribute> feature_id) {
-		this.feature_id = feature_id;
+	public void setAttributes(List<Attribute> attrList) {
+		this.attributes = attrList;
 	}
 
 	public void setId(long id) {

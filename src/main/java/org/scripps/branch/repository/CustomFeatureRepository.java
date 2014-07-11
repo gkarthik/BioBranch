@@ -18,4 +18,6 @@ public interface CustomFeatureRepository extends
 	
 	@Query("select cf from CustomFeature cf where cf.name=?1")
 	CustomFeature findByName(String name);
+	
+	CustomFeature findById(long id);
 }

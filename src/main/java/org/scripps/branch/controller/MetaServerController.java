@@ -81,6 +81,12 @@ public class MetaServerController {
 			} else if(command.equals("custom_feature_search")) {
 				List<CustomFeature> cfList = cfeatureRepo.searchCustomFeatures(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cfList);
+			} else if(command.equals("custom_feature_testcase")) {
+				HashMap mp = cfeatureService.getTestCase(data.get("id").asText(), WekaObject.getWeka());
+				result_json = mapper.writeValueAsString(mp);
+//				 command : "custom_feature_testcase",
+//	    	        id: this.model.get('options').get('unique_id'),
+//	    	        dataset: "metabric_with_clinical"
 			}
 		}
 		return result_json;
