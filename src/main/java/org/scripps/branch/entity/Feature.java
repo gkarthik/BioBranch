@@ -52,13 +52,11 @@ public class Feature {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomFeature> custom_feature;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
-	private List<CustomFeature> custom_classifier;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomClassifier> custom_classifier;
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
@@ -116,7 +114,7 @@ public class Feature {
 		return created;
 	}
 
-	public List<CustomFeature> getCustom_classifier() {
+	public List<CustomClassifier> getCustom_classifier() {
 		return custom_classifier;
 	}
 
@@ -176,7 +174,7 @@ public class Feature {
 		this.created = created;
 	}
 
-	public void setCustom_classifier(List<CustomFeature> custom_classifier) {
+	public void setCustom_classifier(List<CustomClassifier> custom_classifier) {
 		this.custom_classifier = custom_classifier;
 	}
 

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "cpdb_pathway")
-public class CPDB_Pathway {
+public class Pathway {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

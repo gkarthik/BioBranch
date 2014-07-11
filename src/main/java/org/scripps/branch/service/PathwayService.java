@@ -10,11 +10,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.scripps.branch.entity.CPDB_Pathway;
+import org.scripps.branch.entity.Pathway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PathwayService extends CPDB_Pathway {
+public class PathwayService extends Pathway {
 
 	public static EntityManagerFactory emf = Persistence
 			.createEntityManagerFactory("DEFAULTJPA");
