@@ -69,4 +69,11 @@ public class CustomClassifierTest {
 		List<CustomClassifier> cclist = cClassifierRepo.searchCustomClassifiers("test");
 		assertEquals(cclist==null, false);
 	}
+	
+	@Test
+	public void addCustomTree(){
+		LinkedHashMap custom_classifiers = new LinkedHashMap(); 
+		ser.addCustomTree("custom_tree_5", weka.getWeka(), custom_classifiers, "metabric_with_clinical");
+		assertEquals(custom_classifiers.size(), 1);
+	}
 }

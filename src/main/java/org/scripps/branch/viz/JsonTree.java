@@ -10,6 +10,7 @@ import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.service.CustomClassifierService;
 
 import weka.classifiers.Classifier;
 
@@ -65,7 +66,7 @@ public class JsonTree {
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
 			String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr) {
+			AttributeRepository attr, CustomClassifierService ccService) {
 		ObjectNode options = (ObjectNode) node.get("options");
 		if (options != null) {
 			JsonNode unique_id = options.get("unique_id");
@@ -83,8 +84,7 @@ public class JsonTree {
 					}
 				} else {
 					if (unique_id.asText().contains("custom_tree_")) {
-						// ManualTree.addCustomTree(unique_id.asText(), weka,
-						// custom_classifiers, dataset, attr);
+						ccService.addCustomTree(unique_id.asText(), weka, custom_classifiers, dataset);
 					}
 					options.put("attribute_name", unique_id.asText());
 				}
@@ -94,7 +94,7 @@ public class JsonTree {
 		if (children != null) {
 			for (JsonNode child : children) {
 				mapEntrezIdsToAttNames(weka, child, dataset,
-						custom_classifiers, attr);
+						custom_classifiers, attr, ccService);
 			}
 		}
 		return node;
@@ -103,12 +103,12 @@ public class JsonTree {
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode,
 			String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr) {
+			AttributeRepository attr, CustomClassifierService ccService) {
 		ManualTree tree = new ManualTree();
 		try {
 			if (!dataset.equals("mammal")) {
 				rootNode = mapEntrezIdsToAttNames(weka, rootNode, dataset,
-						custom_classifiers, attr);
+						custom_classifiers, attr, ccService);
 			}
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);

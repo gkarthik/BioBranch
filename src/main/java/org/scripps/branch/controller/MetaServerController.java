@@ -115,6 +115,12 @@ public class MetaServerController {
 				HashMap mp = cClassifierService.getClassifierDetails(data.get("id").asLong(), data.get("dataset").asText(), weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}
+		} else if(command.contains("get_trees_")){
+			if(command.equals("get_trees_by_search")){
+				List<?> tList = treeRepo.getTreesBySearch(data.get("query").asText());
+				System.out.println(tList.size());
+				result_json = mapper.writeValueAsString(tList);
+			}
 		}
 		return result_json;
 	}
@@ -125,7 +131,7 @@ public class MetaServerController {
 		ManualTree readtree = new ManualTree();
 		LinkedHashMap<String, Classifier> custom_classifiers = weka.getCustomClassifierObject();
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
-				data.get("dataset").asText(), custom_classifiers, attr);
+				data.get("dataset").asText(), custom_classifiers, attr, cClassifierService);
 		Evaluation eval = new Evaluation(wekaObj.getTrain());
 		eval.evaluateModel(readtree, wekaObj.getTrain());
 		JsonNode treenode = readtree.getJsontree();
