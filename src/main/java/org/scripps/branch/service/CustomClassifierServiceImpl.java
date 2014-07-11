@@ -204,7 +204,15 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		HashMap mp = new HashMap();
 		CustomClassifier cc = ccRepo.findById(id);
 		String classifierString = custom_classifiers.get("custom_classifier_"+id).toString();
-		mp.put("features", cc.getFeature());
+		HashMap featureAttributeMapping = new HashMap();
+		String att_name = "";
+		for(Feature f: cc.getFeature()){
+			for(Attribute attr: f.getAttributes()){
+				att_name = attr.getName();
+			}
+			featureAttributeMapping.put(f.getShort_name(), att_name);
+		}
+		mp.put("features", featureAttributeMapping);
 		mp.put("classifierString",classifierString);
 		return mp;
 	}
