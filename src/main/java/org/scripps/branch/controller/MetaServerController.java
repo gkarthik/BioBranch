@@ -17,6 +17,7 @@ import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
+import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,9 @@ public class MetaServerController {
 	@Autowired
 	private HibernateAwareObjectMapper mapper;
 	
+	@Autowired
+	private CustomFeatureService cfeatureService;
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
 			HttpServletRequest request) throws Exception {
@@ -65,6 +69,17 @@ public class MetaServerController {
 			result_json = scoreSaveManualTree(data);
 		} else if (command.equals("get_clinical_features")) {
 			result_json = getClinicalFeatures(data);
+		} else if(command.contains("custom_feature_")) {
+			if(command.equals("custom_feature_create")){
+				HashMap mp = cfeatureService.findOrCreateCustomFeature(data.get("name").asText(), data.get("expression").asText(), data.get("description").asText(), data.get("user_id").asLong(), data.get("dataset").asText(), weka.getWeka());
+				result_json = mapper.writeValueAsString(mp);
+//				command : "custom_feature_create",
+//    	        name: feature_name,
+//    	        expression: feature_exp,
+//    	        description: $(this.ui.featureExpression).val(),
+//    	        dataset: "metabric_with_clinical",
+//    	        user_id: Cure.Player.get('id')
+			}
 		}
 
 		return result_json;

@@ -6,6 +6,9 @@
 	uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title><spring:message code="spring.social.mvc.normal.title" /></title>
 <link rel="stylesheet" type="text/css"
 	href="./css/bootstrap.css" />

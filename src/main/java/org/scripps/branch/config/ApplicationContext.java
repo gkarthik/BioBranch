@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -24,12 +25,12 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public class ApplicationContext {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
-
+	
 	@Bean(name = "globalWeka")
 	public WekaObject initWekaInApplicationContext() {
 		return new WekaObject();
 	}
-
+	
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();

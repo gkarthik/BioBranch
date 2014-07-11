@@ -46,7 +46,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 	@Autowired
 	UserRepository userRepo;
 	
-	public HashMap findOrCreateCustomFeature(String feature_name, String exp, String description, int user_id, String dataset, Weka weka){
+	public HashMap findOrCreateCustomFeature(String feature_name, String exp, String description, long user_id, String dataset, Weka weka){
 		HashMap mp = new HashMap();
 		Boolean success = true;
 		String message = "";
@@ -64,6 +64,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 				for(Attribute att : atts){
 					att_name = att.getName();
 				}
+				System.out.println(att_name);
 				index = data.attribute(att_name).index();
 				allFeatures.add((Feature) featureRepo.findByUniqueId(entrezid));
 				index++;//WEKA AddExpression() accepts index starting from 1.
@@ -74,7 +75,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 			}
 		}
 		AttributeExpression _attrExp = new AttributeExpression();
-		CustomFeature cf;
+		CustomFeature cf = new CustomFeature();
 		try {
 			_attrExp.convertInfixToPostfix(exp);
 		} catch (Exception e) {
@@ -84,16 +85,22 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 		}
 		Boolean exists = false;
 		cf = cfeatureRepo.findByName(feature_name);
-		if(cf!=null){
+		if(cf==null){
 			cf = cfeatureCusRepo.getByPostfixExpr(exp);
 		} else {
 			message = "Feauture with this name already exists";
 			exists = true;
 		}
-		if(cf!=null){
-		User newuser = userRepo.findById(user_id); 
-		cf = new CustomFeature(feature_name, exp, description, dataset, newuser, allFeatures);
-		cfeatureRepo.saveAndFlush(cf);
+		if(cf==null){
+			cf = new CustomFeature();
+			User newuser = userRepo.findById(user_id); 
+			cf.setName(feature_name);
+			cf.setDataset(dataset);
+			cf.setExpression(exp);
+			cf.setDescription(description);
+			cf.setUser(newuser);
+			cf.setFeatures(allFeatures);
+			cfeatureRepo.saveAndFlush(cf);
 		} else {
 			message = "Feauture with this expression already exists";
 			exists = true;
