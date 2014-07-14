@@ -8,7 +8,7 @@ define([
 	'app/models/DistributionData',
 	//Views
 	'app/views/distributionChartView',
-	'text!app/templates/currentRank.html'
+	'text!static/app/templates/currentRank.html'
     ], function($, Backbone, csb, Node, DistributionData, distributionChartView, CurrentRankTemplate) {
 NodeCollection = Backbone.Collection.extend({
 	model : Node,

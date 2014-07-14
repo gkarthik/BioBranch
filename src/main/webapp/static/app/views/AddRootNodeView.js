@@ -10,9 +10,9 @@ define([
 	'app/views/layouts/AggregateNodeLayout',
 	'app/views/FeatureBuilderView',
 	//Templates
-	'text!app/templates/GeneSummary.html',
-	'text!app/templates/ClinicalFeatureSummary.html',
-	'text!app/templates/AddNode.html',
+	'text!static/app/templates/GeneSummary.html',
+	'text!static/app/templates/ClinicalFeatureSummary.html',
+	'text!static/app/templates/AddNode.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui',

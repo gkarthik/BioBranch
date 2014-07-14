@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java"%> <%@
-taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> <%@ taglib
-prefix="spring" uri="http://www.springframework.org/tags"%> <%@ taglib
-prefix="sec" uri="http://www.springframework.org/security/tags"%> <%
-if(showLogin){ %>
-
-<sec:authorize access="isAnonymous()">
+<% if(showLogin){ %>
 
 	<form role="form">
 		<span id="close-login" class="btn">&times;</span>
@@ -40,14 +33,3 @@ if(showLogin){ %>
 			Up</button>
 	</form>
 <% } %>
-	</sec:authorize>
-<sec:authorize access="isAuthenticated()">
-<input type="hidden" name="${_csrf.parameterName}"
-						value="${_csrf.token}" />
-<% if(id!=-1) { %>
-<li><a href="<% print(base_url); %>profile/">My Profile</a></li>
-	<li><a style="color: #FFF;" href="/cure/logout.jsp">logout</a></li>
-<% } else { %>
-<li id="show-login"><a>Login</a></li>
-<% } %>
-	</sec:authorize>

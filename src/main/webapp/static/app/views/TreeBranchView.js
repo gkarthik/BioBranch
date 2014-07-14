@@ -5,7 +5,7 @@
 	//Models
 	'app/models/TreeBranch',
 	//Templates
-	'text!app/templates/TreeBranch.html'
+	'text!static/app/templates/TreeBranch.html'
     ], function($, Marionette, TreeBranch, TreeBranchTemplate) {
 TreeBranchView = Backbone.Marionette.ItemView.extend({
 	tagName: 'div',

@@ -4,7 +4,7 @@ define([
 	//Model
 	'app/models/Collaborator',
 	//Templates
-	'text!app/templates/Collaborators.html'
+	'text!static/app/templates/Collaborators.html'
     ], function($, Marionette, Collaborator, CollaboratorTemplate) {
 CollaboratorView = Marionette.ItemView.extend({
 	tagName : "tr",

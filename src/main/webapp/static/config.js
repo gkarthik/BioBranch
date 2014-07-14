@@ -1,5 +1,5 @@
 require.config({
-      baseUrl : base_url+"/static/",
+      baseUrl : base_url+"static/",
       waitSeconds: 40,
       paths : {
         underscore : 'lib/underscore',
@@ -25,7 +25,8 @@ require.config({
         bootstrapTour: 'lib/bootstrap-tour-standalone.min',
         
         //Bootstrap Switch
-        bootstrapSwitch : 'lib/bootstrap-switch'
+        bootstrapSwitch : 'lib/bootstrap-switch',
+        tmpldir: base_url+"static",
       },
       shim : {
         jquery : {

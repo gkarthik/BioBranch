@@ -6,7 +6,7 @@ define([
 	'app/views/GenePoolCollectionView',
 	'app/views/layouts/GenePoolLayout',
 	//Templates
-	'text!app/templates/PathwayLayout.html'
+	'text!static/app/templates/PathwayLayout.html'
     ], function($, Marionette, GeneCollectionView, GenePoolCollectionView, GenePoolLayout, PathwayLayoutTmpl) {
 PathwayLayout = Marionette.Layout.extend({
     template: PathwayLayoutTmpl,

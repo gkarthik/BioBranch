@@ -4,7 +4,7 @@ define([
 	//Model
 	'app/models/zoom',
 	//Templates
-	'text!app/templates/zoomControls.html'
+	'text!static/app/templates/zoomControls.html'
     ], function($, Marionette, Zoom, ZoomTemplate) {
 ZoomView = Marionette.ItemView.extend({
 	model : Node,

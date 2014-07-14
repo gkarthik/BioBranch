@@ -4,7 +4,7 @@ define([
 	'marionette',
 	'backbone',
 	//templates
-	'text!app/templates/chart.html',
+	'text!static/app/templates/chart.html',
     ], function($, Marionette, Backbone, chartTmpl) {
 optionsView = Marionette.ItemView.extend({
 	tagName: 'div',

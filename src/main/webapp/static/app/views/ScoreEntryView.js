@@ -4,7 +4,7 @@ define([
 	'marionette',
 	'backbone',
 	//Templates
-	'text!app/templates/ScoreEntry.html'
+	'text!static/app/templates/ScoreEntry.html'
     ], function($, Marionette, Backbone, ScoreEntryTemplate) {
 ScoreEntryView = Marionette.ItemView.extend({
 	tagName: 'tr',

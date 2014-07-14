@@ -4,7 +4,7 @@ define([
 	'marionette',
 	'backbone',
 	//Templates
-	'text!app/templates/ScoreKey.html'
+	'text!static/app/templates/ScoreKey.html'
     ], function($, Marionette, Backbone, ScoreKeyTemplate) {
 ScoreKeyView = Marionette.ItemView.extend({
 	tagName: 'table',
