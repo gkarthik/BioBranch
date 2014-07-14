@@ -47,18 +47,16 @@ public class Feature {
 	private long id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<Attribute> feature_id;
+	private List<Attribute> attributes;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomFeature> custom_feature;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
-	private List<CustomFeature> custom_classifier;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomClassifier> custom_classifier;
 
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
@@ -114,7 +112,7 @@ public class Feature {
 	}
 
 	public void addAttribute(Attribute attribute) {
-		this.feature_id.add(attribute);
+		this.attributes.add(attribute);
 		if (attribute.getFeature() != this) {
 			attribute.setFeature(this);
 		}
@@ -128,7 +126,7 @@ public class Feature {
 		return created;
 	}
 
-	public List<CustomFeature> getCustom_classifier() {
+	public List<CustomClassifier> getCustom_classifier() {
 		return custom_classifier;
 	}
 
@@ -140,8 +138,8 @@ public class Feature {
 		return description;
 	}
 
-	public List<Attribute> getFeature_id() {
-		return feature_id;
+	public List<Attribute> getAttributes() {
+		return attributes;
 	}
 
 	public Long getId() {
@@ -188,7 +186,7 @@ public class Feature {
 		this.created = created;
 	}
 
-	public void setCustom_classifier(List<CustomFeature> custom_classifier) {
+	public void setCustom_classifier(List<CustomClassifier> custom_classifier) {
 		this.custom_classifier = custom_classifier;
 	}
 
@@ -200,8 +198,8 @@ public class Feature {
 		this.description = description;
 	}
 
-	public void setFeature_id(List<Attribute> feature_id) {
-		this.feature_id = feature_id;
+	public void setAttributes(List<Attribute> attrList) {
+		this.attributes = attrList;
 	}
 
 	public void setId(long id) {

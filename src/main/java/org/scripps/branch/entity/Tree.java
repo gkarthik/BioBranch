@@ -35,10 +35,6 @@ public class Tree {
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
 
-	// @OneToMany(cascade={CascadeType.ALL}, mappedBy = "treedb")
-	//
-	// private List<Tree_FeatureDB> treefeatures;
-
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
 	private List<Feature> features;

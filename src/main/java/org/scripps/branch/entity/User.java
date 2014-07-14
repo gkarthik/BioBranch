@@ -78,13 +78,13 @@ public class User extends BaseEntity<Long> {
 	private Long id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Tree> trees_id;
+	private List<Tree> trees;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<CustomFeature> user_id;
+	private List<CustomFeature> customfeatures;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<CustomClassifier> users_id;
+	private List<CustomClassifier> customclassifiers;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
@@ -154,15 +154,15 @@ public class User extends BaseEntity<Long> {
 	}
 
 	public List<Tree> getTrees_id() {
-		return trees_id;
+		return trees;
 	}
 
 	public List<CustomFeature> getUser_id() {
-		return user_id;
+		return customfeatures;
 	}
 
 	public List<CustomClassifier> getUsers_id() {
-		return users_id;
+		return customclassifiers;
 	}
 
 	public void setBackground(String background) {
@@ -202,15 +202,15 @@ public class User extends BaseEntity<Long> {
 	}
 
 	public void setTrees_id(List<Tree> trees_id) {
-		this.trees_id = trees_id;
+		this.trees = trees_id;
 	}
 
-	public void setUser_id(List<CustomFeature> user_id) {
-		this.user_id = user_id;
+	public void setUser_id(List<CustomFeature> cfList) {
+		this.customfeatures = cfList;
 	}
 
-	public void setUsers_id(List<CustomClassifier> users_id) {
-		this.users_id = users_id;
+	public void setUsers_id(List<CustomClassifier> ccList) {
+		this.customclassifiers = ccList;
 	}
 
 	@Override

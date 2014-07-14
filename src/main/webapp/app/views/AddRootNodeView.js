@@ -79,7 +79,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 		    	          dataType : 'json',
 		    	          contentType : "application/json; charset=utf-8",
 		    	          success : function(data){
-		    	          	response( $.map( data.trees, function( item ) {
+		    	          	response( $.map( data, function( item ) {
 		    	          		return {
 		    	          		  label: item.player_name+": "+item.comment+" | Created: "+item.created,
 		    	          		  value: item.name,
@@ -220,7 +220,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  								index = Cure.CollaboratorCollection.indexOf(newCollaborator);
 	  							}
 	  							model.get("options").set({
-	  								"unique_id" : ui.item.data.id,
+	  								"unique_id" : "custom_classifier_"+ui.item.data.id,
 	  								"kind" : "split_node",
 	  								"full_name" : '',
 	  								"description" : ui.item.data.description
@@ -229,7 +229,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  							new Node({
 	  								'name' : ui.item.data.name,
 	  								"options" : {
-	  									"unique_id" : ui.item.data.id,
+	  									"unique_id" : "custom_classifier_"+ui.item.data.id,
 		  								"kind" : "split_node",
 		  								"full_name" : '',
 		  								"description" : ui.item.data.description
@@ -310,7 +310,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  								index = Cure.CollaboratorCollection.indexOf(newCollaborator);
 	  							}
 	  							model.get("options").set({
-	  								"unique_id" : ui.item.data.custom_feature_id,
+	  								"unique_id" : "custom_feature_"+ui.item.data.id,
 	  								"kind" : "split_node",
 	  								"full_name" : '',
 	  								"description" : ui.item.data.description
@@ -319,7 +319,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  							new Node({
 	  								'name' : ui.item.data.name,
 	  								"options" : {
-	  									"unique_id" : ui.item.data.custom_feature_id,
+	  									"unique_id" : "custom_feature_"+ui.item.data.id,
 		  								"kind" : "split_node",
 		  								"full_name" : '',
 		  								"description" : ui.item.data.description

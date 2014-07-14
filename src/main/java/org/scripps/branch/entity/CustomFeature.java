@@ -3,6 +3,7 @@ package org.scripps.branch.entity;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
@@ -23,14 +25,6 @@ import org.joda.time.DateTime;
 @Entity
 @Table(name = "custom_feature")
 public class CustomFeature {
-
-	public CustomFeature(String name, String expression, String description, String dataset, User user, List<Feature> fList){
-		this.setDataset(dataset);
-		this.setExpression(expression);
-		this.setDescription(description);
-		this.setUser(user);
-		this.setFeatures(fList);
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,8 +52,9 @@ public class CustomFeature {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
-
-	@ManyToMany(mappedBy = "custom_feature")
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<Feature> feature;
 
 	public DateTime getCreated() {

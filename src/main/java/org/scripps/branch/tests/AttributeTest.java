@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.scripps.branch.config.ApplicationContext;
 import org.scripps.branch.config.PersistenceJPAConfig;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.repository.AttributeRepository;
@@ -17,7 +18,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { PersistenceJPAConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { PersistenceJPAConfig.class, ApplicationContext.class }, loader = AnnotationConfigContextLoader.class)
 @WebAppConfiguration
 public class AttributeTest {
 
