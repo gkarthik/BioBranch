@@ -2,7 +2,7 @@ define([
 	'jquery',
     	'backbone',
 	'app/models/ScoreEntry',
-	'text!app/templates/currentRank.html'
+	'text!static/app/templates/currentRank.html'
     ], function($, Backbone, ScoreEntry, CurrentRankTemplate) {
 ScoreBoard = Backbone.Collection.extend({
 	model: ScoreEntry,

@@ -51,7 +51,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		// Configures form login
 		.formLogin()
 
-				.loginPage("/welcome")
+//				.loginPage("/welcome")
 				.loginPage("/login")
 				.loginProcessingUrl("/login/authenticate")
 				.failureUrl("/login?error=bad_credentials")
@@ -82,9 +82,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.hasRole("USER")
 				// Adds the SocialAuthenticationFilter to Spring Security's
 				// filter chain.
-				.and().apply(new SpringSocialConfigurer())
-				.and()
-				.antMatcher("/MetaServer").csrf().disable();
+				.and().apply(new SpringSocialConfigurer());
+//				.and()
+//				.antMatcher("/MetaServer").csrf().disable();
 	}
 
 	@Override

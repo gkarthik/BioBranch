@@ -5,7 +5,7 @@ define([
 	//Models
 	'app/models/Comment',
 	//Templates
-	'text!app/templates/Comment.html',
+	'text!static/app/templates/Comment.html',
     ], function($, Marionette, Comment, CommentTemplate) {
 CommentView = Backbone.Marionette.ItemView.extend({
 	tagName: 'div',

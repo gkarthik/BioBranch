@@ -4,7 +4,7 @@ define([
 	//Model
 	'app/models/Player',
 	//Templates
-	'text!app/templates/Login.html'
+	'text!static/app/templates/Login.html'
     ], function($, Marionette, Player,LoginTmpl) {
 LoginView = Marionette.ItemView.extend({
 	model : Player,

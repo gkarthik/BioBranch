@@ -3,7 +3,7 @@ define([
 	'jquery',
 	'marionette',
 	//Templates
-	'text!app/templates/FeatureBuilder.html',
+	'text!static/app/templates/FeatureBuilder.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'

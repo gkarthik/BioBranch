@@ -10,18 +10,16 @@
     <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title><spring:message code="spring.social.mvc.normal.title" /></title>
-<link rel="stylesheet" type="text/css"
-	href="/branch/static/oldStyles/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css"
-	href="/branch/static/oldStyles/bootstrap-theme.css" />
-<link rel="stylesheet" type="text/css"
-	href="/branch/static/oldStyles/font-awesome.css" />
-<link rel="stylesheet" type="text/css"
-	href="/branch/static/oldStyles/style.css" />
-<script type="text/javascript"
-	src="/branch/static/oldStyles/js/vendor/jquery-2.0.3.js"></script>
-<script type="text/javascript"
-	src="/branch/static/oldStyles/js/vendor/bootstrap.js"></script>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+<link href='/branch/static/css/bootstrap-tour.min.css' rel='stylesheet'
+	type='text/css'>
+<link href='/branch/static/css/bootstrap-switch.css' rel='stylesheet' type='text/css'>
+<link href='/branch/static/css/style.css' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/branch/static/css/odometer-theme-train-station.css" />
+<link rel="stylesheet"
+	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <sitemesh:write property="head" />
 
 <link rel="stylesheet" type="text/css"
@@ -113,6 +111,5 @@
 			</div>
 		</div>
 	</div>
-	<jsp:include page="/WEB-INF/layout/footer.jsp" />
 </body>
 </html>

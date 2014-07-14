@@ -4,7 +4,7 @@ define([
 	//Models
 	'app/models/DistributionData',
 	//Templates
-	'text!app/templates/distributionChart.html',
+	'text!static/app/templates/distributionChart.html',
 	'jqueryui'
     ], function($, Marionette, DistributionData, distributionTmpl) {
 DistChartView = Marionette.ItemView.extend({

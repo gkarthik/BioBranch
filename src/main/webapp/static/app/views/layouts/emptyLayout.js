@@ -4,7 +4,7 @@ define([
 	//Views
 	'app/views/AddRootNodeView',
 	//Templates
-	'text!app/templates/EmptyNodeCollection.html'
+	'text!static/app/templates/EmptyNodeCollection.html'
     ], function($, Marionette, AddRootNodeView, EmptyNodeCollectionTemplate) {
 emptyLayout = Marionette.Layout.extend({
     template: EmptyNodeCollectionTemplate,

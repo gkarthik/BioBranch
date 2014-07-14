@@ -4,7 +4,7 @@ define([
 	//Views
 	'app/views/GenePoolCollectionView',
 	//Templates
-	'text!app/templates/GenePoolLayout.html',
+	'text!static/app/templates/GenePoolLayout.html',
 	'jqueryui'
     ], function($, Marionette, GenePoolCollectionView, GenePoolLayoutTmpl) {
 GenePoolLayout = Marionette.Layout.extend({

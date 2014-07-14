@@ -10,7 +10,7 @@ define([
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
 	//Templates
-	'text!app/templates/sidebarLayout.html',
+	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
     ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {

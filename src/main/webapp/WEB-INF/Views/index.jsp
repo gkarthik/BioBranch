@@ -1,28 +1,3 @@
-<!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Cure</title>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-<link href='/branch/static/css/bootstrap-tour.min.css' rel='stylesheet'
-	type='text/css'>
-<link href='/branch/static/css/bootstrap-switch.css' rel='stylesheet' type='text/css'>
-<link href='/branch/static/css/style.css' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="/branch/static/css/odometer-theme-train-station.css" />
-<link rel="stylesheet"
-	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-</head>
-<body>
-	
 		<div id="loading-wrapper">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -178,6 +153,3 @@
 				%>
 				<script type="text/javascript" data-main="/branch/static/config.js"
 					src="/branch/static/lib/require.js" charset="utf-8"></script>
-
-</body>
-</html>

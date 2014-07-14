@@ -4,12 +4,12 @@ define([
 	//Model
 	'app/models/Node',
 	//Templates
-	'text!app/templates/JSONSplitNodeGeneSummary.html',	
-	'text!app/templates/JSONSplitValueSummary.html',
-	'text!app/templates/JSONSplitNodeCfSummary.html',
-	'text!app/templates/CustomSplitNode.html',
-	'text!app/templates/ClassifierInString.html',
-	'text!app/templates/TreeDetails.html'
+	'text!static/app/templates/JSONSplitNodeGeneSummary.html',	
+	'text!static/app/templates/JSONSplitValueSummary.html',
+	'text!static/app/templates/JSONSplitNodeCfSummary.html',
+	'text!static/app/templates/CustomSplitNode.html',
+	'text!static/app/templates/ClassifierInString.html',
+	'text!static/app/templates/TreeDetails.html'
     ], function($, Marionette, Node, splitNodeGeneSummary, splitValueSummary, splitNodeCfSummary, customNodeSummaryTmpl, classifierInString, treeDetails) {
 JSONItemView = Marionette.ItemView.extend({
 	model : Node,

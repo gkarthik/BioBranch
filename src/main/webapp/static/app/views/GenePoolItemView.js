@@ -4,7 +4,7 @@ define([
 	'marionette',
 	'backbone',
 	//Templates
-	'text!app/templates/GenePoolItem.html',
+	'text!static/app/templates/GenePoolItem.html',
 	'jqueryui'
     ], function($, Marionette, Backbone, GenePoolItemTmpl) {
 GenePoolItemView = Marionette.ItemView.extend({

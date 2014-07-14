@@ -4,8 +4,8 @@ define([
 	'marionette',
 	'd3',
 	//Templates
-	'text!app/templates/Score.html',
-	'text!app/templates/ScoreChangeSummary.html'
+	'text!static/app/templates/Score.html',
+	'text!static/app/templates/ScoreChangeSummary.html'
     ], function($, Marionette, d3, scoreTemplate, scoreChangeTemplate) {
 ScoreView = Backbone.Marionette.ItemView.extend({
 	initialize : function() {

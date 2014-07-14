@@ -10,9 +10,9 @@ define([
 	//Layouts
 	'app/views/layouts/PathwaySearchLayout',
 	//Templates
-	'text!app/templates/AggregateNodeLayout.html',
-	'text!app/templates/GeneSummary.html',
-	'text!app/templates/ClinicalFeatureSummary.html',
+	'text!static/app/templates/AggregateNodeLayout.html',
+	'text!static/app/templates/GeneSummary.html',
+	'text!static/app/templates/ClinicalFeatureSummary.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui',

@@ -7,9 +7,9 @@ define([
 	'app/views/optionsView',
 	'app/views/distributionChartView',
 	//Templates
-	'text!app/templates/LeafNode.html',
-	'text!app/templates/SplitValue.html',
-	'text!app/templates/SplitNode.html'
+	'text!static/app/templates/LeafNode.html',
+	'text!static/app/templates/SplitValue.html',
+	'text!static/app/templates/SplitNode.html'
     ], function($, Marionette, d3, optionsView, distributionChartView, LeafNodeTemplate, splitValueTemplate, splitNodeTemplate) {
 NodeView = Marionette.Layout.extend({
 	tagName : 'div',

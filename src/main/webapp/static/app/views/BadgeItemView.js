@@ -4,7 +4,7 @@ define([
 	//Model
 	'app/models/Badge',
 	//Templates
-	'text!app/templates/Badge.html'
+	'text!static/app/templates/Badge.html'
     ], function($, Marionette, Badge,badgeTmpl) {
 BadgeItemView = Marionette.ItemView.extend({
 	model : Badge,
