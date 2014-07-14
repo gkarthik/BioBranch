@@ -41,7 +41,7 @@ public class CustomClassifier {
 	private String Description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
 	
 	@ManyToMany(cascade = { CascadeType.ALL })
