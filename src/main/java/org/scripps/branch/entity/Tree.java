@@ -32,7 +32,7 @@ public class Tree {
 	private long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
@@ -50,7 +50,7 @@ public class Tree {
 	private boolean user_saved;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prev_tree_id", insertable = false, updatable = false)
+	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
 	private Tree prevTree;
 
 	@Column

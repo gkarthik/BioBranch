@@ -103,7 +103,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 			cf.setDescription(description);
 			cf.setUser(newuser);
 			cf.setFeatures(allFeatures);
-			cfeatureRepo.saveAndFlush(cf);
+			cf = cfeatureRepo.saveAndFlush(cf);
 		} else {
 			message = "Feauture with this expression already exists";
 			exists = true;
@@ -114,6 +114,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService{
 			message = "Adding feature to dataset failed.";
 			success = false;
 		}
+		System.out.println("cFeatureId: "+cFeatureId);
 		mp.put("exists", exists);
 		mp.put("message", message);
 		mp.put("success", success);

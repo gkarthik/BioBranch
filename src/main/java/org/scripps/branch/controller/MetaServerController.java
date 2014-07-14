@@ -14,6 +14,7 @@ import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
+import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
@@ -21,6 +22,7 @@ import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
+import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
@@ -50,6 +52,9 @@ public class MetaServerController {
 	@Autowired
 	@Qualifier("attributeRepository")
 	private AttributeRepository attr;
+	
+	@Autowired
+	UserRepository userRepo;
 
 	@Autowired
 	@Qualifier("treeRepository")
@@ -160,7 +165,9 @@ public class MetaServerController {
 		newTree.setFeatures(fList);
 		newTree.setJson_tree(result_json);
 		newTree.setPrivate_tree(false);
-		newTree.setUser(null);
+		User user = userRepo.findById(data.get("player_id").asLong());
+		System.out.println(user.getId());
+		newTree.setUser(user);
 		newTree.setUser_saved(false);
 		treeRepo.saveAndFlush(newTree);
 		return result_json;
