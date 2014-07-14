@@ -31,12 +31,14 @@ define([
         NodeCollectionView, sidebarLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
 		
 	//CSRF
-//	  var token = $("meta[name='_csrf']").attr("content");
-//	  var header = $("meta[name='_csrf_header']").attr("content");
-//	  console.log(token);
-//	  $(document).ajaxSend(function(e, xhr, options) {
-//	    xhr.setRequestHeader(header, token);
-//	  });
+	  var token = $("meta[name='_csrf']").attr("content");
+	  var header = $("meta[name='_csrf_header']").attr("content");
+	  console.log(token);
+	  $.ajaxSetup({
+		  beforeSend: function(req) {
+		        req.setRequestHeader(header, token);
+		  },
+		});
 	  
 	    Cure = new Marionette.Application();
 	    Cure.utils = CureUtils;
