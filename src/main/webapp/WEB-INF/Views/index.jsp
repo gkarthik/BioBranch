@@ -130,9 +130,14 @@
 				<div id="cure-panel-wrapper"></div>
 				<div id="GenePoolRegion"></div>
 				<div id="FeatureBuilderRegion"></div>
-				<script type="text/javascript">
-					var cure_user_experience = "0", cure_user_id = -1, cure_user_name = "Guest", cure_tree_id = null, badge_desc = null, badge_id = null, base_url = document.location.href
-							.split("cure2.0")[0], _csb = [ [ null, null ] ];
+						<script type="text/javascript">
+					var cure_user_id = ${userId}, 
+						cure_user_name = "${firstName}", 
+						cure_tree_id = null, 
+						badge_desc = null, 
+						badge_id = null, 
+						base_url = document.location.href.split("cure2.0")[0],
+						_csb = [ [ null, null ] ];
 				<%if (request.getParameter("treeid") != null) {%>
 					cure_tree_id =
 				<%=request.getParameter("treeid")%>
