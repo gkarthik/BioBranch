@@ -1,6 +1,5 @@
 package org.scripps.branch.tests;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -8,13 +7,10 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scripps.branch.config.PersistenceJPAConfig;
-import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
-import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.PathwayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -31,36 +27,37 @@ public class PathwayTest {
 	PathwayRepository path;
 
 	@Test
+	public void testgetGenesOfPathways() {
+		Pathway p = path
+				.findByName("Alanine, aspartate and glutamate metabolism - Homo sapiens (human)");
+		List<Feature> fList = p.getFeatures();
+		System.out.println(fList.size());
+
+		assertEquals(fList != null, true);
+
+		Boolean exists = false;
+		for (Feature f : fList) {
+			if (f.getId() == 20887) {
+				exists = true;
+			}
+		}
+
+		assertEquals(exists, true);
+	}
+
+	@Test
 	public void testSearchPathway() {
 		List<Pathway> pList = path.searchPathways("Alanine");
 		System.out.println(pList.size());
-		
-		//assertEquals(pList!=null,true);
-		
+
+		// assertEquals(pList!=null,true);
+
 		for (Pathway p : pList) {
-			if (p.getName().equals(" Alanine, aspartate and glutamate metabolism - Homo sapiens (human)")) {
+			if (p.getName()
+					.equals(" Alanine, aspartate and glutamate metabolism - Homo sapiens (human)")) {
 				assertEquals(p.getId(), 20887);
 			}
 		}
 	}
-	
-	@Test
-	public void testgetGenesOfPathways() {
-		Pathway p = path.findByName("Alanine, aspartate and glutamate metabolism - Homo sapiens (human)");
-		List<Feature> fList = p.getFeatures();
-		System.out.println(fList.size());
-		
-		assertEquals(fList!=null,true);
-		
-		Boolean exists = false;
-		for (Feature f : fList) {
-			if(f.getId()==20887){
-				exists = true;
-			}
-		}
-		
-		assertEquals(exists, true);
-	}
-	
-	
+
 }

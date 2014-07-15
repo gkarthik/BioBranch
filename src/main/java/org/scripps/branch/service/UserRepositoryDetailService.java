@@ -52,8 +52,8 @@ public class UserRepositoryDetailService implements UserDetailsService {
 				.username(user.getEmail()).build();
 
 		LOGGER.debug("Returning user details: {}", principal);
-		
-		LOGGER.debug("Returning the userID as a token"+user.getId());
+
+		LOGGER.debug("Returning the userID as a token" + user.getId());
 
 		return principal;
 	}

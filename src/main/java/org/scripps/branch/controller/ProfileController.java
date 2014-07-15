@@ -16,37 +16,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
-public class HomeController {
-
+public class ProfileController {
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(HomeController.class);
+			.getLogger(ProfileController.class);
 
-	protected static final String VIEW_NAME_HOMEPAGE = "index";
+	protected static final String VIEW_NAME_PROFILEPAGE = "user/profile";
 
 	@Autowired
 	UserRepository userRepo;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String showHomePage(WebRequest request, Model model) {
-		LOGGER.debug("Rendering homepage.");
+		
+		LOGGER.debug("Rendering profile.");
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 		model.addAttribute("userId", -1);
 		model.addAttribute("firstName", "Guest");
+		//model.addAttribute("user_experience", null);
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			userDetails = (UserDetails) auth.getPrincipal();
 			User user = userRepo.findByEmail(userDetails.getUsername());
 			model.addAttribute("userId", user.getId());
 			model.addAttribute("firstName", user.getFirstName());
+			//model.addAttribute("user_experience", null);
 		}
-		return VIEW_NAME_HOMEPAGE;
+		return VIEW_NAME_PROFILEPAGE;
 	}
-
-	// @RequestMapping(value = "/", method = RequestMethod.POST)
-	// public String showNextPage() {
-	// LOGGER.debug("Rendering homepage.");
-	// return "user/new";
-	// }
-
 }

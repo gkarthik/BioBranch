@@ -84,7 +84,8 @@ public class JsonTree {
 					}
 				} else {
 					if (unique_id.asText().contains("custom_tree_")) {
-						ccService.addCustomTree(unique_id.asText(), weka, custom_classifiers, dataset);
+						ccService.addCustomTree(unique_id.asText(), weka,
+								custom_classifiers, dataset);
 					}
 					options.put("attribute_name", unique_id.asText());
 				}

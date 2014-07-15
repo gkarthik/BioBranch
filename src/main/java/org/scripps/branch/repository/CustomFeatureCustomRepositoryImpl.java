@@ -9,17 +9,18 @@ import org.springframework.stereotype.Repository;
 import weka.core.AttributeExpression;
 
 @Repository
-public class CustomFeatureCustomRepositoryImpl implements CustomFeatureCustomRepository {
-	
+public class CustomFeatureCustomRepositoryImpl implements
+		CustomFeatureCustomRepository {
+
 	@Autowired
 	CustomFeatureRepository cfeatureRepo;
-	
+
 	@Override
 	public CustomFeature getByPostfixExpr(String postExp) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
 		AttributeExpression _attr = new AttributeExpression();
 		String postfixExp = "";
-		for(CustomFeature cf : cfList){
+		for (CustomFeature cf : cfList) {
 			postfixExp = cf.getExpression();
 			try {
 				_attr.convertInfixToPostfix(postfixExp);
@@ -27,7 +28,7 @@ public class CustomFeatureCustomRepositoryImpl implements CustomFeatureCustomRep
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(postExp.equals(postfixExp)){
+			if (postExp.equals(postfixExp)) {
 				return cf;
 			}
 		}
