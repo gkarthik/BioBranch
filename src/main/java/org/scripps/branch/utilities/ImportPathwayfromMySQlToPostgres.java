@@ -22,10 +22,10 @@ public class ImportPathwayfromMySQlToPostgres {
 		System.out.println("PostgreSQL JDBC Driver Registered!");
 		Connection conn = null;
 		try {
-			String url = "jdbc:postgresql://127.0.0.1:5432/branch";
+			String url = "jdbc:postgresql://127.0.0.1:5432/branch_dev";
 			Properties props = new Properties();
 			props.setProperty("user","postgres");
-			props.setProperty("password","Ksrmk12345");
+			props.setProperty("password","prime");
 			conn = DriverManager.getConnection(url, props);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
@@ -42,7 +42,7 @@ public class ImportPathwayfromMySQlToPostgres {
 			String url = "jdbc:mysql://127.0.0.1:3306/cure";
 			Properties props = new Properties();
 			props.setProperty("user","root");
-			props.setProperty("password","12345");
+			props.setProperty("password","prime");
 			connmysql = DriverManager.getConnection(url, props);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
@@ -55,7 +55,7 @@ public class ImportPathwayfromMySQlToPostgres {
 			System.out.println("Failed to make connection!");
 		}
 		PreparedStatement statement;
-//		String queryMysql = "select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name order by id) b, (select @rownum:=0) v order by rownum";
+//		String queryMysql = "select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name,source_db order by id) b, (select @rownum:=0) v order by rownum";
 //		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 //		ResultSet rs = preparedStatement.executeQuery(queryMysql);
 //		int ctr = 0;
@@ -72,7 +72,7 @@ public class ImportPathwayfromMySQlToPostgres {
 //			System.out.println("Inserted "+ctr);
 //			ctr++;
 //		}
-		String queryMysql = "select orig.rownum, feature.id, cpdb_pathway.name from (select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name order by id) b, (select @rownum:=0) v) orig, cpdb_pathway, feature where orig.name=cpdb_pathway.name and cpdb_pathway.entrez_id = feature.unique_id";
+		String queryMysql = "select orig.rownum, feature.id, cpdb_pathway.name, cpdb_pathway.source_db from (select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name,source_db order by id) b, (select @rownum:=0) v order by rownum) orig, cpdb_pathway, feature where orig.name=cpdb_pathway.name and orig.source_db=cpdb_pathway.source_db and cpdb_pathway.entrez_id = feature.unique_id";
 		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 		ResultSet rs = preparedStatement.executeQuery(queryMysql);
 		int ctr = 0;
@@ -80,7 +80,7 @@ public class ImportPathwayfromMySQlToPostgres {
 			statement = (PreparedStatement) conn.prepareStatement("insert into pathway_feature values(?,?)", Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, rs.getInt(1));
 			statement.setInt(2, rs.getInt(2));
-			System.out.println(rs.getInt(1)+": "+rs.getString(3)+" -> "+rs.getInt(2));
+			System.out.println(rs.getInt(1)+": "+rs.getString(3)+" - Source: "+rs.getString(4)+" -> "+rs.getInt(2));
 			int affectedRows = statement.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("db failed");
