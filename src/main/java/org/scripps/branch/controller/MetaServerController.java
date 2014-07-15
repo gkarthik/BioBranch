@@ -24,6 +24,7 @@ import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.PathwayRepository;
+import org.scripps.branch.repository.ScoreRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
@@ -85,6 +86,8 @@ public class MetaServerController {
 	@Autowired
 	private PathwayRepository pathwayRepo;
 	
+	@Autowired
+	private ScoreRepository scoreRepo;
 	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
@@ -182,6 +185,7 @@ public class MetaServerController {
 		newScore.setSize(numnodes);
 		double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval.pctCorrect()));
 		newScore.setScore(score);
+		newScore = scoreRepo.saveAndFlush(newScore);
 		List<Feature> fList = new ArrayList();
 		t.getFeatures(treenode, fList, featureRepo);
 		Tree newTree = new Tree();
