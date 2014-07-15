@@ -8,7 +8,7 @@
 		<div id="sidebar-fixed">
 		<h3>${firstName}</h3><br><br>
 		<ul class="nav nav-pills nav-stacked">
-		  <li id="user-treecollection-button"><a href="#">Tree Collection</a></li>
+		  <li id="user-treecollection-button" class="active"><a href="#">Tree Collection</a></li>
 		  <li id="community-treecollection-button"><a href="#">Community</a></li>
 		</ul>
 <div class="input-group">

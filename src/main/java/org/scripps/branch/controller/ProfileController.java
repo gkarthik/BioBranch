@@ -28,20 +28,27 @@ public class ProfileController {
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String showHomePage(WebRequest request, Model model) {
 		
-		LOGGER.debug("Rendering profile.");
-		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		model.addAttribute("userId", -1);
-		model.addAttribute("firstName", "Guest");
-		//model.addAttribute("user_experience", null);
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
+		if(request.getParameter("playerid")==null){
+			LOGGER.debug("Rendering profile.");
+			UserDetails userDetails = null;
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			model.addAttribute("userId", -1);
+			model.addAttribute("firstName", "Guest");
+			//model.addAttribute("user_experience", null);
+			if (!(auth instanceof AnonymousAuthenticationToken)) {
+				userDetails = (UserDetails) auth.getPrincipal();
+				User user = userRepo.findByEmail(userDetails.getUsername());
+				model.addAttribute("userId", user.getId());
+				model.addAttribute("firstName", user.getFirstName());
+				//model.addAttribute("user_experience", null);
+			}
+		} else {
+			User user = userRepo.findById(Long.valueOf(request.getParameter("playerid")));
 			model.addAttribute("userId", user.getId());
 			model.addAttribute("firstName", user.getFirstName());
-			//model.addAttribute("user_experience", null);
 		}
+		
 		return VIEW_NAME_PROFILEPAGE;
 	}
 }
