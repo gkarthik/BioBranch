@@ -35,7 +35,8 @@ NodeCollection = Backbone.Collection.extend({
 			dataset : "metabric_with_clinical",
 			treestruct : tree,
 			comment: Cure.Comment.get("content"),
-			player_id : Cure.Player.get('id')
+			player_id : Cure.Player.get('id'),
+			previous_tree_id: Cure.PlayerNodeCollection.prevTreeId
 		};
 		
 		//POST request to server.		
@@ -128,7 +129,7 @@ NodeCollection = Backbone.Collection.extend({
 		Cure.CollaboratorCollection.reset();
 		Cure.PlayerNodeCollection.reset();
 		Cure.PlayerNodeCollection.prevTreeId = data.id;
-		Cure.PlayerNodeCollection.parseResponse(data.json_tree);
+		Cure.PlayerNodeCollection.parseResponse(JSON.parse(data.json_tree));
 		Cure.Comment.set("content",data.comment);
 		Cure.Comment.set("flagPrivate",data.private);
 		Cure.utils.hideLoading();

@@ -242,7 +242,7 @@ define([
 		        			contentType : "application/json; charset=utf-8",
 		        			success : function(data){
 		        				if(data.json_tree){
-		        					Cure.PlayerNodeCollection.parseResponse(JSON.parse(data.json_tree));
+		        					Cure.PlayerNodeCollection.parseTreeinList(data);
 		        				} else {
 		        					Cure.utils
 			        		    .showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);

@@ -45,7 +45,7 @@ UserTreeCollection = Backbone.Collection.extend({
 	initialize : function(){
 		_.bindAll(this,'parseResponse');
 	},
-	url: '/cure/MetaServer',
+	url: '/branch/MetaServer',
 	fetch: function(){
 		var args = {
 				command : "get_trees_user_id",
@@ -53,7 +53,7 @@ UserTreeCollection = Backbone.Collection.extend({
 		};
 		$.ajax({
 			type : 'POST',
-			url : '/cure/MetaServer',
+			url : '/branch/MetaServer',
 			data : JSON.stringify(args),
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
@@ -62,7 +62,10 @@ UserTreeCollection = Backbone.Collection.extend({
 		});
 	},
 	parseResponse: function(data){
-		var trees = data.trees;
+		var trees = data;
+		_.each(trees,function(tree){
+			tree.json_tree = JSON.parse(tree.json_tree);
+		});
 		trees.unshift({
 			comment: "Comment",
 			created: "Created",
@@ -97,7 +100,7 @@ CommunityTreeCollection = Backbone.Collection.extend({
          : a < b ? -1
          :          0;
 	},   
-	url : '/cure/MetaServer',
+	url : '/branch/MetaServer',
 	fetch: function(direction){
 		if(this.allowRequest){
 			var args = {
@@ -123,7 +126,10 @@ CommunityTreeCollection = Backbone.Collection.extend({
 	allowRequest : 1,
 	parseResponse : function(data) {
 		//If empty tree is returned, no tree rendered.
-		var trees = data.trees;
+		var trees = data;
+		_.each(trees,function(tree){
+			tree.json_tree = JSON.parse(tree.json_tree);
+		});
 		trees.unshift({
 			comment: "Comment",
 			created: "Created",
@@ -140,7 +146,7 @@ CommunityTreeCollection = Backbone.Collection.extend({
 			}
 		});
 		
-		if(data.n_trees > 0) {
+		if(data.length > 0) {
 			this.add(trees);
 			this.allowRequest = 1;
 		} else {
@@ -157,7 +163,7 @@ TreeItemView = Marionette.ItemView.extend({
 	tagName: 'tr',
 	className: function(){
 		if(this.model.get('json_tree').pct_correct!="Acc"){
-			if(this.model.get('private')==1){
+			if(this.model.get('private_tree')){
 				return "tree-score-entry privateTree";
 			}
 			return "tree-score-entry";
@@ -205,9 +211,7 @@ TreeItemView = Marionette.ItemView.extend({
 	      .text(function(d) { return d.name; });
 	},
 	onShow: function(){
-		if(this.model.get('rank')!=0){
 			this.renderTreePreview();
-		}
 	}
 });
 
@@ -268,12 +272,15 @@ MainLayout = Marionette.Layout.extend({
   				};
   				$.ajax({
   					type : 'POST',
-  					url : '/cure/MetaServer',
+  					url : '/branch/MetaServer',
   					data : JSON.stringify(args),
   					dataType : 'json',
   					contentType : "application/json; charset=utf-8",
   					success : function(data){
-  						var trees = data.trees;
+  						var trees = data;
+  						_.each(trees,function(tree){
+  							tree.json_tree = JSON.parse(tree.json_tree);
+  						});
   						trees.unshift({
   							comment: "Comment",
   							created: "Created",

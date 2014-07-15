@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.scripps.branch.service.SocialMediaService;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "user_accounts")
 public class User extends BaseEntity<Long> {
@@ -78,6 +81,7 @@ public class User extends BaseEntity<Long> {
 	private Long id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonBackReference
 	private List<Tree> trees;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

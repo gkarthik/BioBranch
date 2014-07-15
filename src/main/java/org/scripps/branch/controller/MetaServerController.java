@@ -33,6 +33,10 @@ import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,8 +94,7 @@ public class MetaServerController {
 	private ScoreRepository scoreRepo;
 	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
-	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data) throws Exception {
 		String command = data.get("command").asText();
 		String result_json = "";
 		if (command.equals("scoretree") || command.equals("savetree")) {
@@ -101,8 +104,34 @@ public class MetaServerController {
 				Tree t = treeRepo.findById(data.get("treeid").asLong());
 				result_json = mapper.writeValueAsString(t);
 			} else if(command.equals("get_trees_by_search")){
-				List<?> tList = treeRepo.getTreesBySearch(data.get("query").asText());
+				List<Tree> tList = treeRepo.getTreesBySearch(data.get("query").asText());
 				System.out.println(tList.size());
+				result_json = mapper.writeValueAsString(tList);
+			} else if(command.equals("get_trees_user_id")) {
+				User user = userRepo.findById(data.get("user_id").asLong());
+				UserDetails userDetails = null;
+				Boolean privateTrees = false;
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (!(auth instanceof AnonymousAuthenticationToken) && user!=null) {
+					userDetails = (UserDetails) auth.getPrincipal();
+					User authUser = userRepo.findByEmail(userDetails.getUsername());
+					if(authUser.getId()==user.getId()){
+						privateTrees = true;
+					} else {
+						privateTrees = false;
+					}
+				} else {
+					privateTrees = false;
+				}
+				List<Tree> tList = new ArrayList();
+				if(privateTrees==true){
+					tList = treeRepo.findByUser(user);
+				} else {
+					tList = treeRepo.getByOtherUser(user);
+				}
+				result_json = mapper.writeValueAsString(tList);
+			} else if(command.equals("get_trees_with_range")) {
+				List<Tree> tList = treeRepo.getAllTrees();
 				result_json = mapper.writeValueAsString(tList);
 			}
 		} else if (command.equals("get_clinical_features")) {
@@ -200,10 +229,10 @@ public class MetaServerController {
 		newTree.setUser_saved(false);
 		newTree.setPrivate_tree(false);
 		newTree.setScore(newScore);
-		if(data.get("command").asText().equals("savetree")){
-			newTree.setUser_saved(true);
 			Tree prevTree = treeRepo.findById(data.get("previous_tree_id").asLong());
 			newTree.setPrev_tree_id(prevTree);
+		if(data.get("command").asText().equals("savetree")){
+			newTree.setUser_saved(true);
 			int privateflag = data.get("privateflag").asInt();
 			if(privateflag==1){
 				newTree.setPrivate_tree(true);
