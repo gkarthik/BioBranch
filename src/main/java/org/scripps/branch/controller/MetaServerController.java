@@ -14,6 +14,7 @@ import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
+import org.scripps.branch.entity.Score;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
@@ -173,6 +174,14 @@ public class MetaServerController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Score newScore = new Score();
+		double nov = 0;
+		newScore.setNovelty(nov);
+		newScore.setDataset(data.get("dataset").asText());
+		newScore.setPct_correct(eval.pctCorrect());
+		newScore.setSize(numnodes);
+		double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval.pctCorrect()));
+		newScore.setScore(score);
 		List<Feature> fList = new ArrayList();
 		t.getFeatures(treenode, fList, featureRepo);
 		Tree newTree = new Tree();
@@ -186,6 +195,7 @@ public class MetaServerController {
 		newTree.setUser(user);
 		newTree.setUser_saved(false);
 		newTree.setPrivate_tree(false);
+		newTree.setScore(newScore);
 		if(data.get("command").asText().equals("savetree")){
 			newTree.setUser_saved(true);
 			Tree prevTree = treeRepo.findById(data.get("previous_tree_id").asLong());

@@ -52,6 +52,10 @@ public class Tree {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
 	private Tree prevTree;
+	
+	@OneToOne
+	@JoinColumn(name = "score", insertable = true, updatable = true)
+	private Score score;
 
 	@Column
 	private boolean private_tree = false;
@@ -61,6 +65,10 @@ public class Tree {
 
 	public String getComment() {
 		return comment;
+	}
+	
+	public Score getScore() {
+		return score;
 	}
 
 	public DateTime getCreated() {
@@ -137,6 +145,10 @@ public class Tree {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public void setScore(Score score) {
+		this.score = score;
 	}
 
 	public void setUser_saved(boolean user_saved) {
