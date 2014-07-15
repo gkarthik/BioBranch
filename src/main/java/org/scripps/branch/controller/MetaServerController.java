@@ -87,6 +87,11 @@ public class MetaServerController {
 		String result_json = "";
 		if (command.equals("scoretree") || command.equals("savetree")) {
 			result_json = scoreSaveManualTree(data);
+		} else if(command.contains("get_tree")){
+			if(command.equals("get_tree_by_id")){
+				Tree t = treeRepo.findById(data.get("treeid").asLong());
+				result_json = mapper.writeValueAsString(t);
+			}
 		} else if (command.equals("get_clinical_features")) {
 			result_json = getClinicalFeatures(data);
 		} else if(command.contains("custom_feature_")) {
@@ -166,9 +171,18 @@ public class MetaServerController {
 		newTree.setJson_tree(result_json);
 		newTree.setPrivate_tree(false);
 		User user = userRepo.findById(data.get("player_id").asLong());
-		System.out.println(user.getId());
 		newTree.setUser(user);
 		newTree.setUser_saved(false);
+		newTree.setPrivate_tree(false);
+		if(data.get("command").asText().equals("savetree")){
+			newTree.setUser_saved(true);
+			Tree prevTree = treeRepo.findById(data.get("previous_tree_id").asLong());
+			newTree.setPrev_tree_id(prevTree);
+			int privateflag = data.get("privateflag").asInt();
+			if(privateflag==1){
+				newTree.setPrivate_tree(true);
+			}
+		}
 		treeRepo.saveAndFlush(newTree);
 		return result_json;
 	}
