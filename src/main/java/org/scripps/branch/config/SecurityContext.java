@@ -49,12 +49,10 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 		// Configures form login
 		.formLogin()
-
-				// .loginPage("/welcome")
 				.loginPage("/login")
 				.loginProcessingUrl("/login/authenticate")
 				.failureUrl("/login?error=bad_credentials")
-				.defaultSuccessUrl("/new", true)
+				.defaultSuccessUrl("/", true)
 				// Configures the logout function
 				.and()
 				.logout()
@@ -73,15 +71,13 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
-						"/user/register/**", "/", "/MetaServer","/profile").permitAll()
+						"/user/register/**", "/profile").permitAll()
 				// The rest of the our application is protected.
 				.antMatchers("/**").hasRole("USER").antMatchers("/new")
 				.hasRole("USER")
 				// Adds the SocialAuthenticationFilter to Spring Security's
 				// filter chain.
 				.and().apply(new SpringSocialConfigurer());
-		// .and()
-		// .antMatcher("/MetaServer").csrf().disable();
 	}
 
 	@Override
