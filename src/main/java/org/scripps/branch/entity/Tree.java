@@ -22,6 +22,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "tree")
 public class Tree {
@@ -53,7 +55,8 @@ public class Tree {
 	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
 	private Tree prevTree;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
+	@JsonManagedReference
 	@JoinColumn(name = "score", insertable = true, updatable = true)
 	private Score score;
 

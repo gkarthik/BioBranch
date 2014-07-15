@@ -23,6 +23,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "tree_score")
 public class Score {
@@ -34,8 +36,15 @@ public class Score {
 	@Column(name = "created", nullable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime created = null;
+	
+	@PrePersist
+	public void prePersist() {
+		DateTime now = DateTime.now();
+		this.created = now;
+	}
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "score")
+	@OneToOne(mappedBy = "score")
+	@JsonBackReference
 	private Tree tree;
 	
 	@Column
