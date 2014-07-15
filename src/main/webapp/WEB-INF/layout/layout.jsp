@@ -9,7 +9,7 @@
 <meta name="_csrf" content="${_csrf.token}" />
 <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}" />
-<title><spring:message code="spring.social.mvc.normal.title" /></title>
+<title>Branch</title>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
