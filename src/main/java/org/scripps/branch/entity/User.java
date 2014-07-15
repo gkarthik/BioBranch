@@ -17,7 +17,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.scripps.branch.service.SocialMediaService;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "user_accounts")
