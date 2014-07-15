@@ -13,6 +13,7 @@ import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.Pathway;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
@@ -21,6 +22,7 @@ import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.repository.PathwayRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
@@ -79,6 +81,9 @@ public class MetaServerController {
 	@Autowired
 	private CustomClassifierService cClassifierService;
 	
+	@Autowired
+	private PathwayRepository pathwayRepo;
+	
 	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
@@ -91,6 +96,10 @@ public class MetaServerController {
 			if(command.equals("get_tree_by_id")){
 				Tree t = treeRepo.findById(data.get("treeid").asLong());
 				result_json = mapper.writeValueAsString(t);
+			} else if(command.equals("get_trees_by_search")){
+				List<?> tList = treeRepo.getTreesBySearch(data.get("query").asText());
+				System.out.println(tList.size());
+				result_json = mapper.writeValueAsString(tList);
 			}
 		} else if (command.equals("get_clinical_features")) {
 			result_json = getClinicalFeatures(data);
@@ -125,11 +134,14 @@ public class MetaServerController {
 				HashMap mp = cClassifierService.getClassifierDetails(data.get("id").asLong(), data.get("dataset").asText(), weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}
-		} else if(command.contains("get_trees_")){
-			if(command.equals("get_trees_by_search")){
-				List<?> tList = treeRepo.getTreesBySearch(data.get("query").asText());
-				System.out.println(tList.size());
-				result_json = mapper.writeValueAsString(tList);
+		} else if(command.contains("pathway")){
+			if(command.equals("search_pathways")){
+				List<Pathway> pList = pathwayRepo.searchPathways(data.get("query").asText());
+				result_json = mapper.writeValueAsString(pList);
+			} else if(command.equals("get_genes_of_pathway")) {
+				Pathway p = pathwayRepo.findByName(data.get("pathway_name").asText());
+				List<Feature> fList = p.getFeatures();
+				result_json = mapper.writeValueAsString(fList);
 			}
 		}
 		return result_json;
