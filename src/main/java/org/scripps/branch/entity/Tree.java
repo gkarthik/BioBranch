@@ -54,8 +54,8 @@ public class Tree {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
-	private Tree prevTree;	
-	
+	private Tree prevTree;
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JsonManagedReference
 	@JoinColumn(name = "score", insertable = true, updatable = true)
@@ -69,10 +69,6 @@ public class Tree {
 
 	public String getComment() {
 		return comment;
-	}
-	
-	public Score getScore() {
-		return score;
 	}
 
 	public DateTime getCreated() {
@@ -93,6 +89,10 @@ public class Tree {
 
 	public Tree getPrev_tree_id() {
 		return prevTree;
+	}
+
+	public Score getScore() {
+		return score;
 	}
 
 	public User getUser() {
@@ -147,12 +147,12 @@ public class Tree {
 		this.private_tree = private_tree;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
 	public void setScore(Score score) {
 		this.score = score;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public void setUser_saved(boolean user_saved) {
