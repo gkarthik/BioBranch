@@ -11,16 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Instances;
 
 @Service
 @Transactional
 public interface CustomClassifierService {
-	public HashMap getOrCreateClassifier(List entrezIds, int classifierType, String name, String description,  int player_id, Weka weka, String dataset, HashMap<String,Classifier> custom_classifiers);
-	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds, int classifierType, String name, String description,  int player_id, Weka weka, String dataset, HashMap<String,Classifier> custom_classifiers);
-	public FilteredClassifier buildCustomClasifier(Weka weka, long[] featureDbIds, int classifierType);
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb(Weka weka, String dataset);
-	public FilteredClassifier getandBuildClassifier(CustomClassifier cc, Weka weka, String dataset);
-	public HashMap getClassifierDetails(long id, String dataset, LinkedHashMap<String, Classifier> custom_classifiers);
-	public void addCustomTree(String id, Weka weka,	LinkedHashMap<String, Classifier> custom_classifiers, String dataset);
+	public void addCustomTree(String id, Weka weka,
+			LinkedHashMap<String, Classifier> custom_classifiers, String dataset);
+
+	public FilteredClassifier buildCustomClasifier(Weka weka,
+			long[] featureDbIds, int classifierType);
+
+	public FilteredClassifier getandBuildClassifier(CustomClassifier cc,
+			Weka weka, String dataset);
+
+	public HashMap getClassifierDetails(long id, String dataset,
+			LinkedHashMap<String, Classifier> custom_classifiers);
+
+	public LinkedHashMap<String, Classifier> getClassifiersfromDb(Weka weka,
+			String dataset);
+
+	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
+			String name, String description, int player_id, Weka weka,
+			String dataset, HashMap<String, Classifier> custom_classifiers);
+
+	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds,
+			int classifierType, String name, String description, int player_id,
+			Weka weka, String dataset,
+			HashMap<String, Classifier> custom_classifiers);
 }

@@ -8,7 +8,6 @@ import org.scripps.branch.service.UserRepositoryDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -51,7 +50,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		// Configures form login
 		.formLogin()
 
-//				.loginPage("/welcome")
+				// .loginPage("/welcome")
 				.loginPage("/login")
 				.loginProcessingUrl("/login/authenticate")
 				.failureUrl("/login?error=bad_credentials")
@@ -74,17 +73,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
-						"/user/register/**", "/", "/MetaServer")
-				.permitAll()
+						"/user/register/**", "/", "/MetaServer","/profile").permitAll()
 				// The rest of the our application is protected.
-				.antMatchers("/**").hasRole("USER")
-				.antMatchers("/new")
+				.antMatchers("/**").hasRole("USER").antMatchers("/new")
 				.hasRole("USER")
 				// Adds the SocialAuthenticationFilter to Spring Security's
 				// filter chain.
 				.and().apply(new SpringSocialConfigurer());
-//				.and()
-//				.antMatcher("/MetaServer").csrf().disable();
+		// .and()
+		// .antMatcher("/MetaServer").csrf().disable();
 	}
 
 	@Override

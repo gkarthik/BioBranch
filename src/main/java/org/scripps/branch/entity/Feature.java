@@ -3,15 +3,12 @@ package org.scripps.branch.entity;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -58,17 +55,8 @@ public class Feature {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomClassifier> custom_classifier;
 
-	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Pathway> pathway;
-	
-	public List<Pathway> getPathway() {
-		return pathway;
-	}
-
-	public void setPathway(List<Pathway> pathway) {
-		this.pathway = pathway;
-	}
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
@@ -118,6 +106,10 @@ public class Feature {
 		}
 	}
 
+	public List<Attribute> getAttributes() {
+		return attributes;
+	}
+
 	public DateTime getCreated() {
 		return created;
 	}
@@ -138,10 +130,6 @@ public class Feature {
 		return description;
 	}
 
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -152,6 +140,10 @@ public class Feature {
 
 	public DateTime getModificationTime() {
 		return updated;
+	}
+
+	public List<Pathway> getPathway() {
+		return pathway;
 	}
 
 	public String getShort_name() {
@@ -182,6 +174,10 @@ public class Feature {
 		this.updated = DateTime.now();
 	}
 
+	public void setAttributes(List<Attribute> attrList) {
+		this.attributes = attrList;
+	}
+
 	public void setCreated(DateTime created) {
 		this.created = created;
 	}
@@ -198,16 +194,16 @@ public class Feature {
 		this.description = description;
 	}
 
-	public void setAttributes(List<Attribute> attrList) {
-		this.attributes = attrList;
-	}
-
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	public void setLong_name(String long_name) {
 		this.long_name = long_name;
+	}
+
+	public void setPathway(List<Pathway> pathway) {
+		this.pathway = pathway;
 	}
 
 	public void setShort_name(String short_name) {

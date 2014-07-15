@@ -52,7 +52,7 @@ public class CustomFeature {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<Feature> feature;
@@ -73,6 +73,10 @@ public class CustomFeature {
 		return expression;
 	}
 
+	public List<Feature> getFeatures() {
+		return feature;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -83,10 +87,6 @@ public class CustomFeature {
 
 	public User getUser() {
 		return user;
-	}
-	
-	public List<Feature> getFeatures() {
-		return feature;
 	}
 
 	@PrePersist
@@ -111,7 +111,7 @@ public class CustomFeature {
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
-	
+
 	public void setFeatures(List<Feature> fList) {
 		this.feature = fList;
 	}

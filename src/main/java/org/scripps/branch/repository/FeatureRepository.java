@@ -2,8 +2,6 @@ package org.scripps.branch.repository;
 
 import java.util.ArrayList;
 
-import javax.transaction.Transactional;
-
 import org.scripps.branch.entity.Feature;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

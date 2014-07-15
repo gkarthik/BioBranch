@@ -1,7 +1,5 @@
 package org.scripps.branch.config;
 
-import java.io.File;
-
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.context.MessageSource;
@@ -9,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -25,12 +22,17 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public class ApplicationContext {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
-	
+
+	@Bean
+	public HibernateAwareObjectMapper initHibernateAwareObjectMapper() {
+		return new HibernateAwareObjectMapper();
+	}
+
 	@Bean(name = "globalWeka")
 	public WekaObject initWekaInApplicationContext() {
 		return new WekaObject();
 	}
-	
+
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -44,10 +46,5 @@ public class ApplicationContext {
 	@Bean
 	public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
-	}
-	
-	@Bean
-	public HibernateAwareObjectMapper initHibernateAwareObjectMapper(){
-		return new HibernateAwareObjectMapper();
 	}
 }

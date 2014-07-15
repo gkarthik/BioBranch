@@ -18,7 +18,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { PersistenceJPAConfig.class, ApplicationContext.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { PersistenceJPAConfig.class,
+		ApplicationContext.class }, loader = AnnotationConfigContextLoader.class)
 @WebAppConfiguration
 public class AttributeTest {
 

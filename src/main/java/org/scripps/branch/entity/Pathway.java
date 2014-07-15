@@ -13,8 +13,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 @Entity
 @Table(name = "pathway")
 public class Pathway {
@@ -29,7 +27,7 @@ public class Pathway {
 
 	@Column
 	private String source_db;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "pathway_feature", joinColumns = { @JoinColumn(name = "pathway_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
 	private List<Feature> features;
@@ -66,5 +64,4 @@ public class Pathway {
 		this.source_db = source_db;
 	}
 
-	
 }
