@@ -6,51 +6,55 @@
 	uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <!-- default header name is X-CSRF-TOKEN -->
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <title><spring:message code="spring.social.mvc.normal.title" /></title>
-	<!-- Latest compiled and minified CSS -->
+<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 <link href='/branch/static/css/bootstrap-tour.min.css' rel='stylesheet'
 	type='text/css'>
-<link href='/branch/static/css/bootstrap-switch.css' rel='stylesheet' type='text/css'>
-<link href='/branch/static/css/style.css' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="/branch/static/css/odometer-theme-train-station.css" />
+<link href='/branch/static/css/bootstrap-switch.css' rel='stylesheet'
+	type='text/css'>
+<link href='/branch/static/css/style.css' rel='stylesheet'
+	type='text/css'>
+<link rel="stylesheet"
+	href="/branch/static/css/odometer-theme-train-station.css" />
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <sitemesh:write property="head" />
-
-<link rel="stylesheet" type="text/css"
-	href="/branch/static/oldStyles/css/landing-style.css">
 </head>
 <body>
 	<div class="page">
-		<div class="navbar navbar-default" role="navigation">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-ex1-collapse">
-					<span class="sr-only"><spring:message
-							code="label.navigation.toggle.navigation.button" /></span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				<a href= "/branch/"><span class="navbar-brand">BranchBio</span> </a>
-			</div>
-			<div class="collapse navbar-collapse navbar-ex1-collapse">
-				<ul class="nav navbar-nav navbar-left">
-					<sec:authorize access="isAuthenticated()">
-						<li><a href="/branch/"><spring:message
-									code="label.navigation.home.link" /></a></li>
-					</sec:authorize>
-				</ul>
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/branch/">Branch</a>
+				</div>
+
 				<ul class="nav navbar-nav navbar-right">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="/branch/user/register"><spring:message
-									code="label.navigation.registration.link" /></a></li>
+						<li><a href="/branch/user/login">Login</a></li>
+									<li><a href="/branch/user/register">Register</a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
+						<li>
+							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+								<sec:authentication property="principal.socialSignInProvider"
+									var="signInProvider" />
+								<c:if test="${signInProvider == 'FACEBOOK'}">
+									<i class="icon-facebook-sign"></i>
+								</c:if>
+								<c:if test="${signInProvider == 'TWITTER'}">
+									<i class="icon-twitter-sign"></i>
+								</c:if>
+								<c:if test="${empty signInProvider}">
+									<spring:message code="label.navigation.signed.in.as.text" />
+								</c:if>
+								<sec:authentication property="principal.username" />
+							</p>
+						</li>
 						<li>
 							<form action="/branch/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
@@ -62,54 +66,17 @@
 						</li>
 					</sec:authorize>
 				</ul>
-				<sec:authorize access="isAuthenticated()">
-					<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-						<sec:authentication property="principal.socialSignInProvider"
-							var="signInProvider" />
-						<c:if test="${signInProvider == 'FACEBOOK'}">
-							<i class="icon-facebook-sign"></i>
-						</c:if>
-						<c:if test="${signInProvider == 'TWITTER'}">
-							<i class="icon-twitter-sign"></i>
-						</c:if>
-						<c:if test="${empty signInProvider}">
-							<spring:message code="label.navigation.signed.in.as.text" />
-							
-						</c:if>
-						<sec:authentication property="principal.username" />
-						<p>
-						
-						userId:
-						<sec:authentication property="principal.id" />
-						
-						
-					
-						token:${_csrf.token} 
-						
-						</p>
-						
-					</p>
-				</sec:authorize>
-				
-				<sec:authorize access="isAnonymous()">
-				
-									
-						token:private
-						
-						</p>
-					</p>
-				</sec:authorize>
-				
-				
-				
 			</div>
 			<!-- /.navbar-collapse -->
+	</div>
+	<!-- /.container-fluid -->
+	</nav>
+	</div>
+	<div class="content">
+		<div id="view-holder">
+			<sitemesh:write property="body" />
 		</div>
-		<div class="content">
-			<div id="view-holder">
-				<sitemesh:write property="body" />
-			</div>
-		</div>
+	</div>
 	</div>
 </body>
 </html>
