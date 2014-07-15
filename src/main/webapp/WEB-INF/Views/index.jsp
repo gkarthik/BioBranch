@@ -136,7 +136,7 @@
 						cure_tree_id = null, 
 						badge_desc = null, 
 						badge_id = null, 
-						base_url = document.location.href.split("cure2.0")[0],
+						base_url = document.location.href.split("?")[0],
 						_csb = [ [ null, null ] ];
 				<%if (request.getParameter("treeid") != null) {%>
 					cure_tree_id =
