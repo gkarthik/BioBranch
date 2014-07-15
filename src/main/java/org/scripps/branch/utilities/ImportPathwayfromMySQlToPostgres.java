@@ -55,6 +55,7 @@ public class ImportPathwayfromMySQlToPostgres {
 			System.out.println("Failed to make connection!");
 		}
 		PreparedStatement statement;
+		//Import into pathway.
 //		String queryMysql = "select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name,source_db order by id) b, (select @rownum:=0) v order by rownum";
 //		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 //		ResultSet rs = preparedStatement.executeQuery(queryMysql);
@@ -72,6 +73,7 @@ public class ImportPathwayfromMySQlToPostgres {
 //			System.out.println("Inserted "+ctr);
 //			ctr++;
 //		}
+		//Import into pathway_feature.
 		String queryMysql = "select orig.rownum, feature.id, cpdb_pathway.name, cpdb_pathway.source_db from (select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name,source_db order by id) b, (select @rownum:=0) v order by rownum) orig, cpdb_pathway, feature where orig.name=cpdb_pathway.name and orig.source_db=cpdb_pathway.source_db and cpdb_pathway.entrez_id = feature.unique_id";
 		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 		ResultSet rs = preparedStatement.executeQuery(queryMysql);
