@@ -33,8 +33,9 @@ public class Tree {
 	@Column(name = "id")
 	private long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
+	@JsonManagedReference
 	private User user;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
@@ -53,7 +54,7 @@ public class Tree {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
-	private Tree prevTree;
+	private Tree prevTree;	
 	
 	@OneToOne(fetch = FetchType.EAGER)
 	@JsonManagedReference

@@ -1,47 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.ArrayList"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-<link href='./css/style.css' rel='stylesheet' type='text/css'>
-<link href='./css/profileStyle.css' rel='stylesheet' type='text/css'>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Profile</title>
-</head>
-<body>
 <div class="row">
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="btn btn-navbar" data-toggle="collapse"
-					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a>
-				<ul class="nav navbar-nav">
-					<li><a class="brand" href="/">Branch</a></li>
-					<li><a href="/cure2%2E0/index.jsp">Tree Builder</a></li>
-					<li><a style="color: #FFF;" href="/contact.jsp">Contact</a></li>
-					<li><a style="color: #FFF;" href="/logout.jsp">logout</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	</div>
 	<div class="container-fluid" id="profile-container">
 		
 	</div>
-	<jsp:include page="/WEB-INF/layout/footer.jsp" />
+	<link href='../static/profile/css/profileStyle.css' rel='stylesheet' type='text/css'>
 	<script type="text/template" id="main-layout-template">
 		<div class="col-md-4">
 		<div id="sidebar-fixed">
-		<h3>"${firstName}"</h3>
+		<h3>${firstName}</h3><br><br>
 		<ul class="nav nav-pills nav-stacked">
-		  <li class="active" id="badge-collection-button"><a href="#">Badge Collection</a></li>
 		  <li id="user-treecollection-button"><a href="#">Tree Collection</a></li>
 		  <li id="community-treecollection-button"><a href="#">Community</a></li>
 		</ul>
@@ -52,26 +18,25 @@
 	<span id="loading-wrapper">Searching... </span>
 </div>
 	</div>
-	<div class="col-md-8 collection-wrapper" id="user-treecollection-wrapper" style="display:none;">
+	<div class="col-md-6 collection-wrapper" id="user-treecollection-wrapper">
 	</div>
-	<div class="col-md-8 collection-wrapper" id="community-treecollection-wrapper" style="display:none;">
+	<div class="col-md-6 collection-wrapper" id="community-treecollection-wrapper" style="display:none;">
 	</div>
-	<div class="col-md-8 collection-wrapper" id="search-treecollection-wrapper" style="display:none;">
+	<div class="col-md-6 collection-wrapper" id="search-treecollection-wrapper" style="display:none;">
 	</div>
-	<div class="col-md-8 collection-wrapper" id="badge-collection-wrapper"></div>
 	</script>
 	<script type="text/template" id="score-entry-template">
 	<@	if(json_tree.score != "Score"){ @>
-	<td><span class='keyValue'><@ if(private ==1){print("<i title='Private Tree' style='cursor: default;color:red;' class='glyphicon glyphicon-eye-close'></i>")} @> <@= rank @></span></td>
-	<td><span class='keyValue'><@= player_name @></span></td>
-	<td><span class='keyValue'><@= json_tree.score @></span></td>
+	<td><span class='keyValue'><@ if(private_tree){print("<i title='Private Tree' style='cursor: default;color:red;' class='glyphicon glyphicon-eye-close'></i>")} @> <@= rank @></span></td>
+	<td><span class='keyValue'><@= user.firstName @></span></td>
+	<td><span class='keyValue'><@ print(Math.round(score.score)) @></span></td>
 	<td><span class='keyValue'><@= json_tree.size @></span></td>
 	<td><span class='keyValue'><@ print(Math.round(json_tree.pct_correct*10)/10) @></span></td>
 	<td><span class='keyValue'><@ print(Math.round(json_tree.novelty*10)/10) @></span></td>
 	<td><center><@= comment @></center></td>
 	<td><svg id="treePreview<@= cid @>"></svg></td>
 	<td><@= created @></td>
-	<td><center><a href="/cure/cure2%2E0/index.jsp?treeid=<@= id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
+	<td><center><a href="/branch/?treeid=<@= id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
 	<@ } else { @>
 	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th>
 	<th><span class='keyValue'><@= player_name @></span></th>
@@ -114,12 +79,17 @@
         cure_user_id = ${userId},
         cure_user_name = "${firstName}";
 	</script>
-	<script src="./static/js/underscore.js"></script>
-	<script src="./static/js/jquery-1.10.1.js"></script>
-	<script src="./static/js/backbone.js"></script>
-	<script src="./static/js/marionette.backbone.min.js"></script>
-	<script src="./static/js/d3.v3.js"></script>
-	<script src="./static/js/script.js"></script>
-	<script src="./static/js/status.js"></script>
-</body>
-</html>
+	<script src="../static/lib/underscore.js"></script>
+	<script src="../static/lib/jquery-1.10.1.js"></script>
+	<script src="../static/lib/backbone.js"></script>
+	<script src="../static/lib/marionette.backbone.min.js"></script>
+	<script src="../static/lib/d3.v3.js"></script>
+	<script>
+    //CSRF
+	var token = $("meta[name='_csrf']").attr("content");
+	  var header = $("meta[name='_csrf_header']").attr("content");
+	  $(document).ajaxSend(function(e, xhr, options) {
+	    xhr.setRequestHeader(header, token);
+	  });
+	</script>
+	<script src="../static/profile/js/script.js"></script>

@@ -17,7 +17,7 @@ RecBadgeCollection = Backbone.Collection.extend({
 	initialize : function(){
 		_.bindAll(this,'parseResponse');
 	},
-	url: '/cure/MetaServer',
+	url: '/branch/MetaServer',
 	fetch: function(){
 		var args = {
 				command : "get_badges",
@@ -26,7 +26,7 @@ RecBadgeCollection = Backbone.Collection.extend({
 		};
 		$.ajax({
 			type : 'POST',
-			url : '/cure/MetaServer',
+			url : '/branch/MetaServer',
 			data : JSON.stringify(args),
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
@@ -59,7 +59,7 @@ PlayerBadgeCollection = Backbone.Collection.extend({
 	initialize : function(){
 		_.bindAll(this,'parseResponse');
 	},
-	url: '/cure/MetaServer',
+	url: '/branch/MetaServer',
 	fetch: function(){
 		var args = {
 				command : "get_badges",
@@ -68,7 +68,7 @@ PlayerBadgeCollection = Backbone.Collection.extend({
 		};
 		$.ajax({
 			type : 'POST',
-			url : '/cure/MetaServer',
+			url : '/branch/MetaServer',
 			data : JSON.stringify(args),
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
