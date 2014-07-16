@@ -171,8 +171,9 @@ JSONItemView = Marionette.ItemView.extend({
     	});
 	},
 	drawTreeStructure: function(data){
-		$(this.ui.treeStructure).html(treeDetails(data.trees[0]));
-		var treestruct = data.trees[0].json_tree.treestruct;
+		data.json_tree = JSON.parse(data.json_tree);
+		$(this.ui.treeStructure).html(treeDetails(data));
+		var treestruct = data.json_tree.treestruct;
 		var id = $(this.ui.SvgPreview).attr('id');
 		var svg = d3.select("#"+id)
 			.attr("width",300)

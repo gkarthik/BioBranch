@@ -52,8 +52,9 @@ PathwayLayout = Marionette.Layout.extend({
     	          success : function(data){
     	          	response( $.map( data, function( item ) {
     	          		return {
-    	          		  label: item.name,
-    	          		  value: item.name
+    	          		  label: item.name+": "+item.source_db,
+    	          		  value: item.name,
+    	          		  data: item
     	          	  };
     	          	}));
     	        }
@@ -63,7 +64,8 @@ PathwayLayout = Marionette.Layout.extend({
   				select: function( event, ui ) {
   					var args = {
   	  	        command : "get_genes_of_pathway",
-  	  	        pathway_name:	ui.item.value
+  	  	        pathway_name:	ui.item.data.name,
+  	  	        source_db: ui.item.data.source_db
   	  	      };
   	  	      $.ajax({
   	  	          type : 'POST',
