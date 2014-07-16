@@ -81,7 +81,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 		    	          success : function(data){
 		    	          	response( $.map( data, function( item ) {
 		    	          		return {
-		    	          		  label: item.id+": "+item.comment+" | Created: "+item.created,
+		    	          		  label: item.user.firstName+": "+item.comment,
 		    	          		  value: item,
 		    	          		  data: item
 		    	          	  };
@@ -97,7 +97,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  						}
 	  						$("#SpeechBubble").remove();
 	  						var kind_value = "";
-	  						var name_node = ui.item.data.player_name+" Tree ID: "+ui.item.data.id;
+	  						var name_node = ui.item.data.user.firstName+" | Tree ID: "+ui.item.data.id;
 	  						try {
 	  							kind_value = model.get("options").get('kind');
 	  						} catch (exception) {
