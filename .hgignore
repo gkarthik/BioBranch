@@ -5,6 +5,7 @@ glob:bin/*
 glob:src/main/webapp/WEB-INF/data/*
 glob:src/main/resources/application.properties
 glob:src/main/resources/META-INF/persistence.xml
+glob:src/main/resources/META-INF/liquibase.properties
 glob:src/main/resources/dbConfig/hibernate.cfg.xml
 glob:.settings/*
 glob:.gradle/*

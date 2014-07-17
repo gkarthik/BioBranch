@@ -47,12 +47,12 @@
             <h3 class="about">About</h3>
             <div id="about" >
               <p>Branch is a new Web-based tool for the interactive construction of decision trees from genomic datasets. Branch offers the ability to</p>
-              <ol class="unordered-list"> 
+              <ul> 
 	              <li>Construct decision trees by manually selecting features such as genes for a gene expression dataset.</li> 
 	              <li>Collaboratively edit and built decision trees. </li>
 	              <li>Create feature functions that aggregate content from multiple independent features into single decision nodes (e.g. pathways)</li> 
 	              <li>Evaluate decision tree classifiers in terms of precision and recall.</li> 
-              </ol>
+              </ul>
               <p>The tool is optimized for genomic use cases through the inclusion of gene and pathway-based search functions. </p>
             </div>
             <h3 class="background">Background</h3>
