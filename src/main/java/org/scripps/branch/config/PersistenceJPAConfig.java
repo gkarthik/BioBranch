@@ -39,15 +39,8 @@ public class PersistenceJPAConfig {
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.hbm2ddl.auto", "update");// CHange
-																	// here to
-																	// update to
-																	// retain db
-																	// / create
-																	// to remake
-																	// db schema
-		properties.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.PostgreSQLDialect");
+		properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+		properties.setProperty("hibernate.dialect",env.getProperty("hibernate.dialect"));
 		return properties;
 	}
 
@@ -71,7 +64,6 @@ public class PersistenceJPAConfig {
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
 		em.setJpaProperties(additionalProperties());
-
 		return em;
 	}
 
