@@ -477,7 +477,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 					$("#SpeechBubble").remove();
 				}
 				focueElement.append("<div id='SpeechBubble'></div>")
-				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id,function(data){
+				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id+"?callback=?",function(data){
 					var summary = {
 							summaryText: data.summary,
 							goTerms: data.go,

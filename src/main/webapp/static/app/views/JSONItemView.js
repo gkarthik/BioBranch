@@ -97,7 +97,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var thisView = this,
 			summary = this.model.get("gene_summary").summaryText || "";
 		if (summary.length == 0) {
-			$.getJSON("http://mygene.info/v2/gene/" + thisView.model.get("options").get('unique_id'),
+			$.getJSON("http://mygene.info/v2/gene/" + thisView.model.get("options").get('unique_id') +"?callback=?",
 					function(data) {
 						var summary = {
 							"summaryText" : data.summary,
