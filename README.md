@@ -3,7 +3,7 @@
 
 ## Setup ##
 ### On Eclipse ###
-* Setup Eclipse with the Spring Tool Suite<http://spring.io/tools/sts/all>.
+* Setup Eclipse with the Spring Tool Suite(<http://spring.io/tools/sts/all>).
 * Install the gradle plugin for eclipse.
 * Refresh all dependencies.
 * Set Up database name in src/main/resources/application.properties and in src/main/resources/luidbase.properties.
@@ -12,6 +12,3 @@
 
 Tests:
 Run using JUnit.
-
-
-
