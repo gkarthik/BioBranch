@@ -22,9 +22,6 @@
 <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="static/oldStyles/css/landing-style.css" rel="stylesheet" >
 
-<!-- Custom styles for this template -->
-<link href="jumbotron-narrow.css" rel="stylesheet">
-
 <title></title>
 <link rel="stylesheet" type="text/css"
 	href="static/oldStyles/css/social-buttons-3.css" />
