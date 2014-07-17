@@ -53,21 +53,24 @@ public class JsonTree {
 		// System.out.println(node.toString());
 	}
 
-	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f, CustomFeatureRepository cf, CustomClassifierRepository cc, TreeRepository t) {
+	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f,
+			CustomFeatureRepository cf, CustomClassifierRepository cc,
+			TreeRepository t) {
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
-		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
+				.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
-		if(fList == null){
+		if (fList == null) {
 			fList = new ArrayList<Feature>();
 		}
-		if(cfList == null){
+		if (cfList == null) {
 			cfList = new ArrayList<CustomFeature>();
 		}
-		if(ccList == null){
+		if (ccList == null) {
 			ccList = new ArrayList<CustomClassifier>();
 		}
-		if(tList == null){
+		if (tList == null) {
 			tList = new ArrayList<Tree>();
 		}
 		ObjectNode options = (ObjectNode) node.get("options");
@@ -76,24 +79,27 @@ public class JsonTree {
 			JsonNode unique_id = options.get("unique_id");
 			if (unique_id != null) {
 				uid = unique_id.asText();
-				if(uid.contains("custom_tree")){
-					Tree temp = t.findById(Long.valueOf(uid.replace("custom_tree_","")));
-					if(temp!=null){
+				if (uid.contains("custom_tree")) {
+					Tree temp = t.findById(Long.valueOf(uid.replace(
+							"custom_tree_", "")));
+					if (temp != null) {
 						tList.add(temp);
 					}
-				} else if(uid.contains("custom_feature")) {
-					CustomFeature temp = cf.findById(Long.valueOf(uid.replace("custom_feature_","")));
-					if(temp!=null){
+				} else if (uid.contains("custom_feature")) {
+					CustomFeature temp = cf.findById(Long.valueOf(uid.replace(
+							"custom_feature_", "")));
+					if (temp != null) {
 						cfList.add(temp);
 					}
-				} else if(uid.contains("custom_classifier")){
-					CustomClassifier temp = cc.findById(Long.valueOf(uid.replace("custom_classifier_","")));
-					if(temp!=null){
+				} else if (uid.contains("custom_classifier")) {
+					CustomClassifier temp = cc.findById(Long.valueOf(uid
+							.replace("custom_classifier_", "")));
+					if (temp != null) {
 						ccList.add(temp);
 					}
 				} else {
 					Feature temp = f.findByUniqueId(unique_id.asText());
-					if(temp!=null){
+					if (temp != null) {
 						fList.add(temp);
 					}
 				}

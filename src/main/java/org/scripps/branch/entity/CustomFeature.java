@@ -56,7 +56,7 @@ public class CustomFeature {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<Feature> feature;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customFeatures")
 	private List<Tree> tree;
 

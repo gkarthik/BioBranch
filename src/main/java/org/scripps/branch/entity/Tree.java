@@ -42,11 +42,11 @@ public class Tree {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
 	private List<Feature> features;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_customfeature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
 	private List<CustomFeature> customFeatures;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_customclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
 	private List<CustomClassifier> customClassifiers;
@@ -74,8 +74,9 @@ public class Tree {
 	@JoinColumn(name = "score", insertable = true, updatable = true)
 	private Score score;
 
-	@Transient int rank = 0;
-	
+	@Transient
+	int rank = 0;
+
 	@Column
 	private boolean private_tree = false;
 
@@ -85,14 +86,21 @@ public class Tree {
 	public String getComment() {
 		return comment;
 	}
-	
-	@Transient
-	public int getRank() {
-		return rank;
-	}
 
 	public DateTime getCreated() {
 		return created;
+	}
+
+	public List<CustomClassifier> getCustomClassifiers() {
+		return customClassifiers;
+	}
+
+	public List<CustomFeature> getCustomFeatures() {
+		return customFeatures;
+	}
+
+	public List<Tree> getCustomTreeClassifiers() {
+		return customTreeClassifiers;
 	}
 
 	public List<Feature> getFeatures() {
@@ -109,6 +117,11 @@ public class Tree {
 
 	public Tree getPrev_tree_id() {
 		return prevTree;
+	}
+
+	@Transient
+	public int getRank() {
+		return rank;
 	}
 
 	public Score getScore() {
@@ -147,6 +160,18 @@ public class Tree {
 		this.created = created;
 	}
 
+	public void setCustomClassifiers(List<CustomClassifier> customClassifiers) {
+		this.customClassifiers = customClassifiers;
+	}
+
+	public void setCustomFeatures(List<CustomFeature> customFeatures) {
+		this.customFeatures = customFeatures;
+	}
+
+	public void setCustomTreeClassifiers(List<Tree> customTreeClassifiers) {
+		this.customTreeClassifiers = customTreeClassifiers;
+	}
+
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
@@ -167,6 +192,11 @@ public class Tree {
 		this.private_tree = private_tree;
 	}
 
+	@Transient
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
 	public void setScore(Score score) {
 		this.score = score;
 	}
@@ -177,35 +207,6 @@ public class Tree {
 
 	public void setUser_saved(boolean user_saved) {
 		this.user_saved = user_saved;
-	}
-	
-	public List<CustomFeature> getCustomFeatures() {
-		return customFeatures;
-	}
-
-	public void setCustomFeatures(List<CustomFeature> customFeatures) {
-		this.customFeatures = customFeatures;
-	}
-
-	public List<CustomClassifier> getCustomClassifiers() {
-		return customClassifiers;
-	}
-
-	public void setCustomClassifiers(List<CustomClassifier> customClassifiers) {
-		this.customClassifiers = customClassifiers;
-	}
-
-	public List<Tree> getCustomTreeClassifiers() {
-		return customTreeClassifiers;
-	}
-
-	public void setCustomTreeClassifiers(List<Tree> customTreeClassifiers) {
-		this.customTreeClassifiers = customTreeClassifiers;
-	}
-	
-	@Transient
-	public void setRank(int rank){
-		this.rank = rank;
 	}
 
 	@Override
