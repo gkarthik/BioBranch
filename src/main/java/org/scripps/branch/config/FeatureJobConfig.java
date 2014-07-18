@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableBatchProcessing
-public class FeatureConfig {
+public class FeatureJobConfig {
 	
 	@Autowired
 	  private JobBuilderFactory jobBuilderFactory;
@@ -54,7 +54,6 @@ public class FeatureConfig {
         reader.setLineMapper(new DefaultLineMapper<Feature>() {{
             setLineTokenizer(new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB) {{
                 setNames(new String[] { "", "uniqueid", "short_name", "", "", "", "", "", "description", "", "", "long_name", "", "", ""});
-                //"tax_id", "uniqueid", "short_name", "LocusTag", "Synonyms", "dbXrefs", "chromosome", "map_location", "description", "type_of_gene", "Symbol_from_nomenclature_authority", "long_name", "Nomenclature_status", "Other_designations", "Modification_date"
             }});
             setFieldSetMapper(new BeanWrapperFieldSetMapper<Feature>() {{
                 setTargetType(Feature.class);
