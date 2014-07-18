@@ -51,8 +51,8 @@ public class WekaObject implements ApplicationContextAware {
 			Resource train_file = ctx
 					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
 			try {
-				wekaObj.buildWeka(train_file.getInputStream(), null,
-						"metabric_with_clinical", featurerepo);
+//				wekaObj.buildWeka(train_file.getInputStream(), null,
+//						"metabric_with_clinical");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

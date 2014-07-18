@@ -7,14 +7,19 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -33,9 +38,12 @@ public class PersistenceJPAConfig {
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
-
+	
 	@Autowired
 	Environment env;
+	
+	@Autowired
+	org.springframework.context.ApplicationContext ctx;
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
@@ -51,8 +59,16 @@ public class PersistenceJPAConfig {
 		dataSource.setUrl(env.getProperty("db.url"));
 		dataSource.setUsername(env.getProperty("db.username"));
 		dataSource.setPassword(env.getProperty("db.password"));
+		DatabasePopulatorUtils.execute(createDatabasePopulator(), dataSource);
 		return dataSource;
 	}
+	
+	 private DatabasePopulator createDatabasePopulator() {
+	        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+	        databasePopulator.setContinueOnError(true);
+	        databasePopulator.addScript(ctx.getResource("WEB-INF/data/schema-postgresql.sql"));
+	        return databasePopulator;
+	    }
 
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory()

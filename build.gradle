@@ -31,7 +31,7 @@ buildscript {
 }
 
 dependencies {
-
+	
 	compile 'org.apache.commons:commons-lang3:3.0'
 
 	
@@ -66,8 +66,11 @@ dependencies {
 	compile 'org.springframework.security:spring-security-taglibs:3.2.4.RELEASE'
 	compile 'org.springframework.security:spring-security-web:3.2.4.RELEASE'
 	
-	//Springtest
+	//Spring test
 	compile 'org.springframework:spring-test:4.0.5.RELEASE'
+	
+	//Spring batch
+	compile 'org.springframework.batch:spring-batch-core:3.0.1.RELEASE'
 		
 	
 	compile 'org.apache.httpcomponents:httpclient:4.3.3'
