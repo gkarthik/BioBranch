@@ -1,0 +1,34 @@
+<button id="show-dataset-wrapper" class="btn btn-primary btn-sm btn-block"><i class="glyphicon glyphicon-cog"></i> Customize Training and Testing</button>
+<div class="panel panel-default" id="dataset-wrapper">
+	<div class="panel-heading">Customize Training and Testing<span><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></span></div>
+	<div class="panel-body">
+		<h2>
+			Test Options
+		</h2>
+		<div class="radio">
+		  <label>
+		    <input type="radio" name="testOptions" value="0" checked>
+		    Use Training Set
+		  </label>
+		</div>
+		<div class="radio">
+		  <label>
+		    <input type="radio" name="testOptions" value="1">
+		    Supplied Test Set
+		  </label>
+		</div>
+		<div class="radio">
+		  <label>
+		    <input type="radio" name="testOptions" value="2">
+		    Percentage Split
+		  </label>
+		</div>
+		<div class="input-group">
+				<span class="input-group-addon">Split</span>
+		    	<input type="text" name="percent-split" placeholder="Folds">
+		</div>
+		<div class="input-group">
+		    	<input type="button" class="btn btn-primary" id="apply-options" value="Apply">
+		</div>
+	</div>
+</div>

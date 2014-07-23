@@ -7,13 +7,14 @@ define([
   'app/views/TreeBranchCollectionView', 'app/views/ScoreBoardView',
   'app/views/ScoreView', 'app/views/CollaboratorCollectionView', 
   'app/views/ScoreKey', 'app/views/BadgeCollectionView',
+  'app/views/layouts/Dataset',
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
 	//Templates
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
-    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
+    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
     regions: {
@@ -25,7 +26,8 @@ sidebarLayout = Marionette.Layout.extend({
 	    "ScoreKeyRegion": "#ScoreKeyRegion",
 	    "BadgeRegion": "#BadgeRegion",
 	    "PathwaySearchRegion": "#PathwaySearchRegion",
-	    "AggNodeRegion":"#AggNodeRegion"
+	    "AggNodeRegion":"#AggNodeRegion",
+	    "DatasetRegion":"#DatasetRegion"
     },
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",
@@ -93,6 +95,7 @@ sidebarLayout = Marionette.Layout.extend({
       Cure.BadgeCollectionView = new BadgeCollectionView({
       	collection: Cure.BadgeCollection
       });
+      Cure.DatasetLayout = new DatasetLayout();
       this.ScoreRegion.show(Cure.ScoreView);
       this.ScoreBoardRegion.show(Cure.ScoreBoardView);
       this.CommentRegion.show(Cure.CommentView);
@@ -100,6 +103,7 @@ sidebarLayout = Marionette.Layout.extend({
       this.CollaboratorsRegion.show(Cure.CollaboratorCollectionView);
       this.ScoreKeyRegion.show(Cure.ScoreKeyView);
       this.BadgeRegion.show(Cure.BadgeCollectionView);
+      this.DatasetRegion.show(Cure.DatasetLayout);
     },
     onShow: function(){
     	this.$el.attr('id',"cure-panel");
