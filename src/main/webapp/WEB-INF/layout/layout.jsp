@@ -23,6 +23,12 @@
 	href="/branch/static/css/odometer-theme-train-station.css" />
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+	<style>
+	.header-right-menu li{
+		border-left: 1px solid #EEE;
+		padding: 0px 5px;
+	}
+	</style>
 <sitemesh:write property="head" />
 </head>
 <body>
@@ -33,7 +39,7 @@
 					<a class="navbar-brand" href="/branch/">Branch</a>
 				</div>
 
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right header-right-menu">
 					<sec:authorize access="isAnonymous()">
 						<li><a href="/branch/user/login">Login</a></li>
 						<li><a href="/branch/user/register">Register</a></li>
@@ -52,17 +58,20 @@
 								<c:if test="${empty signInProvider}">
 									<spring:message code="label.navigation.signed.in.as.text" />
 								</c:if>
-								<sec:authentication property="principal.username" />
+								<!-- <sec:authentication property="principal.username" /> -->
+								<strong><a href="./profile/">${firstName}</a></strong>
 							</p>
 						</li>
 						<li>
+						<p>
 							<form action="/branch/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
-								<button type="submit" class="btn btn-default navbar-btn">
+								<button type="submit" class="btn btn-link">
 									<spring:message code="label.navigation.logout.link" />
 								</button>
 							</form>
+							</p>
 						</li>
 					</sec:authorize>
 				</ul>
