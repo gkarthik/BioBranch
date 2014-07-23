@@ -1013,6 +1013,15 @@ text-align:left;
 	z-index: 2;
 }
 
+#dataset-wrapper{
+	position: fixed;
+	left: 25%;
+	width: 50%;
+	top: 50px;
+	z-index: 2;
+	display:none;
+}
+
 #AggNodeRegion{
 	position: fixed;
 	left: 25%;
