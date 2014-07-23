@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -31,7 +32,7 @@ public class ApplicationConfig implements WebApplicationInitializer {
 
 		servletContext.addFilter("OpenEntityManagerInViewFilter",
 				OpenEntityManagerInViewFilter.class).addMappingForUrlPatterns(
-				null, false, "/*");
+						null, false, "/*");
 
 		// If you want to use the XML configuration, uncomment the following
 		// lines.
@@ -43,6 +44,8 @@ public class ApplicationConfig implements WebApplicationInitializer {
 				DISPATCHER_SERVLET_NAME, new DispatcherServlet(rootContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping(DISPATCHER_SERVLET_MAPPING);
+
+
 
 		EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(
 				DispatcherType.REQUEST, DispatcherType.FORWARD);
@@ -64,6 +67,14 @@ public class ApplicationConfig implements WebApplicationInitializer {
 		sitemesh.addMappingForUrlPatterns(dispatcherTypes, true, "*.jsp");
 
 		servletContext.addListener(new ContextLoaderListener(rootContext));
+
+
+
+		dispatcher.setMultipartConfig(new MultipartConfigElement("/tmp", 1024*1024*5, 1024*1024*5*5, 1024*1024));
+
+
+
+
 
 	}
 }
