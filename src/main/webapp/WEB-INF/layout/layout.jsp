@@ -36,7 +36,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<sec:authorize access="isAnonymous()">
 						<li><a href="/branch/user/login">Login</a></li>
-									<li><a href="/branch/user/register">Register</a></li>
+						<li><a href="/branch/user/register">Register</a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li>
@@ -70,6 +70,8 @@
 			<!-- /.navbar-collapse -->
 	</div>
 	<!-- /.container-fluid -->
+	
+
 	</nav>
 	</div>
 	<div class="content">
