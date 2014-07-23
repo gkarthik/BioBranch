@@ -33,9 +33,11 @@ import org.joda.time.DateTime;
 //  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 //  PRIMARY KEY (`id`)
 //) ENGINE=MyISAM AUTO_INCREMENT=43191 DEFAULT CHARSET=latin1;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "feature")
+@Transactional
 public class Feature {
 
 	@Id

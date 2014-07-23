@@ -10,12 +10,27 @@
 
 ## Setup ##
 ### On Eclipse ###
-* Install Spring Tool Suite(<http://spring.io/tools/sts/all>) in Eclipse to make handling Spring easier. 
+* Install Spring Tool Suite(<http://spring.io/tools/sts/all>) in Eclipse to make handling Spring easier(Can be installed from Eclipse Marketplace). 
 * Pull code from this repository using mercurial plugin. 
 * Refresh all dependencies in gradle. 
 * Set Up database details in src/main/resources/application.properties and in src/main/resources/liquibase.properties. 
 * To create database schema for the first time, set hibernate.hbm2ddl.auto=create in applciation.properties. To revert back to update set hibernate.hbm2ddl.auto=update.
 * Run on Tomcat 7.0. 
 
-Tests:
+### Db SetUp ###
+* Download db_dump.sql from <coming soon>
+* Login to postgresql command line.
+* Run following commands
+```
+    DROP TABLE attribute;
+    DROP TABLE feature CASCADE;
+    DROP TABLE pathway CASCADE;
+    DROP TABLE pathway_feature;
+```
+* Exit postgresql command line and execute this command on the shell/cmd.
+```
+    pg_dump -U <username> -h localhost <database-name> < db_dump.sql
+``` 
+
+### Tests: ###
 Run using JUnit.

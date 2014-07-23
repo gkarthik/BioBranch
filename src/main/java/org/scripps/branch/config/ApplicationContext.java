@@ -17,7 +17,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 		"org.scripps.branch.utilities", "org.scripps.branch.globalentity",
 		"org.scripps.branch.viz" })
 @Import({ WebApplicationContext.class, PersistenceJPAConfig.class,
-		SecurityContext.class, SocialContext.class })
+		SecurityContext.class, SocialContext.class, FeatureJobConfig.class })
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
 
