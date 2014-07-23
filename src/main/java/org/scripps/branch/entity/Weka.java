@@ -17,15 +17,18 @@ public class Weka {
 	String eval_method; // {cross_validation, test_set, training_set}
 	Map<String, Feature> features;
 	String dataset;
+	Instances origTrain = null;
+	Instances origTest = null;
+	Instances[] instancesInClass;
 
-	public void buildWeka(InputStream train_stream, InputStream test_stream,
+	public void buildWeka(InputStream train_stream, InputStream test_stream, String method, 
 			String dataset) throws Exception {
 		setDataset(dataset);
 		// get the data
 		DataSource source = new DataSource(train_stream);
-		setTrain(source.getDataSet());
-		if (getTrain().classIndex() == -1) {
-			getTrain().setClassIndex(getTrain().numAttributes() - 1);
+		setOrigTrain(source.getDataSet());
+		if (getOrigTrain().classIndex() == -1) {
+			getOrigTrain().setClassIndex(getOrigTrain().numAttributes() - 1);
 		}
 		train_stream.close();
 		if (test_stream != null) {
@@ -34,14 +37,35 @@ public class Weka {
 			if (test.classIndex() == -1) {
 				test.setClassIndex(test.numAttributes() - 1);
 			}
+			setOrigTest(test);
 			test_stream.close();
 		}
-		rand = new Random(1);
 		// specify how hands evaluated {cross_validation, test_set,
 		// training_set}
-		eval_method = "training_set"; // "cross_validation";//
+		eval_method = method; // "cross_validation";//
 		// assumes that feature table has already been loaded
 		// get the features related to this weka dataset
+		setTrain(getOrigTrain());
+		setTest(getOrigTest());
+	}
+	
+	public void generateLimits(){
+		Instances data = getOrigTrain();
+		instancesInClass = new Instances[data.numClasses()];
+		for(int i=0;i<data.numClasses();i++){
+			for(int j=0;j<data.numInstances();j++){
+				System.out.println(data.instance(j).classValue());
+				if(data.instance(j).classValue()==i){//Not 
+					if(instancesInClass[i]==null){
+						instancesInClass[i] = new Instances(data, Math.round(data.numInstances()));
+					}
+					instancesInClass[i].add(data.instance(j));
+				}
+			}
+		}
+		for(int i=0;i<instancesInClass.length;i++){
+			System.out.println(instancesInClass[i].numInstances());
+		}
 	}
 
 	public String getDataset() {
@@ -91,5 +115,28 @@ public class Weka {
 	public void setTrain(Instances train) {
 		this.train = train;
 	}
+	
+	public Instances getOrigTrain() {
+		return origTrain;
+	}
 
+	public void setOrigTrain(Instances orig_train) {
+		this.origTrain = orig_train;
+	}
+	
+	public Instances getOrigTest() {
+		return origTest;
+	}
+
+	public void setOrigTest(Instances origTest) {
+		this.origTest = origTest;
+	}
+	
+	public Instances[] getInstancesInClass() {
+		return instancesInClass;
+	}
+
+	public void setInstancesInClass(Instances[] numberOfInstancesInClass) {
+		this.instancesInClass = numberOfInstancesInClass;
+	}
 }
