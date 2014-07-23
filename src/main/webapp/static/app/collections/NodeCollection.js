@@ -21,7 +21,7 @@ NodeCollection = Backbone.Collection.extend({
 	tree_id: 0,
 	prevTreeId : -1,
 	url : base_url+"MetaServer",
-	sync : function() {
+	sync : function(reqArgs) {
 		//Function to send request to Server with current tree information.
 		var tree = [];
 		if (this.models[0]) {
@@ -29,15 +29,22 @@ NodeCollection = Backbone.Collection.extend({
 		}
 		
 		Cure.utils.showLoading(null);
-		
-		var args = {
-			command : "scoretree",
-			dataset : "metabric_with_clinical",
-			treestruct : tree,
-			comment: Cure.Comment.get("content"),
-			player_id : Cure.Player.get('id'),
-			previous_tree_id: Cure.PlayerNodeCollection.prevTreeId
+		var testOptions = {
+				value: $("input[name='testOptions']:checked").val(),
+				percentSplit:  $("input[name='percent-split']").val()
 		};
+		if(reqArgs){
+			testOptions = reqArgs;
+		}
+		var args = {
+				command : "scoretree",
+				dataset : "metabric_with_clinical",
+				treestruct : tree,
+				comment: Cure.Comment.get("content"),
+				player_id : Cure.Player.get('id'),
+				previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
+				testOptions: testOptions
+			};
 		
 		//POST request to server.		
 		$.ajax({
