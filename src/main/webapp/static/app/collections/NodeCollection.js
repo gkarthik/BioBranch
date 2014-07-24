@@ -164,6 +164,7 @@ NodeCollection = Backbone.Collection.extend({
 					}
 				}
 				if(updateScore){
+					Cure.CfMatrix.setupMatrix(data.confusion_matrix);
 					//Storing Score in a Score Model.
 					var scoreArray = data;
 					scoreArray.treestruct = null;

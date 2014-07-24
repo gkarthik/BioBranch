@@ -7,6 +7,7 @@ define([
   'app/views/TreeBranchCollectionView', 'app/views/ScoreBoardView',
   'app/views/ScoreView', 'app/views/CollaboratorCollectionView', 
   'app/views/ScoreKey', 'app/views/BadgeCollectionView',
+  'app/views/ConfusionMatrixView',
   'app/views/layouts/Dataset',
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
@@ -14,7 +15,7 @@ define([
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
-    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
+    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
     regions: {
@@ -27,7 +28,8 @@ sidebarLayout = Marionette.Layout.extend({
 	    "BadgeRegion": "#BadgeRegion",
 	    "PathwaySearchRegion": "#PathwaySearchRegion",
 	    "AggNodeRegion":"#AggNodeRegion",
-	    "DatasetRegion":"#DatasetRegion"
+	    "DatasetRegion":"#DatasetRegion",
+	    "ConfusionMatrixRegion": "#CfMatrixRegion"
     },
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",
@@ -38,11 +40,21 @@ sidebarLayout = Marionette.Layout.extend({
     	'click #current-tree-rank': 'showCurrentRank',
     	'click #tree-explanation-button': 'toggleTreeExp',
     	'click #BadgesPlaceholder': 'showBadges',
-    	'click #new-tree': 'createNewTree'
+    	'click #new-tree': 'createNewTree',
+    	'click #eval-tab li a': 'showTab'
     },
     className: 'panel panel-default',
     initialize: function(){
     	_.bindAll(this,'toggleTreeExp');
+    },
+    showTab: function(e){
+    	var el = $(e.target);
+    	var id = el.attr("id").replace("Tab","");
+    	$("#eval-tab li").removeClass("active");
+    	el.parent().addClass("active");
+    	console.log(id);
+    	$(".eval-tab-content").hide();
+    	$("#"+id).show();
     },
     createNewTree: function(){
     	$("div.node:nth-child(1) > .delete").trigger('click');
@@ -95,6 +107,9 @@ sidebarLayout = Marionette.Layout.extend({
       Cure.BadgeCollectionView = new BadgeCollectionView({
       	collection: Cure.BadgeCollection
       });
+      Cure.CfMatrixView = new CfMatrixView({
+    	  model: Cure.CfMatrix
+      });
       Cure.DatasetLayout = new DatasetLayout();
       this.ScoreRegion.show(Cure.ScoreView);
       this.ScoreBoardRegion.show(Cure.ScoreBoardView);
@@ -104,6 +119,7 @@ sidebarLayout = Marionette.Layout.extend({
       this.ScoreKeyRegion.show(Cure.ScoreKeyView);
       this.BadgeRegion.show(Cure.BadgeCollectionView);
       this.DatasetRegion.show(Cure.DatasetLayout);
+      this.ConfusionMatrixRegion.show(Cure.CfMatrixView);
     },
     onShow: function(){
     	this.$el.attr('id',"cure-panel");

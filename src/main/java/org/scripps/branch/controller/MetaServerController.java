@@ -292,6 +292,7 @@ public class MetaServerController {
 				data.get("dataset").asText(), custom_classifiers, attr,
 				cClassifierService);
 		eval.evaluateModel(readtree, wekaObj.getTest());
+		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
 		int numnodes = readtree.numNodes();
@@ -313,6 +314,7 @@ public class MetaServerController {
 		result.put("pct_correct", eval.pctCorrect());
 		result.put("size", numnodes);
 		result.put("novelty", nov);
+		result.put("confusion_matrix", cfmatrix);
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
