@@ -56,7 +56,8 @@ public class FeatureJobConfig {
 	@StepScope
 	public FlatFileItemReader<Feature> reader(@Value("#{jobParameters[inputPath]}") String pathToFile, org.springframework.context.ApplicationContext ctx) {
 		FlatFileItemReader<Feature> reader = new FlatFileItemReader<Feature>();
-		Resource path = ctx.getResource(pathToFile);
+		
+		Resource path = ctx.getResource("file:"+pathToFile);
 		reader.setResource(path);
 		reader.setLineMapper(new DefaultLineMapper<Feature>() {
 			{
