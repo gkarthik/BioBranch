@@ -15,18 +15,20 @@
 			</span>
 
 			<h3>
+				<span class="label label-default">Feature File</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="file"
+				name="file">
+			</span>
+			
+			<h3>
 				<span class="label label-default">Mapping File</span>
 			</h3>
 			<span class="btn btn-default btn-file"> <input type="file"
 				name="file">
 			</span>
 
-			<h3>
-				<span class="label label-default">Feature File</span>
-			</h3>
-			<span class="btn btn-default btn-file"> <input type="file"
-				name="file">
-			</span>
+			
 
 			<h3>
 				<span class="label label-default">Description</span>

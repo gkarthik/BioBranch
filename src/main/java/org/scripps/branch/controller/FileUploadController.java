@@ -3,13 +3,17 @@ package org.scripps.branch.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.scripps.branch.config.ApplicationContext;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
+import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
+import org.scripps.branch.service.AttributeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -22,6 +26,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,9 +56,17 @@ public class FileUploadController {
 	DatasetRepository dataRepo;
 
 	@Autowired
+	AttributeService attrSer;
+
+	@Autowired
 	private Job job;
+	
 	@Autowired
 	private JobLauncher jobLauncher;
+	
+	@Autowired
+	WekaObject wekaobj;
+
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -90,53 +103,53 @@ public class FileUploadController {
 		return "Unable to add feature table";
 	}
 
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	public @ResponseBody String uploadFileHandler(
-			@RequestParam("name") String name,
-			@RequestParam("file") MultipartFile file) {
-
-		// restrictor validate the file by the user with the file type using
-		// .getContentType (appliation/pdf, text/plain...
-		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-				LOGGER.debug("File content type" + file.getContentType());
-				// Creating the directory to store file
-				String rootPath = System.getProperty("catalina.home");
-				File dir = new File(
-						"/home/bob/workspace/branch/src/main/resources/uploads");
-				if (!dir.exists())
-					dir.mkdirs();
-
-				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				LOGGER.info("Server File Location="
-						+ serverFile.getAbsolutePath());
-
-				return "You successfully uploaded file=" + name;
-			} catch (Exception e) {
-				return "You failed to upload " + name + " => " + e.getMessage();
-			}
-		} else {
-			return "You failed to upload " + name
-					+ " because the file was empty.";
-		}
-	}
-
-	/**
-	 * Upload single file using Spring Controller
-	 */
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.GET)
-	public String uploadFileHandler(WebRequest request, Model model) {
-		LOGGER.debug("Rendering homepage.");
-		return "user/upload";
-	}
+//	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+//	public @ResponseBody String uploadFileHandler(
+//			@RequestParam("name") String name,
+//			@RequestParam("file") MultipartFile file) {
+//
+//		// restrictor validate the file by the user with the file type using
+//		// .getContentType (appliation/pdf, text/plain...
+//		if (!file.isEmpty()) {
+//			try {
+//				byte[] bytes = file.getBytes();
+//				LOGGER.debug("File content type" + file.getContentType());
+//				// Creating the directory to store file
+//				String rootPath = System.getProperty("catalina.home");
+//				File dir = new File(
+//						"/home/bob/workspace/branch/src/main/resources/uploads");
+//				if (!dir.exists())
+//					dir.mkdirs();
+//
+//				// Create the file on server
+//				File serverFile = new File(dir.getAbsolutePath()
+//						+ File.separator + name);
+//				BufferedOutputStream stream = new BufferedOutputStream(
+//						new FileOutputStream(serverFile));
+//				stream.write(bytes);
+//				stream.close();
+//
+//				LOGGER.info("Server File Location="
+//						+ serverFile.getAbsolutePath());
+//
+//				return "You successfully uploaded file=" + name;
+//			} catch (Exception e) {
+//				return "You failed to upload " + name + " => " + e.getMessage();
+//			}
+//		} else {
+//			return "You failed to upload " + name
+//					+ " because the file was empty.";
+//		}
+//	}
+//
+//	/**
+//	 * Upload single file using Spring Controller
+//	 */
+//	@RequestMapping(value = "/uploadFile", method = RequestMethod.GET)
+//	public String uploadFileHandler(WebRequest request, Model model) {
+//		LOGGER.debug("Rendering homepage.");
+//		return "user/upload";
+//	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String uploadMultipleFileHandler(
@@ -147,8 +160,10 @@ public class FileUploadController {
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
+
 		Dataset dsObj = new Dataset();
 		User user = null;
+
 		String[] fileType = new String[3];
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
@@ -183,8 +198,15 @@ public class FileUploadController {
 				stream.close();
 				message = message + "You successfully uploaded file=" + name
 						+ "<br />";
-				if (i == 2) {
-					message = message + runFeatureUpload(serverFile.toString());
+
+				if(i==2){
+					System.out.println("file:"+serverFile.toString());
+					attrSer.generateAttributesFromDataset(wekaobj.getWeka().getTrain(),"metabric_with_clinical",serverFile.toString());	
+					message= message+"attribute file added";
+				}
+
+				if (i == 1) {
+//					message = message + runFeatureUpload(serverFile.toString());
 				}
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
