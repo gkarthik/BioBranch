@@ -26,7 +26,7 @@
 <style>
 .header-right-menu li {
 	border-left: 1px solid #EEE;
-	padding: 0px 5px;
+	padding-right: 10px;
 }
 </style>
 <sitemesh:write property="head" />
@@ -60,9 +60,11 @@
 								</c:if>
 								<!-- <sec:authentication property="principal.username" /> -->
 								<strong><a href="/branch/profile/">${firstName}</a></strong>
-							<span>
-								<strong><a href="/branch/upload"> Upload Dataset</a></strong>
-							</span>
+							</p>
+						</li>
+						<li>
+							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+								<a href="/branch/upload"> Upload Dataset</a>
 							</p>
 						</li>
 						<li>

@@ -1238,9 +1238,9 @@ Style for right control panel
 */
 
 .panel-default > .panel-heading{
-	background: rgb(255, 102, 153);
-	color:#FFF;
-	z-index:2;
+	z-index: 2;
+	color: #5E5E5E;
+	background: none repeat scroll 0% 0% #F8F8F8;
 }
 
 .panel-default > .panel-body{
