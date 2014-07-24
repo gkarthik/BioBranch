@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scripps.branch.config.ApplicationContext;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
@@ -43,36 +44,36 @@ public class TreeTest {
 
 	@Test
 	public void testRepo() throws SQLException {
-		// Tree newTree = t.findById(21);
-		// assertEquals(newTree == null, false);
-		//
-		// User user = u.findById(3);
-		// List<Tree> tList = t.findByUser(user);
-		// assertEquals(tList.size() == 0, false);
-		//
-		// tList = t.getByOtherUser(user);
-		// assertEquals(tList.size() == 0, false);
-		//
-		// tList = t.getAllTrees();
-		// assertEquals(tList.size() == 0, false);
-		//
-		// long count = t.getTotalCount();
-		// assertEquals(count!=0,true);
-		//
-		// List<Feature> fList = new ArrayList<Feature>();
-		// fList.add(f.getByDbId(1604));
-		// user = u.findById(3);
-		// assertEquals(user!=null,true);
-		// count = t.getCountOfFeature(fList, user);
-		// System.out.println(count);
-		// assertEquals(count!=0,true);
+		 Tree newTree = t.findById(21);
+		 assertEquals(newTree == null, false);
+		
+		 User user = u.findById(3);
+		 List<Tree> tList = t.findByUser(user);
+		 assertEquals(tList.size() == 0, false);
+		
+		 tList = t.getByOtherUser(user);
+		 assertEquals(tList.size() == 0, false);
+		
+		 tList = t.getAllTrees();
+		 assertEquals(tList.size() == 0, false);
+		
+		 long count = t.getTotalCount();
+		 assertEquals(count!=0,true);
+		
+		 List<Feature> fList = new ArrayList<Feature>();
+		 fList.add(f.getByDbId(1604));
+		 user = u.findById(3);
+		 assertEquals(user!=null,true);
+		 count = t.getCountOfFeature(fList, user);
+		 System.out.println(count);
+		 assertEquals(count!=0,true);
 
-		List<Feature> fList = new ArrayList<Feature>();
-		fList.add(f.getByDbId(1604));
-		User user = u.findById(3);
-		double nov = ts.getUniqueIdNovelty(fList, user);
-		System.out.println(nov);
-		assertEquals(nov != 0, true);
+//		List<Feature> fList = new ArrayList<Feature>();
+//		fList.add(f.getByDbId(1604));
+//		User user = u.findById(3);
+//		double nov = ts.getUniqueIdNovelty(fList, user);
+//		System.out.println(nov);
+//		assertEquals(nov != 0, true);
 	}
 
 }
