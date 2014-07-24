@@ -6,14 +6,29 @@ import java.io.FileOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.FilenameUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
+
 
 /**
  * Handles requests for the application file upload requests
@@ -41,6 +57,14 @@ public class FileUploadController {
 
 	@Autowired
 	DatasetRepository dataRepo;
+
+	@Autowired
+	private Job job;
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	ServletContext ctx;
 
 	public String hashFileName(String name) {
 
@@ -119,7 +143,7 @@ public class FileUploadController {
 
 		// LOGGER.debug("description :  "+datasetName);
 		LOGGER.debug("description :  " + description);
-
+		LOGGER.debug("Number of files: "+files.length);
 		String message = "";
 
 		UserDetails userDetails = null;
@@ -132,6 +156,7 @@ public class FileUploadController {
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
 		fileType[2] = "feature";
+
 		String[] names = new String[3];
 
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -142,26 +167,24 @@ public class FileUploadController {
 		}
 
 		String[] md5FileName = new String[3];
-
-		for (int i = 0; i < files.length; i++) {
+		int i;
+		File serverFile = null;
+		for (i = 0; i < files.length; i++) {
 
 			MultipartFile file = files[i];
-			
+
 			String name = file.getOriginalFilename();
 			names[i] = file.getOriginalFilename();//names[i];
-			String ext = FilenameUtils.getExtension(file.toString());
-			LOGGER.debug("File Extention: "+ext);
+			//String ext = FilenameUtils.getExtension(file);
+			//LOGGER.debug("File Extention: "+ext);
 			LOGGER.debug("File Name: "+ name);
-			
+		
 			try {
-				
-				byte[] bytes = file.getBytes();
 
+				byte[] bytes = file.getBytes();
 				// Creating the directory to store file
-				String rootPath = System.getProperty("catalina.home");
-				File dir = new File(
-						"/home/bob/workspace/branch/src/main/resources/uploads");
-				
+				File dir = new File("/home/bob/uploads/");
+
 				if (!dir.exists())
 					dir.mkdirs();
 
@@ -169,31 +192,37 @@ public class FileUploadController {
 
 				LOGGER.debug("MD5 File Name: "+md5FileName[i]);
 				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
+				serverFile = new File(dir.getAbsolutePath()
 						+ File.separator + md5FileName[i]);// name
-
 				// md5FileName[i]= hashFileName(name);
 				LOGGER.debug("MD5 FileName with path"+serverFile);
 
 				BufferedOutputStream stream = new BufferedOutputStream(
 						new FileOutputStream(serverFile));
-				LOGGER.debug("");
+				
 				stream.write(bytes);
 				stream.close();
-
-				LOGGER.info("Server File Location= "
-						+ serverFile.getAbsolutePath());
-
+				
+				//LOGGER.info("    s", stream.close());
 				message = message + "You successfully uploaded file=" + name
 						+ "<br />";
+				LOGGER.debug("value or i"+i);
+			
+				if(i==2){
+					LOGGER.debug("serverfile.tostring"+serverFile.toString());
+					message = message + runFeatureUpload(serverFile.toString());
+					
+				}
 
+				LOGGER.debug("");
+				
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
 		}
 
 		LOGGER.debug("outside if" + user);
-
+		
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 
 			LOGGER.debug("Login Checker");
@@ -215,6 +244,36 @@ public class FileUploadController {
 		return message;
 	}
 
+	private String runFeatureUpload(String filePath) {
+		
+		
+			JobParameters jp = new JobParametersBuilder().addString("inputPath", filePath).toJobParameters();
+			
+			try {
+				JobExecution jobExecution = jobLauncher.run(job, jp);
+				return "Feature table added";
+			} catch (JobExecutionAlreadyRunningException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobRestartException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobInstanceAlreadyCompleteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobParametersInvalidException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+				
+
+	
+
+		return "Unable to add feature table";
+	}
+
 	/**
 	 * Upload multiple file using Spring Controller
 	 */
@@ -224,5 +283,9 @@ public class FileUploadController {
 		LOGGER.debug("Rendering Multiple upload page");
 		return "user/uploadMultiple";
 	}
-
+	
+	public static void main(String[] args){
+		System.out.println(FileUploadController.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	}
+	
 }
