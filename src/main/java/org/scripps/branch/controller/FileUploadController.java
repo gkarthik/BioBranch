@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-
 /**
  * Handles requests for the application file upload requests
  */
@@ -62,12 +61,11 @@ public class FileUploadController {
 	private Job job;
 	@Autowired
 	private JobLauncher jobLauncher;
-	
+
 	@Autowired
 	ServletContext ctx;
 
 	public String hashFileName(String name) {
-
 		MessageDigest md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -81,9 +79,6 @@ public class FileUploadController {
 		for (byte b : digest) {
 			sb.append(String.format("%02x", b & 0xff));
 		}
-
-		LOGGER.debug("digested(hex):" + sb.toString());
-
 		return sb.toString();
 	}
 
@@ -136,98 +131,50 @@ public class FileUploadController {
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public @ResponseBody String uploadMultipleFileHandler(
-			@RequestParam("file") MultipartFile[] files,
-			@RequestParam("description") String description,
-			@RequestParam("datasetName") String datasetName) {
-
-		// LOGGER.debug("description :  "+datasetName);
-		LOGGER.debug("description :  " + description);
-		LOGGER.debug("Number of files: "+files.length);
+	public @ResponseBody String uploadMultipleFileHandler(@RequestParam("file") MultipartFile[] files, @RequestParam("description") String description,	@RequestParam("datasetName") String datasetName) {
 		String message = "";
-
 		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Dataset dsObj = new Dataset();
 		User user = null;
-
 		String[] fileType = new String[3];
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
 		fileType[2] = "feature";
-
 		String[] names = new String[3];
-
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-
+		if (!(auth instanceof AnonymousAuthenticationToken)){
 			userDetails = (UserDetails) auth.getPrincipal();
 			user = userRepo.findByEmail(userDetails.getUsername());
-			LOGGER.debug("Login Checker " + user);
 		}
-
 		String[] md5FileName = new String[3];
 		int i;
 		File serverFile = null;
 		for (i = 0; i < files.length; i++) {
-
 			MultipartFile file = files[i];
-
 			String name = file.getOriginalFilename();
-			names[i] = file.getOriginalFilename();//names[i];
-			//String ext = FilenameUtils.getExtension(file);
-			//LOGGER.debug("File Extention: "+ext);
-			LOGGER.debug("File Name: "+ name);
-		
+			names[i] = file.getOriginalFilename();
+			LOGGER.debug("File Name: " + name);
 			try {
-
 				byte[] bytes = file.getBytes();
-				// Creating the directory to store file
 				File dir = new File("/home/bob/uploads/");
-
 				if (!dir.exists())
 					dir.mkdirs();
-
-				md5FileName[i] = hashFileName(name + user.getId()+System.currentTimeMillis()+fileType[i]);
-
-				LOGGER.debug("MD5 File Name: "+md5FileName[i]);
-				// Create the file on server
-				serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + md5FileName[i]);// name
-				// md5FileName[i]= hashFileName(name);
-				LOGGER.debug("MD5 FileName with path"+serverFile);
-
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
-				
+				md5FileName[i] = hashFileName(name + user.getId() + System.currentTimeMillis() + fileType[i]);
+				LOGGER.debug("MD5 File Name: " + md5FileName[i]);
+				serverFile = new File(dir.getAbsolutePath() + File.separator + md5FileName[i]);
+				LOGGER.debug("MD5 FileName with path" + serverFile);
+				BufferedOutputStream stream = new BufferedOutputStream(	new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-				
-				//LOGGER.info("    s", stream.close());
-				message = message + "You successfully uploaded file=" + name
-						+ "<br />";
-				LOGGER.debug("value or i"+i);
-			
-				if(i==2){
-					LOGGER.debug("serverfile.tostring"+serverFile.toString());
+				message = message + "You successfully uploaded file=" + name + "<br />";
+				if (i == 2) {
 					message = message + runFeatureUpload(serverFile.toString());
-					
 				}
-
-				LOGGER.debug("");
-				
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
 		}
-
-		LOGGER.debug("outside if" + user);
-		
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-
-			LOGGER.debug("Login Checker");
-			// userDetails = (UserDetails) auth.getPrincipal();
-			// user = userRepo.findByEmail(userDetails.getUsername());
 			dsObj.setDatasetname(names[0]);
 			dsObj.setMappingname(names[1]);
 			dsObj.setFeaturename(names[2]);
@@ -238,39 +185,28 @@ public class FileUploadController {
 			dsObj.setName(datasetName);
 			dsObj.setUser(user);
 			dsObj = dataRepo.saveAndFlush(dsObj);
-
 		}
-
 		return message;
 	}
 
 	private String runFeatureUpload(String filePath) {
-		
-		
-			JobParameters jp = new JobParametersBuilder().addString("inputPath", filePath).toJobParameters();
-			
-			try {
-				JobExecution jobExecution = jobLauncher.run(job, jp);
-				return "Feature table added";
-			} catch (JobExecutionAlreadyRunningException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JobRestartException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JobInstanceAlreadyCompleteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JobParametersInvalidException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-
-				
-
-	
-
+		JobParameters jp = new JobParametersBuilder().addString("inputPath", filePath).toJobParameters();
+		try {
+			JobExecution jobExecution = jobLauncher.run(job, jp);
+			return "Feature table added";
+		} catch (JobExecutionAlreadyRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobRestartException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobInstanceAlreadyCompleteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobParametersInvalidException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "Unable to add feature table";
 	}
 
@@ -283,9 +219,4 @@ public class FileUploadController {
 		LOGGER.debug("Rendering Multiple upload page");
 		return "user/uploadMultiple";
 	}
-	
-	public static void main(String[] args){
-		System.out.println(FileUploadController.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-	}
-	
 }
