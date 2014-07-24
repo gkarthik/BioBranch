@@ -1018,6 +1018,12 @@ text-align:left;
 	z-index: 2;
 }
 
+#DatasetRegion{
+	padding-bottom:5px;
+	margin-bottom: 4px;
+	border-bottom: 1px solid #ECECEC;
+}
+
 #dataset-wrapper{
 	position: fixed;
 	left: 25%;
@@ -1091,9 +1097,9 @@ text-align:left;
 	width: 150px;
 	font-size: 12px;
 	position: absolute;
-	top: 200px;
+	top: 230px;
 	z-index: 5;
-	left: 0px;
+	left: 20px;
 }
 
 #GenePoolRegion .drag-pool{
