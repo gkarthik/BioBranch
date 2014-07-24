@@ -58,7 +58,7 @@ public class Attribute {
 	private float relieff;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "feature_id", insertable = false, updatable = false)
+	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
 	private Feature feature;
 
 	@Basic(optional = false)

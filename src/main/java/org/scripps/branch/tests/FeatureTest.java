@@ -27,30 +27,30 @@ public class FeatureTest {
 
 	@Test
 	public void testFindByUniqueId() {
-		Feature featList = feat.findByUniqueId("10");
-
+		Feature featList = feat.findByUniqueId("222663");
+		System.out.println(featList.getShort_name());
 		assertEquals(featList.getId(), Long.valueOf(5));
 
 	}
 
-	@Test
-	public void testGetByDbId() {
-		Feature featList = feat.getByDbId(10);
-
-		assertEquals(featList.getUnique_id(), "15");
-
-	}
-
-	@Test
-	public void testGetMetaBricClinicalFeatures() {
-		List<Feature> fList = feat.getMetaBricClinicalFeatures();
-		for (Feature f : fList) {
-			if (f.getUnique_id().equals("metabric_with_clinical_8")) {
-				assertEquals(f.getId(), Long.valueOf(43211));
-				assertEquals(f.getShort_name(), "HER2_IHC_status");
-			}
-		}
-
-	}
+//	@Test
+//	public void testGetByDbId() {
+//		Feature featList = feat.getByDbId(10);
+//
+//		assertEquals(featList.getUnique_id(), "15");
+//
+//	}
+//
+//	@Test
+//	public void testGetMetaBricClinicalFeatures() {
+//		List<Feature> fList = feat.getMetaBricClinicalFeatures();
+//		for (Feature f : fList) {
+//			if (f.getUnique_id().equals("metabric_with_clinical_8")) {
+//				assertEquals(f.getId(), Long.valueOf(43211));
+//				assertEquals(f.getShort_name(), "HER2_IHC_status");
+//			}
+//		}
+//
+//	}
 
 }

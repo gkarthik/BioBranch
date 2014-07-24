@@ -12,6 +12,8 @@ import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import weka.core.Instances;
@@ -24,13 +26,16 @@ public class AttributeServiceImpl implements AttributeService {
 
 	@Autowired
 	FeatureRepository featureRepo;
+	
+	@Autowired
+	ApplicationContext ctx;
 
 	@Override
 	public void generateAttributesFromDataset(Instances data, String dataset,
-			InputStream inStream) throws FileNotFoundException {
+			String inputPath) throws FileNotFoundException {
 		Attribute attr;
 		Feature f;
-		HashMap<String, String> mp = getAttributeFeatureMapping(inStream);
+		HashMap<String, String> mp = getAttributeFeatureMapping(inputPath);
 		for (int i = 0; i < data.numAttributes(); i++) {
 			attr = new Attribute();
 			f = new Feature();
@@ -38,25 +43,26 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
+			System.out.println(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
-			attrRepo.save(attr);
+			attrRepo.saveAndFlush(attr);
 		}
 	}
 
 	@Override
-	public HashMap<String, String> getAttributeFeatureMapping(
-			InputStream inStream) {
+	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
 		BufferedReader fileReader = null;
 		final String DELIMITER = "\t";
 		try {
 			String line = "";
-			fileReader = new BufferedReader(new InputStreamReader(inStream));
+			Resource input = ctx.getResource("file:"+inputPath);
+			fileReader = new BufferedReader(new InputStreamReader(input.getInputStream()));
 			while ((line = fileReader.readLine()) != null) {
 				String[] tokens = line.split(DELIMITER);
-				if (tokens.length == 2) {
-					mp.put(tokens[0], tokens[1]);
-					System.out.println(tokens[0] + ": " + tokens[1]);
+				if (tokens.length == 3) {
+					mp.put(tokens[0], tokens[2]);
+					System.out.println(tokens[0] + ": " + tokens[2]);
 				}
 			}
 		} catch (Exception e) {
