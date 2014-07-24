@@ -507,6 +507,11 @@ padding: 1%;
 	margin-top:10px;
 	border-top: 1px solid #ececec;
 }
+
+.eval-tab-content{
+	margin-top: 10px;
+}
+
 #score{
 	padding: 5px;
 	background: #FFF;

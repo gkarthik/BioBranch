@@ -14,6 +14,7 @@ define([
         'app/models/Score',
         'app/models/zoom', 
         'app/models/Player',
+        'app/models/ConfusionMatrix',
         // Views
         'app/views/JSONCollectionView',
         'app/views/NodeCollectionView',
@@ -27,7 +28,7 @@ define([
         'app/tour/tree'
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
-        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, Comment, Score, Zoom, Player, JSONCollectionView,
+        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, Comment, Score, Zoom, Player, CfMatrix, JSONCollectionView,
         		NodeCollectionView, sidebarLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
@@ -203,6 +204,7 @@ define([
 		Cure.CollaboratorCollection = new CollaboratorCollection();
 		Cure.Comment = new Comment();
 		Cure.Score = new Score();
+		Cure.CfMatrix = new CfMatrix();
 		Cure.Zoom = new Zoom();
 		Cure.BadgeCollection = new BadgeCollection();
 		Cure.GeneCollection = new GeneCollection();
