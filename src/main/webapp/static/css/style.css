@@ -275,6 +275,12 @@ display: block;
 	margin-left:5px;
 }
 
+.pick-instance-wrapper{
+	position: absolute;
+	left: 110px;
+	width: 200px;	
+}
+
 #dragResize{
 	cursor: move;
 	float:right;

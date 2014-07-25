@@ -80,8 +80,23 @@ NodeView = Marionette.Layout.extend({
           		}
             }
           }
-          var container = $(".addnode_wrapper");
+          
+          classToclose = $('.pick-instance-wrapper');
           var geneList = $(".ui-autocomplete");
+          if (!classToclose.is(e.target)
+                  && classToclose.has(e.target).length == 0
+                  && !geneList.is(e.target)
+                  && geneList.has(e.target).length == 0) {
+        	  if (thisView.pickInstRegion && thisView.pickInstRegion.currentView) {
+            		var el = "."+thisView.pickInstRegion.currentView.className+" .pick-instance-wrapper";
+              		thisView.pickInstRegion.close();
+              		thisView.$el.css({'z-index':'3'});
+              		//Replace IDs with variables.
+              		$("#PlayerTreeRegionTree").css({'z-index':4});
+              }
+              }
+          
+          var container = $(".addnode_wrapper");
           if (!container.is(e.target)
               && container.has(e.target).length == 0
               && !geneList.is(e.target)
