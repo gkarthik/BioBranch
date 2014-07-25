@@ -35,7 +35,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 		'click .open-pathway-search': 'openPathwaySearch',
 		'click .open-addnode': 'openAggNode',
 		'click .open-feature-builder': 'openFeatureBuilder',
-		'click .choose-category': 'chooseCategory'
+		'click .choose-category': 'chooseCategory',
+		'click .show-pick-instance': 'showPickInstance'
 	},
 	openFeatureBuilder: function(){
 		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
@@ -48,6 +49,11 @@ AddRootNodeView = Marionette.ItemView.extend({
 	openAggNode: function(){
 		Cure.AggNodeLayout = new AggNodeLayout({model: this.model});
 		Cure.sidebarLayout.AggNodeRegion.show(Cure.AggNodeLayout);
+	},
+	showPickInstance: function(){
+		if(this.model){
+			 this.model.set('showPickInst',true);
+		 }
 	},
 	chooseCategory: function(e){
 		var id = $(e.currentTarget).attr("id");
