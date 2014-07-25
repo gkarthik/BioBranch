@@ -114,7 +114,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		Remove rm = new Remove();
 		rm.setAttributeIndices(indices + "last");
 		rm.setInvertSelection(true); // build a classifier using only these
-										// attributes
+		// attributes
 		FilteredClassifier fc = new FilteredClassifier();
 		fc.setFilter(rm);
 		switch (classifierType) {
@@ -153,6 +153,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return buildCustomClasifier(weka, featuresDbId, cc.getType());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public HashMap getClassifierDetails(long id, String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers) {
@@ -186,6 +187,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return listOfClassifiers;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 	@Override
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
 			String name, String description, int player_id, Weka weka,
@@ -254,6 +256,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return results;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds,
 			int classifierType, String name, String description, int player_id,

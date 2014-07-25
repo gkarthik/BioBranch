@@ -20,24 +20,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
-//CREATE TABLE `attribute` (
-//		  `id` int(10) NOT NULL AUTO_INCREMENT,
-//		  `col_index` int(11) NOT NULL,
-//		  `name` varchar(30) DEFAULT NULL,
-//		  `dataset` varchar(50) DEFAULT NULL,
-//		  `reliefF` float DEFAULT NULL,
-//		  `created` date DEFAULT NULL,
-//		  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//		  `feature_id` int(11) DEFAULT NULL,
-//		  PRIMARY KEY (`id`),
-//		  UNIQUE KEY `dataset_index_name` (`col_index`,`name`,`dataset`)
-//		) ENGINE=MyISAM AUTO_INCREMENT=15521 DEFAULT CHARSET=latin1;
-
-//name="unique_id", length = 50, nullable = false, unique = true
-
 @Entity
 @Table(name = "attribute", uniqueConstraints = { @UniqueConstraint(name = "dataset_index_name", columnNames = {
-		"col_index", "name", "dataset" }) })
+		"col_index", "name" }) })
 public class Attribute {
 
 	@Id
@@ -52,14 +37,15 @@ public class Attribute {
 	private String name;
 
 	@Column
-	private String dataset;
-
-	@Column
 	private float relieff;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
 	private Feature feature;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
+	private Dataset dataset;
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -83,7 +69,7 @@ public class Attribute {
 		this.id = id;
 		this.col_index = col_index;
 		this.name = name;
-		this.dataset = dataset;
+
 		this.relieff = relieff;
 		this.created = created;
 		this.updated = updated;
@@ -101,7 +87,7 @@ public class Attribute {
 		return created;
 	}
 
-	public String getDataset() {
+	public Dataset getDataset() {
 		return dataset;
 	}
 
@@ -149,7 +135,7 @@ public class Attribute {
 		this.created = created;
 	}
 
-	public void setDataset(String dataset) {
+	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
 	}
 
@@ -179,7 +165,6 @@ public class Attribute {
 
 		.append("col_Index", this.getCol_index())
 				.append("created", this.getCreated())
-				.append("dataset", this.getDataset())
 				.append("name", this.getName())
 				.append("relieff", this.getRelieff())
 				.append("updated", this.getUpdated())

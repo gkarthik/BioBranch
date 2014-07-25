@@ -46,7 +46,7 @@ public class FeatureJobTest {
 		// launch the job
 		JobExecution jobExecution = jobLauncher.run(job, jp);
 
-		//assert job run status
+		// assert job run status
 		assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 	}
 

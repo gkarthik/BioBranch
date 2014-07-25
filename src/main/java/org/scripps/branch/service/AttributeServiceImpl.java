@@ -3,7 +3,6 @@ package org.scripps.branch.service;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -26,7 +25,7 @@ public class AttributeServiceImpl implements AttributeService {
 
 	@Autowired
 	FeatureRepository featureRepo;
-	
+
 	@Autowired
 	ApplicationContext ctx;
 
@@ -43,7 +42,8 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-			System.out.println(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
+			System.out.println(data.attribute(i).name() + ": "
+					+ mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
 			attrRepo.saveAndFlush(attr);
 		}
@@ -56,8 +56,9 @@ public class AttributeServiceImpl implements AttributeService {
 		final String DELIMITER = "\t";
 		try {
 			String line = "";
-			Resource input = ctx.getResource("file:"+inputPath);
-			fileReader = new BufferedReader(new InputStreamReader(input.getInputStream()));
+			Resource input = ctx.getResource("file:" + inputPath);
+			fileReader = new BufferedReader(new InputStreamReader(
+					input.getInputStream()));
 			while ((line = fileReader.readLine()) != null) {
 				String[] tokens = line.split(DELIMITER);
 				if (tokens.length == 3) {

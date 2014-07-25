@@ -1,5 +1,7 @@
 package org.scripps.branch.entity;
 
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -53,13 +56,24 @@ public class Dataset {
 	@Column
 	private String name;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+	private List<Attribute> attributes;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", insertable = true, updatable = true)
-	private User user;
+	@JoinColumn(name = "collection_id", insertable = true, updatable = true)
+	private Collection collection;
 
 	// description
 	@Column(length = 1000)
 	private String description;
+
+	public List<Attribute> getAttributes() {
+		return attributes;
+	}
+
+	public Collection getCollection() {
+		return collection;
+	}
 
 	public DateTime getCreated() {
 		return created;
@@ -101,15 +115,19 @@ public class Dataset {
 		return name;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
 	@PrePersist
 	public void prePersist() {
 		DateTime now = DateTime.now();
 		this.created = now;
 
+	}
+
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
+	}
+
+	public void setCollection(Collection collection) {
+		this.collection = collection;
 	}
 
 	public void setCreated(DateTime created) {
@@ -150,10 +168,6 @@ public class Dataset {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 }

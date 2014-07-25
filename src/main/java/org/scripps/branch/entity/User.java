@@ -87,7 +87,7 @@ public class User extends BaseEntity<Long> {
 	private List<CustomFeature> customfeatures;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Dataset> datasets;
+	private List<Collection> collection;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<CustomClassifier> customclassifiers;
