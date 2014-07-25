@@ -13,6 +13,7 @@ define([
 		edit : 0,
 		highlight : 0,
 		modifyAccLimit: 1,
+		pickInst: false,
 		children : [],
 		manual_pct_correct: 0,
 		gene_summary : {

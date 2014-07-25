@@ -6,11 +6,12 @@ define([
 	//View
 	'app/views/optionsView',
 	'app/views/distributionChartView',
+	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/LeafNode.html',
 	'text!static/app/templates/SplitValue.html',
 	'text!static/app/templates/SplitNode.html'
-    ], function($, Marionette, d3, optionsView, distributionChartView, LeafNodeTemplate, splitValueTemplate, splitNodeTemplate) {
+    ], function($, Marionette, d3, optionsView, distributionChartView, pickInstView, LeafNodeTemplate, splitValueTemplate, splitNodeTemplate) {
 NodeView = Marionette.Layout.extend({
 	tagName : 'div',
 	className : 'node dragHtmlGroup',
@@ -35,7 +36,8 @@ NodeView = Marionette.Layout.extend({
 	regions: {
 		chartRegion: ".chartRegion",
 		addGeneRegion : ".addgeneinfo",
-		distributionChartRegion: ".distributionChartRegion"
+		distributionChartRegion: ".distributionChartRegion",
+		pickInstRegion: ".pickInstRegion"
 	},
 	events : {
 		'click button.addchildren' : 'addChildren',
@@ -52,6 +54,7 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(this.model, 'remove', this.remove);
 		this.listenTo(this.model, 'change:collaborator',this.renderPlaceholder);
 		this.listenTo(this.model, 'change:showDistChart',this.showDistView);
+		this.listenTo(this.model, 'change:showPickInst',this.showPickInst);
 		this.listenTo(this.model.get('options'), 'change:kind', this.render);
 		this.listenTo(this.model, 'change:name', this.render);
 		this.listenTo(this.model.get('options'), 'change:accLimit', this.setNodeClass);
@@ -108,6 +111,15 @@ NodeView = Marionette.Layout.extend({
 			this.model.set('showDistChart',false);
 			var newdistChartView = new distributionChartView({model: this.model.get('distribution_data')});	
 			this.distributionChartRegion.show(newdistChartView);
+			this.$el.css({'z-index':'9999'});
+			$("#PlayerTreeRegionTree").css({'z-index':6});
+		}
+	},
+	showPickInst: function(){
+		if(this.model.get('showPickInst')==true){
+			this.model.set('showPickInst',false);
+			var newpickInstView = new pickInstView({model: this.model});	
+			this.pickInstRegion.show(newpickInstView);
 			this.$el.css({'z-index':'9999'});
 			$("#PlayerTreeRegionTree").css({'z-index':6});
 		}

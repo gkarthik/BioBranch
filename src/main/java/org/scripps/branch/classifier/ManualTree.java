@@ -133,6 +133,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 	/** Custom Classifier Object **/
 	protected LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
+	
+	protected Instances requiredInst;
 
 	/**
 	 * Trying to get generate distribution of classes
@@ -365,6 +367,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 			train = data.trainCV(m_NumFolds, 1, rand);
 			backfit = data.testCV(m_NumFolds, 1);
 		}
+		
+		//Set Default Instances for selection.
+		setRequiredInst(data);
 
 		// Create the attribute indices window
 		int[] attIndicesWindow = new int[data.numAttributes() - 1];
@@ -1635,6 +1640,19 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public void setTreeStructure(JsonNode rootNode) {
 		jsontree = rootNode;
 
+	}
+	
+	/**
+	 * Holds a required instances for distribution
+	 * 
+	 * @param rootNode
+	 */
+	public Instances getRequiredInst() {
+		return requiredInst;
+	}
+
+	public void setRequiredInst(Instances requiredInst) {
+		this.requiredInst = requiredInst;
 	}
 
 	/**
