@@ -9,6 +9,7 @@ define([
 	'app/views/layouts/PathwaySearchLayout',
 	'app/views/layouts/AggregateNodeLayout',
 	'app/views/FeatureBuilderView',
+	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
@@ -17,7 +18,7 @@ define([
 	'myGeneAutocomplete',
 	'jqueryui',
 	 'bootstrapSwitch'
-    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, FeatureBuilder, geneinfosummary, cfsummary, AddNodeTemplate) {
+    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
 AddRootNodeView = Marionette.ItemView.extend({
 	initialize : function() {
 	},
@@ -53,6 +54,9 @@ AddRootNodeView = Marionette.ItemView.extend({
 	showPickInstance: function(){
 		if(this.model){
 			 this.model.set('showPickInst',true);
+		 } else {
+			 var newpickInstView = new pickInstView({model: this.model});	
+			 Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
 		 }
 	},
 	chooseCategory: function(e){
