@@ -279,9 +279,18 @@ display: block;
 	position: fixed;
 	top: 15%;
 	height:80%;
-	left: 25%;
-	width: 50%;
+	left: 10%;
+	width: 80%;
 	z-index: 6;
+}
+
+.polygon-line{
+	stroke: #000;
+}
+
+.indicator-circle{
+	stroke: red;
+	fill: none;
 }
 
 #instance-data-chart{
