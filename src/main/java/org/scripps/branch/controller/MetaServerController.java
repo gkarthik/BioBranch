@@ -348,7 +348,9 @@ public class MetaServerController {
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
-		result.put("instances_data", mapper.valueToTree(instanceData));
+		if(data.path("pickedAttrs").size()>0){
+			result.put("instances_data", mapper.valueToTree(instanceData));
+		}
 		result.put("treestruct", treenode);
 		String result_json = "";
 		try {
@@ -359,7 +361,7 @@ public class MetaServerController {
 			// clinical variables.
 			e.printStackTrace();
 		}
-		if(distributionData.size()==0 && instanceData.size() == 0){
+		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
 			newScore.setNovelty(nov);
 			newScore.setDataset(data.get("dataset").asText());
 			newScore.setPct_correct(eval.pctCorrect());
