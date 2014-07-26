@@ -33,8 +33,11 @@ NodeCollection = Backbone.Collection.extend({
 				value: $("input[name='testOptions']:checked").val(),
 				percentSplit:  $("input[name='percent-split']").val()
 		};
+		var pickedAttrs = [];
 		if(reqArgs){
-			testOptions = reqArgs;
+			if(reqArgs.pickedAttrs){
+				pickedAttrs = reqArgs.pickedAttrs;
+			}
 		}
 		var args = {
 				command : "scoretree",
@@ -43,7 +46,8 @@ NodeCollection = Backbone.Collection.extend({
 				comment: Cure.Comment.get("content"),
 				player_id : Cure.Player.get('id'),
 				previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
-				testOptions: testOptions
+				testOptions: testOptions,
+				pickedAttrs: pickedAttrs
 			};
 		
 		//POST request to server.		
@@ -163,6 +167,10 @@ NodeCollection = Backbone.Collection.extend({
 						updateScore = false;
 					}
 				}
+				if(data.instances_data){
+					Cure.PlayerNodeCollection.setInstanceData(data.instances_data);
+					updateScore = false;
+				}
 				if(updateScore){
 					Cure.CfMatrix.setupMatrix(data.confusion_matrix);
 					//Storing Score in a Score Model.
@@ -210,6 +218,22 @@ NodeCollection = Backbone.Collection.extend({
 			}
 			requiredModel.set('getSplitData',false);
 			requiredModel.set('showDistChart',true);
+		}
+	},
+	setInstanceData: function(data){
+		var requiredModel = this.findWhere({pickInst: true});
+		if(requiredModel){
+			console.log(requiredModel.get('name'));
+			console.log(data);
+			requiredModel.set('pickInst',false);
+//			if(requiredModel.get('distribution_data')==null){
+//				var newDistData = new DistributionData(data);//Assuming only data of 1 model is sent with any request
+//				requiredModel.set('distribution_data', newDistData);
+//			} else {
+//				requiredModel.get('distribution_data').set(data);
+//			}
+//			requiredModel.set('getSplitData',false);
+//			requiredModel.set('showDistChart',true);
 		}
 	},
 	saveTree: function(){
