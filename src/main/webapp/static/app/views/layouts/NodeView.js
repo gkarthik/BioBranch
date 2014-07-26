@@ -36,8 +36,7 @@ NodeView = Marionette.Layout.extend({
 	regions: {
 		chartRegion: ".chartRegion",
 		addGeneRegion : ".addgeneinfo",
-		distributionChartRegion: ".distributionChartRegion",
-		pickInstRegion: ".pickInstRegion"
+		distributionChartRegion: ".distributionChartRegion"
 	},
 	events : {
 		'click button.addchildren' : 'addChildren',
@@ -134,9 +133,7 @@ NodeView = Marionette.Layout.extend({
 		if(this.model.get('showPickInst')==true){
 			this.model.set('showPickInst',false);
 			var newpickInstView = new pickInstView({model: this.model});	
-			this.pickInstRegion.show(newpickInstView);
-			this.$el.css({'z-index':'9999'});
-			$("#PlayerTreeRegionTree").css({'z-index':6});
+			Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
 		}
 	},
 	error: function(){
