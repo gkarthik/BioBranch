@@ -18,7 +18,9 @@ PickInstanceView = Marionette.ItemView.extend({
 		'click #get-instances': 'getInstances'
 	},
 	getInstances: function(){
-		this.model.set('pickInst',true);
+		if(this.model){
+			this.model.set('pickInst',true);
+		} 
 		var args = {};
 		var attrs = [];
 		var splits = [];
