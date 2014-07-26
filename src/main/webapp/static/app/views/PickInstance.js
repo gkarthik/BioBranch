@@ -35,7 +35,8 @@ PickInstanceView = Marionette.ItemView.extend({
 			w=this.width,
 			mX = 40,
 			mY = 20,
-			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart-wrapper");
+			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart-wrapper"),
+			thisView = this;
 		for(var temp in attr){
 			for(var i =0; i<2;i++){
 				if(max[i]<attr[temp][i]){
@@ -48,6 +49,7 @@ PickInstanceView = Marionette.ItemView.extend({
 		}		
 		
 		var vertices = [];
+		var attrPos = [];
 		var line;
 		var indicatorCircle;
 		var SVGParent = d3.select("#instance-data-chart").on("click", startLine);
@@ -63,7 +65,9 @@ PickInstanceView = Marionette.ItemView.extend({
 			    	if(Math.sqrt(Math.pow(vertices[0][0]-m[0],2)+Math.pow(vertices[0][1]-m[1],2))<=5){
 			    		line.attr("x2",vertices[0][0]).attr("y2",vertices[0][1]);
 				    	SVGParent.on("mousemove", null);
+				    	thisView.highlightDataPoints(attrPos, vertices);
 				    	vertices = [];
+				    	d3.selectAll(".data-point-circle").attr('fill',function(d){return (d[2]==1) ? "blue" : "red";});
 				    	indicatorCircle.remove();
 				    } else {
 				    	line = SVGParent.append("line")
@@ -125,13 +129,38 @@ PickInstanceView = Marionette.ItemView.extend({
 		
 		var layerEnter = layer.enter().append("g").attr("class","data-point")
 		.attr("transform",function(d){
+			attrPos.push([parseFloat(mX+attrScale2(d[1])), parseFloat(mY+attrScale1(d[0]))]);
 			return "translate("+parseFloat(mX+attrScale2(d[1]))+","+parseFloat(mY+attrScale1(d[0]))+")";
 		});
 
 		layerEnter.append('path')
 		.attr('d',arc)
+		.attr("class","data-point-circle")
+		.attr("id", function(d, i){
+			return "data-point-"+i;
+		})
 		.attr('fill',function(d){return (d[2]==1) ? "blue" : "red";});
 		
+	},
+	highlightDataPoints: function(attr, vertices){
+		var c;
+		for(var temp in attr){
+			if(!isNaN(attr[temp][0]) && !isNaN(attr[temp][1])){
+				c = this.pointInPolygon(vertices,attr[temp]);
+				if(c){
+					d3.select("#data-point-"+temp).style("fill","#000");
+				}
+			}
+		}
+	},
+	pointInPolygon: function(vertices, testPoint){
+		  var i, j, c = false;
+		  for (i = 0, j = vertices.length-1; i < vertices.length; j = i++) {
+		    if ( ((vertices[i][1]>testPoint[1]) != (vertices[j][1]>testPoint[1])) &&
+		     (testPoint[0] < (vertices[j][0]-vertices[i][0]) * (testPoint[1]-vertices[i][1]) / (vertices[j][1]-vertices[i][1]) + vertices[i][0]) )
+		       c = !c;
+		  }
+		  return c;
 	},
 	getInstances: function(){
 		if(this.model){
