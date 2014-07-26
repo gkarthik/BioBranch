@@ -386,15 +386,18 @@ public class ManualTree extends Classifier implements OptionHandler,
 			Instance inst = train.instance(i);
 			classProbs[(int) inst.classValue()] += inst.weight();
 		}
-
+		
+		Instances requiredInstances = getRequiredInst();
 		// Build tree
 		if (jsontree != null) {
 			buildTree(train, classProbs, new Instances(data, 0), m_Debug, 0,
-					jsontree, 0, m_distributionData, listOfFc);
+					jsontree, 0, m_distributionData, requiredInstances, listOfFc);
 		} else {
 			System.out
 					.println("No json tree specified, failing to process tree");
 		}
+		setRequiredInst(requiredInstances);
+		System.out.println("Instances: "+requiredInstances.numInstances());
 		// Backfit if required
 		if (backfit != null) {
 			backfitData(backfit);
@@ -431,7 +434,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 	 */
 	protected void buildTree(Instances data, double[] classProbs,
 			Instances header, boolean debug, int depth, JsonNode node,
-			int parent_index, HashMap m_distributionData,
+			int parent_index, HashMap m_distributionData, Instances requiredInstances,
 			LinkedHashMap<String, Classifier> custom_classifiers)
 			throws Exception {
 
@@ -441,7 +444,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// Store structure of dataset, set minimum number of instances
 		m_Info = header;
 		m_Debug = debug;
-
+		
 		// if in dead json return
 		if (node == null) {
 			m_Attribute = -1;
@@ -497,7 +500,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 		String kind = options.get("kind").asText();
 		JsonNode att_name = options.get("attribute_name");
 		Boolean getSplitData = false;
-
+		Boolean getInstanceData = false;
+		System.out.println(getInstanceData+": "+requiredInstances.numInstances());
 		// this allows me to modify the json tree structure to add data about
 		// the evaluation
 		ObjectNode evalresults = (ObjectNode) options;
@@ -582,7 +586,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			evalresults.put("infogain", vals[m_Attribute]);
 			evalresults.put("split_point", m_SplitPoint);
 			evalresults.put("orig_split_point", mp.get("orig_split_point"));
-
+			
 			if (Boolean.TRUE.equals(getSplitData)) {
 				addDistributionData(data, m_Attribute, m_distributionData);
 			}
@@ -654,7 +658,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if (son != null) {
 					m_Successors[i].buildTree(subsets[i], distribution[i],
 							header, m_Debug, depth + 1, son, attIndex,
-							m_distributionData, custom_classifiers);
+							m_distributionData, requiredInstances, custom_classifiers);
 				} else {
 					// if we are a split node with no input children, we need to
 					// add them into the tree
@@ -674,14 +678,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 						_node.put("children", children);
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, child, attIndex,
-								m_distributionData, custom_classifiers);
+								m_distributionData, requiredInstances, custom_classifiers);
 
 					} else {
 						// for leaf nodes, calling again ends the cycle and
 						// fills up the bins appropriately
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, node, attIndex,
-								m_distributionData, custom_classifiers);
+								m_distributionData, requiredInstances, custom_classifiers);
 					}
 				}
 			}
@@ -720,6 +724,16 @@ public class ManualTree extends Classifier implements OptionHandler,
 					maxCount = m_ClassDistribution[maxIndex];
 					errors = bin_size - maxCount;
 					pct_correct = (bin_size - errors) / bin_size;
+				}
+				if(node.get("pickInst") != null){
+					getInstanceData = node.get("pickInst").asBoolean();
+				}
+				if (Boolean.TRUE.equals(getInstanceData)) {
+					requiredInstances.delete();
+					for(int k=0;k<data.numInstances();k++){
+						requiredInstances.add(data.instance(k));
+					}
+					System.out.println(getInstanceData+": "+requiredInstances.numInstances());
 				}
 				String class_name = m_Info.classAttribute().value(maxIndex);
 				_node.put("name", class_name);
@@ -771,7 +785,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				_node.put("children", children);
 			}
 		}
-
 	}
 
 	/**
@@ -798,8 +811,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		double[][] dist = null;
 		int indexOfFirstMissingValue = -1;
 		String CustomClassifierId = null;
-		System.out.println("Attribute: " + att);
-		System.out.println("Total Attributes: " + data.numAttributes());
 		if (att >= data.numAttributes()) {
 			CustomClassifierId = getKeyinMap(custom_classifiers, att, data);
 		} else {
@@ -928,7 +939,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				}
 			}
 		} else {
-			System.out.println("Custom Classifier Id: " + CustomClassifierId);
 			Classifier fc = custom_classifiers.get(CustomClassifierId);
 			dist = new double[data.numClasses()][data.numClasses()];
 			Instance inst;
@@ -1044,7 +1054,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		} else if (m_Attribute >= m_Info.numAttributes()) {
 			String classifierId = "";
 			classifierId = getKeyinMap(listOfFc, m_Attribute, m_Info);
-			System.out.println("distributionForInstance: " + classifierId);
 			Classifier fc = listOfFc.get(classifierId);
 			double predictedClass = fc.classifyInstance(instance);
 			if (predictedClass != Instance.missingValue()) {

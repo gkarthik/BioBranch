@@ -1,5 +1,6 @@
 package org.scripps.branch.controller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
@@ -95,6 +97,9 @@ public class MetaServerController {
 
 	@Autowired
 	private TreeService treeService;
+	
+	@Autowired
+	private AttributeRepository attrRepo;
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
@@ -110,7 +115,7 @@ public class MetaServerController {
 	}
 
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
-	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data)
+	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
 			throws Exception {
 		String command = data.get("command").asText();
 		String result_json = "";
@@ -295,6 +300,31 @@ public class MetaServerController {
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
+		//get Attribute Data from instances
+		ArrayList instanceData = new ArrayList();
+		Instances reqInstances = readtree.getRequiredInst();
+		double[] values;
+		List<Integer> attrIndexes = new ArrayList<Integer>();
+		List<Attribute> attr;
+		int attrIndex = 0;
+		for (JsonNode el : data.path("pickedAttrs")) {
+			attr = new ArrayList<Attribute>();
+			attr = attrRepo.findByFeatureUniqueId(el.asText(), "metabric_with_clinical");
+			System.out.println(el.asText());
+			System.out.println(reqInstances.numInstances());
+			for(Attribute a : attr){	
+				attrIndex = reqInstances.attribute(a.getName()).index();
+			}
+			attrIndexes.add(attrIndex);
+		}
+		for(int i=0;i<reqInstances.numInstances();i++){
+			values = new double[3];
+			for(int j=0;j<attrIndexes.size();j++){
+				values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
+			}
+			values[2] = reqInstances.instance(i).classValue();
+			instanceData.add(values);
+		}
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
@@ -318,6 +348,7 @@ public class MetaServerController {
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
+		result.put("instances_data", mapper.valueToTree(instanceData));
 		result.put("treestruct", treenode);
 		String result_json = "";
 		try {
@@ -328,39 +359,41 @@ public class MetaServerController {
 			// clinical variables.
 			e.printStackTrace();
 		}
-		newScore.setNovelty(nov);
-		newScore.setDataset(data.get("dataset").asText());
-		newScore.setPct_correct(eval.pctCorrect());
-		newScore.setSize(numnodes);
-		double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval
-				.pctCorrect()));
-		newScore.setScore(score);
-		newScore = scoreRepo.saveAndFlush(newScore);
-		Tree newTree = new Tree();
-		newTree.setComment(data.get("comment").asText());
-		Date date = new Date();
-		newTree.setCreated(new DateTime(date.getTime()));
-		newTree.setFeatures(fList);
-		newTree.setCustomFeatures(cfList);
-		newTree.setCustomClassifiers(ccList);
-		newTree.setCustomTreeClassifiers(tList);
-		newTree.setJson_tree(result_json);
-		newTree.setPrivate_tree(false);
-		newTree.setUser(user);
-		newTree.setUser_saved(false);
-		newTree.setPrivate_tree(false);
-		newTree.setScore(newScore);
-		Tree prevTree = treeRepo
-				.findById(data.get("previous_tree_id").asLong());
-		newTree.setPrev_tree_id(prevTree);
-		if (data.get("command").asText().equals("savetree")) {
-			newTree.setUser_saved(true);
-			int privateflag = data.get("privateflag").asInt();
-			if (privateflag == 1) {
-				newTree.setPrivate_tree(true);
+		if(distributionData.size()==0 && instanceData.size() == 0){
+			newScore.setNovelty(nov);
+			newScore.setDataset(data.get("dataset").asText());
+			newScore.setPct_correct(eval.pctCorrect());
+			newScore.setSize(numnodes);
+			double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval
+					.pctCorrect()));
+			newScore.setScore(score);
+			newScore = scoreRepo.saveAndFlush(newScore);
+			Tree newTree = new Tree();
+			newTree.setComment(data.get("comment").asText());
+			Date date = new Date();
+			newTree.setCreated(new DateTime(date.getTime()));
+			newTree.setFeatures(fList);
+			newTree.setCustomFeatures(cfList);
+			newTree.setCustomClassifiers(ccList);
+			newTree.setCustomTreeClassifiers(tList);
+			newTree.setJson_tree(result_json);
+			newTree.setPrivate_tree(false);
+			newTree.setUser(user);
+			newTree.setUser_saved(false);
+			newTree.setPrivate_tree(false);
+			newTree.setScore(newScore);
+			Tree prevTree = treeRepo
+					.findById(data.get("previous_tree_id").asLong());
+			newTree.setPrev_tree_id(prevTree);
+			if (data.get("command").asText().equals("savetree")) {
+				newTree.setUser_saved(true);
+				int privateflag = data.get("privateflag").asInt();
+				if (privateflag == 1) {
+					newTree.setPrivate_tree(true);
+				}
 			}
+			treeRepo.saveAndFlush(newTree);
 		}
-		treeRepo.saveAndFlush(newTree);
 		return result_json;
 	}
 }

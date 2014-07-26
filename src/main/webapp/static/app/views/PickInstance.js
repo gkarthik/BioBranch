@@ -31,7 +31,7 @@ PickInstanceView = Marionette.ItemView.extend({
 		args.pickedAttrs = attrs;
 		args.splits = splits;
 		console.log(args);
-		//Cure.PlayerNodeCollection.sync(args);
+		Cure.PlayerNodeCollection.sync(args);
 	},
 	onShow: function(){
 		var thisUi = this.ui;
