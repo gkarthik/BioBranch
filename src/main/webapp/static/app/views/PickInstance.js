@@ -12,8 +12,8 @@ PickInstanceView = Marionette.ItemView.extend({
 	template: pickInstTmpl,
 	className: 'pick-instance-wrapper panel panel-default',
 	ui: {
-		gene_query: "#pick_gene_instances",
-		cf_query: "#pick_cf_instances"
+		gene_query: ".pick_gene_instances",
+		cf_query: ".pick_cf_instances"
 	},
 	events: {
 		'click #get-instances': 'getInstances',
@@ -26,13 +26,14 @@ PickInstanceView = Marionette.ItemView.extend({
 	height: 200,
 	width: 300,
 	drawChart: function(attr){
+		d3.select("#instance-data-chart").select(".instance-data-chart-wrapper").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],
 			h=this.height,
 			w=this.width,
 			mX = 40,
 			mY = 20,
-			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart");
+			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart-wrapper");
 		for(var temp in attr){
 			for(var i =0; i<2;i++){
 				if(max[i]<attr[temp][i]){
@@ -43,17 +44,31 @@ PickInstanceView = Marionette.ItemView.extend({
 				}
 			}
 		}		
-		var attrScale1 = d3.scale.linear().domain([min[0],max[0]]).range([h,0]);
+		var arc = d3.svg.symbol().type('circle').size(10);
+		var attrScale1 = d3.scale.linear().domain([min[0]-5,max[0]+5]).range([h,0]);
 		var revattrScale1 = d3.scale.linear().domain([h,0]).range([min[0],max[0]]);
 		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
 		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
-		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");
-		
-		var attrScale2 = d3.scale.linear().domain([min[1],max[1]]).range([0,w]);
+		.append("svg:text").text("Attribute 1").attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
+	
+		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
 		var revattrScale2 = d3.scale.linear().domain([0,w]).range([min[1],max[1]]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
-		.append("svg:text").text("Attribute 1").attr("transform","translate(-30,"+parseInt(h+mY+10)+")rotate(-90)").style("fill","#808080");
+		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");
+		
+		SVG.append("svg:g").attr("class","instance-points");
+		var layer = SVG.selectAll(".data-point").data(attr);
+		
+		var layerEnter = layer.enter().append("g").attr("class","data-point")
+		.attr("transform",function(d){
+			return "translate("+parseFloat(mX+attrScale2(d[1]))+","+parseFloat(mY+attrScale1(d[0]))+")";
+		});
+
+		layerEnter.append('path')
+		.attr('d',arc)
+		.attr('fill',function(d){return (d[2]==1) ? "blue" : "red";});
+		
 	},
 	getInstances: function(){
 		if(this.model){
@@ -131,7 +146,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			select : function(event, ui) {
 				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
 					$("#SpeechBubble").remove();
-					$("#pick-attribute-uniqueid-gene").val(ui.item.entrezgene);
+					$(this).parent().find(".pick-attribute-uniqueid-gene").val(ui.item.entrezgene);
 					$(this).val("");
 				}
 			}
@@ -197,7 +212,7 @@ PickInstanceView = Marionette.ItemView.extend({
 				console.log(ui.item);
 				if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
 						$("#SpeechBubble").remove();
-						$("#pick-attribute-uniqueid-cf").val(ui.item.unique_id);
+						$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
 					}
 			},
 		}).bind('focus', function(){ $(this).autocomplete("search"); } )
