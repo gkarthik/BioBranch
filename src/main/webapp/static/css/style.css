@@ -276,9 +276,16 @@ display: block;
 }
 
 .pick-instance-wrapper{
-	position: absolute;
-	left: 110px;
-	width: 200px;	
+	position: fixed;
+	top: 15%;
+	height:80%;
+	left: 25%;
+	width: 50%;
+	z-index: 6;
+}
+
+#instance-data-chart{
+	border: 2px solid #000;
 }
 
 #dragResize{

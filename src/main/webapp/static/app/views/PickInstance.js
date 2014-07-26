@@ -1,21 +1,59 @@
 define([
 	'jquery',
 	'marionette',
+	'd3',
 	//Templates
 	'text!static/app/templates/PickInstances.html',
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	'jqueryui'
-    ], function($, Marionette, pickInstTmpl, geneinfosummary, cfsummary) {
+    ], function($, Marionette, d3, pickInstTmpl, geneinfosummary, cfsummary) {
 PickInstanceView = Marionette.ItemView.extend({
 	template: pickInstTmpl,
-	className: 'pick-instance-wrapper',
+	className: 'pick-instance-wrapper panel panel-default',
 	ui: {
 		gene_query: "#pick_gene_instances",
 		cf_query: "#pick_cf_instances"
 	},
 	events: {
-		'click #get-instances': 'getInstances'
+		'click #get-instances': 'getInstances',
+		'click .pick-instance-close': 'closeView'
+	},
+	closeView: function(e){
+		e.preventDefault();
+		this.remove();
+	},
+	height: 200,
+	width: 300,
+	drawChart: function(attr){
+		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
+			min = [Number.MAX_VALUE, Number.MAX_VALUE],
+			h=this.height,
+			w=this.width,
+			mX = 40,
+			mY = 20,
+			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart");
+		for(var temp in attr){
+			for(var i =0; i<2;i++){
+				if(max[i]<attr[temp][i]){
+					max[i] = attr[temp][i];
+				}
+				if(min[i]>attr[temp][i]){
+					min[i] = attr[temp][i];
+				}
+			}
+		}		
+		var attrScale1 = d3.scale.linear().domain([min[0],max[0]]).range([h,0]);
+		var revattrScale1 = d3.scale.linear().domain([h,0]).range([min[0],max[0]]);
+		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
+		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
+		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");
+		
+		var attrScale2 = d3.scale.linear().domain([min[1],max[1]]).range([0,w]);
+		var revattrScale2 = d3.scale.linear().domain([0,w]).range([min[1],max[1]]);
+		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
+		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
+		.append("svg:text").text("Attribute 1").attr("transform","translate(-30,"+parseInt(h+mY+10)+")rotate(-90)").style("fill","#808080");
 	},
 	getInstances: function(){
 		if(this.model){
@@ -32,7 +70,6 @@ PickInstanceView = Marionette.ItemView.extend({
 		});
 		args.pickedAttrs = attrs;
 		args.splits = splits;
-		console.log(args);
 		Cure.PlayerNodeCollection.sync(args);
 	},
 	onShow: function(){

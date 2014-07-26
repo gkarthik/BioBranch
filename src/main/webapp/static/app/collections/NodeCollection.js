@@ -223,9 +223,9 @@ NodeCollection = Backbone.Collection.extend({
 	setInstanceData: function(data){
 		var requiredModel = this.findWhere({pickInst: true});
 		if(requiredModel){
-			console.log(requiredModel.get('name'));
-			console.log(data);
 			requiredModel.set('pickInst',false);
+		}
+		Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
 //			if(requiredModel.get('distribution_data')==null){
 //				var newDistData = new DistributionData(data);//Assuming only data of 1 model is sent with any request
 //				requiredModel.set('distribution_data', newDistData);
@@ -234,7 +234,6 @@ NodeCollection = Backbone.Collection.extend({
 //			}
 //			requiredModel.set('getSplitData',false);
 //			requiredModel.set('showDistChart',true);
-		}
 	},
 	saveTree: function(){
 		Cure.Comment.set("saving",1);
