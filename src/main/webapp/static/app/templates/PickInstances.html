@@ -4,15 +4,21 @@ Choose Instances<span><button type="button" class="close pick-instance-close" da
 <div class="panel-content">
 <span class="row">
 <div class="form-group pull-left">
+	<span class="label label-primary">Attribute 1</span>
  		<span class="label label-default">Add Genes</span>
-  		<input id="pick_gene_instances" class="query_target" placeholder="Enter Gene">
+  		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
+  		<span class="label label-default">Add Clinical Features</span>
+  		<input class="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
+  		 <input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-one">
   	</div>
-  	<div class="form-group pull-right">
+  	<div class="form-group pull-left">
+  	<span class="label label-primary">Attribute 2</span>
+  	<span class="label label-default">Add Genes</span>
+  		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
  		<span class="label label-default">Add Clinical Features</span>
-  		<input id="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
+  		<input class="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
+  		  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-two">
   	</div>
-  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-cf">
-  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-gene">
   	  	</span>
 <button class="btn btn-primary" id="get-instances">Get Instances</button>
 <svg id="instance-data-chart"></svg>
