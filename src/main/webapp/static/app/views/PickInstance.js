@@ -17,11 +17,40 @@ PickInstanceView = Marionette.ItemView.extend({
 	},
 	events: {
 		'click #get-instances': 'getInstances',
-		'click .pick-instance-close': 'closeView'
+		'click .pick-instance-close': 'closeView',
+		'click #build-selection': 'createCustomSet'
 	},
 	closeView: function(e){
 		e.preventDefault();
 		this.remove();
+	},
+	attributeVertices: [],
+	createCustomSet: function(){
+		var unique_ids = [];
+		$(".pick-attribute-uniqueid").each(function(){
+			unique_ids.push($(this).val());
+		});
+		var args = {
+				command : "custom_set_create",
+				constraints: this.attributeVertices,
+				unique_ids: unique_ids,
+				player_id : Cure.Player.get('id')
+			};
+		
+		//POST request to server.		
+		$.ajax({
+			type : 'POST',
+			url : this.url,
+			data : JSON.stringify(args),
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			success : function(data){
+				console.log(data);
+			},
+			error : function(){
+				console.log(error);
+			}
+		});
 	},
 	height: 200,
 	width: 300,
@@ -67,6 +96,11 @@ PickInstanceView = Marionette.ItemView.extend({
 			    		line.attr("x2",vertices[0][0]).attr("y2",vertices[0][1]);
 				    	SVGParent.on("mousemove", null);
 				    	thisView.highlightDataPoints(attrPos, vertices);
+				    	for(var temp in vertices){
+				    		vertices[temp][0] = revAttrScale1(vertices[temp][0]);
+				    		vertices[temp][1] = revAttrScale2(vertices[temp][1]);
+				    	}
+				    	thisView.attributeVertices = vertices;
 				    	vertices = [];
 				    	indicatorCircle.remove();
 				    } else {
@@ -113,13 +147,13 @@ PickInstanceView = Marionette.ItemView.extend({
 		
 		var arc = d3.svg.symbol().type('circle').size(10);
 		var attrScale1 = d3.scale.linear().domain([min[0]-5,max[0]+5]).range([h,0]);
-		var revattrScale1 = d3.scale.linear().domain([h,0]).range([min[0],max[0]]);
+		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-5,max[0]+5]);
 		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
 		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
 		.append("svg:text").text("Attribute 1").attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
 	
 		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
-		var revattrScale2 = d3.scale.linear().domain([0,w]).range([min[1],max[1]]);
+		var revattrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
 		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");

@@ -54,6 +54,10 @@ public class Tree {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_customtreeclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_tree_id") })
 	private List<Tree> customTreeClassifiers;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customset", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_set_id") })
+	private List<CustomSet> customSets;
 
 	@Column
 	private String comment;

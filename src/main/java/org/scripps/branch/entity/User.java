@@ -91,6 +91,9 @@ public class User extends BaseEntity<Long> {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<CustomClassifier> customclassifiers;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<CustomSet> customsets;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;

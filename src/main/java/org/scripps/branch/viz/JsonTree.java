@@ -10,12 +10,14 @@ import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
+import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomClassifierService;
@@ -55,12 +57,13 @@ public class JsonTree {
 
 	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f,
 			CustomFeatureRepository cf, CustomClassifierRepository cc,
-			TreeRepository t) {
+			TreeRepository t, CustomSetRepository cs) {
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
 		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
 				.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
+		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		if (fList == null) {
 			fList = new ArrayList<Feature>();
 		}
@@ -72,6 +75,9 @@ public class JsonTree {
 		}
 		if (tList == null) {
 			tList = new ArrayList<Tree>();
+		}
+		if (csList == null) {
+			csList = new ArrayList<CustomSet>();
 		}
 		ObjectNode options = (ObjectNode) node.get("options");
 		String uid = "";
@@ -97,6 +103,12 @@ public class JsonTree {
 					if (temp != null) {
 						ccList.add(temp);
 					}
+				} else if (uid.contains("custom_set")) {
+					CustomSet temp = cs.findById(Long.valueOf(uid
+							.replace("custom_set_", "")));
+					if (temp != null) {
+						csList.add(temp);
+					}
 				} else {
 					Feature temp = f.findByUniqueId(unique_id.asText());
 					if (temp != null) {
@@ -112,7 +124,7 @@ public class JsonTree {
 		ArrayNode children = (ArrayNode) node.get("children");
 		if (children != null) {
 			for (JsonNode child : children) {
-				getFeatures(child, mp, f, cf, cc, t);
+				getFeatures(child, mp, f, cf, cc, t, cs);
 			}
 		}
 	}
@@ -158,7 +170,7 @@ public class JsonTree {
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode,
 			String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr, CustomClassifierService ccService) {
+			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
 		ManualTree tree = new ManualTree();
 		try {
 			if (!dataset.equals("mammal")) {
@@ -167,6 +179,7 @@ public class JsonTree {
 			}
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
+			tree.setCustomRepo(cSetRepo.findAll());
 			tree.buildClassifier(weka.getTrain());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

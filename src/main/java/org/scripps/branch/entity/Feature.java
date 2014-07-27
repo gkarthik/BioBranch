@@ -56,6 +56,9 @@ public class Feature {
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomClassifier> custom_classifier;
+	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	private List<CustomSet> custom_set;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Pathway> pathway;
