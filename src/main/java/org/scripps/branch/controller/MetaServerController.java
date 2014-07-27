@@ -13,6 +13,7 @@ import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
 import org.scripps.branch.entity.Score;
@@ -23,6 +24,7 @@ import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
+import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.PathwayRepository;
 import org.scripps.branch.repository.ScoreRepository;
@@ -100,6 +102,9 @@ public class MetaServerController {
 	
 	@Autowired
 	private AttributeRepository attrRepo;
+	
+	@Autowired
+	private CustomSetRepository customSetRepo;
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
@@ -215,6 +220,20 @@ public class MetaServerController {
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}
+		} else if(command.contains("custom_set_")){
+			if(command.equals("custom_set_create")){
+				CustomSet c = new CustomSet();
+				c.setConstraints(data.get("constraints").asText());
+				List<Feature> fList = new ArrayList<Feature>();
+				for(JsonNode el : data.path("unique_ids")){
+					fList.add(featureRepo.findByUniqueId(el.asText()));
+				}
+				c.setFeatures(fList);
+				User user = userRepo.findById(data.get("player_id").asLong());
+				c.setUser(user);
+				c = customSetRepo.saveAndFlush(c);
+				result_json = mapper.writeValueAsString(c);
+			}
 		} else if (command.contains("pathway")) {
 			if (command.equals("search_pathways")) {
 				List<Pathway> pList = pathwayRepo.searchPathways(data.get(
@@ -295,7 +314,7 @@ public class MetaServerController {
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				data.get("dataset").asText(), custom_classifiers, attr,
-				cClassifierService);
+				cClassifierService, customSetRepo);
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
@@ -328,7 +347,7 @@ public class MetaServerController {
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
-				treeRepo);
+				treeRepo, customSetRepo);
 		User user = userRepo.findById(data.get("player_id").asLong());
 		Score newScore = new Score();
 		double nov = 0;
@@ -338,6 +357,7 @@ public class MetaServerController {
 		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
 				.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
+		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		nov = treeService
 				.getUniqueIdNovelty(fList, cfList, ccList, tList, user);
 		ObjectNode result = mapper.createObjectNode();
