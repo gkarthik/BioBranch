@@ -58,6 +58,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			if($("#draw-polygon").is(":checked")){
 				if(vertices.length==0){
 					SVGParent.selectAll(".polygon-line").remove();
+			    	d3.selectAll(".data-point-circle").style('fill',function(d){return (d[2]==1) ? "blue" : "red";});
 				}
 				SVGParent.on("mousemove", mousemove);
 			    var m = d3.mouse(this);
@@ -67,7 +68,6 @@ PickInstanceView = Marionette.ItemView.extend({
 				    	SVGParent.on("mousemove", null);
 				    	thisView.highlightDataPoints(attrPos, vertices);
 				    	vertices = [];
-				    	d3.selectAll(".data-point-circle").attr('fill',function(d){return (d[2]==1) ? "blue" : "red";});
 				    	indicatorCircle.remove();
 				    } else {
 				    	line = SVGParent.append("line")
@@ -139,7 +139,7 @@ PickInstanceView = Marionette.ItemView.extend({
 		.attr("id", function(d, i){
 			return "data-point-"+i;
 		})
-		.attr('fill',function(d){return (d[2]==1) ? "blue" : "red";});
+		.style('fill',function(d){return (d[2]==1) ? "blue" : "red";});
 		
 	},
 	highlightDataPoints: function(attr, vertices){
