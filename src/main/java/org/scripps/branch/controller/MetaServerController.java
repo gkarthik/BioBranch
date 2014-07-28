@@ -223,7 +223,7 @@ public class MetaServerController {
 		} else if(command.contains("custom_set_")){
 			if(command.equals("custom_set_create")){
 				CustomSet c = new CustomSet();
-				c.setConstraints(data.get("constraints").asText());
+				c.setConstraints(data.get("constraints").toString());
 				List<Feature> fList = new ArrayList<Feature>();
 				for(JsonNode el : data.path("unique_ids")){
 					fList.add(featureRepo.findByUniqueId(el.asText()));
