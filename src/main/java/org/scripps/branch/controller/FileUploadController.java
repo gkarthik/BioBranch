@@ -6,9 +6,11 @@ import java.io.FileOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.AttributeService;
@@ -63,6 +65,9 @@ public class FileUploadController {
 
 	@Autowired
 	WekaObject wekaobj;
+
+	@Autowired
+	CollectionRepository colRepo;
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -150,7 +155,13 @@ public class FileUploadController {
 	public @ResponseBody String uploadMultipleFileHandler(
 			@RequestParam("file") MultipartFile[] files,
 			@RequestParam("description") String description,
-			@RequestParam("datasetName") String datasetName) {
+			@RequestParam("datasetName") String datasetName,
+			@RequestParam("collectionId") long collectionId) {
+
+		LOGGER.debug("CollectionId = " + collectionId);
+
+		Collection colObj = colRepo.findById(collectionId);
+
 		String message = "";
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
@@ -193,19 +204,19 @@ public class FileUploadController {
 				stream.close();
 				message = message + "You successfully uploaded file=" + name
 						+ "<br />";
-
-				if (i == 2) {
-					System.out.println("file:" + serverFile.toString());
-					attrSer.generateAttributesFromDataset(wekaobj.getWeka()
-							.getTrain(), "metabric_with_clinical", serverFile
-							.toString());
-					message = message + "attribute file added";
-				}
-
-				if (i == 1) {
-					// message = message +
-					// runFeatureUpload(serverFile.toString());
-				}
+				//
+				// if (i == 2) {
+				// System.out.println("file:" + serverFile.toString());
+				// attrSer.generateAttributesFromDataset(wekaobj.getWeka()
+				// .getTrain(), "metabric_with_clinical", serverFile
+				// .toString());
+				// message = message + "attribute file added";
+				// }
+				//
+				// if (i == 1) {
+				// // message = message +
+				// // runFeatureUpload(serverFile.toString());
+				// }
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
@@ -219,6 +230,7 @@ public class FileUploadController {
 			dsObj.setFeaturefile(md5FileName[2]);
 			dsObj.setDescription(description);
 			dsObj.setName(datasetName);
+			dsObj.setCollection(colObj);
 			// dsObj.setUser(user);
 			dsObj = dataRepo.saveAndFlush(dsObj);
 		}
