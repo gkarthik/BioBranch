@@ -30,7 +30,7 @@ sidebarLayout = Marionette.Layout.extend({
 	    "AggNodeRegion":"#AggNodeRegion",
 	    "DatasetRegion":"#DatasetRegion",
 	    "ConfusionMatrixRegion": "#CfMatrixRegion",
-	    "pickInstanceRegion": ".pickInstRegion"
+	    "pickInstanceRegion": "#pickInstRegion"
     },
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",

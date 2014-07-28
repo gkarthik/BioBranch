@@ -22,6 +22,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "custom_set")
 public class CustomSet {
@@ -44,10 +46,18 @@ public class CustomSet {
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	@JoinTable(name = "custom_set_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_set_id") })
+	@JsonManagedReference
 	private List<Feature> features;
+	
+	@PrePersist
+	public void prePersist() {
+		DateTime now = DateTime.now();
+		this.created = now;
 
+	}
+	
 	public long getId() {
 		return id;
 	}

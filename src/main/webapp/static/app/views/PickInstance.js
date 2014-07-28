@@ -25,6 +25,10 @@ PickInstanceView = Marionette.ItemView.extend({
 		e.preventDefault();
 		this.remove();
 	},
+	initialize: function(){
+		_.bindAll(this,'getInstances', 'addNode');
+	},
+	attributes: [],
 	attributeVertices: [],
 	createCustomSet: function(){
 		var unique_ids = [];
@@ -104,6 +108,7 @@ PickInstanceView = Marionette.ItemView.extend({
 				});
 			}
 			Cure.PlayerNodeCollection.sync();
+			this.remove();
 	},
 	height: 200,
 	width: 300,
@@ -140,7 +145,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			if($("#draw-polygon").is(":checked")){
 				if(vertices.length==0){
 					SVGParent.selectAll(".polygon-line").remove();
-			    	d3.selectAll(".data-point-circle").style('fill',function(d){return (d[2]==1) ? "blue" : "red";});
+			    	d3.selectAll(".data-point-circle").style("stroke","none");
 				}
 				SVGParent.on("mousemove", mousemove);
 			    var m = d3.mouse(this);
@@ -203,13 +208,13 @@ PickInstanceView = Marionette.ItemView.extend({
 		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-5,max[0]+5]);
 		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
 		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
-		.append("svg:text").text("Attribute 1").attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
+		.append("svg:text").text(thisView.attributes[0]).attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
 	
 		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
 		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
-		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");
+		.append("svg:text").attr("transform","translate(0,30)").text(thisView.attributes[1]).style("fill","#808080");
 		
 		SVG.append("svg:g").attr("class","instance-points");
 		var layer = SVG.selectAll(".data-point").data(attr);
@@ -235,7 +240,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			if(!isNaN(attr[temp][0]) && !isNaN(attr[temp][1])){
 				c = this.pointInPolygon(vertices,attr[temp]);
 				if(c){
-					d3.select("#data-point-"+temp).style("fill","#000");
+					d3.select("#data-point-"+temp).style("stroke","lightgreen");
 				}
 			}
 		}
@@ -256,8 +261,10 @@ PickInstanceView = Marionette.ItemView.extend({
 		var args = {};
 		var attrs = [];
 		var splits = [];
+		var thisView = this;
 		$(".pick-attribute-uniqueid").each(function(){
 			attrs.push($(this).val());
+			thisView.attributes.push($(this).data('name'));
 		});
 		$(".pick-split").each(function(){
 			splits.push($(this).val());
@@ -276,6 +283,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			},
 			minLength: 1,
 			focus: function( event, ui ) {
+				var thisEl = this;
 				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
 				if($("#SpeechBubble")){
 					$("#SpeechBubble").remove();
@@ -294,7 +302,7 @@ PickInstanceView = Marionette.ItemView.extend({
 					}, {
 						variable : 'args'
 					});
-					var dropdown = $(thisUi.gene_query).data('my-genequery_autocomplete').bindings[0];
+					var dropdown = $(thisEl).data('my-genequery_autocomplete').bindings[1];
 					var offset = $(dropdown).offset();
 					var uiwidth = $(dropdown).width();
 					var width = 0.9 * (offset.left);
@@ -326,11 +334,12 @@ PickInstanceView = Marionette.ItemView.extend({
 				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
 					$("#SpeechBubble").remove();
 					$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
+					$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.symbol);
 					$(this).val("");
 				}
 			}
 		});
-		$(this.ui.gene_query).focus();
+		$(this.ui.gene_query)[0].focus();
 	},
 	showCf: function(){
 		var thisUi = this.ui;
@@ -360,7 +369,7 @@ PickInstanceView = Marionette.ItemView.extend({
 						long_name : ui.item.long_name,
 						description : ui.item.description
 					});
-					var dropdown = $(thisUi.cf_query).data('ui-autocomplete').bindings[1];
+					var dropdown = $(this).data('ui-autocomplete').bindings[1];
 					var offset = $(dropdown).offset();
 					var uiwidth = $(dropdown).width();
 					var width = 0.9 * (offset.left);
@@ -388,10 +397,11 @@ PickInstanceView = Marionette.ItemView.extend({
 				$("#SpeechBubble").remove();
 			},
 			select : function(event, ui) {
-				console.log(ui.item);
 				if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
 						$("#SpeechBubble").remove();
 						$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
+						$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.label);
+						$(this).val(ui.item.label);
 					}
 			},
 		}).bind('focus', function(){ $(this).autocomplete("search"); } )

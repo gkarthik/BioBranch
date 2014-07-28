@@ -293,6 +293,11 @@ display: block;
 	fill: none;
 }
 
+.data-point-circle{
+	stroke-width: 1;
+	stroke-opacity: 0.2;
+}
+
 #instance-data-chart{
 	border: 2px solid #000;
 }
