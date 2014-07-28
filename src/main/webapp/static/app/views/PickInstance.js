@@ -11,6 +11,7 @@ define([
 PickInstanceView = Marionette.ItemView.extend({
 	template: pickInstTmpl,
 	className: 'pick-instance-wrapper panel panel-default',
+	url:base_url+'MetaServer',
 	ui: {
 		gene_query: ".pick_gene_instances",
 		cf_query: ".pick_cf_instances"
@@ -44,13 +45,65 @@ PickInstanceView = Marionette.ItemView.extend({
 			data : JSON.stringify(args),
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
-			success : function(data){
-				console.log(data);
-			},
+			success : this.addNode,
 			error : function(){
 				console.log(error);
 			}
 		});
+	},
+	addNode: function(data){
+		console.log(data);
+		var model = this.model;
+		var kind_value = "";
+			try {
+				kind_value = model.get("options").get('kind');
+			} catch (exception) {
+			}
+			if (kind_value == "leaf_node") {
+					if(model.get("options")){
+						model.get("options").unset("split_point");
+					}
+					
+					if(model.get("distribution_data")){
+						model.get("distribution_data").set({
+							"range": -1
+						});
+					}
+				model.set("previousAttributes", model.toJSON());
+				model.set("name", "Selection");
+				model.set('accLimit', 0, {silent:true});
+				
+				var index = Cure.CollaboratorCollection.pluck("id").indexOf(Cure.Player.get('id'));
+				var newCollaborator;
+				if(index!=-1){
+					newCollaborator = Cure.CollaboratorCollection.at(index);
+				} else {
+					newCollaborator = new Collaborator({
+						"name": cure_user_name,
+						"id": Cure.Player.get('id'),
+						"created" : new Date()
+					});
+					Cure.CollaboratorCollection.add(newCollaborator);
+					index = Cure.CollaboratorCollection.indexOf(newCollaborator);
+				}
+				model.get("options").set({
+					"unique_id" : "custom_set_"+data.id,
+					"kind" : "split_node",
+					"full_name" : '',
+					"description" : data.constraints
+				});
+			} else {
+				new Node({
+					'name' : "Selection",
+					"options" : {
+						"unique_id" : "custom_set_"+data.id,
+						"kind" : "split_node",
+						"full_name" : '',
+						"description" : data.constraints
+					}
+				});
+			}
+			Cure.PlayerNodeCollection.sync();
 	},
 	height: 200,
 	width: 300,
@@ -97,8 +150,8 @@ PickInstanceView = Marionette.ItemView.extend({
 				    	SVGParent.on("mousemove", null);
 				    	thisView.highlightDataPoints(attrPos, vertices);
 				    	for(var temp in vertices){
-				    		vertices[temp][0] = revAttrScale1(vertices[temp][0]);
-				    		vertices[temp][1] = revAttrScale2(vertices[temp][1]);
+				    		vertices[temp][0] = revAttrScale2(vertices[temp][0]);
+				    		vertices[temp][1] = revAttrScale1(vertices[temp][1]);
 				    	}
 				    	thisView.attributeVertices = vertices;
 				    	vertices = [];
@@ -153,7 +206,7 @@ PickInstanceView = Marionette.ItemView.extend({
 		.append("svg:text").text("Attribute 1").attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
 	
 		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
-		var revattrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
+		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
 		.append("svg:text").attr("transform","translate(0,30)").text("Attribute 2").style("fill","#808080");
@@ -272,7 +325,7 @@ PickInstanceView = Marionette.ItemView.extend({
 			select : function(event, ui) {
 				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
 					$("#SpeechBubble").remove();
-					$(this).parent().find(".pick-attribute-uniqueid-gene").val(ui.item.entrezgene);
+					$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
 					$(this).val("");
 				}
 			}
