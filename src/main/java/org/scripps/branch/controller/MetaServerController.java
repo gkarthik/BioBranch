@@ -233,6 +233,10 @@ public class MetaServerController {
 				c.setUser(user);
 				c = customSetRepo.saveAndFlush(c);
 				result_json = mapper.writeValueAsString(c);
+			} else if(command.equals("custom_set_get")) {
+				CustomSet c = new CustomSet();
+				c = customSetRepo.findById(data.get("customset_id").asLong());
+				result_json = mapper.writeValueAsString(c);
 			}
 		} else if (command.contains("pathway")) {
 			if (command.equals("search_pathways")) {

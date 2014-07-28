@@ -35,6 +35,8 @@ import org.joda.time.DateTime;
 //) ENGINE=MyISAM AUTO_INCREMENT=43191 DEFAULT CHARSET=latin1;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "feature")
 @Transactional
@@ -58,6 +60,7 @@ public class Feature {
 	private List<CustomClassifier> custom_classifier;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	@JsonBackReference
 	private List<CustomSet> custom_set;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")

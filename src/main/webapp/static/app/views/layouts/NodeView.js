@@ -133,6 +133,7 @@ NodeView = Marionette.Layout.extend({
 		if(this.model.get('showPickInst')==true){
 			this.model.set('showPickInst',false);
 			var newpickInstView = new pickInstView({model: this.model});	
+			Cure.sidebarLayout.pickInstanceRegion.close();
 			Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
 		}
 	},
