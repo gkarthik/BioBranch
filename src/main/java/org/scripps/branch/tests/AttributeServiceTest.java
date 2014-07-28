@@ -28,7 +28,7 @@ public class AttributeServiceTest {
 		ctx.refresh();
 		InputStream r = ctx.getClass().getResourceAsStream(
 				"/WEB-INF/data/oslo_mapping.txt");
-		attrSer.getAttributeFeatureMapping(r);
+		// attrSer.getAttributeFeatureMapping(r);
 	}
 
 }
