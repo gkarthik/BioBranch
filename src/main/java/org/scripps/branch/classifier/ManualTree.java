@@ -661,7 +661,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 							(int) predictedClass);
 
 				} else if(m_Attribute >= data.numAttributes()+custom_classifiers.size() -1 ){
-					CustomSet cSet = cSetList.get(m_Attribute-(data.numAttributes()-1+custom_classifiers.size()));
+					CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+custom_classifiers.size()), cSetList);
+					System.out.println(cSet.getId()+": child Name");
 					JsonNode vertices = mapper.readTree(cSet.getConstraints());
 					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 					List<Attribute> aList = generateAttributeList(cSet, data);
@@ -850,7 +851,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		if (att >= data.numAttributes() && att < data.numAttributes()+custom_classifiers.size()) {
 			CustomClassifierId = getKeyinMap(custom_classifiers, att, data);
 		} else if(att>=data.numAttributes()+custom_classifiers.size()) {
-			cSet = getReqCustomSet(att-(data.numAttributes()-1+custom_classifiers.size()));
+			cSet = getReqCustomSet(att-(data.numAttributes()-1+custom_classifiers.size()), cSetList);
 		} else {
 			attribute = data.attribute(att);
 		}
@@ -990,7 +991,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 		} else if(cSet != null) {
 			dist = new double[data.numClasses()][data.numClasses()];
-			JsonNode vertices = mapper.valueToTree(cSet.getConstraints());
+			System.out.println(cSet.getId()+": distribution");
+			JsonNode vertices = mapper.readTree(cSet.getConstraints());
 			ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 			List<Attribute> aList = generateAttributeList(cSet, data);
 			double[] testPoint = new double[2];
@@ -999,9 +1001,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				testPoint = new double[2];
 				ctr = 0;
 				for(Attribute a:aList){
-					if(!data.instance(k).isMissing(a)){
 						testPoint[ctr] = data.instance(k).value(a);
-					}
 					ctr++;
 				}
 				int check = checkPointInPolygon(attrVertices, testPoint);
@@ -1059,10 +1059,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 		return mp;
 	}
 	
-	public CustomSet getReqCustomSet(int att){
+	public CustomSet getReqCustomSet(int att, List<CustomSet> csList){
 		CustomSet cs = new CustomSet();
 		for(int i=0;i<att;i++){
-			cs = cSetList.get(att);
+			cs = csList.get(att);
 		}
 		return cs;
 	}
@@ -1087,7 +1087,11 @@ public class ManualTree extends Classifier implements OptionHandler,
 		List<Feature> fList= cSet.getFeatures();
 		List<Attribute> aList = new ArrayList<Attribute>();
 		Attribute attr = null;
-		for(Feature f:fList){
+		Feature f =null;
+		for(int i=1;i>=0;i--){
+			f = new Feature();
+			f = fList.get(i);
+			System.out.println(f.getShort_name());
 			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
 				if(a.getDataset().equals("metabric_with_clinical")){
 					attr = data.attribute(a.getName());
@@ -1101,6 +1105,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public int checkPointInPolygon(List<double[]> vertices,double[] testPoint){
 		int i, j; 
 		Boolean c = false;
+		System.out.println(vertices.toString());
+		System.out.println(testPoint[0]+","+testPoint[1]);
 		  for (i = 0, j = vertices.size()-1; i < vertices.size(); j = i++) {
 		    if ( ((vertices.get(i)[1]>testPoint[1]) != (vertices.get(j)[1]>testPoint[1])) &&
 		     (testPoint[0] < (vertices.get(j)[0]-vertices.get(i)[0]) * (testPoint[1]-vertices.get(i)[1]) / (vertices.get(j)[1]-vertices.get(i)[1]) + vertices.get(i)[0]) )
@@ -1168,15 +1174,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 		} else if (m_Attribute >= m_Info.numAttributes()-1) {
 			if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
-				CustomSet cSet = cSetList.get(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()));
+				CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
+				System.out.println(cSet.getId()+": DIstribution for instance");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 				List<Attribute> aList = generateAttributeList(cSet, m_Info);
 				double[] testPoint = new double[2];
-				if(!(instance.isMissing(aList.get(0)) && instance.isMissing(aList.get(1)))){
 					testPoint[0] = instance.value(aList.get(0));
 					testPoint[1] = instance.value(aList.get(1));
-				}
 					int check = checkPointInPolygon(attrVertices, testPoint);
 					returnedDist = m_Successors[check]
 							.distributionForInstance(instance);
@@ -1843,7 +1848,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 		if (m_Attribute >= data.numAttributes()) {
 			if(m_Attribute>=listOfFc.size()+data.numAttributes()-1){
-				CustomSet cSet = cSetList.get(m_Attribute-(data.numAttributes()-1+listOfFc.size()));
+				CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+listOfFc.size()), cSetList);
+				System.out.println(cSet.getId()+": split data");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 				List<Attribute> aList = generateAttributeList(cSet, data);
@@ -1852,9 +1858,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				for(int k=0;k<data.numInstances();k++){
 					ctr = 0;
 					for(Attribute a:aList){
-						if(!data.instance(k).isMissing(a)){
 							testPoint[ctr] = data.instance(k).value(a);
-						}
 						ctr++;
 					}
 					int check = checkPointInPolygon(attrVertices, testPoint);
