@@ -147,7 +147,7 @@ JSONItemView = Marionette.ItemView.extend({
 			});
 		} else {
 			return customNodeSummaryTmpl({
-				id: serialized_model.cid,
+				id: serialized_model.options.cid,
 				name : name,
 				description : serialized_model.options.description,
 				kind : serialized_model.options.kind,
@@ -220,7 +220,7 @@ JSONItemView = Marionette.ItemView.extend({
 		if(requiredModel){
 			requiredModel.set('pickInst',false);
 		}
-		var id = "#custom-set-instances-"+this.model.get('cid');
+		var id = "#custom-set-instances-"+this.model.get('options').get('cid');
 		d3.select(id).select(".instance-data-chart-wrapper").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],
