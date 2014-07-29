@@ -3,6 +3,7 @@ package org.scripps.branch.controller;
 import java.util.List;
 
 import org.scripps.branch.entity.Collection;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.UserRepository;
@@ -34,6 +35,8 @@ public class CollectionController {
 	CollectionRepository collRepo;
 
 	protected static final String VIEW_PAGE = "user/collection";
+	protected static final String VIEW_PUBLIC_COLLECTION="user/publicCollection";
+
 
 	protected static final String VIEW = "user/view";
 	protected static final String ADD = "user/addCollection";
@@ -89,20 +92,22 @@ public class CollectionController {
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 		User user = null;
+		List<Collection> colObj=null;
 
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			userDetails = (UserDetails) auth.getPrincipal();
 			user = userRepo.findByEmail(userDetails.getUsername());
+			colObj = collRepo.findByUserId(user);
+			model.addAttribute("result", colObj);
 		}
-
-		List<Collection> colObj = collRepo.findByUserId(user);
+		
+		colObj = collRepo.getPublicCollection();
+		model.addAttribute("publicCollection", colObj);
+				
 
 		LOGGER.debug("user_id = " + user.getId());
-
-		model.addAttribute("result", colObj);
 
 		return VIEW;
 
 	}
-
 }

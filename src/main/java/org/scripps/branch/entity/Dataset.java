@@ -67,6 +67,9 @@ public class Dataset {
 	@Column(length = 1000)
 	private String description;
 
+	@Column
+	private boolean privateset;
+
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}
@@ -113,6 +116,10 @@ public class Dataset {
 
 	public String getName() {
 		return name;
+	}
+
+	public boolean isPrivateset() {
+		return privateset;
 	}
 
 	@PrePersist
@@ -168,6 +175,10 @@ public class Dataset {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setPrivateset(boolean privateset) {
+		this.privateset = privateset;
 	}
 
 }
