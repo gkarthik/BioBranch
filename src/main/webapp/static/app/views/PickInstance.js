@@ -157,8 +157,8 @@ PickInstanceView = Marionette.ItemView.extend({
 				    	SVGParent.on("mousemove", null);
 				    	thisView.highlightDataPoints(attrPos, vertices);
 				    	for(var temp in vertices){
-				    		vertices[temp][0] = revAttrScale2(vertices[temp][0]);
-				    		vertices[temp][1] = revAttrScale1(vertices[temp][1]);
+				    		vertices[temp][0] = revAttrScale2(vertices[temp][0]-mX);
+				    		vertices[temp][1] = revAttrScale1(vertices[temp][1]-mY);
 				    	}
 				    	thisView.attributeVertices = vertices;
 				    	vertices = [];
