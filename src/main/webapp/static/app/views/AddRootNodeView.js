@@ -55,8 +55,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 		if(this.model){
 			 this.model.set('showPickInst',true);
 		 } else {
-			 var newpickInstView = new pickInstView();
 			 Cure.sidebarLayout.pickInstanceRegion.close();
+			 var newpickInstView = new pickInstView();
 			 Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
 		 }
 	},

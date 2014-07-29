@@ -23,7 +23,7 @@ PickInstanceView = Marionette.ItemView.extend({
 	},
 	closeView: function(e){
 		e.preventDefault();
-		this.remove();
+		Cure.sidebarLayout.pickInstanceRegion.close();
 	},
 	initialize: function(){
 		_.bindAll(this,'getInstances', 'addNode');
@@ -76,6 +76,7 @@ PickInstanceView = Marionette.ItemView.extend({
 				model.set("previousAttributes", model.toJSON());
 				model.set("name", "Selection");
 				model.set('accLimit', 0, {silent:true});
+				model.set('pickInst', false);
 				
 				var index = Cure.CollaboratorCollection.pluck("id").indexOf(Cure.Player.get('id'));
 				var newCollaborator;
@@ -104,11 +105,12 @@ PickInstanceView = Marionette.ItemView.extend({
 						"kind" : "split_node",
 						"full_name" : '',
 						"description" : data.constraints
-					}
+					},
+					pickInst: false
 				});
 			}
 			Cure.PlayerNodeCollection.sync();
-			this.remove();
+			 Cure.sidebarLayout.pickInstanceRegion.close();
 	},
 	height: 200,
 	width: 300,
