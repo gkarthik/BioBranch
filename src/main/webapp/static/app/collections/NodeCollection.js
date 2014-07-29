@@ -142,7 +142,7 @@ NodeCollection = Backbone.Collection.extend({
 		Cure.PlayerNodeCollection.prevTreeId = data.id;
 		Cure.PlayerNodeCollection.parseResponse(JSON.parse(data.json_tree));
 		Cure.Comment.set("content",data.comment);
-		Cure.Comment.set("flagPrivate",data.private);
+		Cure.Comment.set("flagPrivate",data.private_tree);
 		Cure.utils.hideLoading();
 	},
 	parseResponse : function(data) {
@@ -244,6 +244,11 @@ NodeCollection = Backbone.Collection.extend({
 		var thisURL = this.url;
     if (Cure.PlayerNodeCollection.models[0]) {
       tree = Cure.PlayerNodeCollection.models[0].toJSON();
+      var testOptions = {
+				value: $("input[name='testOptions']:checked").val(),
+				percentSplit:  $("input[name='percent-split']").val()
+		};
+      console.log(Cure.Comment.get('flagPrivate'));
       var args = {
         command : "savetree",
         dataset : "metabric_with_clinical",
@@ -251,7 +256,9 @@ NodeCollection = Backbone.Collection.extend({
         player_id : Cure.Player.get('id'),
         comment : Cure.Comment.get("content"),
         previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
-        privateflag : Cure.Comment.get('flagPrivate')
+        privateflag : Cure.Comment.get('flagPrivate'),
+        testOptions: testOptions,
+        pickedAttrs:[]
       };
       $.ajax({
             type : 'POST',
