@@ -287,7 +287,7 @@ JSONItemView = Marionette.ItemView.extend({
 	    .append("polygon")
 	    .attr("points",function(d) { 
 	    	return d.map(function(d) {
-	            return [d.x,d.y].join(",");
+	            return [parseFloat(mX+d.x),parseFloat(mY+d.y)].join(",");
 	        }).join(" ");
 	    })
 	    .attr("stroke","black")

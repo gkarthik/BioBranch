@@ -13,7 +13,7 @@ define([
 NodeCollection = Backbone.Collection.extend({
 	model : Node,
 	initialize : function() {
-		_.bindAll(this, 'setDistributionData');
+		_.bindAll(this, 'setDistributionData', 'setInstanceData');
 	},
 	text_branches:{
 		branches: [],
@@ -223,9 +223,12 @@ NodeCollection = Backbone.Collection.extend({
 	setInstanceData: function(data){
 		var requiredModel = this.findWhere({pickInst: true});
 		if(requiredModel){
+			Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
 			requiredModel.set('pickInst',false);
 		}
-		Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
+		if(this.length == 0){
+			Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
+		}
 //			if(requiredModel.get('distribution_data')==null){
 //				var newDistData = new DistributionData(data);//Assuming only data of 1 model is sent with any request
 //				requiredModel.set('distribution_data', newDistData);
