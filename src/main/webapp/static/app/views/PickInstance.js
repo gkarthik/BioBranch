@@ -28,7 +28,7 @@ PickInstanceView = Marionette.ItemView.extend({
 	initialize: function(){
 		_.bindAll(this,'getInstances', 'addNode');
 	},
-	attributes: [],
+	attrs: [],
 	attributeVertices: [],
 	createCustomSet: function(){
 		var unique_ids = [];
@@ -210,13 +210,13 @@ PickInstanceView = Marionette.ItemView.extend({
 		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-5,max[0]+5]);
 		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
 		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
-		.append("svg:text").text(thisView.attributes[0]).attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
+		.append("svg:text").text(thisView.attrs[0]).attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
 	
 		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
 		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
-		.append("svg:text").attr("transform","translate(0,30)").text(thisView.attributes[1]).style("fill","#808080");
+		.append("svg:text").attr("transform","translate(0,30)").text(thisView.attrs[1]).style("fill","#808080");
 		
 		SVG.append("svg:g").attr("class","instance-points");
 		var layer = SVG.selectAll(".data-point").data(attr);
@@ -266,7 +266,7 @@ PickInstanceView = Marionette.ItemView.extend({
 		var thisView = this;
 		$(".pick-attribute-uniqueid").each(function(){
 			attrs.push($(this).val());
-			thisView.attributes.push($(this).data('name'));
+			thisView.attrs.push($(this).data('name'));
 		});
 		$(".pick-split").each(function(){
 			splits.push($(this).val());
