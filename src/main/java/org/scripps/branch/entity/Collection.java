@@ -49,7 +49,7 @@ public class Collection {
 	private String description;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "collection")
-	private List<Dataset> dataset;
+	private List<Dataset> datasets;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
@@ -60,7 +60,7 @@ public class Collection {
 	}
 
 	public List<Dataset> getDatasets() {
-		return dataset;
+		return datasets;
 	}
 
 	public String getDescription() {
@@ -100,7 +100,7 @@ public class Collection {
 	}
 
 	public void setDatasets(List<Dataset> datasets) {
-		this.dataset = datasets;
+		this.datasets = datasets;
 	}
 
 	public void setDescription(String description) {

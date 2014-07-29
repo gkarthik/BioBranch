@@ -3,6 +3,7 @@ package org.scripps.branch.repository;
 import java.util.List;
 
 import org.scripps.branch.entity.Collection;
+import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,10 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
 	// List <Collection> findByDatasetId(Dataset dataset);
 	//
 
+	@Query("select D.name, D.description, C.name, C.description,U.firstName "
+			+ "from Collection C, Dataset D, User U "
+			+ "where D.collection = C.id and D.privateset='false'"
+			+ "and C.user=U.id"
+			+ " order by C.name")
+	List<Collection> getPublicCollection();
 }

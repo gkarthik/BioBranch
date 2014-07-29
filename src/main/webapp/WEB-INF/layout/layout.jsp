@@ -64,7 +64,7 @@
 						</li>
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-								<a href="/branch/upload"> Upload Dataset</a>
+								<a href="/branch/collection"> My Collections</a>
 							</p>
 						</li>
 						<li>
