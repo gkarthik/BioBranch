@@ -17,6 +17,7 @@ import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
+import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
@@ -61,7 +62,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Override
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, String dataset) {
+			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo) {
 		System.out.println("ID befoire add: " + id);
 		System.out.println("Contains: " + custom_classifiers.containsKey(id));
 		if (!custom_classifiers.containsKey(id)) {
@@ -80,9 +81,10 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 			}
 			JsonTree jtree = new JsonTree();
 			rootNode = jtree.mapEntrezIdsToAttNames(weka, rootNode, dataset,
-					custom_classifiers, attrRepo, this);
+					custom_classifiers, attrRepo, this, cSetRepo);
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
+			tree.setCustomRepo(cSetRepo.findAll());
 			try {
 				tree.buildClassifier(weka.getTrain());
 			} catch (Exception e) {

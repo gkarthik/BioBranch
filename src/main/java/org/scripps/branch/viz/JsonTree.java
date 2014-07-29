@@ -132,7 +132,7 @@ public class JsonTree {
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
 			String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr, CustomClassifierService ccService) {
+			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
 		ObjectNode options = (ObjectNode) node.get("options");
 		if (options != null) {
 			JsonNode unique_id = options.get("unique_id");
@@ -151,7 +151,7 @@ public class JsonTree {
 				} else {
 					if (unique_id.asText().contains("custom_tree_")) {
 						ccService.addCustomTree(unique_id.asText(), weka,
-								custom_classifiers, dataset);
+								custom_classifiers, dataset, cSetRepo);
 					}
 					options.put("attribute_name", unique_id.asText());
 				}
@@ -161,7 +161,7 @@ public class JsonTree {
 		if (children != null) {
 			for (JsonNode child : children) {
 				mapEntrezIdsToAttNames(weka, child, dataset,
-						custom_classifiers, attr, ccService);
+						custom_classifiers, attr, ccService, cSetRepo);
 			}
 		}
 		return node;
@@ -175,7 +175,7 @@ public class JsonTree {
 		try {
 			if (!dataset.equals("mammal")) {
 				rootNode = mapEntrezIdsToAttNames(weka, rootNode, dataset,
-						custom_classifiers, attr, ccService);
+						custom_classifiers, attr, ccService, cSetRepo);
 			}
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
