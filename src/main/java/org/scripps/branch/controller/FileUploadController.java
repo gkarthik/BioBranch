@@ -74,7 +74,7 @@ public class FileUploadController {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Could not generate MD5", e);
 		}
 		md.update(name.getBytes());
 		byte[] digest = md.digest();

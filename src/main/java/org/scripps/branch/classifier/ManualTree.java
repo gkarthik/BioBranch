@@ -31,9 +31,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.CustomSetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -75,7 +78,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class ManualTree extends Classifier implements OptionHandler,
 		WeightedInstancesHandler, Randomizable, Drawable {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ManualTree.class);
 	/** for serialization */
 	static final long serialVersionUID = 8934314652175299374L;
 
@@ -409,7 +413,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		if (backfit != null) {
 			backfitData(backfit);
 		}
-		System.out.println(this.toString());
+		LOGGER.debug(this.toString());
 	}
 
 	/**
@@ -562,9 +566,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 					c++;
 				}
 			}
-			// System.out.println("Id name "+att_name+" index "+attIndex+" type "+kind+" sons "+c);
+			// LOGGER.debug("Id name "+att_name+" index "+attIndex+" type "+kind+" sons "+c);
 		} else {
-			// System.out.println("non split node, name "+att_name+" type "+kind);
+			// LOGGER.debug("non split node, name "+att_name+" type "+kind);
 		}
 		HashMap<String, Double> mp = new HashMap<String, Double>();
 		if (attIndex >= data.numAttributes() && attIndex < data.numAttributes()+custom_classifiers.size()) {
@@ -662,7 +666,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 				} else if(m_Attribute >= data.numAttributes()+custom_classifiers.size() -1 ){
 					CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+custom_classifiers.size()), cSetList);
-					System.out.println(cSet.getId()+": child Name");
+					LOGGER.debug(cSet.getId()+": child Name");
 					JsonNode vertices = mapper.readTree(cSet.getConstraints());
 					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 					List<Attribute> aList = generateAttributeList(cSet, data);
@@ -991,7 +995,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 		} else if(cSet != null) {
 			dist = new double[data.numClasses()][data.numClasses()];
-			System.out.println(cSet.getId()+": distribution");
+			LOGGER.debug(cSet.getId()+": distribution");
 			JsonNode vertices = mapper.readTree(cSet.getConstraints());
 			ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 			List<Attribute> aList = generateAttributeList(cSet, data);
@@ -1007,10 +1011,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				int check = checkPointInPolygon(attrVertices, testPoint);
 				dist[check][(int) data.instance(k).classValue()] += data.instance(k).weight();
 			}	
-			System.out.println(dist[0][0]);
-			System.out.println(dist[0][1]);
-			System.out.println(dist[1][0]);
-			System.out.println(dist[1][1]);
 		}
 
 		// Compute weights for subsetsCustomClassifierIndex
@@ -1091,7 +1091,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		for(int i=1;i>=0;i--){
 			f = new Feature();
 			f = fList.get(i);
-			System.out.println(f.getShort_name());
+			LOGGER.debug(f.getShort_name());
 			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
 				if(a.getDataset().equals("metabric_with_clinical")){
 					attr = data.attribute(a.getName());
@@ -1105,15 +1105,15 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public int checkPointInPolygon(List<double[]> vertices,double[] testPoint){
 		int i, j; 
 		Boolean c = false;
-		System.out.println(vertices.toString());
-		System.out.println(testPoint[0]+","+testPoint[1]);
+		LOGGER.debug(vertices.toString());
+		LOGGER.debug(testPoint[0]+","+testPoint[1]);
 		  for (i = 0, j = vertices.size()-1; i < vertices.size(); j = i++) {
 		    if ( ((vertices.get(i)[1]>testPoint[1]) != (vertices.get(j)[1]>testPoint[1])) &&
 		     (testPoint[0] < (vertices.get(j)[0]-vertices.get(i)[0]) * (testPoint[1]-vertices.get(i)[1]) / (vertices.get(j)[1]-vertices.get(i)[1]) + vertices.get(i)[0]) )
 		       c = !c;
 		  }
 		  if(c){
-			  System.out.println("True!");
+			  LOGGER.debug("True!");
 			  return 1;
 		  }
 		return 0;
@@ -1175,7 +1175,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		} else if (m_Attribute >= m_Info.numAttributes()-1) {
 			if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
 				CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
-				System.out.println(cSet.getId()+": DIstribution for instance");
+				LOGGER.debug(cSet.getId()+": DIstribution for instance");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 				List<Attribute> aList = generateAttributeList(cSet, m_Info);
@@ -1523,9 +1523,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 		 * FileInputStream(train_file), null, dataset);
 		 * evalAndAddNewFeatureValues("a17^2",weka.getTrain()); Instances data =
 		 * m_wekaObject.getTrain(); int numAttr = data.numAttributes()-2;
-		 * System.out.println(data.attribute(numAttr));
-		 * System.out.println(data.instance(13).value(16));
-		 * System.out.println(data.instance(13).value(numAttr));
+		 * LOGGER.debug(data.attribute(numAttr));
+		 * LOGGER.debug(data.instance(13).value(16));
+		 * LOGGER.debug(data.instance(13).value(numAttr));
 		 */
 		ManualTree t =new ManualTree();
 		List<double[]> vertices = new ArrayList<double[]>();
@@ -1551,7 +1551,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		int check = t.checkPointInPolygon(vertices,testPoint);
 		Boolean c = true;
 		c=!c;
-		System.out.println(check+": "+c);
+		LOGGER.debug(check+": "+c);
 	}
 
 	/**
@@ -1849,7 +1849,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		if (m_Attribute >= data.numAttributes()) {
 			if(m_Attribute>=listOfFc.size()+data.numAttributes()-1){
 				CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+listOfFc.size()), cSetList);
-				System.out.println(cSet.getId()+": split data");
+				LOGGER.debug(cSet.getId()+": split data");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 				List<Attribute> aList = generateAttributeList(cSet, data);
@@ -2136,7 +2136,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 			return text.toString();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Excepion",e);
 			return "RandomTree: tree can't be printed";
 		}
 	}

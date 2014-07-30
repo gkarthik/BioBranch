@@ -2,10 +2,13 @@ package org.scripps.branch.globalentity;
 
 import java.util.LinkedHashMap;
 
+import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.FeatureCustomRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +22,8 @@ public class WekaObject implements ApplicationContextAware {
 	private static ApplicationContext ctx;
 	private Weka weka;
 	private LinkedHashMap<String, Classifier> custom_classifiers;
-	private static int checktemp;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(WekaObject.class);
 
 	public static ApplicationContext getApplicationContext() {
 		return ctx;
@@ -58,7 +62,7 @@ public class WekaObject implements ApplicationContextAware {
 						"metabric_with_clinical");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Couldn't build Weka",e);
 			}
 		}
 
