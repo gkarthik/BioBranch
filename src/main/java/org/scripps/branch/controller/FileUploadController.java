@@ -202,18 +202,18 @@ public class FileUploadController {
 				message = message + "You successfully uploaded file=" + name
 						+ "<br />";
 
-				//				if (i == 2) {
-				//					System.out.println("file:" + serverFile.toString());
-				//					attrSer.generateAttributesFromDataset(wekaobj.getWeka()
-				//							.getTrain(), "metabric_with_clinical", serverFile
-				//							.toString());
-				//					message = message + "attribute file added";
-				//				}
+				// if (i == 2) {
+				// System.out.println("file:" + serverFile.toString());
+				// attrSer.generateAttributesFromDataset(wekaobj.getWeka()
+				// .getTrain(), "metabric_with_clinical", serverFile
+				// .toString());
+				// message = message + "attribute file added";
+				// }
 				//
-				//				if (i == 1) {
-				//					// message = message +
-				//					// runFeatureUpload(serverFile.toString());
-				//				}
+				// if (i == 1) {
+				// // message = message +
+				// // runFeatureUpload(serverFile.toString());
+				// }
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}

@@ -64,7 +64,9 @@
 						</li>
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-								<a href="/branch/collection"> My Collections</a>
+								
+								<a href="/branch/collection?user_id=${userId}">My Collection</a>
+						
 							</p>
 						</li>
 						<li>
