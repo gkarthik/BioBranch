@@ -21,6 +21,9 @@ import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomClassifierService;
+import org.scripps.branch.service.CustomClassifierServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import weka.classifiers.Classifier;
 
@@ -30,29 +33,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonTree {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonTree.class);
+	
 	public static void main(String[] args) {
-		// ObjectMapper mapper = new ObjectMapper();
-		// JsonTree t = new JsonTree();
-		// LinkedHashMap<String,Classifier> custom_classifiers = new
-		// LinkedHashMap<String,Classifier>();
-		// String dataset = "metabric_with_clinical";
-		// Weka weka = new Weka();
-		// JsonNode node = null;
-		// String json =
-		// "{\"options\":{\"unique_id\":\"metabric_with_clinical_5\"}}";
-		// try {
-		// node = mapper.readTree(json);
-		// } catch (JsonProcessingException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// node = t.mapEntrezIdsToAttNames(weka, node, dataset,
-		// custom_classifiers);
-		// System.out.println(node.toString());
+		
 	}
 
 	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f,
@@ -183,13 +168,13 @@ public class JsonTree {
 			tree.buildClassifier(weka.getTrain());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("JsonProcessingException",e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("IOException",e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Exception",e);
 		}
 		return tree;
 	}

@@ -7,10 +7,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -29,6 +32,8 @@ public class AttributeServiceImpl implements AttributeService {
 	
 	@Autowired
 	ApplicationContext ctx;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceImpl.class);
 
 	@Override
 	public void generateAttributesFromDataset(Instances data, String dataset,
@@ -43,7 +48,7 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-			System.out.println(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
+			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
 			attrRepo.saveAndFlush(attr);
 		}
@@ -62,16 +67,15 @@ public class AttributeServiceImpl implements AttributeService {
 				String[] tokens = line.split(DELIMITER);
 				if (tokens.length == 3) {
 					mp.put(tokens[0], tokens[2]);
-					System.out.println(tokens[0] + ": " + tokens[2]);
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Couldn't read resource",e);
 		} finally {
 			try {
 				fileReader.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Couldn't close file reader",e);
 			}
 		}
 		return mp;

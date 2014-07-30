@@ -23,6 +23,8 @@ import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,12 +61,12 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
 	HibernateAwareObjectMapper mapper;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomClassifierServiceImpl.class);
 
 	@Override
 	public void addCustomTree(String id, Weka weka,
 			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo) {
-		System.out.println("ID befoire add: " + id);
-		System.out.println("Contains: " + custom_classifiers.containsKey(id));
 		if (!custom_classifiers.containsKey(id)) {
 			Tree t = treeRepo.findById(Long.valueOf(id.replace("custom_tree_",
 					"")));
@@ -74,10 +76,10 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				rootNode = mapper.readTree(t.getJson_tree()).get("treestruct");
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Couldn't convert json to JsonNode",e);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("IO Exception",e);
 			}
 			JsonTree jtree = new JsonTree();
 			rootNode = jtree.mapEntrezIdsToAttNames(weka, rootNode, dataset,
@@ -89,7 +91,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				tree.buildClassifier(weka.getTrain());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Couldn't build classifier",e);
 			}
 			custom_classifiers.put(id, tree);
 		}
@@ -111,8 +113,8 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 						+ ",";
 			}
 		}
-		System.out.println("Building Classifier");
-		System.out.println(indices);
+		LOGGER.debug("Building Classifier");
+		LOGGER.debug(indices);
 		Remove rm = new Remove();
 		rm.setAttributeIndices(indices + "last");
 		rm.setInvertSelection(true); // build a classifier using only these
@@ -122,23 +124,19 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		switch (classifierType) {
 		case 0:
 			fc.setClassifier(new J48());
-			System.out.println("J48");
 			break;
 		case 1:
 			fc.setClassifier(new SMO());
-			System.out.println("SMO");
 			break;
 		case 2:
 			fc.setClassifier(new NaiveBayes());
-			System.out.println("NaiveBayes");
 			break;
 		}
 		try {
 			fc.buildClassifier(data);
-			System.out.println("Built Classifier");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error building classifier",e);
 		}
 		return fc;
 	}
@@ -201,9 +199,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		int ctr = 0;
 		for (Object entrezId : entrezIds.toArray()) {
 			f = new Feature();
-			System.out.println(entrezId.toString());
 			f = fRepo.findByUniqueId(entrezId.toString());
-			System.out.println(f.getId());
 			featureDbIds[ctr] = f.getId();
 			ctr++;
 		}

@@ -35,6 +35,8 @@ import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.service.TreeService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -57,6 +59,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class MetaServerController {
+	
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(MetaServerController.class);
 
 	@Autowired
 	private WekaObject weka;
@@ -108,13 +113,12 @@ public class MetaServerController {
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
-		// System.out.println(fList.size());
 		String result_json = "";
 		try {
 			result_json = mapper.writeValueAsString(fList);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Couldn't write clinical feature to string",e);
 		}
 		return result_json;
 	}
@@ -133,7 +137,6 @@ public class MetaServerController {
 			} else if (command.equals("get_trees_by_search")) {
 				List<Tree> tList = treeRepo.getTreesBySearch(data.get("query")
 						.asText());
-				System.out.println(tList.size());
 				result_json = mapper.writeValueAsString(tList);
 			} else if (command.equals("get_trees_user_id")) {
 				User user = userRepo.findById(data.get("user_id").asLong());
@@ -275,12 +278,9 @@ public class MetaServerController {
 		case 2:
 			float limitPercent = (data.get("testOptions").get("percentSplit")
 					.asLong()) / (float) 100;
-			System.out.println(limitPercent);
 			Instances[] classLimits = wekaObj.getInstancesInClass();
 			float numLimit = 0;
-			System.out.println(limitPercent);
 			numLimit = limitPercent * train.numInstances();
-			System.out.println(numLimit);
 			numLimit = Math.round(numLimit);
 			Instances newTrain = new Instances(train, Math.round(numLimit));
 			Instances newTest = new Instances(train, train.numInstances()
@@ -302,8 +302,6 @@ public class MetaServerController {
 			}
 			wekaObj.setTrain(newTrain);
 			wekaObj.setTest(newTest);
-			System.out.println(wekaObj.getTrain().numInstances());
-			System.out.println(wekaObj.getTest().numInstances());
 			// ArffSaver saver = new ArffSaver();
 			// saver.setInstances(newTrain);
 			// saver.setFile(new
@@ -333,8 +331,6 @@ public class MetaServerController {
 		for (JsonNode el : data.path("pickedAttrs")) {
 			attr = new ArrayList<Attribute>();
 			attr = attrRepo.findByFeatureUniqueId(el.asText(), "metabric_with_clinical");
-			System.out.println(el.asText());
-			System.out.println(reqInstances.numInstances());
 			for(Attribute a : attr){	
 				attrIndex = reqInstances.attribute(a.getName()).index();
 			}
@@ -355,11 +351,9 @@ public class MetaServerController {
 		User user = userRepo.findById(data.get("player_id").asLong());
 		Score newScore = new Score();
 		double nov = 0;
-		Boolean flag = true;
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
-		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
-				.get("ccList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
 		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		nov = treeService
@@ -380,10 +374,7 @@ public class MetaServerController {
 		try {
 			result_json = mapper.writeValueAsString(result);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch blockAim: Build a decision tree that
-			// predicts 10 year survival using gene expression values and
-			// clinical variables.
-			e.printStackTrace();
+			LOGGER.error("Couldn't write response from scoreSaveManualTree to String",e);
 		}
 		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
 			newScore.setNovelty(nov);
