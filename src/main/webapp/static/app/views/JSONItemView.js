@@ -224,7 +224,7 @@ JSONItemView = Marionette.ItemView.extend({
 		d3.select(id).select(".instance-data-chart-wrapper").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],
-			h = window.innerHeight * 0.3,
+			h = 200,
 			w = window.innerWidth * 0.4,
 			mX = 40,
 			mY = 20,
