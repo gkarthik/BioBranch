@@ -51,7 +51,7 @@ public class WekaObject implements ApplicationContextAware {
 			Resource train_file = ctx
 					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
 			Resource test_file = ctx
-					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
+					.getResource("/WEB-INF/data/Oslo_clinical_expression_OS_sample_filt.arff");
 			try {
 				wekaObj.buildWeka(train_file.getInputStream(),
 						test_file.getInputStream(), "test_set",

@@ -99,14 +99,14 @@ html, body{
 
 #AddRootNodeWrapper{
 	text-align: center;
-	max-width: 300px;
+	max-width: 340px;
 	margin: 0 auto;
 }
 
 .addgeneinfo{
 	position: absolute;
-	margin: 10px 1px 1px -105px;
-	width: 300px;
+	margin: 10px 1px 1px -125px;
+	width: 340px;
 }
 
 .addgeneinfo strong{
