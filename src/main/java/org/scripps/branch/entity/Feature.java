@@ -76,17 +76,6 @@ public class Feature {
 	private String long_name;
 
 	@Column(name = "description")
-		double[][][] dists = new double[data.numAttributes()
-				+ custom_classifiers.size()+cSetList.size()][0][0];
-					Instance inst = data.instance(i);
-					String classifierId = getKeyinMap(listOfFc, m_Attribute, data);
-					fc = listOfFc.get(classifierId);
-					predictedClass = fc.classifyInstance(inst);
-					if (predictedClass != Instance.missingValue()) {
-						subsets[(int) predictedClass].add(inst);
-						continue;
-					}
-
 	private String description;
 
 	@Basic(optional = false)
