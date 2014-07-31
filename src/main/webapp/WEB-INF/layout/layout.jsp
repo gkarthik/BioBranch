@@ -59,16 +59,21 @@
 									<spring:message code="label.navigation.signed.in.as.text" />
 								</c:if>
 								<!-- <sec:authentication property="principal.username" /> -->
-								<strong><a href="/branch/profile/">${firstName}</a></strong>
+								<strong><a href="/branch/profile/"><sec:authentication
+											property="principal.firstName" /></a></strong>
 							</p>
 						</li>
+
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-								
-								<a href="/branch/collection?user_id=${userId}">My Collection</a>
-						
+
+								<a
+									href="/branch/collection?user_id=<sec:authentication property="principal.id" />">My
+									Collection</a>
+
 							</p>
 						</li>
+
 						<li>
 							<p>
 							<form action="/branch/logout" method="POST">

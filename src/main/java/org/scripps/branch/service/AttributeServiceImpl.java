@@ -24,10 +24,10 @@ public class AttributeServiceImpl implements AttributeService {
 	AttributeRepository attrRepo;
 
 	@Autowired
-	FeatureRepository featureRepo;
+	ApplicationContext ctx;
 
 	@Autowired
-	ApplicationContext ctx;
+	FeatureRepository featureRepo;
 
 	@Override
 	public void generateAttributesFromDataset(Instances data, String dataset,

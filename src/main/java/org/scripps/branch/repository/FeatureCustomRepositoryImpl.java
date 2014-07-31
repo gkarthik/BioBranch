@@ -25,9 +25,9 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FeatureCustomRepositoryImpl.class);
 
-	protected EntityManager em;
-
 	private List<Attribute> dataset_attributes;
+
+	protected EntityManager em;
 
 	@Override
 	public Map<String, Feature> getByDataset(String dataset,

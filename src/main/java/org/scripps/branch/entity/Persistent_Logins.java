@@ -20,18 +20,18 @@ import org.joda.time.DateTime;
 @Table(name = "persistent_logins")
 public class Persistent_Logins {
 
+	@Column(name = "last_used")
+	private DateTime last_used;
+
 	@Id
 	@Column(name = "series")
 	private String series;
 
-	@Column(name = "username")
-	private String username;
-
 	@Column(name = "token")
 	private String token;
 
-	@Column(name = "last_used")
-	private DateTime last_used;
+	@Column(name = "username")
+	private String username;
 
 	public DateTime getLast_used() {
 		return last_used;

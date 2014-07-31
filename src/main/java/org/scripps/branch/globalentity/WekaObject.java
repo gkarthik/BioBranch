@@ -16,23 +16,25 @@ import weka.classifiers.Classifier;
 
 public class WekaObject implements ApplicationContextAware {
 
-	private static ApplicationContext ctx;
-	private Weka weka;
-	private LinkedHashMap<String, Classifier> custom_classifiers;
 	private static int checktemp;
+	private static ApplicationContext ctx;
 
 	public static ApplicationContext getApplicationContext() {
 		return ctx;
 	}
 
 	@Autowired
-	FeatureCustomRepository featurerepo;
+	CustomClassifierService ccService;
 
 	@Autowired
 	CustomFeatureService cfService;
 
+	private LinkedHashMap<String, Classifier> custom_classifiers;
+
 	@Autowired
-	CustomClassifierService ccService;
+	FeatureCustomRepository featurerepo;
+
+	private Weka weka;
 
 	public LinkedHashMap<String, Classifier> getCustomClassifierObject() {
 		return custom_classifiers;

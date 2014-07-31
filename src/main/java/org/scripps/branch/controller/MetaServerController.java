@@ -55,18 +55,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class MetaServerController {
 
 	@Autowired
-	private WekaObject weka;
-
-	@Autowired
 	@Qualifier("attributeRepository")
 	private AttributeRepository attr;
 
 	@Autowired
-	UserRepository userRepo;
+	private CustomClassifierRepository cClassifierRepo;
 
 	@Autowired
-	@Qualifier("treeRepository")
-	private TreeRepository treeRepo;
+	private CustomClassifierService cClassifierService;
+
+	@Autowired
+	private CustomFeatureRepository cfeatureRepo;
+
+	@Autowired
+	private CustomFeatureService cfeatureService;
 
 	@Autowired
 	@Qualifier("featureRepository")
@@ -76,25 +78,23 @@ public class MetaServerController {
 	private HibernateAwareObjectMapper mapper;
 
 	@Autowired
-	private CustomFeatureService cfeatureService;
-
-	@Autowired
-	private CustomFeatureRepository cfeatureRepo;
-
-	@Autowired
-	private CustomClassifierRepository cClassifierRepo;
-
-	@Autowired
-	private CustomClassifierService cClassifierService;
-
-	@Autowired
 	private PathwayRepository pathwayRepo;
 
 	@Autowired
 	private ScoreRepository scoreRepo;
 
 	@Autowired
+	@Qualifier("treeRepository")
+	private TreeRepository treeRepo;
+
+	@Autowired
 	private TreeService treeService;
+
+	@Autowired
+	UserRepository userRepo;
+
+	@Autowired
+	private WekaObject weka;
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();

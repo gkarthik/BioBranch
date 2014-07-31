@@ -6,9 +6,9 @@ import javax.validation.ConstraintValidatorContext;
 public class PasswordsNotEmptyValidator implements
 		ConstraintValidator<PasswordsNotEmpty, Object> {
 
-	private String validationTriggerFieldName;
 	private String passwordFieldName;
 	private String passwordVerificationFieldName;
+	private String validationTriggerFieldName;
 
 	@Override
 	public void initialize(PasswordsNotEmpty constraintAnnotation) {

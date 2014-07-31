@@ -27,10 +27,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class CustomFeatureTest {
 
 	@Autowired
-	private CustomFeatureService ser;
+	private CustomFeatureRepository cfRepo;
 
 	@Autowired
-	private CustomFeatureRepository cfRepo;
+	private CustomFeatureService ser;
 
 	@Autowired
 	private WekaObject weka;

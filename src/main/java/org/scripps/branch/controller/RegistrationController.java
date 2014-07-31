@@ -30,10 +30,10 @@ import Validation.DuplicateEmailException;
 @SessionAttributes("user")
 public class RegistrationController {
 
+	protected static final String ERROR_CODE_EMAIL_EXIST = "NotExist.user.email";
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(RegistrationController.class);
-
-	protected static final String ERROR_CODE_EMAIL_EXIST = "NotExist.user.email";
 	protected static final String MODEL_NAME_REGISTRATION_DTO = "user";
 	protected static final String VIEW_NAME_REGISTRATION_PAGE = "user/registrationForm";
 
@@ -121,28 +121,15 @@ public class RegistrationController {
 			LOGGER.debug("Validation errors found. Rendering form view.");
 			return VIEW_NAME_REGISTRATION_PAGE;
 		}
-
 		LOGGER.debug("No validation errors found. Continuing registration process.");
-
 		User registered = createUserAccount(userAccountData, result);
-
-		// If email address was already found from the database, render the form
-		// view.
 		if (registered == null) {
 			LOGGER.debug("An email address was found from the database. Rendering form view.");
 			return VIEW_NAME_REGISTRATION_PAGE;
 		}
-
 		LOGGER.debug("Registered user account with information: {}", registered);
-
-		// Logs the user in.
 		SecurityUtil.logInUser(registered);
 		LOGGER.debug("User {} has been signed in");
-		// If the user is signing in by using a social provider, this method
-		// call stores
-		// the connection to the UserConnection table. Otherwise, this method
-		// does not
-		// do anything.
 		ProviderSignInUtils.handlePostSignUp(registered.getEmail(), request);
 
 		return "redirect:/";

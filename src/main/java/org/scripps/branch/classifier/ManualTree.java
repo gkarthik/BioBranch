@@ -83,56 +83,56 @@ public class ManualTree extends Classifier implements OptionHandler,
 	 * 
 	 */
 
-	/** The subtrees appended to this tree. */
-	protected ManualTree[] m_Successors;
+	/** A tree captured from json **/
+	protected JsonNode jsontree;
 
-	/** The attribute to split on. */
-	protected int m_Attribute = -1;
-
-	/** The split point. */
-	protected double m_SplitPoint = Double.NaN;
-
-	/** The header information. */
-	protected Instances m_Info = null;
-
-	/** The proportions of training instances going down each branch. */
-	protected double[] m_Prop = null;
-
-	/** Class probabilities from the training data. */
-	protected double[] m_ClassDistribution = null;
-
-	/** Minimum number of instances for leaf. */
-	protected double m_MinNum = 1.0;
-
-	/** The number of attributes considered for a split. */
-	protected int m_KValue = 0;
-
-	/** The random seed to use. */
-	protected int m_randomSeed = 1;
-
-	/** The maximum depth of the tree (0 = unlimited) */
-	protected int m_MaxDepth = 0;
-
-	/** Determines how much data is used for backfitting */
-	protected int m_NumFolds = 0;
+	/** Custom Classifier Object **/
+	protected LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 
 	/** Whether unclassified instances are allowed */
 	protected boolean m_AllowUnclassifiedInstances = false;
 
-	/** a ZeroR model in case no model can be built from the data */
-	protected Classifier m_ZeroR;
+	/** The attribute to split on. */
+	protected int m_Attribute = -1;
 
-	/** A tree captured from json **/
-	protected JsonNode jsontree;
+	/** Class probabilities from the training data. */
+	protected double[] m_ClassDistribution = null;
 
 	/** distribution array **/
 	protected HashMap m_distributionData = new HashMap();
 
+	/** The header information. */
+	protected Instances m_Info = null;
+
+	/** The number of attributes considered for a split. */
+	protected int m_KValue = 0;
+
+	/** The maximum depth of the tree (0 = unlimited) */
+	protected int m_MaxDepth = 0;
+
+	/** Minimum number of instances for leaf. */
+	protected double m_MinNum = 1.0;
+
+	/** Determines how much data is used for backfitting */
+	protected int m_NumFolds = 0;
+
+	/** The proportions of training instances going down each branch. */
+	protected double[] m_Prop = null;
+
+	/** The random seed to use. */
+	protected int m_randomSeed = 1;
+
+	/** The split point. */
+	protected double m_SplitPoint = Double.NaN;
+
+	/** The subtrees appended to this tree. */
+	protected ManualTree[] m_Successors;
+
+	/** a ZeroR model in case no model can be built from the data */
+	protected Classifier m_ZeroR;
+
 	/** for building up the json tree **/
 	ObjectMapper mapper;
-
-	/** Custom Classifier Object **/
-	protected LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 
 	/**
 	 * Trying to get generate distribution of classes

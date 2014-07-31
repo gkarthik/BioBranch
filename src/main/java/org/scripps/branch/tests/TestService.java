@@ -43,6 +43,8 @@ public class TestService extends Feature {
 
 	}
 
+	private List<Attribute> dataset_attributes;
+
 	// @PersistenceContext(unitName = "DEFAULTJPA", type =
 	// PersistenceContextType.EXTENDED)
 	//
@@ -53,8 +55,6 @@ public class TestService extends Feature {
 	//
 	@PersistenceUnit(unitName = "DEFAULTJPA")
 	private EntityManager em;
-
-	private List<Attribute> dataset_attributes;
 
 	public TestService() {
 		super();

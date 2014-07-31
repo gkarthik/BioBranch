@@ -17,6 +17,10 @@ import javax.persistence.Table;
 @Table(name = "pathway")
 public class Pathway {
 
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "pathway_feature", joinColumns = { @JoinColumn(name = "pathway_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
+	private List<Feature> features;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
@@ -27,10 +31,6 @@ public class Pathway {
 
 	@Column
 	private String source_db;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "pathway_feature", joinColumns = { @JoinColumn(name = "pathway_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
-	private List<Feature> features;
 
 	public List<Feature> getFeatures() {
 		return features;

@@ -31,13 +31,13 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 public class FeatureJobConfig {
 
 	@Autowired
+	private EntityManagerFactory emf;
+
+	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
-
-	@Autowired
-	private EntityManagerFactory emf;
 
 	// tag::jobstep[]
 	@Bean

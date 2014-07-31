@@ -16,6 +16,8 @@ public class RegistrationForm {
 
 	public static final String FIELD_NAME_EMAIL = "email";
 
+	private String background;
+
 	@Email
 	@NotEmpty
 	@Size(max = 100)
@@ -33,11 +35,9 @@ public class RegistrationForm {
 
 	private String passwordVerification;
 
-	private SocialMediaService signInProvider;
-
-	private String background;
-
 	private String purpose;
+
+	private SocialMediaService signInProvider;
 
 	public RegistrationForm() {
 

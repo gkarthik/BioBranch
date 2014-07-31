@@ -35,7 +35,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,14 +44,16 @@ public class FileUploadController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FileUploadController.class);
 
-	@Autowired
-	UserRepository userRepo;
-
-	@Autowired
-	DatasetRepository dataRepo;
+	private static final String UPLOAD = "user/uploadMultiple";
 
 	@Autowired
 	AttributeService attrSer;
+
+	@Autowired
+	CollectionRepository colRepo;
+
+	@Autowired
+	DatasetRepository dataRepo;
 
 	@Autowired
 	private Job job;
@@ -61,10 +62,10 @@ public class FileUploadController {
 	private JobLauncher jobLauncher;
 
 	@Autowired
-	WekaObject wekaobj;
+	UserRepository userRepo;
 
 	@Autowired
-	CollectionRepository colRepo;
+	WekaObject wekaobj;
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -99,58 +100,15 @@ public class FileUploadController {
 		return "Unable to add feature table";
 	}
 
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	public @ResponseBody String uploadFileHandler(
-			@RequestParam("name") String name,
-			@RequestParam("file") MultipartFile file) {
-
-		// restrictor validate the file by the user with the file type using
-		// .getContentType (appliation/pdf, text/plain...
-		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-				LOGGER.debug("File content type" + file.getContentType());
-				// Creating the directory to store file
-				String rootPath = System.getProperty("catalina.home");
-				File dir = new File(
-						"/home/bob/workspace/branch/src/main/resources/uploads");
-				if (!dir.exists())
-					dir.mkdirs();
-
-				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				LOGGER.info("Server File Location="
-						+ serverFile.getAbsolutePath());
-
-				return "You successfully uploaded file=" + name;
-			} catch (Exception e) {
-				return "You failed to upload " + name + " => " + e.getMessage();
-			}
-		} else {
-			return "You failed to upload " + name
-					+ " because the file was empty.";
-		}
-	}
-
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.GET)
-	public String uploadFileHandler(WebRequest request, Model model) {
-		LOGGER.debug("Rendering homepage.");
-		return "user/upload";
-	}
-
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public @ResponseBody String uploadMultipleFileHandler(
+	public String uploadMultipleFileHandler(
 			@RequestParam("file") MultipartFile[] files,
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
 			@RequestParam("collectionId") long collectionId, WebRequest req) {
 
+		// restrictor validate the file by the user with the file type using
+		// .getContentType (appliation/pdf, text/plain...
 		String privateSet = "";
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
@@ -227,28 +185,19 @@ public class FileUploadController {
 			dsObj.setFeaturefile(md5FileName[2]);
 			dsObj.setDescription(description);
 			dsObj.setName(datasetName);
-
-			// dsObj.setUser(user);
-
 			if (privateSet.equals("1"))
 				dsObj.setPrivateset(true);
 			else
 				dsObj.setPrivateset(false);
-
 			dsObj.setCollection(colObj);
-
 			dsObj = dataRepo.saveAndFlush(dsObj);
 		}
-		return message;
+		return "redirect:/";
 	}
-
-	/**
-	 * Upload multiple file using Spring Controller
-	 */
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String uploadMultipleFileHandler(WebRequest request, Model model) {
 		LOGGER.debug("Rendering Multiple upload page");
-		return "user/uploadMultiple";
+		return UPLOAD;
 	}
 }

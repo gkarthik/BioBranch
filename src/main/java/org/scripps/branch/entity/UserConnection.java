@@ -39,9 +39,20 @@ public class UserConnection implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "userid", nullable = false)
-	private String userId;
+	@Column(name = "accesstoken", nullable = false)
+	private String accessToken;
+
+	@Column(name = "displayname")
+	private String displayName;
+
+	@Column(name = "expiretime")
+	private long expireTime;
+
+	@Column(name = "imageurl")
+	private String imageUrl;
+
+	@Column(name = "profileurl")
+	private String profileUrl;
 
 	@Id
 	@Column(name = "providerid", nullable = false)
@@ -54,26 +65,15 @@ public class UserConnection implements Serializable {
 	@Column(name = "rank", nullable = false)
 	private int rank;
 
-	@Column(name = "displayname")
-	private String displayName;
-
-	@Column(name = "profileurl")
-	private String profileUrl;
-
-	@Column(name = "imageurl")
-	private String imageUrl;
-
-	@Column(name = "accesstoken", nullable = false)
-	private String accessToken;
+	@Column(name = "refreshtoken")
+	private String refreshToken;
 
 	@Column(name = "secret")
 	private String secret;
 
-	@Column(name = "refreshtoken")
-	private String refreshToken;
-
-	@Column(name = "expiretime")
-	private long expireTime;
+	@Id
+	@Column(name = "userid", nullable = false)
+	private String userId;
 
 	public String getAccessToken() {
 		return accessToken;

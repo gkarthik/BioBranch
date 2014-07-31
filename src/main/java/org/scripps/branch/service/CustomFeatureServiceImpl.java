@@ -35,14 +35,14 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	AttributeRepository attrRepo;
 
 	@Autowired
-	@Qualifier("featureRepository")
-	FeatureRepository featureRepo;
-
-	@Autowired
 	CustomFeatureCustomRepository cfeatureCusRepo;
 
 	@Autowired
 	CustomFeatureRepository cfeatureRepo;
+
+	@Autowired
+	@Qualifier("featureRepository")
+	FeatureRepository featureRepo;
 
 	@Autowired
 	UserRepository userRepo;

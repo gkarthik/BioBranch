@@ -23,20 +23,19 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class CollectionController {
 
+	protected static final String ADD = "user/addCollection";
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CollectionController.class);
 
-	@Autowired
-	UserRepository userRepo;
-
-	@Autowired
-	CollectionRepository collRepo;
+	protected static final String VIEW = "user/view";
 
 	protected static final String VIEW_PAGE = "user/collection";
 	protected static final String VIEW_PUBLIC_COLLECTION = "user/publicCollection";
-
-	protected static final String VIEW = "user/view";
-	protected static final String ADD = "user/addCollection";
+	@Autowired
+	CollectionRepository collRepo;
+	@Autowired
+	UserRepository userRepo;
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addCollection(@RequestParam("name") String name,
@@ -64,7 +63,6 @@ public class CollectionController {
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String showAdd(WebRequest request, Model model) {
 		LOGGER.debug("Rendering Add.");
-
 		return ADD;
 	}
 
@@ -89,14 +87,10 @@ public class CollectionController {
 
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			userDetails = (UserDetails) auth.getPrincipal();
-
-			// LOGGER.debug(userDetails);
-
 			user = userRepo.findByEmail(userDetails.getUsername());
 			LOGGER.debug("user_id" + user_id);
 			LOGGER.debug("sign in :" + user.getId());
 			if (user_id.longValue() == user.getId()) {
-
 				LOGGER.debug("same user id");
 				colObj = collRepo.findByUser(user);
 				model.addAttribute("result", colObj);
@@ -112,8 +106,6 @@ public class CollectionController {
 				model.addAttribute("publicCollection", colObj);
 			}
 		}
-
 		return VIEW;
-
 	}
 }

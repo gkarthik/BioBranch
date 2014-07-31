@@ -19,8 +19,8 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 public class ApplicationConfig implements WebApplicationInitializer {
-	private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 	private static final String DISPATCHER_SERVLET_MAPPING = "/";
+	private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 
 	@Override
 	public void onStartup(ServletContext servletContext)

@@ -9,15 +9,15 @@ import weka.core.converters.ConverterUtils.DataSource;
 
 public class Weka {
 
-	private Instances train = null;
-	Instances test = null;
-	Random rand;
+	String dataset;
 	String eval_method; // {cross_validation, test_set, training_set}
 	Map<String, Feature> features;
-	String dataset;
-	Instances origTrain = null;
-	Instances origTest = null;
 	Instances[] instancesInClass;
+	Instances origTest = null;
+	Instances origTrain = null;
+	Random rand;
+	Instances test = null;
+	private Instances train = null;
 
 	public void buildWeka(InputStream train_stream, InputStream test_stream,
 			String method, String dataset) throws Exception {

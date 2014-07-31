@@ -42,22 +42,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
+	AttributeRepository attrRepo;
+
+	@Autowired
 	CustomClassifierRepository ccRepo;
 
 	@Autowired
 	FeatureRepository fRepo;
 
 	@Autowired
-	AttributeRepository attrRepo;
-
-	@Autowired
-	UserRepository userRepo;
+	HibernateAwareObjectMapper mapper;
 
 	@Autowired
 	TreeRepository treeRepo;
 
 	@Autowired
-	HibernateAwareObjectMapper mapper;
+	UserRepository userRepo;
 
 	@Override
 	public void addCustomTree(String id, Weka weka,

@@ -17,33 +17,33 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "tree_score")
 public class Score {
+	@Column(name = "created", nullable = false)
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime created = null;
+
+	@Column
+	private String dataset;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private long id;
 
-	@Column(name = "created", nullable = false)
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime created = null;
-
-	@OneToOne(mappedBy = "score")
-	@JsonBackReference
-	private Tree tree;
+	@Column
+	private double novelty;
 
 	@Column
 	private double pct_correct;
 
 	@Column
-	private double novelty;
+	private double score;
 
 	@Column
 	private double size;
 
-	@Column
-	private double score;
-
-	@Column
-	private String dataset;
+	@OneToOne(mappedBy = "score")
+	@JsonBackReference
+	private Tree tree;
 
 	public String getDataset() {
 		return dataset;

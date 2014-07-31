@@ -26,6 +26,25 @@ import org.joda.time.DateTime;
 @Table(name = "custom_feature")
 public class CustomFeature {
 
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
+
+	@Column
+	private String dataset;
+
+	@Column
+	private String description;
+
+	@Column
+	private String expression;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	private List<Feature> feature;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -34,31 +53,12 @@ public class CustomFeature {
 	@Column
 	private String name;
 
-	@Column
-	private String expression;
-
-	@Column
-	private String description;
-
-	@Column
-	private String dataset;
-
-	@Basic(optional = false)
-	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	@Temporal(TemporalType.TIMESTAMP)
-	private DateTime created;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customFeatures")
+	private List<Tree> tree;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
-	private List<Feature> feature;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customFeatures")
-	private List<Tree> tree;
 
 	public DateTime getCreated() {
 		return created;

@@ -25,14 +25,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class CollectionTest {
 
 	@Autowired
-	private UserRepository u;
-
-	@Autowired
 	@Qualifier("collectionRepository")
 	private CollectionRepository coll;
 
 	@Autowired
 	private DatasetRepository ds;
+
+	@Autowired
+	private UserRepository u;
 
 	@Test
 	public void testFindByUserId() {

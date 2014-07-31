@@ -38,10 +38,10 @@ public class PersistenceJPAConfig {
 	}
 
 	@Autowired
-	Environment env;
+	org.springframework.context.ApplicationContext ctx;
 
 	@Autowired
-	org.springframework.context.ApplicationContext ctx;
+	Environment env;
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
