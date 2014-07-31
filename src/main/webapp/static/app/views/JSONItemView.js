@@ -30,7 +30,7 @@ JSONItemView = Marionette.ItemView.extend({
 	tagName : "tr",
 	url:base_url+"MetaServer",
 	initialize : function() {
-		_.bindAll(this, 'getSummary', 'ShowJSON', 'HideJSON', 'renderTestCase', 'drawTreeStructure', 'HideView');
+		_.bindAll(this, 'getSummary', 'ShowJSON', 'HideJSON', 'renderTestCase', 'drawTreeStructure', 'HideView', 'drawCustomSetChart', 'getCustomSetInstances');
 		this.listenTo(this.model,'change:gene_summary', this.render);
 		this.model.bind('change:showJSON', function() {
 			if (this.model.get('showJSON') != 0) {
@@ -57,6 +57,8 @@ JSONItemView = Marionette.ItemView.extend({
 				this.getCustomClassifierFeatures();
 			} else if(this.model.get('options').get('unique_id').indexOf("custom_tree")!=-1) {
 				this.getCustomTreeStructure();
+			} else if(this.model.get('options').get('unique_id').indexOf("custom_set")!=-1) {
+				this.getCustomSet();
 			}
 		}
 	},
@@ -145,7 +147,7 @@ JSONItemView = Marionette.ItemView.extend({
 			});
 		} else {
 			return customNodeSummaryTmpl({
-				id: serialized_model.cid,
+				id: serialized_model.options.cid,
 				name : name,
 				description : serialized_model.options.description,
 				kind : serialized_model.options.kind,
@@ -153,6 +155,144 @@ JSONItemView = Marionette.ItemView.extend({
 			});
 		}
 		
+	},
+	getCustomSet: function(){
+		var args = {
+				command:"custom_set_get",
+				customset_id: this.model.get('options').get('unique_id').replace("custom_set_",""),
+    	        dataset: "metabric_with_clinical"
+    	      };
+    	      $.ajax({
+    	          type : 'POST',
+    	          url : this.url,
+    	          data : JSON.stringify(args),
+    	          dataType : 'json',
+    	          contentType : "application/json; charset=utf-8",
+    	          success : this.getCustomSetInstances,
+    	          error: this.error
+    	});
+	},
+	getCustomSetInstances: function(data){
+		this.model.set('pickInst',true);
+		var tree = [];
+		var thisView = this;
+		var cSetData = data;
+		if(Cure.PlayerNodeCollection.length>0){
+			tree = Cure.PlayerNodeCollection.at(0).toJSON();
+		}
+		Cure.utils.showLoading(null);
+		var testOptions = {
+				value: $("input[name='testOptions']:checked").val(),
+				percentSplit:  $("input[name='percent-split']").val()
+		};
+		var pickedAttrs = [];
+		for(var temp in data.features){
+			pickedAttrs.push(data.features[temp].unique_id);
+		}
+		var args = {
+				command : "scoretree",
+				dataset : "metabric_with_clinical",
+				treestruct : tree,
+				comment: Cure.Comment.get("content"),
+				player_id : Cure.Player.get('id'),
+				previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
+				testOptions: testOptions,
+				pickedAttrs: pickedAttrs
+			};
+		
+		//POST request to server.		
+		$.ajax({
+			type : 'POST',
+			url : this.url,
+			data : JSON.stringify(args),
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			success : function(data){
+				thisView.drawCustomSetChart(data, cSetData);
+			},
+			error : this.error
+		});
+	},
+	drawCustomSetChart: function(data, cSetData){
+		Cure.utils.hideLoading();
+		var attr = data.instances_data;
+		var requiredModel = Cure.PlayerNodeCollection.findWhere({pickInst: true});
+		if(requiredModel){
+			requiredModel.set('pickInst',false);
+		}
+		var id = "#custom-set-instances-"+this.model.get('options').get('cid');
+		d3.select(id).select(".instance-data-chart-wrapper").remove();
+		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
+			min = [Number.MAX_VALUE, Number.MAX_VALUE],
+			h = 200,
+			w = window.innerWidth * 0.4,
+			mX = 40,
+			mY = 20,
+			SVG = d3.select(id).attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart-wrapper"),
+			thisView = this;
+		for(var temp in attr){
+			for(var i =0; i<2;i++){
+				if(max[i]<attr[temp][i]){
+					max[i] = attr[temp][i];
+				}
+				if(min[i]>attr[temp][i]){
+					min[i] = attr[temp][i];
+				}
+			}
+		}		
+		
+		var polygonVertices = JSON.parse(cSetData.constraints);
+		var line;
+		var indicatorCircle;
+		
+		var arc = d3.svg.symbol().type('circle').size(10);
+		var attrScale1 = d3.scale.linear().domain([min[0]-5,max[0]+5]).range([h,0]);
+		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-5,max[0]+5]);
+		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
+		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
+		.append("svg:text").text(cSetData.features[0].short_name).attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
+	
+		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
+		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
+		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
+		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
+		.append("svg:text").attr("transform","translate(0,30)").text(cSetData.features[1].short_name).style("fill","#808080");
+		
+		SVG.append("svg:g").attr("class","instance-points");
+		var layer = SVG.selectAll(".data-point").data(attr);
+		
+		var layerEnter = layer.enter().append("g").attr("class","data-point")
+		.attr("transform",function(d){
+			return "translate("+parseFloat(mX+attrScale2(d[1]))+","+parseFloat(mY+attrScale1(d[0]))+")";
+		});
+
+		layerEnter.append('path')
+		.attr('d',arc)
+		.attr("class","data-point-circle")
+		.attr("id", function(d, i){
+			return "data-point-"+i;
+		})
+		.style('fill',function(d){return (d[2]==1) ? "blue" : "red";});
+		
+		var vertices = [];
+		for(var temp in polygonVertices){
+			vertices.push({"x":attrScale2(polygonVertices[temp][0]),"y":attrScale1(polygonVertices[temp][1])});
+		}
+		console.log(polygonVertices);
+		console.log(vertices);
+		
+		SVG.selectAll("polygon")
+	    .data([vertices])
+	    .enter()
+	    .append("polygon")
+	    .attr("points",function(d) { 
+	    	return d.map(function(d) {
+	            return [parseFloat(mX+d.x),parseFloat(mY+d.y)].join(",");
+	        }).join(" ");
+	    })
+	    .attr("stroke","black")
+	    .attr("stroke-width",1)
+	    .style("fill","none");
 	},
 	getCustomTreeStructure: function(){
 		var args = {
@@ -219,7 +359,6 @@ JSONItemView = Marionette.ItemView.extend({
     	          dataType : 'json',
     	          contentType : "application/json; charset=utf-8",
     	          success : function(data){
-    	        	  console.log(classifierInString(data));
     	        	  $(thisView.ui.featuresInClassifier).html(classifierInString(data));
     	          },
     	          error: this.error

@@ -75,15 +75,23 @@ public class User extends BaseEntity<Long> {
 		return new Builder();
 	}
 
+	@Id
 	@Column
 	private String background;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonBackReference
 	private List<Collection> collection;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<CustomClassifier> customclassifiers;
+	private List<CustomFeature> customfeatures;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<Dataset> datasets;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<CustomClassifier> customclassifiers;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<CustomFeature> customfeatures;
 
@@ -93,18 +101,11 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "first_name", length = 100, nullable = false)
 	private String firstName;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 
 	@Column(name = "password", length = 255)
 	private String password;
-
-	@Column
-	private String purpose;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", length = 20, nullable = false)
@@ -114,9 +115,11 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "sign_in_provider", length = 20)
 	private SocialMediaService signInProvider;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	@JsonBackReference
-	private List<Tree> trees;
+	@Column
+	private String background;
+
+	@Column
+	private String purpose;
 
 	public User() {
 

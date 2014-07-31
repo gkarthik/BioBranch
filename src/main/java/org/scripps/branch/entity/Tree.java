@@ -29,6 +29,36 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "tree")
 public class Tree {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id", insertable = true, updatable = true)
+	@JsonManagedReference
+	private User user;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
+	private List<Feature> features;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customfeature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	private List<CustomFeature> customFeatures;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
+	private List<CustomClassifier> customClassifiers;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customtreeclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_tree_id") })
+	private List<Tree> customTreeClassifiers;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customset", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_set_id") })
+	private List<CustomSet> customSets;
+
 	@Column
 	private String comment;
 
@@ -36,52 +66,26 @@ public class Tree {
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime created = null;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "tree_customclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
-	private List<CustomClassifier> customClassifiers;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "tree_customfeature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
-	private List<CustomFeature> customFeatures;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "tree_customtreeclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_tree_id") })
-	private List<Tree> customTreeClassifiers;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
-	private List<Feature> features;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
-
 	@Column
-	private String json_tree;
+	private boolean user_saved;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prev_tree_id", insertable = true, updatable = true)
 	private Tree prevTree;
-
-	@Column
-	private boolean private_tree = false;
-
-	@Transient
-	int rank = 0;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JsonManagedReference
 	@JoinColumn(name = "score", insertable = true, updatable = true)
 	private Score score;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", insertable = true, updatable = true)
-	@JsonManagedReference
-	private User user;
+	@Transient
+	int rank = 0;
 
 	@Column
-	private boolean user_saved;
+	private boolean private_tree = false;
+
+	@Column
+	private String json_tree;
 
 	public String getComment() {
 		return comment;

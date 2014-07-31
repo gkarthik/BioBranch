@@ -228,6 +228,7 @@ define([
 		Cure.ZoomControlsRegion.show(Cure.ZoomView);
 		Cure.LoginRegion.show(Cure.LoginView);
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
+		Cure.instanceData = {};
 		if(cure_tree_id!=undefined){
 			var args = {
 					command : "get_tree_by_id",

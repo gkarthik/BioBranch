@@ -6,11 +6,12 @@ define([
 	//View
 	'app/views/optionsView',
 	'app/views/distributionChartView',
+	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/LeafNode.html',
 	'text!static/app/templates/SplitValue.html',
 	'text!static/app/templates/SplitNode.html'
-    ], function($, Marionette, d3, optionsView, distributionChartView, LeafNodeTemplate, splitValueTemplate, splitNodeTemplate) {
+    ], function($, Marionette, d3, optionsView, distributionChartView, pickInstView, LeafNodeTemplate, splitValueTemplate, splitNodeTemplate) {
 NodeView = Marionette.Layout.extend({
 	tagName : 'div',
 	className : 'node dragHtmlGroup',
@@ -52,6 +53,7 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(this.model, 'remove', this.remove);
 		this.listenTo(this.model, 'change:collaborator',this.renderPlaceholder);
 		this.listenTo(this.model, 'change:showDistChart',this.showDistView);
+		this.listenTo(this.model, 'change:showPickInst',this.showPickInst);
 		this.listenTo(this.model.get('options'), 'change:kind', this.render);
 		this.listenTo(this.model, 'change:name', this.render);
 		this.listenTo(this.model.get('options'), 'change:accLimit', this.setNodeClass);
@@ -77,8 +79,23 @@ NodeView = Marionette.Layout.extend({
           		}
             }
           }
-          var container = $(".addnode_wrapper");
+          
+          classToclose = $('.pick-instance-wrapper');
           var geneList = $(".ui-autocomplete");
+          if (!classToclose.is(e.target)
+                  && classToclose.has(e.target).length == 0
+                  && !geneList.is(e.target)
+                  && geneList.has(e.target).length == 0) {
+        	  if (thisView.pickInstRegion && thisView.pickInstRegion.currentView) {
+            		var el = "."+thisView.pickInstRegion.currentView.className+" .pick-instance-wrapper";
+              		thisView.pickInstRegion.close();
+              		thisView.$el.css({'z-index':'3'});
+              		//Replace IDs with variables.
+              		$("#PlayerTreeRegionTree").css({'z-index':4});
+              }
+              }
+          
+          var container = $(".addnode_wrapper");
           if (!container.is(e.target)
               && container.has(e.target).length == 0
               && !geneList.is(e.target)
@@ -110,6 +127,14 @@ NodeView = Marionette.Layout.extend({
 			this.distributionChartRegion.show(newdistChartView);
 			this.$el.css({'z-index':'9999'});
 			$("#PlayerTreeRegionTree").css({'z-index':6});
+		}
+	},
+	showPickInst: function(){
+		if(this.model.get('showPickInst')==true){
+			this.model.set('showPickInst',false);
+			var newpickInstView = new pickInstView({model: this.model});	
+			Cure.sidebarLayout.pickInstanceRegion.close();
+			Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
 		}
 	},
 	error: function(){
