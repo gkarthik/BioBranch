@@ -1,5 +1,6 @@
 package org.scripps.branch.controller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,8 +10,10 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
 import org.scripps.branch.entity.Score;
@@ -21,6 +24,7 @@ import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
+import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.PathwayRepository;
 import org.scripps.branch.repository.ScoreRepository;
@@ -31,6 +35,8 @@ import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.service.TreeService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -53,6 +59,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class MetaServerController {
+	
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(MetaServerController.class);
 
 	@Autowired
 	@Qualifier("attributeRepository")
@@ -89,6 +98,12 @@ public class MetaServerController {
 
 	@Autowired
 	private TreeService treeService;
+	
+	@Autowired
+	private AttributeRepository attrRepo;
+	
+	@Autowired
+	private CustomSetRepository customSetRepo;
 
 	@Autowired
 	UserRepository userRepo;
@@ -98,19 +113,18 @@ public class MetaServerController {
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
-		// System.out.println(fList.size());
 		String result_json = "";
 		try {
 			result_json = mapper.writeValueAsString(fList);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Couldn't write clinical feature to string",e);
 		}
 		return result_json;
 	}
 
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
-	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data)
+	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
 			throws Exception {
 		String command = data.get("command").asText();
 		String result_json = "";
@@ -123,7 +137,6 @@ public class MetaServerController {
 			} else if (command.equals("get_trees_by_search")) {
 				List<Tree> tList = treeRepo.getTreesBySearch(data.get("query")
 						.asText());
-				System.out.println(tList.size());
 				result_json = mapper.writeValueAsString(tList);
 			} else if (command.equals("get_trees_user_id")) {
 				User user = userRepo.findById(data.get("user_id").asLong());
@@ -210,6 +223,24 @@ public class MetaServerController {
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}
+		} else if(command.contains("custom_set_")){
+			if(command.equals("custom_set_create")){
+				CustomSet c = new CustomSet();
+				c.setConstraints(data.get("constraints").toString());
+				List<Feature> fList = new ArrayList<Feature>();
+				for(JsonNode el : data.path("unique_ids")){
+					fList.add(featureRepo.findByUniqueId(el.asText()));
+				}
+				c.setFeatures(fList);
+				User user = userRepo.findById(data.get("player_id").asLong());
+				c.setUser(user);
+				c = customSetRepo.saveAndFlush(c);
+				result_json = mapper.writeValueAsString(c);
+			} else if(command.equals("custom_set_get")) {
+				CustomSet c = new CustomSet();
+				c = customSetRepo.findById(data.get("customset_id").asLong());
+				result_json = mapper.writeValueAsString(c);
+			}
 		} else if (command.contains("pathway")) {
 			if (command.equals("search_pathways")) {
 				List<Pathway> pList = pathwayRepo.searchPathways(data.get(
@@ -247,12 +278,9 @@ public class MetaServerController {
 		case 2:
 			float limitPercent = (data.get("testOptions").get("percentSplit")
 					.asLong()) / (float) 100;
-			System.out.println(limitPercent);
 			Instances[] classLimits = wekaObj.getInstancesInClass();
 			float numLimit = 0;
-			System.out.println(limitPercent);
 			numLimit = limitPercent * train.numInstances();
-			System.out.println(numLimit);
 			numLimit = Math.round(numLimit);
 			Instances newTrain = new Instances(train, Math.round(numLimit));
 			Instances newTest = new Instances(train, train.numInstances()
@@ -274,8 +302,6 @@ public class MetaServerController {
 			}
 			wekaObj.setTrain(newTrain);
 			wekaObj.setTest(newTest);
-			System.out.println(wekaObj.getTrain().numInstances());
-			System.out.println(wekaObj.getTest().numInstances());
 			// ArffSaver saver = new ArffSaver();
 			// saver.setInstances(newTrain);
 			// saver.setFile(new
@@ -290,24 +316,46 @@ public class MetaServerController {
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				data.get("dataset").asText(), custom_classifiers, attr,
-				cClassifierService);
+				cClassifierService, customSetRepo);
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
+		//get Attribute Data from instances
+		ArrayList instanceData = new ArrayList();
+		Instances reqInstances = readtree.getRequiredInst();
+		double[] values;
+		List<Integer> attrIndexes = new ArrayList<Integer>();
+		List<Attribute> attr;
+		int attrIndex = 0;
+		for (JsonNode el : data.path("pickedAttrs")) {
+			attr = new ArrayList<Attribute>();
+			attr = attrRepo.findByFeatureUniqueId(el.asText(), "metabric_with_clinical");
+			for(Attribute a : attr){	
+				attrIndex = reqInstances.attribute(a.getName()).index();
+			}
+			attrIndexes.add(attrIndex);
+		}
+		for(int i=0;i<reqInstances.numInstances();i++){
+			values = new double[3];
+			for(int j=0;j<attrIndexes.size();j++){
+				values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
+			}
+			values[2] = reqInstances.instance(i).classValue();
+			instanceData.add(values);
+		}
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
-				treeRepo);
+				treeRepo, customSetRepo);
 		User user = userRepo.findById(data.get("player_id").asLong());
 		Score newScore = new Score();
 		double nov = 0;
-		Boolean flag = true;
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
-		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
-				.get("ccList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
+		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		nov = treeService
 				.getUniqueIdNovelty(fList, cfList, ccList, tList, user);
 		ObjectNode result = mapper.createObjectNode();
@@ -318,49 +366,51 @@ public class MetaServerController {
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
+		if(data.path("pickedAttrs").size()>0){
+			result.put("instances_data", mapper.valueToTree(instanceData));
+		}
 		result.put("treestruct", treenode);
 		String result_json = "";
 		try {
 			result_json = mapper.writeValueAsString(result);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch blockAim: Build a decision tree that
-			// predicts 10 year survival using gene expression values and
-			// clinical variables.
-			e.printStackTrace();
+			LOGGER.error("Couldn't write response from scoreSaveManualTree to String",e);
 		}
-		newScore.setNovelty(nov);
-		newScore.setDataset(data.get("dataset").asText());
-		newScore.setPct_correct(eval.pctCorrect());
-		newScore.setSize(numnodes);
-		double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval
-				.pctCorrect()));
-		newScore.setScore(score);
-		newScore = scoreRepo.saveAndFlush(newScore);
-		Tree newTree = new Tree();
-		newTree.setComment(data.get("comment").asText());
-		Date date = new Date();
-		newTree.setCreated(new DateTime(date.getTime()));
-		newTree.setFeatures(fList);
-		newTree.setCustomFeatures(cfList);
-		newTree.setCustomClassifiers(ccList);
-		newTree.setCustomTreeClassifiers(tList);
-		newTree.setJson_tree(result_json);
-		newTree.setPrivate_tree(false);
-		newTree.setUser(user);
-		newTree.setUser_saved(false);
-		newTree.setPrivate_tree(false);
-		newTree.setScore(newScore);
-		Tree prevTree = treeRepo
-				.findById(data.get("previous_tree_id").asLong());
-		newTree.setPrev_tree_id(prevTree);
-		if (data.get("command").asText().equals("savetree")) {
-			newTree.setUser_saved(true);
-			int privateflag = data.get("privateflag").asInt();
-			if (privateflag == 1) {
-				newTree.setPrivate_tree(true);
+		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
+			newScore.setNovelty(nov);
+			newScore.setDataset(data.get("dataset").asText());
+			newScore.setPct_correct(eval.pctCorrect());
+			newScore.setSize(numnodes);
+			double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval
+					.pctCorrect()));
+			newScore.setScore(score);
+			newScore = scoreRepo.saveAndFlush(newScore);
+			Tree newTree = new Tree();
+			newTree.setComment(data.get("comment").asText());
+			Date date = new Date();
+			newTree.setCreated(new DateTime(date.getTime()));
+			newTree.setFeatures(fList);
+			newTree.setCustomFeatures(cfList);
+			newTree.setCustomClassifiers(ccList);
+			newTree.setCustomTreeClassifiers(tList);
+			newTree.setJson_tree(result_json);
+			newTree.setPrivate_tree(false);
+			newTree.setUser(user);
+			newTree.setUser_saved(false);
+			newTree.setPrivate_tree(false);
+			newTree.setScore(newScore);
+			Tree prevTree = treeRepo
+					.findById(data.get("previous_tree_id").asLong());
+			newTree.setPrev_tree_id(prevTree);
+			if (data.get("command").asText().equals("savetree")) {
+				newTree.setUser_saved(true);
+				int privateflag = data.get("privateflag").asInt();
+				if (privateflag == 1) {
+					newTree.setPrivate_tree(true);
+				}
 			}
+			treeRepo.saveAndFlush(newTree);
 		}
-		treeRepo.saveAndFlush(newTree);
 		return result_json;
 	}
 }

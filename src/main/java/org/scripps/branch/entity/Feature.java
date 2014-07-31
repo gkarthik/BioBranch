@@ -35,48 +35,65 @@ import org.joda.time.DateTime;
 //) ENGINE=MyISAM AUTO_INCREMENT=43191 DEFAULT CHARSET=latin1;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "feature")
 @Transactional
 public class Feature {
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<Attribute> attributes;
-
-	@Basic(optional = false)
-	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	@Temporal(TemporalType.TIMESTAMP)
-	private DateTime created;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<CustomClassifier> custom_classifier;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<CustomFeature> custom_feature;
-
-	@Column(name = "description")
-	private String description;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private long id;
 
-	@Column(name = "long_name", length = 250)
-	private String long_name;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
-	private List<Pathway> pathway;
-
-	@Column(name = "short_name", length = 30)
-	private String short_name;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<Attribute> attributes;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
 
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomFeature> custom_feature;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomClassifier> custom_classifier;
+	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	@JsonBackReference
+	private List<CustomSet> custom_set;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	private List<Pathway> pathway;
+
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
+
+	@Column(name = "short_name", length = 30)
+	private String short_name;
+
+	@Column(name = "long_name", length = 250)
+	private String long_name;
+
+	@Column(name = "description")
+		double[][][] dists = new double[data.numAttributes()
+				+ custom_classifiers.size()+cSetList.size()][0][0];
+					Instance inst = data.instance(i);
+					String classifierId = getKeyinMap(listOfFc, m_Attribute, data);
+					fc = listOfFc.get(classifierId);
+					predictedClass = fc.classifyInstance(inst);
+					if (predictedClass != Instance.missingValue()) {
+						subsets[(int) predictedClass].add(inst);
+						continue;
+					}
+
+	private String description;
+
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
 
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)

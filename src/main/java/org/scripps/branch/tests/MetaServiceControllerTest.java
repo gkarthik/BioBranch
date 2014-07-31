@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import javax.transaction.Transactional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scripps.branch.config.ApplicationContext;
@@ -23,29 +25,36 @@ import com.fasterxml.jackson.databind.JsonNode;
 @WebAppConfiguration
 @ActiveProfiles("production")
 @ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@Transactional
 public class MetaServiceControllerTest {
 
 	@Autowired
 	MetaServerController con;
 
-	@Autowired
-	HibernateAwareObjectMapper mp;
-
 	@Test
 	public void testScoreSave() throws Exception {
-		String content = "{\"command\":\"scoretree\",\"dataset\":\"metabric_with_clinical\",\"treestruct\":{\"name\":\"EGR3\",\"options\":{\"unique_id\":\"1960\",\"kind\":\"split_node\",\"full_name\":\"early growth response 3\",\"cid\":\"view86\",\"viewCSS\":{},\"accLimit\":57.01468189233279,\"viewWidth\":100,\"attribute_name\":\"ILMN_1722781\",\"bin_size\":1226,\"infogain\":0.013593144425844805,\"split_point\":6.048394999999999,\"orig_split_point\":6.048394999999999,\"pct_correct\":0.5701468189233279},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":700,\"y\":0,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"low\",\"options\":{\"attribute_name\":\"low\",\"kind\":\"split_value\",\"cid\":\"view104\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":233.33333333333331,\"y\":200,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"n\",\"options\":{\"attribute_name\":\"n\",\"kind\":\"leaf_node\",\"bin_size\":\"164\",\"errors\":\"65\",\"pct_correct\":\"0.6\",\"cid\":\"view134\",\"viewCSS\":{},\"accLimit\":8.02610114192496,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":233.33333333333331,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[]}]},{\"name\":\"high\",\"options\":{\"attribute_name\":\"high\",\"kind\":\"split_value\",\"cid\":\"view118\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":200,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"AURKA\",\"options\":{\"attribute_name\":\"y\",\"kind\":\"split_node\",\"bin_size\":\"1062\",\"errors\":\"428\",\"pct_correct\":\"0.6\",\"cid\":\"view156\",\"viewCSS\":{},\"accLimit\":51.97389885807504,\"viewWidth\":100,\"unique_id\":\"6790\",\"full_name\":\"aurora kinase A\"},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[],\"previousAttributes\":{\"name\":\"y\",\"options\":{\"attribute_name\":\"y\",\"kind\":\"leaf_node\",\"bin_size\":\"1062\",\"errors\":\"428\",\"pct_correct\":\"0.6\",\"cid\":\"view156\",\"viewCSS\":{},\"accLimit\":51.97389885807504,\"viewWidth\":100,\"unique_id\":\"9212\",\"full_name\":\"aurora kinase B\"},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[],\"previousAttributes\":[]}}]}]},\"comment\":\"\",\"player_id\":22}";
-		JsonNode data = null;
-		try {
-			data = mp.readTree(content);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		String content = "{\"command\":\"scoretree\",\"dataset\":\"metabric_with_clinical\",\"treestruct\":{\"name\":\"EGR3\",\"options\":{\"unique_id\":\"1960\",\"kind\":\"split_node\",\"full_name\":\"early growth response 3\",\"cid\":\"view86\",\"viewCSS\":{},\"accLimit\":57.01468189233279,\"viewWidth\":100,\"attribute_name\":\"ILMN_1722781\",\"bin_size\":1226,\"infogain\":0.013593144425844805,\"split_point\":6.048394999999999,\"orig_split_point\":6.048394999999999,\"pct_correct\":0.5701468189233279},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":700,\"y\":0,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"low\",\"options\":{\"attribute_name\":\"low\",\"kind\":\"split_value\",\"cid\":\"view104\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":233.33333333333331,\"y\":200,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"n\",\"options\":{\"attribute_name\":\"n\",\"kind\":\"leaf_node\",\"bin_size\":\"164\",\"errors\":\"65\",\"pct_correct\":\"0.6\",\"cid\":\"view134\",\"viewCSS\":{},\"accLimit\":8.02610114192496,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":233.33333333333331,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[]}]},{\"name\":\"high\",\"options\":{\"attribute_name\":\"high\",\"kind\":\"split_value\",\"cid\":\"view118\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":200,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[{\"name\":\"AURKA\",\"options\":{\"attribute_name\":\"y\",\"kind\":\"split_node\",\"bin_size\":\"1062\",\"errors\":\"428\",\"pct_correct\":\"0.6\",\"cid\":\"view156\",\"viewCSS\":{},\"accLimit\":51.97389885807504,\"viewWidth\":100,\"unique_id\":\"6790\",\"full_name\":\"aurora kinase A\"},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[],\"previousAttributes\":{\"name\":\"y\",\"options\":{\"attribute_name\":\"y\",\"kind\":\"leaf_node\",\"bin_size\":\"1062\",\"errors\":\"428\",\"pct_correct\":\"0.6\",\"cid\":\"view156\",\"viewCSS\":{},\"accLimit\":51.97389885807504,\"viewWidth\":100,\"unique_id\":\"9212\",\"full_name\":\"aurora kinase B\"},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":1166.6666666666667,\"y\":300,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"karthik\",\"id\":3,\"created\":\"2014-07-15T20:28:20.775Z\"},\"children\":[],\"previousAttributes\":[]}}]}]},\"comment\":\"\",\"player_id\":22}";
+//		JsonNode data = null;
+//		try {
+//			data = mp.readTree(content);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		String res = con.scoreSaveManualTree(data);
+//		assertEquals(res != null, true);
+	}
+	
+	@Test
+	public void testCUstomSet() throws Exception{
+		HibernateAwareObjectMapper mp = new HibernateAwareObjectMapper();
+		String json = "{\"command\":\"scoretree\",\"dataset\":\"metabric_with_clinical\",\"treestruct\":{\"name\":\"Selection\",\"options\":{\"unique_id\":\"custom_set_12\",\"kind\":\"split_node\",\"full_name\":\"\",\"description\":\"[[68.96707698109537,9.77029191278141],[72.7365139784144,1.7817842071076524],[101.5098868924193,1.9306383879587166],[101.69835874228525,10.316090575901978]]\",\"cid\":\"view95\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"pickInst\":false,\"children\":[],\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":0,\"y\":0,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"Karthik\",\"id\":1,\"created\":\"2014-07-28T18:26:56.437Z\"}},\"comment\":\"\",\"player_id\":1,\"previous_tree_id\":-1,\"testOptions\":{\"value\":\"0\",\"percentSplit\":\"\"},\"pickedAttrs\":[]}";
+		JsonNode data = mp.readTree(json);
 		String res = con.scoreSaveManualTree(data);
-		assertEquals(res != null, true);
+		assertEquals(res!=null,true);
 	}
 
 	public void testTree() throws Exception {

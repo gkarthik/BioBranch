@@ -17,11 +17,14 @@ import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
+import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,28 +45,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
-	AttributeRepository attrRepo;
-
-	@Autowired
 	CustomClassifierRepository ccRepo;
 
 	@Autowired
 	FeatureRepository fRepo;
 
 	@Autowired
-	HibernateAwareObjectMapper mapper;
+	AttributeRepository attrRepo;
+
+	@Autowired
+	UserRepository userRepo;
 
 	@Autowired
 	TreeRepository treeRepo;
 
 	@Autowired
-	UserRepository userRepo;
+	HibernateAwareObjectMapper mapper;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomClassifierServiceImpl.class);
 
 	@Override
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, String dataset) {
-		System.out.println("ID befoire add: " + id);
-		System.out.println("Contains: " + custom_classifiers.containsKey(id));
+			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo) {
 		if (!custom_classifiers.containsKey(id)) {
 			Tree t = treeRepo.findById(Long.valueOf(id.replace("custom_tree_",
 					"")));
@@ -73,21 +76,22 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				rootNode = mapper.readTree(t.getJson_tree()).get("treestruct");
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Couldn't convert json to JsonNode",e);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("IO Exception",e);
 			}
 			JsonTree jtree = new JsonTree();
 			rootNode = jtree.mapEntrezIdsToAttNames(weka, rootNode, dataset,
-					custom_classifiers, attrRepo, this);
+					custom_classifiers, attrRepo, this, cSetRepo);
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
+			tree.setCustomRepo(cSetRepo.findAll());
 			try {
 				tree.buildClassifier(weka.getTrain());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Couldn't build classifier",e);
 			}
 			custom_classifiers.put(id, tree);
 		}
@@ -109,34 +113,30 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 						+ ",";
 			}
 		}
-		System.out.println("Building Classifier");
-		System.out.println(indices);
+		LOGGER.debug("Building Classifier");
+		LOGGER.debug(indices);
 		Remove rm = new Remove();
 		rm.setAttributeIndices(indices + "last");
 		rm.setInvertSelection(true); // build a classifier using only these
-		// attributes
+										// attributes
 		FilteredClassifier fc = new FilteredClassifier();
 		fc.setFilter(rm);
 		switch (classifierType) {
 		case 0:
 			fc.setClassifier(new J48());
-			System.out.println("J48");
 			break;
 		case 1:
 			fc.setClassifier(new SMO());
-			System.out.println("SMO");
 			break;
 		case 2:
 			fc.setClassifier(new NaiveBayes());
-			System.out.println("NaiveBayes");
 			break;
 		}
 		try {
 			fc.buildClassifier(data);
-			System.out.println("Built Classifier");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error building classifier",e);
 		}
 		return fc;
 	}
@@ -153,7 +153,6 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return buildCustomClasifier(weka, featuresDbId, cc.getType());
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public HashMap getClassifierDetails(long id, String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers) {
@@ -187,7 +186,6 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return listOfClassifiers;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 	@Override
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
 			String name, String description, int player_id, Weka weka,
@@ -201,9 +199,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		int ctr = 0;
 		for (Object entrezId : entrezIds.toArray()) {
 			f = new Feature();
-			System.out.println(entrezId.toString());
 			f = fRepo.findByUniqueId(entrezId.toString());
-			System.out.println(f.getId());
 			featureDbIds[ctr] = f.getId();
 			ctr++;
 		}
@@ -256,7 +252,6 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		return results;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds,
 			int classifierType, String name, String description, int player_id,

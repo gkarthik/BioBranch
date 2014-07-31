@@ -9,6 +9,7 @@ define([
 	'app/views/layouts/PathwaySearchLayout',
 	'app/views/layouts/AggregateNodeLayout',
 	'app/views/FeatureBuilderView',
+	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
@@ -17,7 +18,7 @@ define([
 	'myGeneAutocomplete',
 	'jqueryui',
 	 'bootstrapSwitch'
-    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, FeatureBuilder, geneinfosummary, cfsummary, AddNodeTemplate) {
+    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
 AddRootNodeView = Marionette.ItemView.extend({
 	initialize : function() {
 	},
@@ -35,7 +36,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 		'click .open-pathway-search': 'openPathwaySearch',
 		'click .open-addnode': 'openAggNode',
 		'click .open-feature-builder': 'openFeatureBuilder',
-		'click .choose-category': 'chooseCategory'
+		'click .choose-category': 'chooseCategory',
+		'click .show-pick-instance': 'showPickInstance'
 	},
 	openFeatureBuilder: function(){
 		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
@@ -48,6 +50,15 @@ AddRootNodeView = Marionette.ItemView.extend({
 	openAggNode: function(){
 		Cure.AggNodeLayout = new AggNodeLayout({model: this.model});
 		Cure.sidebarLayout.AggNodeRegion.show(Cure.AggNodeLayout);
+	},
+	showPickInstance: function(){
+		if(this.model){
+			 this.model.set('showPickInst',true);
+		 } else {
+			 Cure.sidebarLayout.pickInstanceRegion.close();
+			 var newpickInstView = new pickInstView();
+			 Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
+		 }
 	},
 	chooseCategory: function(e){
 		var id = $(e.currentTarget).attr("id");
