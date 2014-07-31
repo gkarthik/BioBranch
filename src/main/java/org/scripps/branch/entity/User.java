@@ -77,17 +77,15 @@ public class User extends BaseEntity<Long> {
 
 	@Id
 	@Column
-	private String background;
-
+	private long id;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonBackReference
+	private List<Tree> trees;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	@JsonBackReference
 	private List<Collection> collection;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<CustomFeature> customfeatures;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Dataset> datasets;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<CustomClassifier> customclassifiers;
