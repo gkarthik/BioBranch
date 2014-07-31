@@ -122,7 +122,7 @@ dependencies {
 
 	compile 'org.liquibase:liquibase-core:3.1.1'
 
-
+	compile 'net.kencochrane.raven:raven-log4j:4.0'
 	
 
 	//loggers
