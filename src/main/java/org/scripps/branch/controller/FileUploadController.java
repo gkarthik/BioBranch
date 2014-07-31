@@ -2,7 +2,9 @@ package org.scripps.branch.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -26,6 +28,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,6 +69,9 @@ public class FileUploadController {
 
 	@Autowired
 	WekaObject wekaobj;
+
+	@Autowired
+	ApplicationContext ctx;
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -137,6 +143,7 @@ public class FileUploadController {
 		String[] md5FileName = new String[3];
 		int i;
 		File serverFile = null;
+	
 		for (i = 0; i < files.length; i++) {
 			MultipartFile file = files[i];
 			String name = file.getOriginalFilename();
@@ -160,6 +167,22 @@ public class FileUploadController {
 				message = message + "You successfully uploaded file=" + name
 						+ "<br />";
 
+				if(i==0){
+					InputStream path1 = ctx.getResource("file:"+serverFile).getInputStream();
+					//get path of another dataset from db.
+					
+					InputStream path2 = new FileInputStream(
+							"/home/bob/Oslo_clinical_expression_OS_sample_filt.arff");
+					//InputStream path2 = ctx.getResource("file:"+serverFile).getInputStream();
+					Boolean check = false;
+					if(path2!=null && path1 != null){
+						check = wekaobj.getWeka().checkDataset(path1, path2);
+					}
+					if(check == false){
+						serverFile.delete();
+						break;
+					}
+				}
 				// if (i == 2) {
 				// System.out.println("file:" + serverFile.toString());
 				// attrSer.generateAttributesFromDataset(wekaobj.getWeka()
@@ -175,8 +198,11 @@ public class FileUploadController {
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
+			
 		}
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			
+			LOGGER.debug("Success1");
 			dsObj.setDatasetname(names[0]);
 			dsObj.setMappingname(names[1]);
 			dsObj.setFeaturename(names[2]);
@@ -191,6 +217,8 @@ public class FileUploadController {
 				dsObj.setPrivateset(false);
 			dsObj.setCollection(colObj);
 			dsObj = dataRepo.saveAndFlush(dsObj);
+			
+			LOGGER.debug("Success2");
 		}
 		return "redirect:/";
 	}
