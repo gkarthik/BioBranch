@@ -8,7 +8,7 @@ define([
     ], function($, Marionette, Backbone, ScoreKeyTemplate) {
 ScoreKeyView = Marionette.ItemView.extend({
 	tagName: 'table',
-	className: 'table',
+	className: 'table table-condensed',
 	initialize : function() {
 		this.model.bind('change', this.render);
 	},
