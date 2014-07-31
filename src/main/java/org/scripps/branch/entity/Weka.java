@@ -4,11 +4,17 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 
+import org.scripps.branch.classifier.ManualTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class Weka {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Weka.class);
+	
 	private Instances train = null;
 	Instances test = null;
 	Random rand;
@@ -52,7 +58,6 @@ public class Weka {
 		instancesInClass = new Instances[data.numClasses()];
 		for (int i = 0; i < data.numClasses(); i++) {
 			for (int j = 0; j < data.numInstances(); j++) {
-				System.out.println(data.instance(j).classValue());
 				if (data.instance(j).classValue() == i) {// Not
 					if (instancesInClass[i] == null) {
 						instancesInClass[i] = new Instances(data,
@@ -63,7 +68,7 @@ public class Weka {
 			}
 		}
 		for (int i = 0; i < instancesInClass.length; i++) {
-			System.out.println(instancesInClass[i].numInstances());
+			LOGGER.debug(String.valueOf(instancesInClass[i].numInstances()));
 		}
 	}
 
