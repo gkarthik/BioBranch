@@ -109,7 +109,9 @@ dependencies {
 	compile 'cglib:cglib:3.1'
 	compile 'org.aspectj:aspectjrt:1.6.12'
 	compile 'org.aspectj:aspectjweaver:1.6.12'
-
+	
+	//Sentry
+	compile 'net.kencochrane.raven:raven-log4j:4.0'
 
 	// mysql db, change the version is you have different MySql installation
 	//compile 'mysql:mysql-connector-java:5.0.8'
