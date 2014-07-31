@@ -90,9 +90,7 @@ public class FileUploadController {
 	}
 
 	private String runFeatureUpload(String filePath) {
-		JobParameters jp = new JobParametersBuilder().addString("inputPath",
-				filePath).toJobParameters();
-
+		JobParameters jp = new JobParametersBuilder().addString("inputPath", filePath).toJobParameters();
 		try {
 			JobExecution jobExecution = jobLauncher.run(job, jp);
 			return "Feature table added";
@@ -112,25 +110,16 @@ public class FileUploadController {
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
 			@RequestParam("collectionId") long collectionId, WebRequest req) {
-
-		// restrictor validate the file by the user with the file type using
-		// .getContentType (appliation/pdf, text/plain...
 		String privateSet = "";
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
 		}
-		LOGGER.debug("CollectionId = " + collectionId);
-		LOGGER.debug("Private Dataset= " + privateSet);
-		Collection colObj = colRepo.findById(collectionId);
-
+		Collection col = colRepo.findById(collectionId);
 		String message = "";
 		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-
-		Dataset dsObj = new Dataset();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Dataset ds = new Dataset();
 		User user = null;
-
 		String[] fileType = new String[3];
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
@@ -143,7 +132,7 @@ public class FileUploadController {
 		String[] md5FileName = new String[3];
 		int i;
 		File serverFile = null;
-	
+		Boolean check = false;
 		for (i = 0; i < files.length; i++) {
 			MultipartFile file = files[i];
 			String name = file.getOriginalFilename();
@@ -151,36 +140,32 @@ public class FileUploadController {
 			LOGGER.debug("File Name: " + name);
 			try {
 				byte[] bytes = file.getBytes();
-				File dir = new File("/home/bob/uploads/");
-				if (!dir.exists())
+				File dir = new File("/home/karthik/uploads/");
+				if (!dir.exists()){
 					dir.mkdirs();
-				md5FileName[i] = hashFileName(name + user.getId()
-						+ System.currentTimeMillis() + fileType[i]);
+				}
+				md5FileName[i] = hashFileName(name + user.getId() + System.currentTimeMillis() + fileType[i]);
 				LOGGER.debug("MD5 File Name: " + md5FileName[i]);
-				serverFile = new File(dir.getAbsolutePath() + File.separator
-						+ md5FileName[i]);
+				serverFile = new File(dir.getAbsolutePath() + File.separator + md5FileName[i]);
 				LOGGER.debug("MD5 FileName with path" + serverFile);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-				message = message + "You successfully uploaded file=" + name
-						+ "<br />";
-
-				if(i==0){
-					InputStream path1 = ctx.getResource("file:"+serverFile).getInputStream();
-					//get path of another dataset from db.
-					
-					InputStream path2 = new FileInputStream(
-							"/home/bob/Oslo_clinical_expression_OS_sample_filt.arff");
-					//InputStream path2 = ctx.getResource("file:"+serverFile).getInputStream();
-					Boolean check = false;
-					if(path2!=null && path1 != null){
+				message = message + "You successfully uploaded file, " + name;
+				if (i == 0) {
+					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
+					InputStream path2 = null;
+					if(col.getDatasets().size()>0){
+						path2 = new FileInputStream("/home/karthik/uploads/"+col.getDatasets().get(0).getDatasetfile());
+					} else {
+						check = true;
+					}
+					if (path2 != null && path1 != null && check==false) {
 						check = wekaobj.getWeka().checkDataset(path1, path2);
 					}
-					if(check == false){
+					if (check == false) {
 						serverFile.delete();
-						break;
+						return "Dataset header does not match any other in collection";
 					}
 				}
 				// if (i == 2) {
@@ -196,28 +181,26 @@ public class FileUploadController {
 				// // runFeatureUpload(serverFile.toString());
 				// }
 			} catch (Exception e) {
-				return "You failed to upload " + name + " => " + e.getMessage();
+				return "You failed to upload, " + name + e.getMessage();
 			}
-			
+
 		}
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			
+		if (!(auth instanceof AnonymousAuthenticationToken && check == true)) {
 			LOGGER.debug("Success1");
-			dsObj.setDatasetname(names[0]);
-			dsObj.setMappingname(names[1]);
-			dsObj.setFeaturename(names[2]);
-			dsObj.setDatasetfile(md5FileName[0]);
-			dsObj.setMappingfile(md5FileName[1]);
-			dsObj.setFeaturefile(md5FileName[2]);
-			dsObj.setDescription(description);
-			dsObj.setName(datasetName);
+			ds.setDatasetname(names[0]);
+			ds.setMappingname(names[1]);
+			ds.setFeaturename(names[2]);
+			ds.setDatasetfile(md5FileName[0]);
+			ds.setMappingfile(md5FileName[1]);
+			ds.setFeaturefile(md5FileName[2]);
+			ds.setDescription(description);
+			ds.setName(datasetName);
 			if (privateSet.equals("1"))
-				dsObj.setPrivateset(true);
+				ds.setPrivateset(true);
 			else
-				dsObj.setPrivateset(false);
-			dsObj.setCollection(colObj);
-			dsObj = dataRepo.saveAndFlush(dsObj);
-			
+				ds.setPrivateset(false);
+			ds.setCollection(col);
+			ds = dataRepo.saveAndFlush(ds);
 			LOGGER.debug("Success2");
 		}
 		return "redirect:/";
