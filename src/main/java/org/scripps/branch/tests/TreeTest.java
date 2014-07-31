@@ -29,18 +29,18 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class TreeTest {
 
 	@Autowired
+	private FeatureRepository f;
+
+	@Autowired
 	@Qualifier("treeRepository")
 	private TreeRepository t;
 
 	@Autowired
-	private UserRepository u;
-
-	@Autowired
-	private FeatureRepository f;
-
-	@Autowired
 	@Qualifier("treeService")
 	private TreeService ts;
+
+	@Autowired
+	private UserRepository u;
 
 	@Test
 	public void testRepo() throws SQLException {

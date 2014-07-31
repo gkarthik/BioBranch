@@ -17,16 +17,16 @@ public class UsersDetails extends SocialUser {
 	// builder to build object EUD
 	public static class Builder {
 
-		private Long id;
-		private String username;
-		private String firstName;
-		private String lastName;
-		private String password;
-		private Role role;
-		private SocialMediaService socialSignInProvider;
 		private Set<GrantedAuthority> authorities;
 		private String background;
+		private String firstName;
+		private Long id;
+		private String lastName;
+		private String password;
 		private String purpose;
+		private Role role;
+		private SocialMediaService socialSignInProvider;
+		private String username;
 
 		public Builder() {
 			this.authorities = new HashSet<>();
@@ -112,15 +112,15 @@ public class UsersDetails extends SocialUser {
 		return new Builder();
 	}
 
-	private Long id;
-	private String firstName;
-	private String lastName;
-	private Role role;
-	private SocialMediaService socialSignInProvider;
-
 	private String background;
-
+	private String firstName;
+	private Long id;
+	private String lastName;
 	private String purpose;
+
+	private Role role;
+
+	private SocialMediaService socialSignInProvider;
 
 	// constructor
 	public UsersDetails(String username, String password,

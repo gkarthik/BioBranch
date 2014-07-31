@@ -42,11 +42,4 @@ public class HomeController {
 		}
 		return VIEW_NAME_HOMEPAGE;
 	}
-
-	// @RequestMapping(value = "/", method = RequestMethod.POST)
-	// public String showNextPage() {
-	// LOGGER.debug("Rendering homepage.");
-	// return "user/new";
-	// }
-
 }

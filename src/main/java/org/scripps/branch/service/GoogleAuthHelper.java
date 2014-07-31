@@ -24,28 +24,28 @@ import com.google.api.client.json.jackson.JacksonFactory;
 
 public final class GoogleAuthHelper {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(GoogleAuthHelper.class);
+	private static final String CALLBACK_URI = "http://localhost:8080/branch/auth/google";
 	private static final String CLIENT_ID = "1032075006754-pb1652ka24fuhbkpla0t0hhvpskm0c19.apps.googleusercontent.com";
 
 	private static final String CLIENT_SECRET = "YLdmgj4KAoEL-1NOnjm_U9p5";
 
-	private static final String CALLBACK_URI = "http://localhost:8080/branch/auth/google";
+	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	// end google authentication constants
 
-	String jsonIdentity;
+	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(GoogleAuthHelper.class);
 	// start google authentication constants
 	private static final Iterable<String> SCOPE = Arrays
 			.asList("https://www.googleapis.com/auth/userinfo.profile;https://www.googleapis.com/auth/userinfo.email"
 					.split(";"));
 	private static final String USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
-	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	// end google authentication constants
+	private final GoogleAuthorizationCodeFlow flow;
+
+	String jsonIdentity;
 
 	private String stateToken;
-
-	private final GoogleAuthorizationCodeFlow flow;
 
 	/**
 	 * Constructor initializes the Google Authorization Code Flow with CLIENT

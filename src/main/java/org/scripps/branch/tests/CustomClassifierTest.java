@@ -31,13 +31,13 @@ import weka.classifiers.Classifier;
 public class CustomClassifierTest {
 
 	@Autowired
-	private WekaObject weka;
+	private CustomClassifierRepository cClassifierRepo;
 
 	@Autowired
 	private CustomClassifierService ser;
 
 	@Autowired
-	private CustomClassifierRepository cClassifierRepo;
+	private WekaObject weka;
 
 	@Test
 	public void addCustomClassifier() {

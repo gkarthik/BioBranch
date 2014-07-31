@@ -6,15 +6,18 @@
 <sec:authorize access="isAuthenticated()">
 	<div class="container">
 		<div class="col-md-6" style="float: none; margin: 0 auto;">
+
+			<h3>Your Collection and Dataset Lists</h3>
 			<ul>
 				<c:forEach var="o" items="${result}">
-					<li>${o.name}<br>${o.description}
+					<strong>Collection Name: </strong>
+					${o.name}<br>DatasetName:
 						<ol>
-							<c:forEach var="j" items="${o.datasets}">
-								<li>${j.name}</li>
-							</c:forEach>
-						</ol>
-					</li>
+						<c:forEach var="dataset" items="${o.datasets}">
+							<li>${dataset.name}</li>
+						</c:forEach>
+					</ol>
+					<br>
 				</c:forEach>
 			</ul>
 

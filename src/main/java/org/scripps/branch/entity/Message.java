@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
 	private static final long serialVersionUID = -4093981756240899937L;
-	private String owner;
 	private String description;
 	private String filename;
+	private String owner;
 
 	public Message() {
 		super();

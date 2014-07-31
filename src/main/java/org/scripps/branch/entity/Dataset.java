@@ -24,10 +24,12 @@ import org.joda.time.DateTime;
 @Table(name = "dataset")
 public class Dataset {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+	private List<Attribute> attributes;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "collection_id", insertable = true, updatable = true)
+	private Collection collection;
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -39,33 +41,31 @@ public class Dataset {
 	private String datasetfile;
 
 	@Column
-	private String mappingfile;
+	private String datasetname;
+
+	// description
+	@Column(length = 1000)
+	private String description;
 
 	@Column
 	private String featurefile;
 
 	@Column
-	private String datasetname;
+	private String featurename;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+
+	@Column
+	private String mappingfile;
 
 	@Column
 	private String mappingname;
 
 	@Column
-	private String featurename;
-
-	@Column
 	private String name;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
-	private List<Attribute> attributes;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "collection_id", insertable = true, updatable = true)
-	private Collection collection;
-
-	// description
-	@Column(length = 1000)
-	private String description;
 
 	@Column
 	private boolean privateset;

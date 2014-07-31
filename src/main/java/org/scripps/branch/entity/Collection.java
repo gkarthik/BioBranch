@@ -25,31 +25,31 @@ import org.joda.time.DateTime;
 @Table(name = "collection")
 public class Collection {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
-
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
 
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "collection")
+	private List<Dataset> datasets;
+
+	@Column(length = 1000)
+	private String description;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+
+	@Column
+	private String name;
+
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updated;
-
-	@Column
-	private String name;
-
-	@Column(length = 1000)
-	private String description;
-
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "collection")
-	private List<Dataset> datasets;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)

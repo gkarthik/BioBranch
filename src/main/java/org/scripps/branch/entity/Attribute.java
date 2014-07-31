@@ -25,33 +25,33 @@ import org.joda.time.DateTime;
 		"col_index", "name" }) })
 public class Attribute {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
-	private int id;
-
 	@Column(unique = true)
 	private int col_index;
-
-	@Column
-	private String name;
-
-	@Column
-	private float relieff;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
-	private Feature feature;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
-	private Dataset dataset;
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
+	private Dataset dataset;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
+	private Feature feature;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column
+	private int id;
+
+	@Column
+	private String name;
+
+	@Column
+	private float relieff;
 
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)

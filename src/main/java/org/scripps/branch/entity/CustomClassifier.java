@@ -26,6 +26,19 @@ import org.joda.time.DateTime;
 @Table(name = "custom_classifier")
 public class CustomClassifier {
 
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
+
+	@Column
+	private String Description;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
+	private List<Feature> feature;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -34,28 +47,15 @@ public class CustomClassifier {
 	@Column
 	private String name;
 
-	@Column
-	private int type;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customClassifiers")
+	private List<Tree> tree;
 
 	@Column
-	private String Description;
+	private int type;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
-	private List<Feature> feature;
-
-	@Basic(optional = false)
-	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	@Temporal(TemporalType.TIMESTAMP)
-	private DateTime created;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customClassifiers")
-	private List<Tree> tree;
 
 	public DateTime getCreated() {
 		return created;

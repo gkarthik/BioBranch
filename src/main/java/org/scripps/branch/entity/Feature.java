@@ -40,43 +40,43 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class Feature {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<Attribute> attributes;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
-	private List<Tree> trees;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<CustomFeature> custom_feature;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<CustomClassifier> custom_classifier;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
-	private List<Pathway> pathway;
-
-	@Column(name = "unique_id", length = 50, unique = true)
-	private String unique_id;
-
-	@Column(name = "short_name", length = 30)
-	private String short_name;
-
-	@Column(name = "long_name", length = 250)
-	private String long_name;
-
-	@Column(name = "description")
-	private String description;
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomClassifier> custom_classifier;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<CustomFeature> custom_feature;
+
+	@Column(name = "description")
+	private String description;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+
+	@Column(name = "long_name", length = 250)
+	private String long_name;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	private List<Pathway> pathway;
+
+	@Column(name = "short_name", length = 30)
+	private String short_name;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	private List<Tree> trees;
+
+	@Column(name = "unique_id", length = 50, unique = true)
+	private String unique_id;
 
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)
