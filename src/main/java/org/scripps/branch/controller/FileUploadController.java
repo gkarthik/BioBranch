@@ -179,10 +179,10 @@ public class FileUploadController {
 				// message = message + "attribute file added";
 				// }
 				//
-				// if (i == 1) {
-				// // message = message +
-				// // runFeatureUpload(serverFile.toString());
-				// }
+				 if (i == 1) {
+					  message = message +
+					  runFeatureUpload(serverFile.toString());
+				 }
 			} catch (Exception e) {
 				return "You failed to upload, " + name + e.getMessage();
 			}

@@ -50,8 +50,9 @@ public class AttributeServiceImpl implements AttributeService {
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
-			attrRepo.saveAndFlush(attr);
+			attrRepo.save(attr);
 		}
+		attrRepo.flush();
 	}
 
 	@Override

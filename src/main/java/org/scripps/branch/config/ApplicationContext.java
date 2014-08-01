@@ -47,10 +47,8 @@ public class ApplicationContext {
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-
 		messageSource.setBasename(MESSAGE_SOURCE_BASE_NAME);
 		messageSource.setUseCodeAsDefaultMessage(true);
-
 		return messageSource;
 	}
 
