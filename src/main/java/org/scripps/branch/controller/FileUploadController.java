@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
+import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.WekaObject;
 import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.DatasetRepository;
@@ -117,6 +118,7 @@ public class FileUploadController {
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
 		}
+		 Weka weka = new Weka();
 		Collection col = colRepo.findById(collectionId);
 		String message = "";
 		UserDetails userDetails = null;
@@ -132,6 +134,21 @@ public class FileUploadController {
 			userDetails = (UserDetails) auth.getPrincipal();
 			user = userRepo.findByEmail(userDetails.getUsername());
 		}
+		for (int i = 0; i < files.length; i++) {
+			MultipartFile file = files[i];
+			names[i] = file.getOriginalFilename();
+		}
+		ds.setDatasetname(names[0]);
+		ds.setMappingname(names[1]);
+		ds.setFeaturename(names[2]);
+		ds.setDescription(description);
+		ds.setName(datasetName);
+		if (privateSet.equals("1"))
+			ds.setPrivateset(true);
+		else
+			ds.setPrivateset(false);
+		ds.setCollection(col);
+		ds = dataRepo.saveAndFlush(ds);
 		String[] md5FileName = new String[3];
 		int i;
 		File serverFile = null;
@@ -158,53 +175,43 @@ public class FileUploadController {
 				if (i == 0) {
 					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
 					InputStream path2 = null;
-					if(col.getDatasets().size()>0){
+					if(col.getDatasets().size()>1){
 						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
 					} else {
 						check = true;
 					}
 					if (path2 != null && path1 != null && check==false) {
-						check = wekaobj.getWeka().checkDataset(path1, path2);
+						check = weka.checkDataset(path1, path2);
 					}
 					if (check == false) {
 						serverFile.delete();
 						return "Dataset header does not match any other in collection";
 					}
 				}
-				// if (i == 2) {
-				// System.out.println("file:" + serverFile.toString());
-				// attrSer.generateAttributesFromDataset(wekaobj.getWeka()
-				// .getTrain(), "metabric_with_clinical", serverFile
-				// .toString());
-				// message = message + "attribute file added";
-				// }
-				//
+				 if (i == 2) {
+				 System.out.println("file:" + serverFile.toString());
+				 weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "", "test");
+				 attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+				 message = message + "attribute file added";
+				 }
+				
 				 if (i == 1) {
 					  message = message +
 					  runFeatureUpload(serverFile.toString());
 				 }
 			} catch (Exception e) {
-				return "You failed to upload, " + name + e.getMessage();
+				LOGGER.error("Exception",e);
 			}
-
 		}
 		if (!(auth instanceof AnonymousAuthenticationToken && check == true)) {
-			LOGGER.debug("Success1");
-			ds.setDatasetname(names[0]);
-			ds.setMappingname(names[1]);
-			ds.setFeaturename(names[2]);
 			ds.setDatasetfile(md5FileName[0]);
 			ds.setMappingfile(md5FileName[1]);
 			ds.setFeaturefile(md5FileName[2]);
-			ds.setDescription(description);
-			ds.setName(datasetName);
-			if (privateSet.equals("1"))
-				ds.setPrivateset(true);
-			else
-				ds.setPrivateset(false);
-			ds.setCollection(col);
 			ds = dataRepo.saveAndFlush(ds);
-			LOGGER.debug("Success2");
+			LOGGER.debug("Success");
+		} else {
+			LOGGER.debug("Deleted");
+			dataRepo.delete(ds);
 		}
 		return "redirect:/";
 	}
