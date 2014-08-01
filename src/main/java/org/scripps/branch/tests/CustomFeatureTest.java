@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.scripps.branch.config.ApplicationContext;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Weka;
-import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.service.CustomFeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class CustomFeatureTest {
 	private CustomFeatureService ser;
 
 	@Autowired
-	private WekaObject weka;
+	private DatasetMap weka;
 
 	@Test
 	public void addCustomFeature() {
