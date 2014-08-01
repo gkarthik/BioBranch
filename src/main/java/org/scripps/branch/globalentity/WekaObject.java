@@ -50,28 +50,28 @@ public class WekaObject implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext appContext)
 			throws BeansException {
 		ctx = appContext;
-		Weka wekaObj = new Weka();
-		if (wekaObj.getTrain() == null) {
-			Resource train_file = ctx
-					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
-			Resource test_file = ctx
-					.getResource("/WEB-INF/data/Oslo_clinical_expression_OS_sample_filt.arff");
-			try {
-				wekaObj.buildWeka(train_file.getInputStream(),
-						test_file.getInputStream(), "test_set",
-						"metabric_with_clinical");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				LOGGER.error("Couldn't build Weka",e);
-			}
-		}
-
-		cfService.addInstanceValues(wekaObj);
-		// Set custom classifiers
-		custom_classifiers = ccService.getClassifiersfromDb(wekaObj,
-				"metabric_with_clinical");
-		wekaObj.generateLimits();
-		weka = wekaObj;
+//		Weka wekaObj = new Weka();
+//		if (wekaObj.getTrain() == null) {
+//			Resource train_file = ctx
+//					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
+//			Resource test_file = ctx
+//					.getResource("/WEB-INF/data/Oslo_clinical_expression_OS_sample_filt.arff");
+//			try {
+//				wekaObj.buildWeka(train_file.getInputStream(),
+//						test_file.getInputStream(), "test_set",
+//						"metabric_with_clinical");
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				LOGGER.error("Couldn't build Weka",e);
+//			}
+//		}
+//
+//		cfService.addInstanceValues(wekaObj);
+//		// Set custom classifiers
+//		custom_classifiers = ccService.getClassifiersfromDb(wekaObj,
+//				"metabric_with_clinical");
+//		wekaObj.generateLimits();
+//		weka = wekaObj;
 
 	}
 }
