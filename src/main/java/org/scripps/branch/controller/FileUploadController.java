@@ -72,6 +72,9 @@ public class FileUploadController {
 
 	@Autowired
 	ApplicationContext ctx;
+	
+	@Autowired 
+	String uploadPath; 
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -140,7 +143,7 @@ public class FileUploadController {
 			LOGGER.debug("File Name: " + name);
 			try {
 				byte[] bytes = file.getBytes();
-				File dir = new File("/home/karthik/uploads/");
+				File dir = new File(uploadPath);
 				if (!dir.exists()){
 					dir.mkdirs();
 				}
@@ -156,7 +159,7 @@ public class FileUploadController {
 					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
 					InputStream path2 = null;
 					if(col.getDatasets().size()>0){
-						path2 = new FileInputStream("/home/karthik/uploads/"+col.getDatasets().get(0).getDatasetfile());
+						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
 					} else {
 						check = true;
 					}
