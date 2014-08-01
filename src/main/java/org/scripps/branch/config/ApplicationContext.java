@@ -1,6 +1,6 @@
 package org.scripps.branch.config;
 
-import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -40,8 +40,8 @@ public class ApplicationContext {
 	}
 
 	@Bean(name = "globalWeka")
-	public WekaObject initWekaInApplicationContext() {
-		return new WekaObject();
+	public DatasetMap initWekaInApplicationContext() {
+		return new DatasetMap();
 	}
 
 	@Bean

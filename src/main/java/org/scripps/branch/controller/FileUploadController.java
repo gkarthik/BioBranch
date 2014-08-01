@@ -12,7 +12,7 @@ import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
-import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
@@ -69,7 +69,7 @@ public class FileUploadController {
 	UserRepository userRepo;
 
 	@Autowired
-	WekaObject wekaobj;
+	DatasetMap wekaobj;
 
 	@Autowired
 	ApplicationContext ctx;
