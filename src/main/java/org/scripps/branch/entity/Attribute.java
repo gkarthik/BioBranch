@@ -21,11 +21,10 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "attribute", uniqueConstraints = { @UniqueConstraint(name = "dataset_index_name", columnNames = {
-		"col_index", "name" }) })
+@Table(name = "attribute")
 public class Attribute {
 
-	@Column(unique = true)
+	@Column
 	private int col_index;
 
 	@Basic(optional = false)

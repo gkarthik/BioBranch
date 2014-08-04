@@ -59,7 +59,7 @@ public class Weka {
 		instancesInClass = new Instances[data.numClasses()];
 		for (int i = 0; i < data.numClasses(); i++) {
 			for (int j = 0; j < data.numInstances(); j++) {
-				System.out.println(data.instance(j).classValue());
+				System.out.println(data.instance(j).classValue());	
 				if (data.instance(j).classValue() == i) {// Not
 					if (instancesInClass[i] == null) {
 						instancesInClass[i] = new Instances(data,
