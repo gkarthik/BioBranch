@@ -12,7 +12,7 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 	fetch: function(){
 		var args = {
 				command : "get_clinical_features",
-				dataset : "metabric_with_clinical"
+				dataset : Cure.dataset
 		};
 		$.ajax({
 			type : 'POST',

@@ -27,7 +27,7 @@ public class Weka {
 	private Instances train = null;
 
 	public void buildWeka(InputStream train_stream, InputStream test_stream,
-			String method, String dataset) throws Exception {
+			String method) throws Exception {
 		setDataset(dataset);
 		// get the data
 		DataSource source = new DataSource(train_stream);
@@ -80,9 +80,9 @@ public class Weka {
 		boolean value = false;
 		try {
 			wekaObj1 = new Weka();
-			wekaObj1.buildWeka(path1, null, "", "dataset1");
+			wekaObj1.buildWeka(path1, null, "");
 			wekaObj2 = new Weka();
-			wekaObj2.buildWeka(path2, null, "", "dataset2");
+			wekaObj2.buildWeka(path2, null, "");
 			value=wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
 			LOGGER.debug("value="+value);
 		} catch (Exception e) {

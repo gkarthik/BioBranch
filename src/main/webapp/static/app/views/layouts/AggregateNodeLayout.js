@@ -148,7 +148,7 @@ AggNodeLayout = Marionette.Layout.extend({
         	        description: $(this.ui.descInput).val(),
         	        user_id: Cure.Player.get("id"),
         	        type: parseInt($(this.ui.classifierType).filter(":checked").val()),
-        	        dataset: "metabric_with_clinical"
+        	        dataset: Cure.dataset
         	      };
         	console.log(args);
         	      $.ajax({

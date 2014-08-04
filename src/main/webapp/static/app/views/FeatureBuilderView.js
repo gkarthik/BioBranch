@@ -219,7 +219,7 @@ FeatureBuilderView = Marionette.ItemView.extend({
 	    	        name: feature_name,
 	    	        expression: feature_exp,
 	    	        description: $(this.ui.featureExpression).val(),
-	    	        dataset: "metabric_with_clinical",
+	    	        dataset: Cure.dataset,
 	    	        user_id: Cure.Player.get('id')
 	    	      };
 	    	      $.ajax({
