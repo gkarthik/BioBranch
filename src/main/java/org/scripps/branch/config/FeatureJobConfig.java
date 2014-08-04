@@ -65,7 +65,9 @@ public class FeatureJobConfig {
 				setLineTokenizer(new DelimitedLineTokenizer(
 						DelimitedLineTokenizer.DELIMITER_TAB) {
 					{
-						setNames(new String[] { "", "uniqueid", "short_name", "", "", "", "", "", "description", "", "", "long_name", "", "", "" });
+						setNames(new String[] { "", "uniqueid", "short_name",
+								"", "", "", "", "", "description", "", "",
+								"long_name", "", "", "" });
 					}
 				});
 				setFieldSetMapper(new BeanWrapperFieldSetMapper<Feature>() {
@@ -84,7 +86,7 @@ public class FeatureJobConfig {
 			ItemProcessor<Feature, Feature> processor) {
 		return stepBuilderFactory.get("step1")
 				.transactionManager(new JpaTransactionManager(emf))
-				.<Feature, Feature> chunk(10000).reader(reader)
+				.<Feature, Feature> chunk(100).reader(reader)
 				.processor(processor).writer(writer).build();
 	}
 

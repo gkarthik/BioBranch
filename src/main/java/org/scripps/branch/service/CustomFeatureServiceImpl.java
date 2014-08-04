@@ -93,7 +93,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Override
 	public HashMap findOrCreateCustomFeature(String feature_name, String exp,
-			String description, long user_id, String dataset, Weka weka) {
+			String description, long user_id, Dataset dataset, Weka weka) {
 		HashMap mp = new HashMap();
 		Boolean success = true;
 		String message = "";
@@ -143,7 +143,6 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			cf = new CustomFeature();
 			User newuser = userRepo.findById(user_id);
 			cf.setName(feature_name);
-			cf.setDataset(dataset);
 			cf.setExpression(exp);
 			cf.setDescription(description);
 			cf.setUser(newuser);

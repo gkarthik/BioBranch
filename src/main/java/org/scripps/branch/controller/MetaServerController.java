@@ -191,7 +191,7 @@ public class MetaServerController {
 				HashMap mp = cfeatureService.findOrCreateCustomFeature(data
 						.get("name").asText(), data.get("expression").asText(),
 						data.get("description").asText(), data.get("user_id")
-								.asLong(), data.get("dataset").asText(), weka
+								.asLong(), d, weka
 								.getWeka(d.getId()));
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_feature_search")) {
