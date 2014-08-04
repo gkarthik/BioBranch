@@ -84,7 +84,7 @@ public class DatasetMap implements ApplicationContextAware {
 				LOGGER.error("Couldn't build Weka",e);
 			}
 		}
-//		cfService.addInstanceValues(wekaObj, d);
+		cfService.addInstanceValues(wekaObj, d);
 //		// Set custom classifiers
 //		custom_classifiers = ccService.getClassifiersfromDb(wekaObj, "metabric_with_clinical");
 		custom_classifiers = new LinkedHashMap<String, Classifier>(); 

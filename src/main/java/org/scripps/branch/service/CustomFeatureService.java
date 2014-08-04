@@ -16,7 +16,7 @@ public interface CustomFeatureService {
 			Instances data);
 
 	public HashMap findOrCreateCustomFeature(String feature_name, String exp,
-			String description, long user_id, String dataset, Weka weka);
+			String description, long user_id, Dataset dataset, Weka weka);
 
 	public HashMap getTestCase(String id, Weka weka);
 }
