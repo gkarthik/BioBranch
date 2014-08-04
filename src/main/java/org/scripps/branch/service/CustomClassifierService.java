@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.scripps.branch.entity.CustomClassifier;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.CustomSetRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import weka.classifiers.meta.FilteredClassifier;
 @Transactional
 public interface CustomClassifierService {
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo);
+			LinkedHashMap<String, Classifier> custom_classifiers, Dataset dataset, CustomSetRepository cSetRepo);
 
 	public FilteredClassifier buildCustomClasifier(Weka weka,
 			long[] featureDbIds, int classifierType);

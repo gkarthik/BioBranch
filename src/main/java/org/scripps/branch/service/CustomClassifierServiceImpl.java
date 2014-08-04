@@ -11,6 +11,7 @@ import java.util.List;
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
@@ -66,7 +67,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Override
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo) {
+			LinkedHashMap<String, Classifier> custom_classifiers, Dataset dataset, CustomSetRepository cSetRepo) {
 		if (!custom_classifiers.containsKey(id)) {
 			Tree t = treeRepo.findById(Long.valueOf(id.replace("custom_tree_",
 					"")));

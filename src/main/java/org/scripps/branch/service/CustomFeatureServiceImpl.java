@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
@@ -48,11 +49,12 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	UserRepository userRepo;
 
 	@Override
-	public void addInstanceValues(Weka weka) {
+	public void addInstanceValues(Weka weka, Dataset d) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
 		for (CustomFeature cf : cfList) {
-			evalAndAddNewFeatureValues("custom_feature_" + cf.getId(),
-					cf.getExpression(), weka.getTrain());
+			if(cfeatureRepo.getAttrDatasets(cf, d.getCollection())>=cf.getFeatures().size()){
+				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getTrain());
+			}
 		}
 	}
 
