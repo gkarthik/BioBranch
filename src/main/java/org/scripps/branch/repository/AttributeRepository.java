@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Dataset;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,7 +19,7 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 	List<Attribute> findByFeatureDbId(long db_id);
 
 	@Query("select A from Attribute A, Feature F where A.feature=F.id and F.unique_id=?1 and A.dataset=?2")
-	List<Attribute> findByFeatureUniqueId(String unique_id, String dataset);
+	List<Attribute> findByFeatureUniqueId(String unique_id, Dataset dataset);
 
 }
 

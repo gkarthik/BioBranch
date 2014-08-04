@@ -67,11 +67,11 @@ public class DatasetMap implements ApplicationContextAware {
 		List<Dataset> datasetList = datasetRepo.findAll();
 		name_dataset = new HashMap<String, Weka>();
 		for(Dataset d: datasetList){
-			name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile()));
+			name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
 		}
 	}
 	
-	public Weka buildWekaAndClassifiers(String train, String test){
+	public Weka buildWekaAndClassifiers(String train, String test, Dataset d){
 		Weka wekaObj = new Weka();
 		if (wekaObj.getTrain() == null) {
 			Resource train_file = ctx.getResource("file:"+uploadPath+train);
@@ -84,9 +84,10 @@ public class DatasetMap implements ApplicationContextAware {
 				LOGGER.error("Couldn't build Weka",e);
 			}
 		}
-//		cfService.addInstanceValues(wekaObj);
+//		cfService.addInstanceValues(wekaObj, d);
 //		// Set custom classifiers
 //		custom_classifiers = ccService.getClassifiersfromDb(wekaObj, "metabric_with_clinical");
+		custom_classifiers = new LinkedHashMap<String, Classifier>(); 
 		wekaObj.generateLimits();
 		return wekaObj;
 	}

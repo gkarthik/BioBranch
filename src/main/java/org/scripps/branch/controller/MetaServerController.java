@@ -324,7 +324,7 @@ public class MetaServerController {
 			break;
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
-				data.get("dataset").asText(), custom_classifiers, attr,
+				d, custom_classifiers, attr,
 				cClassifierService, customSetRepo);
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
@@ -339,7 +339,7 @@ public class MetaServerController {
 		int attrIndex = 0;
 		for (JsonNode el : data.path("pickedAttrs")) {
 			attr = new ArrayList<Attribute>();
-			attr = attrRepo.findByFeatureUniqueId(el.asText(), "metabric_with_clinical");
+			attr = attrRepo.findByFeatureUniqueId(el.asText(), d);
 			for(Attribute a : attr){	
 				attrIndex = reqInstances.attribute(a.getName()).index();
 			}
