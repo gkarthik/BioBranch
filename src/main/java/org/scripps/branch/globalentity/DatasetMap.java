@@ -55,6 +55,10 @@ public class DatasetMap implements ApplicationContextAware {
 	public Weka getWeka(long key) {
 		return name_dataset.get("dataset_"+key);
 	}
+	
+	public HashMap<String, Weka> getMap(){
+		return name_dataset;
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext appContext)
@@ -69,6 +73,8 @@ public class DatasetMap implements ApplicationContextAware {
 		for(Dataset d: datasetList){
 			name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
 		}
+//		// Set custom classifiers
+		custom_classifiers = ccService.getClassifiersfromDb(name_dataset);
 	}
 	
 	public Weka buildWekaAndClassifiers(String train, String test, Dataset d){
@@ -85,8 +91,6 @@ public class DatasetMap implements ApplicationContextAware {
 			}
 		}
 		cfService.addInstanceValues(wekaObj, d);
-//		// Set custom classifiers
-//		custom_classifiers = ccService.getClassifiersfromDb(wekaObj, "metabric_with_clinical");
 		custom_classifiers = new LinkedHashMap<String, Classifier>(); 
 		wekaObj.generateLimits();
 		return wekaObj;

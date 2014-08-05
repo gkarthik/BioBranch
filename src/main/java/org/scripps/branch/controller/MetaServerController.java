@@ -218,7 +218,7 @@ public class MetaServerController {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 				HashMap mp = cClassifierService.getOrCreateClassifier(
 						entrezIds, classifierType, name, description,
-						player_id, weka.getWeka(d.getId()), dataset,
+						player_id, weka.getMap(), d,
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_classifier_search")) {
@@ -226,8 +226,9 @@ public class MetaServerController {
 						.searchCustomClassifiers(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cclist);
 			} else if (command.equals("custom_classifier_getById")) {
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 				HashMap mp = cClassifierService.getClassifierDetails(
-						data.get("id").asLong(), data.get("dataset").asText(),
+						data.get("id").asLong(), d,
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}

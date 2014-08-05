@@ -52,7 +52,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	public void addInstanceValues(Weka weka, Dataset d) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
 		for (CustomFeature cf : cfList) {
-			if(cfeatureRepo.getAttrDatasets(cf, d.getCollection())>=cf.getFeatures().size()){
+			if(cfeatureRepo.getAttrDatasets(cf, d).size()>=cf.getFeatures().size()){
 				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getTrain());
 			}
 		}
