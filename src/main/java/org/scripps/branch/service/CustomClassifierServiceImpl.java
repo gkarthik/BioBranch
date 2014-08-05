@@ -99,9 +99,11 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	}
 
 	@Override
-	public FilteredClassifier buildCustomClasifier(Weka weka,
+	public FilteredClassifier buildCustomClasifier(HashMap<String, Weka> name_dataset,
 			long[] featureDbIds, int classifierType) {
-		Instances data = weka.getTrain();
+		Instances data;
+		List<Attribute> a = attrRepo.findByFeatureDbId(featureDbIds[0]);
+		data = name_dataset.get("dataset_"+a.get(0).getDataset().getId()).getTrain();
 		String att_name = "";
 		String indices = new String();
 		for (long featureDbId : featureDbIds) {
@@ -144,18 +146,18 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Override
 	public FilteredClassifier getandBuildClassifier(CustomClassifier cc,
-			Weka weka, String dataset) {
+			HashMap<String, Weka> name_dataset) {
 		long[] featuresDbId = new long[cc.getFeature().size()];
 		int ctr = 0;
 		for (Feature f : cc.getFeature()) {
 			featuresDbId[ctr] = f.getId();
 			ctr++;
 		}
-		return buildCustomClasifier(weka, featuresDbId, cc.getType());
+		return buildCustomClasifier(name_dataset, featuresDbId, cc.getType());
 	}
 
 	@Override
-	public HashMap getClassifierDetails(long id, String dataset,
+	public HashMap getClassifierDetails(long id, Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers) {
 		HashMap mp = new HashMap();
 		CustomClassifier cc = ccRepo.findById(id);
@@ -175,22 +177,21 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	}
 
 	@Override
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb(Weka weka,
-			String dataset) {
+	public LinkedHashMap<String, Classifier> getClassifiersfromDb(HashMap<String, Weka> name_dataset) {
 		LinkedHashMap<String, Classifier> listOfClassifiers = new LinkedHashMap<String, Classifier>();
 		List<CustomClassifier> ccList = new ArrayList<CustomClassifier>();
 		ccList = ccRepo.findAll();
 		for (CustomClassifier cc : ccList) {
 			listOfClassifiers.put("custom_classifier_" + cc.getId(),
-					getandBuildClassifier(cc, weka, dataset));
+					getandBuildClassifier(cc, name_dataset));
 		}
 		return listOfClassifiers;
 	}
 
 	@Override
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
-			String name, String description, int player_id, Weka weka,
-			String dataset, HashMap<String, Classifier> custom_classifiers) {
+			String name, String description, int player_id, HashMap<String, Weka> name_dataset,
+			Dataset dataset, HashMap<String, Classifier> custom_classifiers) {
 		List<CustomClassifier> ccList = ccRepo.findAll();
 		CustomClassifier returncf = new CustomClassifier();
 		Boolean exists = false;
@@ -236,7 +237,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		if (!exists) {
 			try {
 				returncf = insertandAddCustomClassifier(featureDbIds,
-						classifierType, name, description, player_id, weka,
+						classifierType, name, description, player_id, name_dataset,
 						dataset, custom_classifiers);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -256,12 +257,12 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	@Override
 	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds,
 			int classifierType, String name, String description, int player_id,
-			Weka weka, String dataset,
+			HashMap<String, Weka> name_dataset, Dataset dataset,
 			HashMap<String, Classifier> custom_classifiers) {
 		HashMap mp = new HashMap();
 		int custom_classifier_id = 0;
 		List<Feature> featureList = new ArrayList<Feature>();
-		FilteredClassifier fc = buildCustomClasifier(weka, featureDbIds,
+		FilteredClassifier fc = buildCustomClasifier(name_dataset, featureDbIds,
 				classifierType);
 		for (long id : featureDbIds) {
 			featureList.add(fRepo.getByDbId(id));

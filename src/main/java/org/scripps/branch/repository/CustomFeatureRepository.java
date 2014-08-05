@@ -2,9 +2,11 @@ package org.scripps.branch.repository;
 
 import java.util.List;
 
+import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Dataset;
+import org.scripps.branch.entity.Feature;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,6 @@ public interface CustomFeatureRepository extends
 	@Query("select cf from CustomFeature cf where cf.name like concat('%',concat(?1,'%')) or cf.description like concat('%',concat(?1,'%'))")
 	List<CustomFeature> searchCustomFeatures(String searchText);
 	
-	@Query("select count(*) from CustomFeature cf, Feature f, Attribute a, Dataset d where cf = ?1 and f IN cf.feature and a IN f.attributes and a.dataset.collection = ?2")
-	int getAttrDatasets(CustomFeature c, Collection col);
+	@Query("select f from CustomFeature cf inner join cf.feature f inner join f.attributes a where cf=?1 and a.dataset=?2 group by f")
+	List<Feature> getAttrDatasets(CustomFeature cf, Dataset d);
 }

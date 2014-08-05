@@ -55,7 +55,7 @@ public class PersistenceJPAConfig {
 	private DatabasePopulator createDatabasePopulator() {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 		databasePopulator.setContinueOnError(true);
-		 databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
+//		 databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
 		return databasePopulator;
 	}
 
