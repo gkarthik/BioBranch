@@ -1,5 +1,5 @@
 apply plugin: 'base'
-apply plugin:'war'
+apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'

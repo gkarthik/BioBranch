@@ -29,6 +29,7 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.AddExpression;
 
 @Service
+@Transactional
 public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Autowired
