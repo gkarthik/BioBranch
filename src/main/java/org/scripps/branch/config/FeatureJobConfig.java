@@ -4,6 +4,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.scripps.branch.batch.jobs.FeatureProcessor;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.repository.FeatureRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -38,6 +39,9 @@ public class FeatureJobConfig {
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
+	
+	@Autowired
+	FeatureRepository fRepo;
 
 	// tag::jobstep[]
 	@Bean
@@ -48,7 +52,9 @@ public class FeatureJobConfig {
 
 	@Bean
 	public ItemProcessor<Feature, Feature> processor() {
-		return new FeatureProcessor();
+		FeatureProcessor fp = new FeatureProcessor();
+		fp.setfRepo(fRepo);
+		return fp;
 	}
 
 	@Bean
@@ -86,8 +92,8 @@ public class FeatureJobConfig {
 			ItemProcessor<Feature, Feature> processor) {
 		return stepBuilderFactory.get("step1")
 				.transactionManager(new JpaTransactionManager(emf))
-				.<Feature, Feature> chunk(100).reader(reader)
-				.processor(processor).writer(writer).build();
+				.<Feature, Feature> chunk(10000).reader(reader)
+				.processor(processor).writer(writer).build();	
 	}
 
 	// end::jobstep[]

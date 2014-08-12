@@ -29,7 +29,7 @@ public class TreeServiceImpl implements TreeService {
 			n += treeRepo.getCountOfCustomFeature(cfList, user);
 		}
 		if (ccList.size() > 0) {
-			n += treeRepo.getCountOfCustomClassifier(ccList, user);
+//			n += treeRepo.getCountOfCustomClassifier(ccList, user);
 		}
 		if (tList.size() > 0) {
 			n += treeRepo.getCountOfCustomTree(tList, user);

@@ -18,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.Transactional;
 
 import weka.classifiers.Classifier;
 
+@Transactional
 public class DatasetMap implements ApplicationContextAware {
 
 	private static ApplicationContext ctx;
@@ -71,10 +73,10 @@ public class DatasetMap implements ApplicationContextAware {
 		List<Dataset> datasetList = datasetRepo.findAll();
 		name_dataset = new HashMap<String, Weka>();
 		for(Dataset d: datasetList){
-			//name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
+			name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
 		}
 //		// Set custom classifiers
-		//custom_classifiers = ccService.getClassifiersfromDb(name_dataset);
+		custom_classifiers = ccService.getClassifiersfromDb(name_dataset);
 	}
 	
 	public Weka buildWekaAndClassifiers(String train, String test, Dataset d){
@@ -85,14 +87,13 @@ public class DatasetMap implements ApplicationContextAware {
 			Resource test_file = ctx.getResource("file:"+uploadPath+test);
 			try {
 				wekaObj.buildWeka(train_file.getInputStream(), test_file.getInputStream(), "test_set");
+				cfService.addInstanceValues(wekaObj, d); 
+				wekaObj.generateLimits();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				LOGGER.error("Couldn't build Weka",e);
 			}
 		}
-		cfService.addInstanceValues(wekaObj, d);
-		custom_classifiers = new LinkedHashMap<String, Classifier>(); 
-		wekaObj.generateLimits();
 		return wekaObj;
 	}
 }

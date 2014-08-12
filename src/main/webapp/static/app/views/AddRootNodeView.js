@@ -231,7 +231,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  								index = Cure.CollaboratorCollection.indexOf(newCollaborator);
 	  							}
 	  							model.get("options").set({
-	  								"unique_id" : "custom_classifier_"+ui.item.data.id,
+	  								"unique_id" : "custom_classifier_new_"+ui.item.data.id,
 	  								"kind" : "split_node",
 	  								"full_name" : '',
 	  								"description" : ui.item.data.description
@@ -240,7 +240,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  							new Node({
 	  								'name' : ui.item.data.name,
 	  								"options" : {
-	  									"unique_id" : "custom_classifier_"+ui.item.data.id,
+	  									"unique_id" : "custom_classifier_new_"+ui.item.data.id,
 		  								"kind" : "split_node",
 		  								"full_name" : '',
 		  								"description" : ui.item.data.description
