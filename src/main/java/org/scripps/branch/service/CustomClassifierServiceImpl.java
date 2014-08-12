@@ -1,6 +1,11 @@
 package org.scripps.branch.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,11 +13,15 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.SerializedCustomClassifier;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
@@ -20,6 +29,7 @@ import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.repository.SerializedCustomClassifierRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
@@ -27,6 +37,10 @@ import org.scripps.branch.viz.JsonTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +56,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
-@Transactional
 public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
@@ -62,6 +75,9 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
 	HibernateAwareObjectMapper mapper;
+	
+	@Autowired
+	SerializedCustomClassifierService sccSer;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomClassifierServiceImpl.class);
 
@@ -99,11 +115,17 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	}
 
 	@Override
-	public FilteredClassifier buildCustomClasifier(HashMap<String, Weka> name_dataset,
-			long[] featureDbIds, int classifierType) {
-		Instances data;
-		List<Attribute> a = attrRepo.findByFeatureDbId(featureDbIds[0]);
-		data = name_dataset.get("dataset_"+a.get(0).getDataset().getId()).getTrain();
+	public HashMap buildCustomClasifier(Instances data, long id){
+		HashMap mp = new HashMap();
+		CustomClassifier c = ccRepo.findById(id);
+		int classifierType = c.getType();
+		List<Feature> fList = c.getFeature();
+		long[] featureDbIds = new long[fList.toArray().length];
+		int ctr = 0;
+		for (Feature f: fList) {
+			featureDbIds[ctr] = f.getId();
+			ctr++;
+		}
 		String att_name = "";
 		String indices = new String();
 		for (long featureDbId : featureDbIds) {
@@ -141,19 +163,30 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error building classifier",e);
 		}
-		return fc;
-	}
-
-	@Override
-	public FilteredClassifier getandBuildClassifier(CustomClassifier cc,
-			HashMap<String, Weka> name_dataset) {
-		long[] featuresDbId = new long[cc.getFeature().size()];
-		int ctr = 0;
-		for (Feature f : cc.getFeature()) {
-			featuresDbId[ctr] = f.getId();
-			ctr++;
+		SerializedCustomClassifier scc = new SerializedCustomClassifier();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = null;
+		User user;
+		userDetails = (UserDetails) auth.getPrincipal();
+		user = userRepo.findByEmail(userDetails.getUsername());
+		scc.setUser(user);
+		LOGGER.debug(c.getName());
+		scc.setCustomClassifier(c);
+		ByteArrayOutputStream baos;
+		ObjectOutputStream out;
+		baos = new ByteArrayOutputStream();
+		try {
+			out = new ObjectOutputStream(baos);
+			out.writeObject(fc);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return buildCustomClasifier(name_dataset, featuresDbId, cc.getType());
+		scc.setSerialized_object(baos.toByteArray());
+		scc = sccSer.saveAndFlush(scc);
+		mp.put("classifier", fc);
+		mp.put("id", scc.getId());
+		return mp;
 	}
 
 	@Override
@@ -177,13 +210,29 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	}
 
 	@Override
+	@Transactional
 	public LinkedHashMap<String, Classifier> getClassifiersfromDb(HashMap<String, Weka> name_dataset) {
 		LinkedHashMap<String, Classifier> listOfClassifiers = new LinkedHashMap<String, Classifier>();
-		List<CustomClassifier> ccList = new ArrayList<CustomClassifier>();
-		ccList = ccRepo.findAll();
-		for (CustomClassifier cc : ccList) {
-			listOfClassifiers.put("custom_classifier_" + cc.getId(),
-					getandBuildClassifier(cc, name_dataset));
+		List<SerializedCustomClassifier> ccList = new ArrayList<SerializedCustomClassifier>();
+		ccList = sccSer.findAll();
+		ByteArrayInputStream bais;
+		ObjectInputStream in;
+		Classifier c;
+		int length;
+		for (SerializedCustomClassifier cc : ccList) {
+				try {
+					bais = new ByteArrayInputStream(cc.getSerialized_object());
+					in = new ObjectInputStream(bais);
+					c = (Classifier) in.readObject();
+					listOfClassifiers.put("custom_classifier_" + cc.getId(), c);
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		return listOfClassifiers;
 	}
@@ -260,10 +309,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 			HashMap<String, Weka> name_dataset, Dataset dataset,
 			HashMap<String, Classifier> custom_classifiers) {
 		HashMap mp = new HashMap();
-		int custom_classifier_id = 0;
 		List<Feature> featureList = new ArrayList<Feature>();
-		FilteredClassifier fc = buildCustomClasifier(name_dataset, featureDbIds,
-				classifierType);
 		for (long id : featureDbIds) {
 			featureList.add(fRepo.getByDbId(id));
 		}
@@ -276,7 +322,6 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		newCC.setFeature(featureList);
 		newCC.setUser(user);
 		newCC = ccRepo.saveAndFlush(newCC);
-		custom_classifiers.put("custom_classifier_" + newCC.getId(), fc);
 		return newCC;
 	}
 }

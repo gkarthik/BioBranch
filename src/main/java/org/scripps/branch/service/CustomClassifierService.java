@@ -13,17 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
+import weka.core.Instances;
 
 @Service
-@Transactional
 public interface CustomClassifierService {
 	public void addCustomTree(String id, Weka weka,
 			LinkedHashMap<String, Classifier> custom_classifiers, Dataset dataset, CustomSetRepository cSetRepo);
 
-	public FilteredClassifier buildCustomClasifier(HashMap<String, Weka> name_dataset,
-			long[] featureDbIds, int classifierType);
-
-	public FilteredClassifier getandBuildClassifier(CustomClassifier cc, HashMap<String, Weka> name_dataset);
+	public HashMap buildCustomClasifier(Instances data, long id);
 
 	public HashMap getClassifierDetails(long id, Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers);

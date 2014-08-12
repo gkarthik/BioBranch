@@ -83,8 +83,9 @@ public class JsonTree {
 						cfList.add(temp);
 					}
 				} else if (uid.contains("custom_classifier")) {
-					CustomClassifier temp = cc.findById(Long.valueOf(uid
-							.replace("custom_classifier_", "")));
+//					CustomClassifier temp = cc.findById(Long.valueOf(uid
+//							.replace("custom_classifier_", "")));
+					CustomClassifier temp = new CustomClassifier();
 					if (temp != null) {
 						ccList.add(temp);
 					}
@@ -164,6 +165,7 @@ public class JsonTree {
 			}
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
+			tree.setCcSer(ccService);
 			tree.setCustomRepo(cSetRepo.findAll());
 			tree.buildClassifier(weka.getTrain());
 		} catch (JsonProcessingException e) {

@@ -11,15 +11,22 @@ public class FeatureProcessor implements ItemProcessor<Feature, Feature> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureProcessor.class);
 	
-	@Autowired 
 	FeatureRepository fRepo;
-	
+
 	@Override
 	public Feature process(Feature f) {
 		LOGGER.debug(f.getShort_name());	
-		if(fRepo.findByUniqueId(f.getUnique_id())==null){
+//		if(fRepo.findByUniqueId(f.getUnique_id())==null){
 			return f;
-		}
-		return null;
+//		}
+//		return null;
+	}
+	
+	public FeatureRepository getfRepo() {
+		return fRepo;
+	}
+
+	public void setfRepo(FeatureRepository fRepo) {
+		this.fRepo = fRepo;
 	}
 }

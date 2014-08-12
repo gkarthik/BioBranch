@@ -55,7 +55,7 @@ public class PersistenceJPAConfig {
 	private DatabasePopulator createDatabasePopulator() {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 		databasePopulator.setContinueOnError(true);
-//		 databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
+		 databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
 		return databasePopulator;
 	}
 
@@ -76,7 +76,6 @@ public class PersistenceJPAConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
 		em.setPackagesToScan(new String[] { "org.scripps.branch.entity" });
-
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
 		em.setJpaProperties(additionalProperties());

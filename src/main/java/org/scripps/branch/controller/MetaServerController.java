@@ -45,6 +45,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -264,7 +265,7 @@ public class MetaServerController {
 		}
 		return result_json;
 	}
-
+	
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
 		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 		Weka wekaObj = weka.getWeka(d.getId());
@@ -400,7 +401,7 @@ public class MetaServerController {
 			newTree.setCreated(new DateTime(date.getTime()));
 			newTree.setFeatures(fList);
 			newTree.setCustomFeatures(cfList);
-			newTree.setCustomClassifiers(ccList);
+			//newTree.setCustomClassifiers(ccList);
 			newTree.setCustomTreeClassifiers(tList);
 			newTree.setJson_tree(result_json);
 			newTree.setPrivate_tree(false);

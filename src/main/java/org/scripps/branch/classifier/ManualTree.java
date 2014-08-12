@@ -33,10 +33,12 @@ import java.util.Vector;
 
 import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.service.CustomClassifierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import weka.classifiers.Classifier;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
@@ -189,6 +191,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected List<CustomSet> cSetList;
 
 	protected Instances requiredInst;
+	
+	protected CustomClassifierService ccSer;
 
 	/**
 	 * Trying to get generate distribution of classes
@@ -445,7 +449,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// Build tree
 		if (jsontree != null) {
 			buildTree(train, classProbs, new Instances(data, 0), m_Debug, 0,
-					jsontree, 0, m_distributionData, requiredInstances, listOfFc, cSetList);
+					jsontree, 0, m_distributionData, requiredInstances, listOfFc, cSetList, ccSer);
 		} else {
 			System.out
 					.println("No json tree specified, failing to process tree");
@@ -488,7 +492,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected void buildTree(Instances data, double[] classProbs,
 			Instances header, boolean debug, int depth, JsonNode node,
 			int parent_index, HashMap m_distributionData, Instances requiredInstances,
-			LinkedHashMap<String, Classifier> custom_classifiers, List<CustomSet> cSList)
+			LinkedHashMap<String, Classifier> custom_classifiers, List<CustomSet> cSList, CustomClassifierService ccService)
 			throws Exception {
 
 		if (mapper == null) {
@@ -519,6 +523,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		m_ClassDistribution = classProbs.clone();
 		listOfFc = custom_classifiers;
 		cSetList = cSList;
+		ccSer = ccService;
 
 		// if (Utils.sum(m_ClassDistribution) < 2 * m_MinNum
 		// || Utils.eq(m_ClassDistribution[Utils.maxIndex(m_ClassDistribution)],
@@ -531,16 +536,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// return;
 		// }
 
-		// Compute class distributions and value of splitting
-		// criterion for each attribute
-		double[] vals = new double[data.numAttributes()
-				+ custom_classifiers.size()+cSetList.size()];
-		double[][][] dists = new double[data.numAttributes()
-				+ custom_classifiers.size()+cSetList.size()][0][0];
-		double[][] props = new double[data.numAttributes()
-				+ custom_classifiers.size()+cSetList.size()][0];
-		double[] splits = new double[data.numAttributes()
-				+ custom_classifiers.size()+cSetList.size()];
 
 		// Investigate the selected attribute
 		int attIndex = parent_index;
@@ -580,6 +575,15 @@ public class ManualTree extends Classifier implements OptionHandler,
 					}
 					attIndex = (data.numAttributes() - 1) +custom_classifiers.size()+ ctr;
 				} else {
+					if(att_name.asText().contains("custom_classifier_new")){
+						LOGGER.debug(att_name.asText().replace("custom_classifier_new_", ""));
+						HashMap mp = ccSer.buildCustomClasifier(data, Long.valueOf(att_name.asText().replace("custom_classifier_new_", "")));
+						Classifier fc = (Classifier) mp.get("classifier");
+						custom_classifiers.put("custom_classifier_"+mp.get("id"), fc);
+						evalresults.put("unique_id", "custom_classifier_"+mp.get("id"));
+						evalresults.put("attribute_name", "custom_classifier_"+mp.get("id"));
+						att_name = evalresults.get("attribute_name");
+					}
 					int ctr = 0;
 					for (String key : custom_classifiers.keySet()) {
 						if (key.equals(att_name.asText())) {
@@ -612,6 +616,16 @@ public class ManualTree extends Classifier implements OptionHandler,
 		} else {
 			// LOGGER.debug("non split node, name "+att_name+" type "+kind);
 		}
+		// Compute class distributions and value of splitting
+				// criterion for each attribute
+				double[] vals = new double[data.numAttributes()
+						+ custom_classifiers.size()+cSetList.size()];
+				double[][][] dists = new double[data.numAttributes()
+						+ custom_classifiers.size()+cSetList.size()][0][0];
+				double[][] props = new double[data.numAttributes()
+						+ custom_classifiers.size()+cSetList.size()][0];
+				double[] splits = new double[data.numAttributes()
+						+ custom_classifiers.size()+cSetList.size()];
 		HashMap<String, Double> mp = new HashMap<String, Double>();
 		if (attIndex >= data.numAttributes() && attIndex < data.numAttributes()+custom_classifiers.size()) {
 			mp = distribution(props, dists, attIndex, data, Double.NaN,
@@ -741,7 +755,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if (son != null) {
 					m_Successors[i].buildTree(subsets[i], distribution[i],
 							header, m_Debug, depth + 1, son, attIndex,
-							m_distributionData, requiredInstances, custom_classifiers, cSList);
+							m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
 				} else {
 					// if we are a split node with no input children, we need to
 					// add them into the tree
@@ -761,14 +775,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 						_node.put("children", children);
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, child, attIndex,
-								m_distributionData, requiredInstances, custom_classifiers, cSList);
+								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
 
 					} else {
 						// for leaf nodes, calling again ends the cycle and
 						// fills up the bins appropriately
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, node, attIndex,
-								m_distributionData, requiredInstances, custom_classifiers, cSList);
+								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
 					}
 				}
 			}
@@ -1042,6 +1056,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 		} else if(CustomClassifierId != null) {
 			Classifier fc = custom_classifiers.get(CustomClassifierId);
+			LOGGER.debug(CustomClassifierId);
 			dist = new double[data.numClasses()][data.numClasses()];
 			Instance inst;
 			for (int i = 0; i < data.numInstances(); i++) {
@@ -1643,8 +1658,12 @@ public class ManualTree extends Classifier implements OptionHandler,
 		m_AllowUnclassifiedInstances = newAllowUnclassifiedInstances;
 	}
 
-	public void setCustomRepo(List<CustomSet> cSetRepo) {
-		this.cSetList = cSetRepo;
+	public void setCcSer(CustomClassifierService ccSer) {
+		this.ccSer = ccSer;
+	}
+
+	public void setCustomRepo(List<CustomSet> csList) {
+		this.cSetList = csList;
 	}
 
 	public void setDistributionData(HashMap newDistMap) {
