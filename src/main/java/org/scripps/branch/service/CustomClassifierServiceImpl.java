@@ -77,7 +77,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	HibernateAwareObjectMapper mapper;
 	
 	@Autowired
-	SerializedCustomClassifierService sccSer;
+	SerializedCustomClassifierRepository sccRepo;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomClassifierServiceImpl.class);
 
@@ -183,7 +183,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 			e.printStackTrace();
 		}
 		scc.setSerialized_object(baos.toByteArray());
-		scc = sccSer.saveAndFlush(scc);
+		scc = sccRepo.saveAndFlush(scc);
 		mp.put("classifier", fc);
 		mp.put("id", scc.getId());
 		return mp;
@@ -193,7 +193,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	public HashMap getClassifierDetails(long id, Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers) {
 		HashMap mp = new HashMap();
-		CustomClassifier cc = ccRepo.findById(id);
+		CustomClassifier cc = sccRepo.findById(id).getCustomClassifier();
 		String classifierString = custom_classifiers.get(
 				"custom_classifier_" + id).toString();
 		HashMap featureAttributeMapping = new HashMap();
@@ -214,7 +214,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	public LinkedHashMap<String, Classifier> getClassifiersfromDb(HashMap<String, Weka> name_dataset) {
 		LinkedHashMap<String, Classifier> listOfClassifiers = new LinkedHashMap<String, Classifier>();
 		List<SerializedCustomClassifier> ccList = new ArrayList<SerializedCustomClassifier>();
-		ccList = sccSer.findAll();
+		ccList = sccRepo.findAll();
 		ByteArrayInputStream bais;
 		ObjectInputStream in;
 		Classifier c;

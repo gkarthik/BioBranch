@@ -521,7 +521,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// Check if node doesn't contain enough instances or is pure
 		// or maximum depth reached
 		m_ClassDistribution = classProbs.clone();
-		listOfFc = custom_classifiers;
 		cSetList = cSList;
 		ccSer = ccService;
 
@@ -616,16 +615,18 @@ public class ManualTree extends Classifier implements OptionHandler,
 		} else {
 			// LOGGER.debug("non split node, name "+att_name+" type "+kind);
 		}
+
+		double[] vals = new double[data.numAttributes()
+				+ custom_classifiers.size() + cSetList.size()];
+		double[][][] dists = new double[data.numAttributes()
+				+ custom_classifiers.size() + cSetList.size()][0][0];
+		double[][] props = new double[data.numAttributes()
+				+ custom_classifiers.size() + cSetList.size()][0];
+		double[] splits = new double[data.numAttributes()
+				+ custom_classifiers.size() + cSetList.size()];
+		listOfFc = custom_classifiers;
 		// Compute class distributions and value of splitting
-				// criterion for each attribute
-				double[] vals = new double[data.numAttributes()
-						+ custom_classifiers.size()+cSetList.size()];
-				double[][][] dists = new double[data.numAttributes()
-						+ custom_classifiers.size()+cSetList.size()][0][0];
-				double[][] props = new double[data.numAttributes()
-						+ custom_classifiers.size()+cSetList.size()][0];
-				double[] splits = new double[data.numAttributes()
-						+ custom_classifiers.size()+cSetList.size()];
+		// criterion for each attribute
 		HashMap<String, Double> mp = new HashMap<String, Double>();
 		if (attIndex >= data.numAttributes() && attIndex < data.numAttributes()+custom_classifiers.size()) {
 			mp = distribution(props, dists, attIndex, data, Double.NaN,

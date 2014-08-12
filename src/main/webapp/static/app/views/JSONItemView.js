@@ -352,17 +352,19 @@ JSONItemView = Marionette.ItemView.extend({
 				id: this.model.get('options').get('unique_id').replace("custom_classifier_",""),
     	        dataset: Cure.dataset
     	      };
-    	      $.ajax({
-    	          type : 'POST',
-    	          url : this.url,
-    	          data : JSON.stringify(args),
-    	          dataType : 'json',
-    	          contentType : "application/json; charset=utf-8",
-    	          success : function(data){
-    	        	  $(thisView.ui.featuresInClassifier).html(classifierInString(data));
-    	          },
-    	          error: this.error
-    	});
+		if(this.model.get('options').get('unique_id').indexOf("new")==-1){
+			$.ajax({
+  	          type : 'POST',
+  	          url : this.url,
+  	          data : JSON.stringify(args),
+  	          dataType : 'json',
+  	          contentType : "application/json; charset=utf-8",
+  	          success : function(data){
+  	        	  $(thisView.ui.featuresInClassifier).html(classifierInString(data));
+  	          },
+  	          error: this.error
+  	});
+		}
 	},
 	ShowJSON : function() {
 		var description =null;

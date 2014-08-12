@@ -211,7 +211,7 @@ AggNodeLayout = Marionette.Layout.extend({
 					index = Cure.CollaboratorCollection.indexOf(newCollaborator);
 				}
 				model.get("options").set({
-					"unique_id" : "custom_classifier_"+data.id,
+					"unique_id" : "custom_classifier_new_"+data.id,
 					"kind" : "split_node",
 					"full_name" : '',
 					"description" : data.description
@@ -220,7 +220,7 @@ AggNodeLayout = Marionette.Layout.extend({
 				new Node({
 					'name' : data.name,
 					"options" : {
-						"unique_id" : "custom_classifier_"+data.id,
+						"unique_id" : "custom_classifier_new_"+data.id,
 						"kind" : "split_node",
 						"full_name" : '',
 						"description" : data.description
