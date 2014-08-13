@@ -326,7 +326,7 @@ public class MetaServerController {
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				d, custom_classifiers, attr,
-				cClassifierService, customSetRepo);
+				cClassifierService, customSetRepo, d);
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();

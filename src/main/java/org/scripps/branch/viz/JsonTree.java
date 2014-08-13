@@ -156,7 +156,7 @@ public class JsonTree {
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode,
 			Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
+			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo, Dataset d) {
 		ManualTree tree = new ManualTree();
 		try {
 			if (!dataset.equals("mammal")) {
@@ -167,6 +167,7 @@ public class JsonTree {
 			tree.setListOfFc(custom_classifiers);
 			tree.setCcSer(ccService);
 			tree.setCustomRepo(cSetRepo.findAll());
+			tree.setD(d);
 			tree.buildClassifier(weka.getTrain());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
