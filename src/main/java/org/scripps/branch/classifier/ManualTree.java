@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import org.scripps.branch.entity.CustomSet;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.service.CustomClassifierService;
 import org.slf4j.Logger;
@@ -193,6 +194,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected Instances requiredInst;
 	
 	protected CustomClassifierService ccSer;
+	
+	protected Dataset d;
 
 	/**
 	 * Trying to get generate distribution of classes
@@ -449,7 +452,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// Build tree
 		if (jsontree != null) {
 			buildTree(train, classProbs, new Instances(data, 0), m_Debug, 0,
-					jsontree, 0, m_distributionData, requiredInstances, listOfFc, cSetList, ccSer);
+					jsontree, 0, m_distributionData, requiredInstances, listOfFc, cSetList, ccSer, d);
 		} else {
 			System.out
 					.println("No json tree specified, failing to process tree");
@@ -492,7 +495,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected void buildTree(Instances data, double[] classProbs,
 			Instances header, boolean debug, int depth, JsonNode node,
 			int parent_index, HashMap m_distributionData, Instances requiredInstances,
-			LinkedHashMap<String, Classifier> custom_classifiers, List<CustomSet> cSList, CustomClassifierService ccService)
+			LinkedHashMap<String, Classifier> custom_classifiers, List<CustomSet> cSList, CustomClassifierService ccService, Dataset ds)
 			throws Exception {
 
 		if (mapper == null) {
@@ -523,6 +526,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		m_ClassDistribution = classProbs.clone();
 		cSetList = cSList;
 		ccSer = ccService;
+		d = ds;
 
 		// if (Utils.sum(m_ClassDistribution) < 2 * m_MinNum
 		// || Utils.eq(m_ClassDistribution[Utils.maxIndex(m_ClassDistribution)],
@@ -726,7 +730,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					LOGGER.debug(cSet.getId()+": child Name");
 					JsonNode vertices = mapper.readTree(cSet.getConstraints());
 					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
-					List<Attribute> aList = generateAttributeList(cSet, data);
+					List<Attribute> aList = generateAttributeList(cSet, data, ds);
 					double[] testPoint = new double[2];
 					testPoint[0] = inst.value(aList.get(0));
 					testPoint[1] = inst.value(aList.get(1));
@@ -756,7 +760,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if (son != null) {
 					m_Successors[i].buildTree(subsets[i], distribution[i],
 							header, m_Debug, depth + 1, son, attIndex,
-							m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
+							m_distributionData, requiredInstances, custom_classifiers, cSList, ccService, ds);
 				} else {
 					// if we are a split node with no input children, we need to
 					// add them into the tree
@@ -776,14 +780,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 						_node.put("children", children);
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, child, attIndex,
-								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
+								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService, ds);
 
 					} else {
 						// for leaf nodes, calling again ends the cycle and
 						// fills up the bins appropriately
 						m_Successors[i].buildTree(subsets[i], distribution[i],
 								header, m_Debug, depth + 1, node, attIndex,
-								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService);
+								m_distributionData, requiredInstances, custom_classifiers, cSList, ccService, ds);
 					}
 				}
 			}
@@ -1073,15 +1077,17 @@ public class ManualTree extends Classifier implements OptionHandler,
 			LOGGER.debug(cSet.getId()+": distribution");
 			JsonNode vertices = mapper.readTree(cSet.getConstraints());
 			ArrayList<double[]> attrVertices = generateVerticesList(vertices);
-			List<Attribute> aList = generateAttributeList(cSet, data);
+			List<Attribute> aList = generateAttributeList(cSet, data, d);
 			double[] testPoint = new double[2];
 			int ctr = 0;
 			for(int k=0;k<data.numInstances();k++){
 				testPoint = new double[2];
 				ctr = 0;
 				for(Attribute a:aList){
+					if(!data.instance(k).isMissing(a)){
 						testPoint[ctr] = data.instance(k).value(a);
-					ctr++;
+						ctr++;
+					}
 				}
 				int check = checkPointInPolygon(attrVertices, testPoint);
 				dist[check][(int) data.instance(k).classValue()] += data.instance(k).weight();
@@ -1193,7 +1199,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				LOGGER.debug(cSet.getId()+": DIstribution for instance");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
-				List<Attribute> aList = generateAttributeList(cSet, m_Info);
+				List<Attribute> aList = generateAttributeList(cSet, m_Info, d);
 				double[] testPoint = new double[2];
 					testPoint[0] = instance.value(aList.get(0));
 					testPoint[1] = instance.value(aList.get(1));
@@ -1248,7 +1254,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		return priorVal - ContingencyTables.entropyConditionedOnRows(dist);
 	}
 
-	public List<Attribute> generateAttributeList(CustomSet cSet, Instances data){
+	public List<Attribute> generateAttributeList(CustomSet cSet, Instances data, Dataset d){
 		List<Feature> fList= cSet.getFeatures();
 		List<Attribute> aList = new ArrayList<Attribute>();
 		Attribute attr = null;
@@ -1258,7 +1264,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			f = fList.get(i);
 			LOGGER.debug(f.getShort_name());
 			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
-				if(a.getDataset().equals("metabric_with_clinical")){
+				if(a.getDataset().equals(d)){
 					attr = data.attribute(a.getName());
 				}
 			}
@@ -1721,6 +1727,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 		m_NumFolds = newNumFolds;
 	}
+	
+	public Dataset getD() {
+		return d;
+	}
+
+	public void setD(Dataset d) {
+		this.d = d;
+	}
 
 	/**
 	 * Parses a given list of options.
@@ -1869,7 +1883,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				LOGGER.debug(cSet.getId()+": split data");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
-				List<Attribute> aList = generateAttributeList(cSet, data);
+				List<Attribute> aList = generateAttributeList(cSet, data, d);
 				double[] testPoint = new double[2];
 				int ctr = 0;
 				for(int k=0;k<data.numInstances();k++){
