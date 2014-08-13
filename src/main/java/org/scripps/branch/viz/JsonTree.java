@@ -13,6 +13,7 @@ import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.SerializedCustomClassifier;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
@@ -20,6 +21,7 @@ import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.repository.SerializedCustomClassifierRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.slf4j.Logger;
@@ -42,7 +44,7 @@ public class JsonTree {
 
 	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f,
 			CustomFeatureRepository cf, CustomClassifierRepository cc,
-			TreeRepository t, CustomSetRepository cs) {
+			TreeRepository t, CustomSetRepository cs, SerializedCustomClassifierRepository sccRepo) {
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
 		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
@@ -83,9 +85,12 @@ public class JsonTree {
 						cfList.add(temp);
 					}
 				} else if (uid.contains("custom_classifier")) {
-//					CustomClassifier temp = cc.findById(Long.valueOf(uid
-//							.replace("custom_classifier_", "")));
-					CustomClassifier temp = new CustomClassifier();
+					SerializedCustomClassifier s = sccRepo.findById(Long.valueOf(uid
+							.replace("custom_classifier_", "")));
+					CustomClassifier temp = null;
+					if(s!=null){
+						temp = s.getCustomClassifier();
+					}
 					if (temp != null) {
 						ccList.add(temp);
 					}
@@ -110,7 +115,7 @@ public class JsonTree {
 		ArrayNode children = (ArrayNode) node.get("children");
 		if (children != null) {
 			for (JsonNode child : children) {
-				getFeatures(child, mp, f, cf, cc, t, cs);
+				getFeatures(child, mp, f, cf, cc, t, cs, sccRepo);
 			}
 		}
 	}
