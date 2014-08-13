@@ -29,6 +29,7 @@ import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.PathwayRepository;
 import org.scripps.branch.repository.ScoreRepository;
+import org.scripps.branch.repository.SerializedCustomClassifierRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
@@ -106,6 +107,9 @@ public class MetaServerController {
 	
 	@Autowired
 	private CustomSetRepository customSetRepo;
+	
+	@Autowired
+	private SerializedCustomClassifierRepository sccRepo;
 
 	@Autowired
 	UserRepository userRepo;
@@ -357,7 +361,7 @@ public class MetaServerController {
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
-				treeRepo, customSetRepo);
+				treeRepo, customSetRepo, sccRepo);
 		User user = userRepo.findById(data.get("player_id").asLong());
 		Score newScore = new Score();
 		double nov = 0;
@@ -401,7 +405,7 @@ public class MetaServerController {
 			newTree.setCreated(new DateTime(date.getTime()));
 			newTree.setFeatures(fList);
 			newTree.setCustomFeatures(cfList);
-			//newTree.setCustomClassifiers(ccList);
+			newTree.setCustomClassifiers(ccList);
 			newTree.setCustomTreeClassifiers(tList);
 			newTree.setJson_tree(result_json);
 			newTree.setPrivate_tree(false);
