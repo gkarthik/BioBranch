@@ -26,15 +26,6 @@ public class AttributeTest {
 	private AttributeRepository attr;
 
 	@Test
-	public void testFeatureUniqueId() {
-		List<Attribute> attrList = attr.findByFeatureUniqueId("1960",
-				"metabric_with_clinical");
-		for (Attribute at : attrList) {
-			assertEquals(at.getName(), "ILMN_1722781");
-		}
-	}
-
-	@Test
 	public void testfindByAttNameDataset() {
 		List<Attribute> attrList = attr.findByAttNameDataset("ILMN_1722781",
 				"metabric_with_clinical");

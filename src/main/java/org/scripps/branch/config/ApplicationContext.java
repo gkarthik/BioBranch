@@ -43,7 +43,7 @@ public class ApplicationContext {
 	public DatasetMap initWekaInApplicationContext() {
 		return new DatasetMap();
 	}
-
+	
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
