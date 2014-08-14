@@ -36,7 +36,8 @@ sidebarLayout = Marionette.Layout.extend({
     	ScoreWrapper: "#score-board-outerWrapper",
     	TreeExpWrapper: "#tree-explanation-outerWrapper",
     	displayWrapper: "#displayWrapper",
-    	panelBody: ".panel-body"
+    	panelBody: ".controls-extra-wrapper",
+    	togglePanelBody: "#sidebar-toggle"
     },
     events:{
     	'click #current-tree-rank': 'showCurrentRank',
@@ -44,14 +45,27 @@ sidebarLayout = Marionette.Layout.extend({
     	'click #BadgesPlaceholder': 'showBadges',
     	'click #new-tree': 'createNewTree',
     	'click #eval-tab li a': 'showTab',
-    	'click #sidebar-toggle': 'togglePanelBody'
+    	'click .sidebar-show': 'showPanelBody',
+    	'click .sidebar-close': 'closePanelBody',
+    	'click .open-pathway-search': 'openPathwaySearch'
     },
     className: 'panel panel-default',
     initialize: function(){
     	_.bindAll(this,'toggleTreeExp');
     },
-    togglePanelBody: function(){
-    	$(this.ui.panelBody).slideToggle();
+	openPathwaySearch: function(){
+		Cure.PathwaySearchLayout = new PathwaySearchLayout({aggNode: false});
+		this.PathwaySearchRegion.show(Cure.PathwaySearchLayout);
+	},
+    showPanelBody: function(){
+    	$(this.ui.panelBody).show();
+    	$(this.ui.togglePanelBody).addClass("sidebar-close");
+    	$(this.ui.togglePanelBody).removeClass("sidebar-show");
+    },
+    closePanelBody: function(){
+    	$(this.ui.panelBody).hide();
+    	$(this.ui.togglePanelBody).addClass("sidebar-show");
+    	$(this.ui.togglePanelBody).removeClass("sidebar-close");
     },
     showTab: function(e){
     	var el = $(e.target);

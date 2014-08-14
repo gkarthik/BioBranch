@@ -40,20 +40,6 @@ public class CustomClassifierTest {
 	private DatasetMap weka;
 
 	@Test
-	public void addCustomClassifier() {
-		// 113130,699,11065
-		LinkedHashMap<String, Classifier> custom_classifiers = new LinkedHashMap<String, Classifier>();
-		Weka wekaobj = weka.getWeka();
-		List<String> entrezIds = new ArrayList<String>();
-		entrezIds.add("113130");
-		entrezIds.add("699");
-		HashMap mp = ser.getOrCreateClassifier(entrezIds, 0, "Test 2",
-				"Test Classifier 2", -1, wekaobj, "metabric_with_clinical",
-				custom_classifiers);
-		assertEquals(mp == null, false);
-	}
-
-	@Test
 	public void addCustomTree() {
 		LinkedHashMap custom_classifiers = new LinkedHashMap();
 //		ser.addCustomTree("custom_tree_5", weka.getWeka(), custom_classifiers,

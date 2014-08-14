@@ -15,4 +15,6 @@ public interface PathwayRepository extends JpaRepository<Pathway, Long> {
 
 	@Query("select p from Pathway p where p.name like concat('%',concat(?1,'%'))")
 	List<Pathway> searchPathways(String name);
+	
+	Pathway findById(long id);
 }

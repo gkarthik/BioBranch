@@ -6,6 +6,8 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.scripps.branch.repository.PathwayRepository;
+import org.scripps.branch.service.PathwayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,10 +57,10 @@ public class PersistenceJPAConfig {
 	private DatabasePopulator createDatabasePopulator() {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 		databasePopulator.setContinueOnError(true);
-		 databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
+		databasePopulator.addScript(ctx.getResource("/WEB-INF/data/schema-postgresql.sql"));
 		return databasePopulator;
 	}
-
+	
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();

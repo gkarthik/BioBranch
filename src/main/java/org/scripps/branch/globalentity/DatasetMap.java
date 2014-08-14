@@ -11,6 +11,7 @@ import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.FeatureCustomRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
+import org.scripps.branch.service.PathwayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -49,6 +50,9 @@ public class DatasetMap implements ApplicationContextAware {
 	
 	@Autowired
 	String uploadPath;
+	
+	@Autowired
+	PathwayService pSer;
 
 	public LinkedHashMap<String, Classifier> getCustomClassifierObject() {
 		return custom_classifiers;

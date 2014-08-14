@@ -32,7 +32,7 @@ public class DatasetTest {
 	public void testFindByCollectionId() {
 
 		Collection c = coll.findById(1);
-		List<Dataset> dList = ds.findByCollectionId(c);
+		List<Dataset> dList = ds.findByCollection(c);
 		for (Dataset d : dList) {
 			if (d.getId() == 2) {
 				assertEquals(d.getDatasetname().equals("dataset"), true);

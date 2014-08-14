@@ -31,6 +31,9 @@ public class Pathway {
 
 	@Column
 	private String source_db;
+	
+	@Column 
+	private String external_id;
 
 	public List<Feature> getFeatures() {
 		return features;
@@ -62,6 +65,14 @@ public class Pathway {
 
 	public void setSource_db(String source_db) {
 		this.source_db = source_db;
+	}
+	
+	public String getExternal_id() {
+		return external_id;
+	}
+
+	public void setExternal_id(String external_id) {
+		this.external_id = external_id;
 	}
 
 }
