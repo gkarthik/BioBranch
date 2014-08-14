@@ -35,18 +35,23 @@ sidebarLayout = Marionette.Layout.extend({
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",
     	TreeExpWrapper: "#tree-explanation-outerWrapper",
-    	displayWrapper: "#displayWrapper"
+    	displayWrapper: "#displayWrapper",
+    	panelBody: ".panel-body"
     },
     events:{
     	'click #current-tree-rank': 'showCurrentRank',
     	'click #tree-explanation-button': 'toggleTreeExp',
     	'click #BadgesPlaceholder': 'showBadges',
     	'click #new-tree': 'createNewTree',
-    	'click #eval-tab li a': 'showTab'
+    	'click #eval-tab li a': 'showTab',
+    	'click #sidebar-toggle': 'togglePanelBody'
     },
     className: 'panel panel-default',
     initialize: function(){
     	_.bindAll(this,'toggleTreeExp');
+    },
+    togglePanelBody: function(){
+    	$(this.ui.panelBody).slideToggle();
     },
     showTab: function(e){
     	var el = $(e.target);

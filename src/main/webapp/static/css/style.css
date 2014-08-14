@@ -25,10 +25,12 @@ html, body{
 
 #cure-panel .panel-heading{
 	cursor: move;
+	float:left;
+	width: 100%;
 }
 
 #cure-panel .panel-body{
-	
+	display: none;
 }
 
 #score-panel{
@@ -38,8 +40,17 @@ html, body{
   	transition: transform 0.5s ease-in-out;
 }
 
+#sidebar-toggle{
+	cursor: pointer;
+}
+
 #CommentRegion{
 	
+}
+
+.save-content-wrapper{
+	float: left;
+	width: 100%;
 }
 
 .score-panel-extend{
@@ -540,6 +551,7 @@ padding: 1%;
 }
 
 #score{
+	display: none;
 	padding: 5px;
 	background: #FFF;
 	color: #F69;
@@ -1046,9 +1058,7 @@ text-align:left;
 }
 
 #DatasetRegion{
-	padding-bottom:5px;
-	margin-bottom: 4px;
-	border-bottom: 1px solid #ECECEC;
+	
 }
 
 #dataset-wrapper{
