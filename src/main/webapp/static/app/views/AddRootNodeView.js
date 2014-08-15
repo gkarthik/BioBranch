@@ -8,6 +8,7 @@ define([
 	//Views
 	'app/views/layouts/PathwaySearchLayout',
 	'app/views/layouts/AggregateNodeLayout',
+	'app/views/layouts/AttributeRankerLayout',
 	'app/views/FeatureBuilderView',
 	'app/views/PickInstance',
 	//Templates
@@ -18,7 +19,7 @@ define([
 	'myGeneAutocomplete',
 	'jqueryui',
 	 'bootstrapSwitch'
-    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
+    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, AttrRankLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
 AddRootNodeView = Marionette.ItemView.extend({
 	initialize : function() {
 	},
@@ -36,13 +37,20 @@ AddRootNodeView = Marionette.ItemView.extend({
 		'click .open-addnode': 'openAggNode',
 		'click .open-feature-builder': 'openFeatureBuilder',
 		'click .choose-category': 'chooseCategory',
-		'click .show-pick-instance': 'showPickInstance'
+		'click .show-pick-instance': 'showPickInstance',
+		'click .rank-attributes': 'showRankAttr'
+	},
+	showRankAttr: function(){
+		Cure.sidebarLayout.AttrRankRegion.close();
+		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout());
 	},
 	openFeatureBuilder: function(){
+		Cure.FeatureBuilderRegion.close();
 		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
 		Cure.FeatureBuilderRegion.show(Cure.FeatureBuilderView);
 	},
 	openAggNode: function(){
+		Cure.sidebarLayout.AggNodeRegion.close();
 		Cure.AggNodeLayout = new AggNodeLayout({model: this.model});
 		Cure.sidebarLayout.AggNodeRegion.show(Cure.AggNodeLayout);
 	},
