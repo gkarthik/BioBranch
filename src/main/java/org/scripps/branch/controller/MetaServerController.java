@@ -260,10 +260,20 @@ public class MetaServerController {
 						"query").asText());
 				result_json = mapper.writeValueAsString(pList);
 			} else if (command.equals("get_genes_of_pathway")) {
-				Pathway p = pathwayRepo.findByNameAndSourcedb(
-						data.get("pathway_name").asText(), data
-								.get("source_db").asText());
+				Pathway p = pathwayRepo.findById(data.get("pathway_id").asLong());
+				Dataset d = dataRepo.findById(data.get("dataset").asLong());
 				List<Feature> fList = p.getFeatures();
+				Boolean exists = false;
+				for(Feature f: fList){
+					for(Attribute a: f.getAttributes()){
+						if(a.getDataset().equals(d)){
+							exists = true;
+						}
+					}
+					if(!exists){
+						fList.remove(f);
+					}
+				}
 				result_json = mapper.writeValueAsString(fList);
 			}
 		}

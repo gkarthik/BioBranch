@@ -20,6 +20,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "attribute")
 public class Attribute {
@@ -39,6 +41,7 @@ public class Attribute {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
+	@JsonBackReference
 	private Feature feature;
 
 	@Id

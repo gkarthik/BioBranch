@@ -47,7 +47,7 @@ sidebarLayout = Marionette.Layout.extend({
     	'click #eval-tab li a': 'showTab',
     	'click .sidebar-show': 'showPanelBody',
     	'click .sidebar-close': 'closePanelBody',
-    	'click .open-pathway-search': 'openPathwaySearch'
+    	'click .sidebar-open-pathway-search': 'openPathwaySearch'
     },
     className: 'panel panel-default',
     initialize: function(){
