@@ -50,7 +50,7 @@ NodeCollection = Backbone.Collection.extend({
 				pickedAttrs: pickedAttrs
 			};
 		
-		//POST request to server.		
+		//POST request to server.
 		$.ajax({
 			type : 'POST',
 			url : this.url,
