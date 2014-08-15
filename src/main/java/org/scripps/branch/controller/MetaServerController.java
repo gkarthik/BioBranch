@@ -34,6 +34,7 @@ import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
+import org.scripps.branch.service.FeatureService;
 import org.scripps.branch.service.TreeService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
@@ -119,6 +120,9 @@ public class MetaServerController {
 	
 	@Autowired
 	private DatasetRepository dataRepo;
+	
+	@Autowired
+	private FeatureService fSer;
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
@@ -274,6 +278,13 @@ public class MetaServerController {
 						fList.remove(f);
 					}
 				}
+				result_json = mapper.writeValueAsString(fList);
+			}
+		} else if (command.contains("rank_")){
+			if(command.equals("rank_attributes")){
+				Dataset d = dataRepo.findById(data.get("dataset").asLong());
+				Weka wekaObj = weka.getWeka(d.getId());
+				List<Feature> fList = fSer.rankFeatures(wekaObj.getOrigTrain(), d);
 				result_json = mapper.writeValueAsString(fList);
 			}
 		}
