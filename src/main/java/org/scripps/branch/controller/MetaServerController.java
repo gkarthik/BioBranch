@@ -283,12 +283,66 @@ public class MetaServerController {
 		} else if (command.contains("rank_")){
 			if(command.equals("rank_attributes")){
 				Dataset d = dataRepo.findById(data.get("dataset").asLong());
-				Weka wekaObj = weka.getWeka(d.getId());
-				List<Feature> fList = fSer.rankFeatures(wekaObj.getOrigTrain(), d);
+				List<Feature> fList = fSer.rankFeatures(getReqInstances(data), d);
 				result_json = mapper.writeValueAsString(fList);
 			}
 		}
 		return result_json;
+	}
+	
+	public Instances getReqInstances(JsonNode data) throws Exception{
+		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+		Weka wekaObj = weka.getWeka(d.getId());
+		JsonTree t = new JsonTree();
+		ManualTree readtree = new ManualTree();
+		LinkedHashMap<String, Classifier> custom_classifiers = weka
+				.getCustomClassifierObject();
+		Evaluation eval = new Evaluation(wekaObj.getTest());
+		Instances train = wekaObj.getOrigTrain();
+		Instances test = wekaObj.getOrigTest();
+		switch (data.get("testOptions").get("value").asInt()) {
+		case 0:
+			wekaObj.setTrain(train);
+			wekaObj.setTest(train);
+			break;
+		case 1:
+			wekaObj.setTrain(train);
+			wekaObj.setTest(test);
+			break;
+		case 2:
+			float limitPercent = (data.get("testOptions").get("percentSplit")
+					.asLong()) / (float) 100;
+			Instances[] classLimits = wekaObj.getInstancesInClass();
+			float numLimit = 0;
+			numLimit = limitPercent * train.numInstances();
+			numLimit = Math.round(numLimit);
+			Instances newTrain = new Instances(train, Math.round(numLimit));
+			Instances newTest = new Instances(train, train.numInstances()
+					- Math.round(numLimit));
+			for (int j = 0; j < classLimits.length; j++) {
+				numLimit = limitPercent * classLimits[j].numInstances();
+				for (int i = 0; i < classLimits[j].numInstances(); i++) {
+					if (i == 0) {
+						classLimits[j].randomize(new Random(1));
+					}
+					if (classLimits[j].instance(i) != null) {
+						if (i <= numLimit) {
+							newTrain.add(classLimits[j].instance(i));
+						} else {
+							newTest.add(classLimits[j].instance(i));
+						}
+					}
+				}
+			}
+			wekaObj.setTrain(newTrain);
+			wekaObj.setTest(newTest);
+			break;
+		}
+		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
+				d, custom_classifiers, attr,
+				cClassifierService, customSetRepo, d);
+		LOGGER.debug(String.valueOf(readtree.getRequiredInst().numInstances()));
+		return readtree.getRequiredInst();
 	}
 	
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
@@ -338,16 +392,6 @@ public class MetaServerController {
 			}
 			wekaObj.setTrain(newTrain);
 			wekaObj.setTest(newTest);
-			// ArffSaver saver = new ArffSaver();
-			// saver.setInstances(newTrain);
-			// saver.setFile(new
-			// File("/home/karthik/Documents/splits/train.arff"));
-			// saver.writeBatch();
-			// saver = new ArffSaver();
-			// saver.setInstances(newTest);
-			// saver.setFile(new
-			// File("/home/karthik/Documents/splits/test.arff"));
-			// saver.writeBatch();
 			break;
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),

@@ -1113,9 +1113,21 @@ text-align:left;
 }
 
 #GeneCollectionRegion{
+	
+}
+
+.gene-list-wrapper{
 	height: 290px;
 	overflow: auto;
 	margin-top: 20px;
+}
+
+#AttrRankRegion{
+	position: fixed;
+	left: 25%;
+	width: 50%;
+	top: 50px;
+	z-index: 1;
 }
 
 #PathwaySearchRegion .panel-content{
