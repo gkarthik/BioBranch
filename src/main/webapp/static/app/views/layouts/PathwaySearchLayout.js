@@ -27,6 +27,7 @@ PathwayLayout = Marionette.Layout.extend({
     },
     initialize: function(options){
     	this.aggNode = options.aggNode;
+    	console.log(this.aggNode);
     },
     onRender: function(){
     	Cure.GeneCollection.reset();
@@ -64,8 +65,8 @@ PathwayLayout = Marionette.Layout.extend({
   				select: function( event, ui ) {
   					var args = {
   	  	        command : "get_genes_of_pathway",
-  	  	        pathway_name:	ui.item.data.name,
-  	  	        source_db: ui.item.data.source_db
+  	  	        pathway_id:	ui.item.data.id,
+  	  	        dataset: Cure.dataset
   	  	      };
   	  	      $.ajax({
   	  	          type : 'POST',

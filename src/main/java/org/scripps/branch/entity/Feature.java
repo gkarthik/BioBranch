@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "feature")
@@ -48,6 +49,7 @@ public class Feature {
 	private long id;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	@JsonManagedReference
 	private List<Attribute> attributes;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
