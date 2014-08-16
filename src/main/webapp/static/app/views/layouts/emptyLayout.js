@@ -33,14 +33,17 @@ emptyLayout = Marionette.Layout.extend({
 				activeClass: "genepool-drop-active",
 				hoverClass: "genepool-drop-hover",
 				drop: function( event, ui ) {
-					var index = $(ui.draggable).data("index");
-					var ui = Cure.GeneCollection.at(index).toJSON();
+					var uidata = {};
+					uidata.short_name = $(ui.draggable).data("shortname");
+					uidata.long_name = $(ui.draggable).data("longname");
+					uidata.unique_id = String($(ui.draggable).data("uniqueid"));
+					console.log(uidata);
 					new Node({
-						'name' : ui.short_name,
+						'name' : uidata.short_name,
 						"options" : {
-							"unique_id" : ui.unique_id,
+							"unique_id" : uidata.unique_id,
 							"kind" : "split_node",
-							"full_name" : ui.long_name
+							"full_name" : uidata.long_name
 						}
 					});
 					Cure.PlayerNodeCollection.sync();

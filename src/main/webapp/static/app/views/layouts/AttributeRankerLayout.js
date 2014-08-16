@@ -14,12 +14,14 @@ AttributeRanker = Marionette.Layout.extend({
     	"geneList": "#ranked-attributes-region"
     },
     events: {
-    	'click .close-attr-rank': 'closeAttrRank'
+    	'click .close-attr-rank': 'closeAttrRank',
+    	'click .add-to-gene-pool': 'addGenestoPool'  
     },
     className:'panel panel-default',
     url: base_url+"MetaServer",
-    initialize: function(){
+    initialize: function(options){
     	_.bindAll(this,'parseReponse');
+    	this.aggNode = options.aggNode;
     },
     closeAttrRank: function(){
     	Cure.sidebarLayout.AttrRankRegion.close();
@@ -60,16 +62,35 @@ AttributeRanker = Marionette.Layout.extend({
     	if(this.model){
         	this.model.set('pickInst', false);
     	}
-    	this.geneColl = new GeneCollection();
-    	this.geneColl.add(data);
-    	console.log(this.geneColl);
-    	this.geneList.show(new GeneCollectionView({collection: this.geneColl}));
+    	this.GeneCollection = new GeneCollection();
+    	this.GeneCollection.add(data);
+    	console.log(this.GeneCollection);
+    	this.geneList.show(new GeneCollectionView({collection: this.GeneCollection}));
     },
     error : function(data) {
 		Cure.utils.showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);
 	},
     onRender: function(){
     	this.getRankedAttributes();
+    },
+    addGenestoPool: function(){
+    	var model;
+    	for(var i=0;i<this.GeneCollection.length;i++){
+    		model = this.GeneCollection.models[i];
+    		if(!model.get('keepInCollection')){
+    			model.destroy();
+    			i--;
+    		}
+    	}
+    	Cure.sidebarLayout.PathwaySearchRegion.close();
+    	console.log(this.aggNode);
+    	if(this.aggNode){
+    		var layout = Cure.sidebarLayout.AggNodeRegion.currentView;
+    		layout.addToGeneCollection(this.GeneCollection.toArray());
+    		this.GeneCollection.reset();
+    	} else {
+    		Cure.GenePoolRegion.currentView.addGeneCollection(this.GeneCollection);
+    	}
     }
 });
 return AttributeRanker;

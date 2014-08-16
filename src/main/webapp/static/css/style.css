@@ -1167,6 +1167,8 @@ text-align:left;
 	height: 300px;
 	overflow: auto;
 	background: #ececec;
+	float: left;
+	width: 150px;
 }
 
 #GenePoolRegion .list-group .list-group-item{

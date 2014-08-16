@@ -19,6 +19,7 @@ define([
         'app/views/JSONCollectionView',
         'app/views/NodeCollectionView',
         'app/views/layouts/sidebarLayout',
+        'app/views/layouts/GenePoolLayout',
         'app/views/zoomView', 
         'app/views/LoginView',
         // Utilitites
@@ -29,7 +30,7 @@ define([
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
         		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, Comment, Score, Zoom, Player, CfMatrix, JSONCollectionView,
-        		NodeCollectionView, sidebarLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
+        		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
 	var token = $("meta[name='_csrf']").attr("content");
@@ -202,6 +203,7 @@ define([
 		Cure.PlayerNodeCollection = new NodeCollection();
 		Cure.TreeBranchCollection = new TreeBranchCollection();
 		Cure.CollaboratorCollection = new CollaboratorCollection();
+		Cure.GenePoolRegion.show(new GenePoolLayout());
 		Cure.Comment = new Comment();
 		Cure.Score = new Score();
 		Cure.CfMatrix = new CfMatrix();

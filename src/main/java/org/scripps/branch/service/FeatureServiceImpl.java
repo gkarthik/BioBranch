@@ -51,15 +51,15 @@ public class FeatureServiceImpl implements FeatureService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		List<org.scripps.branch.entity.Attribute> aList = aRepo.findAll();
+		List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDataset(d);
 		List<Feature> fList = new ArrayList<Feature>();
 		Feature f;
-		for(int i = 0; i < 200;i++){
+		for(int i = 0; i < 100 /*data.numAttributes()-1*/;i++){
 			f= null;
 			Attribute a = data.attribute((int) attrRanks[i][0]);
 			if(!a.name().contains("custom_feature")){
 				for(org.scripps.branch.entity.Attribute attr : aList){
-					if(attr.getName().equals(a.name()) && attr.getDataset().equals(d)){
+					if(attr.getName().equals(a.name())){
 						if(attr.getFeature()!=null){
 							fList.add(attr.getFeature());
 							LOGGER.debug(a.name());

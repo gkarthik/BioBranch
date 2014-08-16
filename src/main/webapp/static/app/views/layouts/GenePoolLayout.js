@@ -9,18 +9,17 @@ define([
     ], function($, Marionette, GenePoolCollectionView, GenePoolLayoutTmpl) {
 GenePoolLayout = Marionette.Layout.extend({
    template: GenePoolLayoutTmpl,
-   regions: {
-	   geneRegion: ".available-genes"
-   },
    events: {
 	   'click .close-gene-pool': 'closeView'
    },
-   onRender: function(){
-	   
-	   var newGenePoolCollectionView = new GenePoolCollectionView({
-	      	collection: Cure.GeneCollection
-	      });
-	   this.geneRegion.show(newGenePoolCollectionView);
+   ctr: 0,
+   addGeneCollection: function(geneColl){
+	   this.$el.append("<div id='avail-genes-"+this.ctr+"' class='available-genes'></div>");
+	   this.addRegion("genePool"+this.ctr, "#"+'avail-genes-'+this.ctr);
+	   this.regionManager.get("genePool"+this.ctr).show(new GenePoolCollectionView({
+	      	collection: geneColl
+	      }));
+	   this.ctr++;
    },
    onShow: function(){
 	   this.$el.draggable({handle: '.drag-pool'});
