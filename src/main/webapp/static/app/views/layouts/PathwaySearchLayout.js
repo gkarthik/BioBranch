@@ -27,16 +27,14 @@ PathwayLayout = Marionette.Layout.extend({
     },
     initialize: function(options){
     	this.aggNode = options.aggNode;
-    	console.log(this.aggNode);
     },
+    GeneCollectionView: null,
     onRender: function(){
-    	Cure.GeneCollection.reset();
-    	Cure.GenePoolRegion.close();
-    	Cure.GeneCollectionView = new GeneCollectionView({
-      	collection: Cure.GeneCollection
-      });
-      this.GeneCollectionRegion.show(Cure.GeneCollectionView);
-      
+    	this.GeneCollection = new GeneCollection();
+    	this.GeneCollectionRegion.show(new GeneCollectionView({
+    		collection: this.GeneCollection
+    	}));
+      var thisView = this;
       var thisURL = this.url;
       $(this.ui.pathwaysearch).autocomplete({
   			source: function( request, response ) {
@@ -75,8 +73,8 @@ PathwayLayout = Marionette.Layout.extend({
   	  	          dataType : 'json',
   	  	          contentType : "application/json; charset=utf-8",
   	  	          success : function(data){
-  	  	          	Cure.GeneCollection.reset();
-  	  	          	Cure.GeneCollection.add(data);
+  	  	        	thisView.GeneCollection.reset();
+  	  	        	thisView.GeneCollection.add(data);
   	  	          }
   	  	      });
   				},
@@ -90,8 +88,8 @@ PathwayLayout = Marionette.Layout.extend({
     },
     addGenestoPool: function(){
     	var model;
-    	for(var i=0;i<Cure.GeneCollection.length;i++){
-    		model = Cure.GeneCollection.models[i];
+    	for(var i=0;i<this.GeneCollection.length;i++){
+    		model = this.GeneCollection.models[i];
     		if(!model.get('keepInCollection')){
     			model.destroy();
     			i--;
@@ -101,11 +99,10 @@ PathwayLayout = Marionette.Layout.extend({
     	console.log(this.aggNode);
     	if(this.aggNode){
     		var layout = Cure.sidebarLayout.AggNodeRegion.currentView;
-    		layout.addToGeneCollection(Cure.GeneCollection.toArray());
-    		Cure.GeneCollection.reset();
+    		layout.addToGeneCollection(this.GeneCollection.toArray());
+    		this.GeneCollection.reset();
     	} else {
-    		var genePoolLayout = new GenePoolLayout();
-    		Cure.GenePoolRegion.show(genePoolLayout);
+    		Cure.GenePoolRegion.currentView.addGeneCollection(this.GeneCollection);
     	}
     }
 });

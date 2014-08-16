@@ -19,7 +19,9 @@ GenePoolItemView = Marionette.ItemView.extend({
 	},
 	template: GenePoolItemTmpl,
 	onRender: function(){
-		this.$el.attr("data-index", Cure.GeneCollection.indexOf(this.model));
+		this.$el.attr("data-shortname", this.model.get('short_name'));
+		this.$el.attr("data-longname", this.model.get('long_name'));
+		this.$el.attr("data-uniqueid", this.model.get('unique_id'));
 		this.$el.draggable({
 			revert: 'invalid',
 			helper: "clone",

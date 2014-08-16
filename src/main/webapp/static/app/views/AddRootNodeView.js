@@ -42,7 +42,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	},
 	showRankAttr: function(){
 		Cure.sidebarLayout.AttrRankRegion.close();
-		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model}));
+		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: false}));
 	},
 	openFeatureBuilder: function(){
 		Cure.FeatureBuilderRegion.close();

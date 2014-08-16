@@ -8,6 +8,7 @@ define([
 	//Views
 	'app/views/GeneListCollectionView',
 	//Layouts
+	'app/views/layouts/AttributeRankerLayout',
 	'app/views/layouts/PathwaySearchLayout',
 	//Templates
 	'text!static/app/templates/AggregateNodeLayout.html',
@@ -16,7 +17,7 @@ define([
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui',
-    ], function($, Marionette, GeneItem, GeneCollection, GeneCollectionView, PathwaySearchLayout, AggNodeTmpl, geneinfosummary, cfsummary) {
+    ], function($, Marionette, GeneItem, GeneCollection, GeneCollectionView, AttrRankLayout, PathwaySearchLayout, AggNodeTmpl, geneinfosummary, cfsummary) {
 AggNodeLayout = Marionette.Layout.extend({
     template: AggNodeTmpl,
     className: "panel panel-default",
@@ -44,10 +45,15 @@ AggNodeLayout = Marionette.Layout.extend({
     	'click .close-aggnode': 'closeAggNode',
     	'click .build-aggnode': 'sendRequest',
     	'click .duplicate_customclassifier':'addDuplicateEntry',
-    	'click .open-pathway-search': 'openPathwaySearch'
+    	'click .open-pathway-search': 'openPathwaySearch',
+    	'click .open-attr-rank': 'openAttrRanker'
     },
     regions: {
       GeneCollectionRegion: "#Aggnode_GeneCollectionRegion"
+    },
+    openAttrRanker: function(){
+    	Cure.sidebarLayout.AttrRankRegion.close();
+		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: true}));
     },
     closeAggNode: function(){
     	Cure.sidebarLayout.AggNodeRegion.close();
