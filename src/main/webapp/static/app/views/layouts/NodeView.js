@@ -240,19 +240,22 @@ NodeView = Marionette.Layout.extend({
 						model.get("options").unset("split_point");
 					}
 					
-					var index = $(ui.draggable).data("index");
-					var ui = Cure.GeneCollection.at(index).toJSON();
+					var uidata = {};
+					uidata.short_name = $(ui.draggable).data("shortname");
+					uidata.long_name = $(ui.draggable).data("longname");
+					uidata.unique_id = String($(ui.draggable).data("uniqueid"));
+					
 					if(model.get("distribution_data")){
 						model.get("distribution_data").set({
 							"range": -1
 						});
 					}
 					model.set("previousAttributes", model.toJSON());
-					model.set("name", ui.short_name);
+					model.set("name", uidata.short_name);
 					model.get("options").set({
-						"unique_id" : ui.unique_id,
+						"unique_id" : uidata.unique_id,
 						"kind" : "split_node",
-						"full_name" : ui.long_name
+						"full_name" : uidata.long_name
 					});
 					Cure.PlayerNodeCollection.sync();
 				}

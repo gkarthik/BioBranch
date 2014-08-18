@@ -17,7 +17,7 @@ PathwayLayout = Marionette.Layout.extend({
     },
     events: {
     	'click .close-pathway-search': 'closePathwaySearch',
-    	'click #add-to-gene-pool': 'addGenestoPool'
+    	'click .add-to-gene-pool': 'addGenestoPool'
     },
     regions: {
       GeneCollectionRegion: "#GeneCollectionRegion"
@@ -88,6 +88,7 @@ PathwayLayout = Marionette.Layout.extend({
     },
     addGenestoPool: function(){
     	var model;
+    	console.log("hello world");
     	for(var i=0;i<this.GeneCollection.length;i++){
     		model = this.GeneCollection.models[i];
     		if(!model.get('keepInCollection')){
@@ -95,7 +96,6 @@ PathwayLayout = Marionette.Layout.extend({
     			i--;
     		}
     	}
-    	Cure.sidebarLayout.PathwaySearchRegion.close();
     	console.log(this.aggNode);
     	if(this.aggNode){
     		var layout = Cure.sidebarLayout.AggNodeRegion.currentView;
@@ -104,6 +104,7 @@ PathwayLayout = Marionette.Layout.extend({
     	} else {
     		Cure.GenePoolRegion.currentView.addGeneCollection(this.GeneCollection);
     	}
+    	Cure.sidebarLayout.PathwaySearchRegion.close();
     }
 });
 return PathwayLayout;
