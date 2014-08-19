@@ -6,8 +6,10 @@ import org.scripps.branch.entity.Feature;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public interface FeatureRepository extends JpaRepository<Feature, Long> {
 
 	@Query("select F from Feature F where F.unique_id =?1")

@@ -27,6 +27,7 @@ import weka.core.Attribute;
 import weka.core.Instances;
 
 @Service
+@Transactional
 public class FeatureServiceImpl implements FeatureService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureServiceImpl.class);
@@ -37,6 +38,7 @@ public class FeatureServiceImpl implements FeatureService {
 	@Autowired 
 	AttributeRepository aRepo;
 	
+	@Transactional
 	public List<Feature> rankFeatures(Instances data, List<String> entrezIds, Dataset d) {
 		AttributeSelection attsel = new AttributeSelection();
 		InfoGainAttributeEval eval = new InfoGainAttributeEval();
@@ -62,12 +64,13 @@ public class FeatureServiceImpl implements FeatureService {
 					for(org.scripps.branch.entity.Attribute attr : aList){
 						if(attr.getName().equals(a.name())){
 							attr.setRelieff((float)attrRanks[i][1]);
-							aRepo.saveAndFlush(attr);
 							LOGGER.debug(attr.getName()+": "+attrRanks[i][1]);
 						}
 					}
 				}
 			}
+			aRepo.save(aList);
+			aRepo.flush();
 		} else {
 			for(int i = 0; i < data.numAttributes()-1;i++){
 				f= null;

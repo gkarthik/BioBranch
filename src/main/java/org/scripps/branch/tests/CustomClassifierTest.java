@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.DatasetMap;
@@ -27,7 +27,7 @@ import weka.classifiers.Classifier;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ActiveProfiles("production")
-@ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 public class CustomClassifierTest {
 
 	@Autowired

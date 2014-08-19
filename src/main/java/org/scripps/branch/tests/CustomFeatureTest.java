@@ -7,8 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
-import org.scripps.branch.config.PersistenceJPAConfig;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Dataset;
@@ -31,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @WebAppConfiguration
 @ActiveProfiles("production")
 @Transactional
-@ContextConfiguration(classes = { PersistenceJPAConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigContextLoader.class)
 public class CustomFeatureTest {
 
 	@Autowired

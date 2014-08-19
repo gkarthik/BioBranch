@@ -100,7 +100,7 @@ public class DatasetMap implements ApplicationContextAware {
 				// TODO Auto-generated catch block
 				LOGGER.error("Couldn't build Weka",e);
 			}
-			fSer.rankFeatures(wekaObj.getTrain(), null, d);
+			fSer.rankFeatures(wekaObj.getOrigTrain(), null, d);
 		}
 		return wekaObj;
 	}

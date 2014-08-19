@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
-import org.scripps.branch.config.PersistenceJPAConfig;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.SerializedCustomClassifier;
 import org.scripps.branch.entity.User;
@@ -24,7 +23,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class SerializedCustomClassifierTest {
 

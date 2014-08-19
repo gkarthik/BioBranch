@@ -4,21 +4,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 
-import org.scripps.branch.repository.PathwayRepository;
-import org.scripps.branch.service.PathwayService;
+import org.scripps.branch.globalentity.DatasetMap;
+import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -30,11 +31,43 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 @Configuration
+@ComponentScan(basePackages = { "org.scripps.branch.entity",
+		"org.scripps.branch.service", "org.scripps.branch.repository",
+		"org.scripps.branch.utilities", "org.scripps.branch.globalentity",
+		"org.scripps.branch.viz", "org.scripps.branch.controller" })
+@Import({ WebApplicationContext.class, SecurityContext.class, SocialContext.class, FeatureJobConfig.class })
 @EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
-public class PersistenceJPAConfig {
+public class ApplicationContextConfig {
 
+	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
+	
+	@Autowired
+	Environment env;
+	
+	@Bean String setUploadsDir(){
+		return env.getProperty("uploads.dir");
+	}
+	
+	@Bean
+	public HibernateAwareObjectMapper initHibernateAwareObjectMapper() {
+		return new HibernateAwareObjectMapper();
+	}
+	
+	@Bean
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename(MESSAGE_SOURCE_BASE_NAME);
+		messageSource.setUseCodeAsDefaultMessage(true);
+		return messageSource;
+	}
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -42,9 +75,6 @@ public class PersistenceJPAConfig {
 
 	@Autowired
 	org.springframework.context.ApplicationContext ctx;
-
-	@Autowired
-	Environment env;
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
@@ -116,6 +146,11 @@ public class PersistenceJPAConfig {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(emf);
 		return transactionManager;
+	}
+	
+	@Bean(name = "globalWeka")
+	public DatasetMap initWekaInApplicationContext() {
+		return new DatasetMap();
 	}
 
 }

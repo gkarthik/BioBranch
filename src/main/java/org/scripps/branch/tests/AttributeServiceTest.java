@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.service.AttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -14,7 +14,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class AttributeServiceTest {
 
@@ -24,7 +24,7 @@ public class AttributeServiceTest {
 	@Test
 	public void getMapping() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		ctx.register(ApplicationContext.class);
+		ctx.register(ApplicationContextConfig.class);
 		ctx.refresh();
 		InputStream r = ctx.getClass().getResourceAsStream(
 				"/WEB-INF/data/oslo_mapping.txt");
