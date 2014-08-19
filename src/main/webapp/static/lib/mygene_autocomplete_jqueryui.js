@@ -68,18 +68,64 @@ $.widget("my.genequery_autocomplete", $.ui.autocomplete, {
                                          10090: 'mouse',
                                          10116: 'rat'};
                         if (data.total > 0){
-                            response( $.map( data.hits, function( item ) {
-                                var obj = {
-                                    id: item._id,
-                                    value: item[_options.value_attr]
-                                }
-                                $.extend(obj, item);
-                                if (species_d[obj.taxid]){
-                                    obj.species = species_d[obj.taxid];
-                                }
-                                obj.label = _options.gene_label.format(obj);
-                                return obj;
-                            }));
+//                            response( $.map( data.hits, function( item ) {
+//                            	  entrezids.push(item.entrezgene);
+//                                var obj = {
+//                                    id: item._id,
+//                                    value: item[_options.value_attr]
+//                                }
+//                                $.extend(obj, item);
+//                                if (species_d[obj.taxid]){
+//                                    obj.species = species_d[obj.taxid];
+//                                }
+//                                obj.label = _options.gene_label.format(obj);
+//                                return obj;
+//                            }));
+                        	var entrezids = [];
+                            $.map( data.hits, function( item ) {
+                              entrezids.push(String(item.entrezgene));
+                            });
+                            var testOptions = {
+                    				value: $("input[name='testOptions']:checked").val(),
+                    				percentSplit:  $("input[name='percent-split']").val()
+                    		};
+                            var tree = {};
+                            if(Cure.PlayerNodeCollection.length>0){
+                            	tree = Cure.PlayerNodeCollection.at(0).toJSON();
+                            }
+                            var args = {
+                    				command : "rank_attributes",
+                    				dataset : Cure.dataset,
+                    				treestruct : tree,
+                    				comment: Cure.Comment.get("content"),
+                    				testOptions: testOptions,
+                    				unique_ids: entrezids
+                    			};
+                    		
+                    		//POST request to server.
+                    		$.ajax({
+                    			type : 'POST',
+                    			url : './MetaServer',
+                    			data : JSON.stringify(args),
+                    			dataType : 'json',
+                    			contentType : "application/json; charset=utf-8",
+                    			success : function(data){
+                    				response($.map(data, function(item){
+                    					var obj = {
+                            				entrezgene: item.unique_id,
+                            				name: item.long_name,
+                            				symbol: item.short_name,
+                            				id: item.id,
+                            				infogain: item.infogain
+                    					};
+                    					obj.label = _options.gene_label.format(obj);
+                    					return obj;
+                    				}));
+                    			},
+                    			error : function(data){
+                    				response([{label:'no matched gene found.', value:''}]);
+                    			}
+                    		});
                         }else{
                             response([{label:'no matched gene found.', value:''}]);
                         }
@@ -106,7 +152,7 @@ $.widget("my.genequery_autocomplete", $.ui.autocomplete, {
 //	</li>
 	_renderItem: function( ul, item ) {
 		var rankIndicator = $("<div>")
-		.css("background", "#000")
+		.css({"background": Cure.infogainScale(item.infogain)})
 		.attr("class", "rank-indicator");
 		
 		var a = $("<a>")
