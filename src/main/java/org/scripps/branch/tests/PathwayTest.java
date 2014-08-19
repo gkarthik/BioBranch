@@ -11,8 +11,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
-import org.scripps.branch.config.PersistenceJPAConfig;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
 import org.scripps.branch.repository.FeatureRepository;
@@ -31,7 +30,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 @Transactional
 public class PathwayTest {

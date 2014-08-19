@@ -53,7 +53,7 @@ public class Attribute {
 	private String name;
 
 	@Column
-	private float relieff;//InfoGainEvalAttr stored here
+	private double relieff;//InfoGainEvalAttr stored here
 
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -109,7 +109,7 @@ public class Attribute {
 		return name;
 	}
 
-	public float getRelieff() {
+	public double getRelieff() {
 		return relieff;
 	}
 
@@ -153,7 +153,7 @@ public class Attribute {
 		this.name = name;
 	}
 
-	public void setRelieff(float relieff) {
+	public void setRelieff(double relieff) {
 		this.relieff = relieff;
 	}
 

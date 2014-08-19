@@ -15,6 +15,5 @@ import weka.core.Instances;
 @Service
 public interface FeatureService {
 	
-	@Transactional
 	public List<Feature> rankFeatures(Instances data, List<String> entrezIds, Dataset d);
 }

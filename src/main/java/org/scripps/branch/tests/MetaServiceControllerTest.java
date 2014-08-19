@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.scripps.branch.config.ApplicationContext;
+import org.scripps.branch.config.ApplicationContextConfig;
 import org.scripps.branch.controller.MetaServerController;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ActiveProfiles("production")
-@ContextConfiguration(classes = { ApplicationContext.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = { ApplicationContextConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 @Transactional
 public class MetaServiceControllerTest {
 

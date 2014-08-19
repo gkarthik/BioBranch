@@ -28,7 +28,7 @@ public class ApplicationConfig implements WebApplicationInitializer {
 		// If you want to use the XML configuration, comment the following two
 		// lines out.
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-		rootContext.register(ApplicationContext.class);
+		rootContext.register(ApplicationContextConfig.class);
 
 		servletContext.addFilter("OpenEntityManagerInViewFilter",
 				OpenEntityManagerInViewFilter.class).addMappingForUrlPatterns(
