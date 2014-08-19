@@ -491,7 +491,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 					$("#SpeechBubble").remove();
 				}
 				focueElement.append("<div id='SpeechBubble'></div>")
-				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id+"?callback=?",function(data){
+				$.getJSON("http://mygene.info/v2/gene/"+ui.item.entrezgene+"?callback=?",function(data){
 					var summary = {
 							summaryText: data.summary,
 							goTerms: data.go,
@@ -557,7 +557,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 						model.set("previousAttributes", model.toJSON());
 						model.set("name", ui.item.symbol);
 						model.get("options").set({
-							"unique_id" : ui.item.id,
+							"unique_id" : ui.item.entrezgene,
 							"kind" : "split_node",
 							"full_name" : ui.item.name
 						});
@@ -565,7 +565,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 						var newNode = new Node({
 							'name' : ui.item.symbol,
 							"options" : {
-								"unique_id" : ui.item.id,
+								"unique_id" : ui.item.entrezgene,
 								"kind" : "split_node",
 								"full_name" : ui.item.name
 							}

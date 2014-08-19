@@ -43,6 +43,9 @@ define([
 	//Tour Init
 	Cure.initTour = InitTour;
 	Cure.treeTour = TreeTour;
+	
+	//Color Scale
+	Cure.infogainScale = d3.scale.linear().domain([0, 0.1]).range(["#fff","#000"]);
 
 	Cure
 	.addInitializer(function(options) {

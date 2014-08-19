@@ -288,8 +288,7 @@ public class MetaServerController {
 					entrezIds.add(el.asText());
 					LOGGER.debug(el.asText());
 				}
-				List<Feature> fList = fSer.rankFeatures(getReqInstances(data), entrezIds, d);
-				result_json = mapper.writeValueAsString(fList);
+				result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 			}
 		}
 		return result_json;
