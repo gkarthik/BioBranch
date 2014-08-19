@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = { "org.scripps.branch.entity",
 		"org.scripps.branch.service", "org.scripps.branch.repository",
 		"org.scripps.branch.utilities", "org.scripps.branch.globalentity",
-		"org.scripps.branch.viz" })
+		"org.scripps.branch.viz", "org.scripps.branch.controller" })
 @Import({ WebApplicationContext.class, PersistenceJPAConfig.class,
 		SecurityContext.class, SocialContext.class, FeatureJobConfig.class })
 @EnableTransactionManagement
@@ -38,11 +38,6 @@ public class ApplicationContext {
 	public HibernateAwareObjectMapper initHibernateAwareObjectMapper() {
 		return new HibernateAwareObjectMapper();
 	}
-
-	@Bean(name = "globalWeka")
-	public DatasetMap initWekaInApplicationContext() {
-		return new DatasetMap();
-	}
 	
 	@Bean
 	public MessageSource messageSource() {
@@ -55,6 +50,11 @@ public class ApplicationContext {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	@Bean(name = "globalWeka")
+	public DatasetMap initWekaInApplicationContext() {
+		return new DatasetMap();
 	}
 
 }

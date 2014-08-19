@@ -52,6 +52,7 @@ public class Weka {
 		// get the features related to this weka dataset
 		setTrain(getOrigTrain());
 		setTest(getOrigTest());
+		
 	}
 
 	public void generateLimits() {

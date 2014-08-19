@@ -11,6 +11,7 @@ import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.FeatureCustomRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
+import org.scripps.branch.service.FeatureService;
 import org.scripps.branch.service.PathwayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import weka.classifiers.Classifier;
 
-@Transactional
 public class DatasetMap implements ApplicationContextAware {
 
 	private static ApplicationContext ctx;
@@ -38,6 +38,9 @@ public class DatasetMap implements ApplicationContextAware {
 
 	@Autowired
 	FeatureCustomRepository featurerepo;
+	
+	@Autowired
+	FeatureService fSer;
 
 	@Autowired
 	CustomFeatureService cfService;
@@ -97,6 +100,7 @@ public class DatasetMap implements ApplicationContextAware {
 				// TODO Auto-generated catch block
 				LOGGER.error("Couldn't build Weka",e);
 			}
+			fSer.rankFeatures(wekaObj.getTrain(), null, d);
 		}
 		return wekaObj;
 	}

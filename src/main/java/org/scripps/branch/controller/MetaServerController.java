@@ -283,7 +283,12 @@ public class MetaServerController {
 		} else if (command.contains("rank_")){
 			if(command.equals("rank_attributes")){
 				Dataset d = dataRepo.findById(data.get("dataset").asLong());
-				List<Feature> fList = fSer.rankFeatures(getReqInstances(data), d);
+				List<String> entrezIds = new ArrayList<String>();
+				for(JsonNode el : data.path("unique_ids")){
+					entrezIds.add(el.asText());
+					LOGGER.debug(el.asText());
+				}
+				List<Feature> fList = fSer.rankFeatures(getReqInstances(data), entrezIds, d);
 				result_json = mapper.writeValueAsString(fList);
 			}
 		}

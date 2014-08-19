@@ -53,7 +53,7 @@ public class Attribute {
 	private String name;
 
 	@Column
-	private float relieff;
+	private float relieff;//InfoGainEvalAttr stored here
 
 	@Basic(optional = false)
 	@Temporal(TemporalType.TIMESTAMP)

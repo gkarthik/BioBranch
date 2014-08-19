@@ -98,9 +98,30 @@ $.widget("my.genequery_autocomplete", $.ui.autocomplete, {
         this._add_css('.ui-autocomplete-loading { background: white url("'+this._url_root+'img/ui-anim_basic_16x16.gif") right center no-repeat; }');
 
 	},
-
+	
+//	<li role="presentation" class="ui-menu-item">
+//		<a tabindex="-1" class="ui-corner-all" id="ui-id-8">
+//			CELSR2: cadherin, EGF LAG seven-pass G-type receptor 2
+//		</a>
+//	</li>
+	_renderItem: function( ul, item ) {
+		var rankIndicator = $("<div>")
+		.css("background", "#000")
+		.attr("class", "rank-indicator");
+		
+		var a = $("<a>")
+				.attr("tabindex", "-1")
+				.attr("class", "ui-corner-all")
+				.html(item.label)
+				.append(rankIndicator);
+		
+		return $( "<li>" )
+		.attr("role", "presentation")
+		.attr("class", "ui-menu-item")
+		.append(a)
+		.appendTo( ul );
+	},
     _url_root : 'http://mygene.info/widget/autocomplete/',
-
     //helper function for adding custom css style.
     _add_css : function(cssCode) {
         var styleElement = document.createElement("style");
