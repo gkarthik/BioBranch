@@ -2,13 +2,14 @@ package org.scripps.branch.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Dataset;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 @Transactional
 public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 

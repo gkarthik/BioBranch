@@ -27,9 +27,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.jolbox.bonecp.BoneCPDataSource;
+
 @Configuration
-@EnableJpaRepositories(basePackages = { "org.scripps.branch.repository",
-		"org.scripps.branch.service" })
+@EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
 public class PersistenceJPAConfig {
@@ -62,21 +63,41 @@ public class PersistenceJPAConfig {
 	}
 	
 	@Bean
-	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("db.driver"));
-		dataSource.setUrl(env.getProperty("db.url"));
-		dataSource.setUsername(env.getProperty("db.username"));
-		dataSource.setPassword(env.getProperty("db.password"));
-		DatabasePopulatorUtils.execute(createDatabasePopulator(), dataSource);
-		return dataSource;
-	}
+    public BoneCPDataSource boneCPDataSource() {
+ 
+        BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
+        boneCPDataSource.setDriverClass(env.getProperty("db.driver"));
+        boneCPDataSource.setJdbcUrl(env.getProperty("db.url"));
+        boneCPDataSource.setUsername(env.getProperty("db.username"));
+        boneCPDataSource.setPassword(env.getProperty("db.password"));
+        boneCPDataSource.setIdleConnectionTestPeriodInMinutes(60);
+        boneCPDataSource.setIdleMaxAgeInMinutes(420);
+        boneCPDataSource.setMaxConnectionsPerPartition(30);
+        boneCPDataSource.setMinConnectionsPerPartition(10);
+        boneCPDataSource.setPartitionCount(3);
+        boneCPDataSource.setAcquireIncrement(5);
+        boneCPDataSource.setStatementsCacheSize(100);
+        boneCPDataSource.setReleaseHelperThreads(3);
+ 
+        return boneCPDataSource;
+ 
+    }
+	
+//	@Bean
+//	public DataSource dataSource() {
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName(env.getProperty("db.driver"));
+//		dataSource.setUrl(env.getProperty("db.url"));
+//		dataSource.setUsername(env.getProperty("db.username"));
+//		dataSource.setPassword(env.getProperty("db.password"));
+//		DatabasePopulatorUtils.execute(createDatabasePopulator(), dataSource);
+//		return dataSource;
+//	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
-			throws IOException {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(BoneCPDataSource ds) throws IOException {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource());
+		em.setDataSource(ds);
 		em.setPackagesToScan(new String[] { "org.scripps.branch.entity" });
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
@@ -94,7 +115,6 @@ public class PersistenceJPAConfig {
 			EntityManagerFactory emf) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(emf);
-
 		return transactionManager;
 	}
 

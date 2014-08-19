@@ -114,6 +114,13 @@ html, body{
 	margin: 0 auto;
 }
 
+.rank-indicator{
+	height:10px;
+	width:10px;
+	float:right;
+	margin-top: 5px;
+}
+
 .addgeneinfo{
 	position: absolute;
 	margin: 10px 1px 1px -125px;
