@@ -10,6 +10,7 @@ import org.scripps.branch.entity.Feature;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import weka.core.Instances;
@@ -17,5 +18,5 @@ import weka.core.Instances;
 @Service
 public interface FeatureService {
 	
-	public ArrayNode rankFeatures(Instances data, List<String> entrezIds, Dataset d);
+	public JsonNode[] rankFeatures(Instances data, List<String> entrezIds, Dataset d);
 }
