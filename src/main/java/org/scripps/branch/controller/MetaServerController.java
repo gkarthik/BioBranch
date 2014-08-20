@@ -268,17 +268,19 @@ public class MetaServerController {
 				Dataset d = dataRepo.findById(data.get("dataset").asLong());
 				List<Feature> fList = p.getFeatures();
 				Boolean exists = false;
+				List<String> entrezIds = new ArrayList<String>();
 				for(Feature f: fList){
 					for(Attribute a: f.getAttributes()){
 						if(a.getDataset().equals(d)){
 							exists = true;
+							entrezIds.add(f.getUnique_id());
 						}
 					}
 					if(!exists){
 						fList.remove(f);
 					}
 				}
-				result_json = mapper.writeValueAsString(fList);
+				result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 			}
 		} else if (command.contains("rank_")){
 			if(command.equals("rank_attributes")){

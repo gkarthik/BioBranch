@@ -45,7 +45,7 @@ define([
 	Cure.treeTour = TreeTour;
 	
 	//Color Scale
-	Cure.infogainScale = d3.scale.linear().domain([0, 0.1]).range(["#fff","#000"]);
+	Cure.infogainScale = d3.scale.linear().domain([0, 0.1]).range(["#E5F5E0","#00441B"]);
 
 	Cure
 	.addInitializer(function(options) {
