@@ -3,21 +3,26 @@ Choose Instances<span><button type="button" class="close pick-instance-close" da
 </div>
 <div class="panel-content">
 <span class="row">
-<div class="form-group pull-left">
+<div class="form-group pull-left choose-attribute-group">
+<span class="row">
 	<span class="label label-primary">Attribute 1</span>
- 		<span class="label label-default">Add Genes</span>
+	<span class="attribute-label"></span>
+	</span>
+ 		<h5>Add Genes</h5>
   		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
-  		<span class="label label-default">Add Clinical Features</span>
+  		<h5>Add Clinical Features</h5>
   		<input class="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
   		 <input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-one">
   	</div>
- </span>
- <span class="row">
-  	<div class="form-group pull-left">
-  	<span class="label label-primary">Attribute 2</span>
-  	<span class="label label-default">Add Genes</span>
+ 
+  	<div class="form-group pull-left choose-attribute-group">
+  	<span class="row">
+		<span class="label label-primary">Attribute 2</span>
+		<span class="attribute-label"></span>
+	</span>
+  		<h5>Add Genes</h5>
   		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
- 		<span class="label label-default">Add Clinical Features</span>
+ 		<h5>Add Clinical Features</h5>
   		<input class="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
   		  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-two">
   	</div>
@@ -25,15 +30,15 @@ Choose Instances<span><button type="button" class="close pick-instance-close" da
   	  	<span class="row">
 <button class="btn btn-primary" id="get-instances">Get Instances</button>
 </span>
+<span id="instance-data-chart-wrapper">
+<button class="btn btn-warning" id="clear-selection">Clear Selection</button>
 <span class="row">
 <svg id="instance-data-chart"></svg>
 </span>
 <span class="row">
 <div id="pick-instance-draw-controls">
-	<div class="form-group">
-		<input type="checkbox" id="draw-polygon" > <span class="label label-default">Polygon</span>
-	</div>
 	<button class="btn btn-primary" id="build-selection">Build Custom Set</button>
 </div>
+</span>
 </span>
 </div>

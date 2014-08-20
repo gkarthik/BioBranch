@@ -14,19 +14,21 @@ PickInstanceView = Marionette.ItemView.extend({
 	url:base_url+'MetaServer',
 	ui: {
 		gene_query: ".pick_gene_instances",
-		cf_query: ".pick_cf_instances"
+		cf_query: ".pick_cf_instances",
+		chartWrapper: '#instance-data-chart-wrapper'
 	},
 	events: {
 		'click #get-instances': 'getInstances',
 		'click .pick-instance-close': 'closeView',
-		'click #build-selection': 'createCustomSet'
+		'click #build-selection': 'createCustomSet',
+		'click #clear-selection': 'clearSelection'
 	},
 	closeView: function(e){
 		e.preventDefault();
 		Cure.sidebarLayout.pickInstanceRegion.close();
 	},
 	initialize: function(){
-		_.bindAll(this,'getInstances', 'addNode');
+		_.bindAll(this,'getInstances', 'addNode', 'drawChart');
 	},
 	attrs: [],
 	attributeVertices: [],
@@ -42,18 +44,24 @@ PickInstanceView = Marionette.ItemView.extend({
 				player_id : Cure.Player.get('id')
 			};
 		
-		//POST request to server.		
-		$.ajax({
-			type : 'POST',
-			url : this.url,
-			data : JSON.stringify(args),
-			dataType : 'json',
-			contentType : "application/json; charset=utf-8",
-			success : this.addNode,
-			error : function(){
-				console.log(error);
-			}
-		});
+		if(args.constraints.length>0){
+			$.ajax({
+				type : 'POST',
+				url : this.url,
+				data : JSON.stringify(args),
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				success : this.addNode,
+				error : function(){
+					console.log(error);
+				}
+			});
+		}
+	},
+	clearSelection: function(){
+		d3.select("#instance-data-chart").selectAll(".polygon-line").remove();
+    	
+    	this.attributeVertices = [];
 	},
 	addNode: function(data){
 		console.log(data);
@@ -115,6 +123,7 @@ PickInstanceView = Marionette.ItemView.extend({
 	height: 200,
 	width: 300,
 	drawChart: function(attr){
+		$(this.ui.chartWrapper).show();
 		this.height = this.$el.height() * 0.5;
 		this.width = this.$el.width() * 0.9;
 		d3.select("#instance-data-chart").select(".instance-data-chart-wrapper").remove();
@@ -137,17 +146,19 @@ PickInstanceView = Marionette.ItemView.extend({
 			}
 		}		
 		
-		var vertices = [];
+		var vertices = this.attributeVertices;
 		var attrPos = [];
 		var line;
 		var indicatorCircle;
 		var SVGParent = d3.select("#instance-data-chart").on("click", startLine);
 		
 		function startLine() {
-			if($("#draw-polygon").is(":checked")){
+			if(SVGParent.selectAll(".polygon-line")[0].length==0){
+				vertices = [];
+			}
 				if(vertices.length==0){
 					SVGParent.selectAll(".polygon-line").remove();
-			    	d3.selectAll(".data-point-circle").style("stroke","none");
+			    	SVGParent.selectAll(".data-point-circle").style("stroke","none");
 				}
 				SVGParent.on("mousemove", mousemove);
 			    var m = d3.mouse(this);
@@ -181,9 +192,6 @@ PickInstanceView = Marionette.ItemView.extend({
 			        .attr("y2", m[1]);
 			    vertices.push(m);
 			    }
-			} else {
-				SVGParent.on("mousemove", null);
-			}
 		}
 
 		function mousemove() {
@@ -265,15 +273,19 @@ PickInstanceView = Marionette.ItemView.extend({
 		var splits = [];
 		var thisView = this;
 		$(".pick-attribute-uniqueid").each(function(){
-			attrs.push($(this).val());
-			thisView.attrs.push($(this).data('name'));
+			if($(this).val()!=""){
+				attrs.push($(this).val());
+				thisView.attrs.push($(this).data('name'));
+			}
 		});
 		$(".pick-split").each(function(){
 			splits.push($(this).val());
 		});
 		args.pickedAttrs = attrs;
 		args.splits = splits;
-		Cure.PlayerNodeCollection.sync(args);
+		if(args.pickedAttrs.length==2){
+			Cure.PlayerNodeCollection.sync(args);
+		}
 	},
 	onShow: function(){
 		var thisUi = this.ui;
@@ -337,6 +349,7 @@ PickInstanceView = Marionette.ItemView.extend({
 					$("#SpeechBubble").remove();
 					$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
 					$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.symbol);
+					$(this).parent().find(".attribute-label").html(ui.item.symbol);
 					$(this).val("");
 				}
 			}
@@ -403,6 +416,7 @@ PickInstanceView = Marionette.ItemView.extend({
 						$("#SpeechBubble").remove();
 						$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
 						$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.label);
+						$(this).parent().find(".attribute-label").html(ui.item.symbol);
 						$(this).val(ui.item.label);
 					}
 			},
