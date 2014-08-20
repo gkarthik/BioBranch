@@ -48,19 +48,19 @@ public class FeatureServiceImpl implements FeatureService {
 	HibernateAwareObjectMapper mapper;
 	
 	@Transactional
-	public ArrayNode rankFeatures(Instances data, List<String> entrezIds, Dataset d) {
+	public JsonNode[] rankFeatures(Instances data, List<String> entrezIds, Dataset d) {
 		JsonNodeFactory factory = JsonNodeFactory.instance;
-		ArrayNode sortedList = new ArrayNode(factory);
-		AttributeSelection attsel = new AttributeSelection();
-		InfoGainAttributeEval eval = new InfoGainAttributeEval();
-		Ranker search = new Ranker();
-		attsel.setEvaluator(eval);
-		attsel.setSearch(search);
-		List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
-		List<Feature> fList = new ArrayList<Feature>();
-		Feature f;
+		JsonNode[] sortedList = null;
 		//Must introduce a better check
 		if(entrezIds == null){
+//			AttributeSelection attsel = new AttributeSelection();
+//			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+//			Ranker search = new Ranker();
+//			attsel.setEvaluator(eval);
+//			attsel.setSearch(search);
+//			List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
+//			List<Feature> fList = new ArrayList<Feature>();
+//			Feature f;
 //			double[][] attrRanks = new double[data.numAttributes()][2];
 //			try {
 //				attsel.SelectAttributes(data);
@@ -84,18 +84,54 @@ public class FeatureServiceImpl implements FeatureService {
 //			aRepo.flush();
 		} else {
 			ObjectNode objNode;
-			String id;
-				for(org.scripps.branch.entity.Attribute attr : aList){
-					if(attr.getFeature()!=null){
-						if(entrezIds.contains(attr.getFeature().getUnique_id())){
-							objNode = mapper.valueToTree(attr.getFeature());
-							objNode.put("infogain", attr.getRelieff());
-							sortedList.add(objNode);
-							entrezIds.remove(attr.getFeature().getUnique_id());
-							LOGGER.debug(attr.getFeature().getShort_name());
-						}
+			List<org.scripps.branch.entity.Attribute> tempList;
+			double infogain = 0;
+			int i =0, k=0;
+			Feature f;
+			sortedList = new JsonNode[entrezIds.size()];
+			for(String id: entrezIds){
+				f = fRepo.findByUniqueId(id);
+				tempList = aRepo.findByFeatureUniqueId(id, d);
+				infogain = 0;
+				for(org.scripps.branch.entity.Attribute a : tempList){
+					if(a.getRelieff() > infogain){
+						infogain = a.getRelieff();
 					}
 				}
+				objNode = mapper.valueToTree(f);
+				objNode.put("infogain", infogain);
+				i=-1;
+				while(i<entrezIds.size()-1){
+					i++;
+					if(sortedList[i]==null){
+						sortedList[i] = objNode;
+						LOGGER.debug(objNode.get("short_name").asText());
+						break;
+					}
+					if(infogain>sortedList[i].get("infogain").asDouble()){
+						k = entrezIds.size()-1;
+						while(k>=i+1){
+							sortedList[k] = sortedList[k-1];
+							k--;
+						}
+						sortedList[i] = objNode;
+						LOGGER.debug(objNode.get("short_name").asText());
+						break;
+					}
+				}
+			}
+//				for(org.scripps.branch.entity.Attribute attr : aList){
+//					if(attr.getFeature()!=null){
+//						if(entrezIds.contains(attr.getFeature().getUnique_id())){
+//							objNode = mapper.valueToTree(attr.getFeature());
+//							objNode.put("infogain", attr.getRelieff());
+//							sortedList.add(objNode);
+//							entrezIds.remove(attr.getFeature().getUnique_id());
+//							LOGGER.debug(attr.getFeature().getShort_name());
+//						}
+//					}
+//				}
+			
 		}
 		return sortedList;
 	}
