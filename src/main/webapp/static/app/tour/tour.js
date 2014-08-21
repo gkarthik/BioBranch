@@ -25,34 +25,52 @@ var AddRootNodeTour = new Tour({
   title: "<b>Objective</b>",
   content: "<b>The objective is to build a decision tree that predicts 10 year survival for breast cancer patients",
   	orphan: true
-},
-	          {
-	    element: "#gene_query",
-	    title: "#1 Selecting A Gene",
+	},
+	  {
+	    element: "#genes",
+	    title: "Genes",
 	    content: "You can pick a gene by typing the gene name or function in the text box and selecting one from the dropdown that appears."
 	  },
 	  {
-	    element: ".switch-wrapper",
-	    title: "#2 Switching  To Clinical Features",
-	    content: "Click on the toggle to switch between choosing clinical features and gene names.",
-	    placement: "left",
-	    onNext: function(){
-	    	$(".switch-wrapper input[type='checkbox']").bootstrapSwitch('toggleState');
-	    }
-	  },
-	  {
-	  	element: "#cf_query",
-	    title: "#3 Selecting a Clinical Feature",
-	    content: "You can select Clinical Feature by clicking on the textbox and choosing from the list that appears. You can also search by typing into the textbox.",
-	    onNext: function(){
-	    	$(".switch-wrapper input[type='checkbox']").bootstrapSwitch('toggleState');
-	    }
-	  },
-	  {
-	    title: "Choose a gene!",
-	    content: "Lets begin! Start typing 'AURKA' and select 'AURKA: aurora kinase A' from the dropdown that appears.",
-	    orphan: true
-	  }
+		    element: "#clinicalfeatures",
+		    title: "Clinical Features",
+		    content: "You can pick a clinical feature by typing its name and selecting one from the dropdown that appears."
+		  },
+		  {
+			    element: "#customfeatures",
+			    title: "Custom Features",
+			    content: "Custom Features are a group of genes that are combined together using a simple mathematical equation. For example, TPST2 + AURKA - (0.3 * BRCA2). There are many such features developed by users and you can pick them by typing a name and choosing one from the drop down."
+		  },
+		  {
+			    element: "#aggregatenodes",
+			    title: "Aggregate Nodes",
+			    content: "You can train classifiers on each subset or node, and use them to classify instances. You can choose classifiers already created by entering a name in the text box and choosing one from the drop down."
+		  },
+		  {
+			    element: "#choosetrees",
+			    title: "Trees",
+			    content: "Every public tree saved, can be used to classify data! Enter a comment, user or gene used in the tree and choose a tree from the drop down."
+		  },
+		  {
+			    element: ".open-feature-builder",
+			    title: "Build a Custom Feature",
+			    content: "You can enter gene names by typing the gene name starting with '@' and choosing a gene from the dropdown. You can use simple mathematical operations such as (, ), +, -, x, /."
+		  },
+		  {
+			    element: ".open-addnode",
+			    title: "Build a Classifier",
+			    content: "You can choose genes to be picked as attributes by your classifier by using the gene query box."
+		  },
+		  {
+			    element: ".show-pick-instance",
+			    title: "Plot instances",
+			    content: "You can choose 2 genes to be X and Y axis and plot the instances. To select a subset of instances, you can draw a polygon and make a selection."
+		  },
+		  {
+			  title: "<b>Add a gene!</b>",
+			  content: "Type 'AURKA' in the gene query box and add it to your tree.",
+			  	orphan: true
+				},
 	  ],
 	  storage: window.localStorage
 });
