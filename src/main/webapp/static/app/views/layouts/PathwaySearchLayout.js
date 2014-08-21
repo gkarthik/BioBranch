@@ -28,7 +28,7 @@ PathwayLayout = Marionette.Layout.extend({
     initialize: function(options){
     	this.aggNode = options.aggNode;
     },
-    GeneCollectionView: null,
+    GeneCollection: null,
     onRender: function(){
     	this.GeneCollection = new GeneCollection();
     	this.GeneCollectionRegion.show(new GeneCollectionView({
