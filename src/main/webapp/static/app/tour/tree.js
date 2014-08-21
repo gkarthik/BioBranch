@@ -34,7 +34,7 @@ var TreeTour = new Tour({
 		{
 		element: ".addchildren",
 		title: "Add a Node",
-		content: "Clicking on the + Add Node button shows the textbox with controls to add genes or clinical features.",
+		content: "Clicking on the + Add Node button shows the textbox with controls to build the tree further.",
 		onShow: function(){
 		$($(".addchildren")[0]).trigger('click');
 		},
@@ -43,33 +43,9 @@ var TreeTour = new Tour({
 		}
 		},
 		{
-			element: ".chart",
-		  title: "Data Chart",
-		  content: "This chart represents the number of cases that fall under each class. You can click on these charts to view accuracy and size values.",
-		},
-		{
-			element: "#score",
-		  title: "Score",
-		  content: "You can see the score of your tree here.",
-		  placement: "left"
-		},
-		{
-		element: "#ScoreSVG",
-		title: "Score Chart",
-		content: "You can see how each node affected your score in this chart.",
-		placement: "left"
-		},
-		{
-		element: "#tree-explanation-button",
-		title: "Explain the Tree",
-		content: "You can click on Show Tree Explanation to view a textual description of the tree that you have built.",
-		placement: "left"
-		},
-		{
-		element: "#my-tree-collection-link",
-		title: "My Profile",
-		content: "Click to see your <b>badge collection</b> and <b>tree collection</b> you have built. You can also browse through trees built by other users on your profile.",
-		placement: 'left'
+			element: ".showDistribution",
+			title: "Class Distribution",
+			content: "You can see the class distribution and also view/change the value at which the two leaf nodes were divided(also known as split value). The split point is indicated by a line. All cases which have an expression level lower than this values fall under the 'low' leaf node and the other fall under the 'high' leaf node. The line can be moved by dragginig the 'DRAG' holder in the middle of the line.",
 		},
 		{
 		element: "#zoom-controls",
