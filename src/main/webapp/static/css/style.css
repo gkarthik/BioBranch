@@ -302,6 +302,12 @@ display: block;
 	z-index: 6;
 }
 
+.axis-marker{
+	stroke: #ddd;
+	strokw-width: 1;
+	fill: none;
+}
+
 .polygon-line{
 	stroke: #000;
 }
