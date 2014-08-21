@@ -123,9 +123,9 @@ PickInstanceView = Marionette.ItemView.extend({
 	height: 200,
 	width: 300,
 	drawChart: function(attr){
-		$(this.ui.chartWrapper).show();
-		this.height = this.$el.height() * 0.5;
-		this.width = this.$el.width() * 0.9;
+		$(this.ui.chartWrapper).css({'display':'block'});
+		this.height = this.$el.height() - 200;
+		this.width = this.$el.width() * (5/6) - 30;
 		d3.select("#instance-data-chart").select(".instance-data-chart-wrapper").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],

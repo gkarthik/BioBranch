@@ -2,7 +2,7 @@
 Plot Graph<span><button type="button" class="close pick-instance-close" data-dismiss="alert" aria-hidden="true">&times;</button></span>
 </div>
 <div class="panel-content">
-<span class="row">
+<span class="row col-md-2">
 <div class="form-group pull-left choose-attribute-group">
 <span class="row">
 	<span class="label label-primary">Attribute 1</span>
@@ -26,11 +26,11 @@ Plot Graph<span><button type="button" class="close pick-instance-close" data-dis
   		<input class="pick_cf_instances" class="query_target" placeholder="Enter Clinical Feature">
   		  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-two">
   	</div>
+  	<span class="row">
+  		<button class="btn btn-primary" id="get-instances">Plot Graph</button>
+  	</span>
   	  	</span>
-  	  	<span class="row">
-<button class="btn btn-primary" id="get-instances">Get Instances</button>
-</span>
-<span id="instance-data-chart-wrapper">
+<span id="instance-data-chart-wrapper" class="row col-md-10">
 <button class="btn btn-warning" id="clear-selection">Clear Selection</button>
 <span class="row">
 <svg id="instance-data-chart"></svg>
