@@ -32,7 +32,7 @@ DistChartView = Marionette.ItemView.extend({
 		$(this.ui.rangeInput).select();
 	},
 	onShow: function(){
-		this.model.set('globalHeight',280,{'silent':true});
+		this.model.set('globalHeight',300,{'silent':true});
   	this.model.set('globalWidth', 450, {'silent':true});
 		this.drawChart();
 		var click = {
@@ -82,6 +82,7 @@ DistChartView = Marionette.ItemView.extend({
 			var xLength = globalWidth-60;
 			var yLength = globalHeight-100;
 			var marginX = 50;
+			var marginY = 20;
 			var plotValues = [];
 			var frequencies = [];
 			var isNominal = this.model.get("isNominal");
@@ -186,7 +187,7 @@ DistChartView = Marionette.ItemView.extend({
 			var frequencyScale = d3.scale.linear().domain([0,frequencies[frequencies.length-1]]).range([yLength,0]);
 			var xAxis = d3.svg.axis().tickFormat(function(d) { return isNominal ? d : Math.round(d*100)/100;}).scale(valueScale).orient("bottom");
 			var yAxis = d3.svg.axis().scale(frequencyScale).orient("left");
-			SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+marginX+","+(yLength+10)+")").call(xAxis)
+			SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+marginX+","+(yLength+marginY)+")").call(xAxis)
 				.append("svg:text").attr("transform","translate(0,30)").text(function(){
 					if(thisModel.get('splitNode').get("options").get("unique_id").indexOf("metabric")==-1){
 						return "Gene Expression Values";
@@ -194,15 +195,15 @@ DistChartView = Marionette.ItemView.extend({
 						return thisModel.get('splitNode').get("name");
 					}
 				}).style("fill","#808080");
-			SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+marginX+",10)").call(yAxis)
+			SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+marginX+","+marginY+")").call(yAxis)
 				 .append("svg:text").text("Number of Instances").attr("transform","translate(-30,"+yLength+")rotate(-90)").style("fill","#808080");
 			
 			if(!isNominal){
 				var rangeScale = d3.scale.linear().domain([0.1,data[data.length-1].value-data[0].value]).range([0,200]);
 				var reverseRangeScale = d3.scale.linear().domain([0,200]).range([0.1,data[data.length-1].value-data[0].value]);
 				var rangeAxis = d3.svg.axis().scale(rangeScale).orient("bottom");
-				SVG.append("g").attr("class","axis range").attr("transform", "translate("+marginX+","+(yLength+80)+")").call(rangeAxis)
-					 .append("svg:text").attr("transform","translate(-45,10)").text("Interval").style("fill","#3276B1");
+				SVG.append("g").attr("class","axis range").attr("transform", "translate("+marginX+","+(yLength+marginY+60)+")").call(rangeAxis)
+					 .append("svg:text").attr("transform","translate(-45,"+marginY+")").text("Interval").style("fill","#3276B1");
 				var newRange = 0;
 				var rangeDrag = d3.behavior.drag().origin(function() { 
 					var t = d3.select(this).attr("transform");
@@ -226,7 +227,7 @@ DistChartView = Marionette.ItemView.extend({
 				
 				var rangeKink = SVG.append("svg:g").attr("class","rangeKink").attr("transform", function(){
 					var translateX = marginX + rangeScale(range);
-					return "translate("+translateX+","+(yLength+70)+")";
+					return "translate("+translateX+","+(yLength+marginY+50)+")";
 				});
 				rangeKink.append("svg:rect").attr("transform","translate(-20,-12)").attr("width","40").attr("height","15");
 				rangeKink.append("path").attr("d", d3.svg.symbol().type("triangle-down")).attr("transform","translate(0,5)");
@@ -244,7 +245,7 @@ DistChartView = Marionette.ItemView.extend({
 				if(!isNominal){
 						translateX = (marginX - (rectWidth/2)) + ((xLength)/(plotValues.length)) + parseFloat(valueScale(d.value));
 				}
-				return "translate("+translateX+",10)";
+				return "translate("+translateX+","+marginY+")";
 			});
 			
 			//Insert rect on layerEnter
@@ -275,10 +276,10 @@ DistChartView = Marionette.ItemView.extend({
 				var splitPointIndicator = SVG.append("g").attr("class","split_point_indicator")
 				.attr("transform",function(){
 					var translateX = marginX + ((xLength)/(plotValues.length*2)) + parseFloat(splitScale(origSplitPoint));
-					return "translate("+translateX+",10)";
+					return "translate("+translateX+","+(marginY-10)+")";
 				});
-				splitPointIndicator.append("svg:rect").attr("height",yLength).attr("width",2).attr("fill","green");
-				splitPointIndicator.append("svg:text").attr("fill","green").text(Math.round(origSplitPoint*100)/100).attr("text-anchor","middle").style("font-size","10px");
+				splitPointIndicator.append("svg:rect").attr("height",yLength+10).attr("width",2).attr("fill","green");
+				splitPointIndicator.append("svg:text").attr("transform","translate(0,0)").attr("fill","green").text(Math.round(origSplitPoint*100)/100).attr("text-anchor","middle").style("font-size","10px");
 				var splitPointGroup = SVG.append("g").attr("class","split_point")
 				.attr("transform",function(){
 					var translateX = marginX + ((xLength)/(plotValues.length*2)) + parseFloat(splitScale(splitPoint));
@@ -286,7 +287,7 @@ DistChartView = Marionette.ItemView.extend({
 					for(var i in plotValues[temp].frequency){
 						total += plotValues[temp].frequency[i];
 					}
-					return "translate("+translateX+",10)";
+					return "translate("+translateX+","+marginY+")";
 				});
 				var origin = [0,0];
 				var drag = d3.behavior.drag().origin(function() { 
@@ -312,7 +313,8 @@ DistChartView = Marionette.ItemView.extend({
 		    });
 				SVG.select(".split_point").call(drag);
 				splitPointGroup.append("svg:rect").attr("height",yLength).attr("width",2).attr("fill","steelblue");
-				splitPointGroup.append("svg:text").attr("class","splitValueLabel").attr("fill","steelblue").text(Math.round(splitPoint*100)/100).attr("text-anchor","middle").style("font-size","10px");				
+				splitPointGroup.append("svg:rect").attr("height",10).attr("width",30).attr("transform","translate(-15,-10)").attr("fill","#fff");
+				splitPointGroup.append("svg:text").attr("class","splitValueLabel").attr("fill","steelblue").text(Math.round(splitPoint*100)/100).attr("text-anchor","middle").style("font-size","10px");
 				var dragHolder = splitPointGroup.append("svg:g").attr("transform","translate(-18,"+((yLength)/2)+")").attr("class","dragSplitPoint");
 				dragHolder.append("svg:rect").attr("height",15).attr("width",40).attr("fill","steelblue").attr("transform","translate(0,-10)");
 				dragHolder.append("svg:text").attr("fill","white").text("DRAG").style("font-size","10px").attr("transform","translate(2,2)");
