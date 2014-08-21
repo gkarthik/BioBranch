@@ -72,6 +72,9 @@ define([
 		Cure.negNodeName = options["negNodeName"];
 		Cure.scoreWeights = options.scoreWeights;
 		Cure.startTour = options.startTour;
+		
+		//Dataset
+		Cure.dataset = 2;
 
 		// Scales
 		Cure.accuracyScale = d3.scale.linear().domain([ 0, 100 ]).range(

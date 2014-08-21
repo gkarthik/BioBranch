@@ -150,7 +150,21 @@ PickInstanceView = Marionette.ItemView.extend({
 		var attrPos = [];
 		var line;
 		var indicatorCircle;
-		var SVGParent = d3.select("#instance-data-chart").on("click", startLine);
+		var SVGParent = d3.select("#instance-data-chart")
+							.on("click", startLine)
+							.on("mousemove", mousemove)
+							.on("mouseenter", addLineMarkers)
+							.on("mouseleave", rmLineMarkers);
+		
+		function addLineMarkers(){
+			SVGParent.append("line").attr("class","x-axis-marker axis-marker");
+			SVGParent.append("line").attr("class","y-axis-marker axis-marker");
+		}
+		
+		function rmLineMarkers(){
+			SVGParent.select(".x-axis-marker").remove();
+			SVGParent.select(".y-axis-marker").remove();
+		}
 		
 		function startLine() {
 			if(SVGParent.selectAll(".polygon-line")[0].length==0){
@@ -160,7 +174,6 @@ PickInstanceView = Marionette.ItemView.extend({
 					SVGParent.selectAll(".polygon-line").remove();
 			    	SVGParent.selectAll(".data-point-circle").style("stroke","none");
 				}
-				SVGParent.on("mousemove", mousemove);
 			    var m = d3.mouse(this);
 			    if(vertices.length>0){
 			    	if(Math.sqrt(Math.pow(vertices[0][0]-m[0],2)+Math.pow(vertices[0][1]-m[1],2))<=5){
@@ -196,21 +209,26 @@ PickInstanceView = Marionette.ItemView.extend({
 
 		function mousemove() {
 		    var m = d3.mouse(this);
-		    if(Math.sqrt(Math.pow(vertices[0][0]-m[0],2)+Math.pow(vertices[0][1]-m[1],2))<=5 && vertices.length>1){
-		    	if(!d3.select(".indicator-circle").empty()){
-		    		indicatorCircle.attr("cx",m[0]).attr("cy",m[1]);
-		    	} else {
-			    	indicatorCircle = SVGParent.append("svg:circle").attr("class","indicator-circle")
-			    	.attr("r",5)
-			    	.attr("cx",m[0])
-			    	.attr("cy",m[1]);
-		    	}
-		    	m=vertices[0];
-		    } else if(!d3.select(".indicator-circle").empty()) {
-		    	indicatorCircle.remove();
+		    if(vertices.length > 0){
+		    	if(Math.sqrt(Math.pow(vertices[0][0]-m[0],2)+Math.pow(vertices[0][1]-m[1],2))<=5 && vertices.length>1){
+			    	if(!d3.select(".indicator-circle").empty()){
+			    		indicatorCircle.attr("cx",m[0]).attr("cy",m[1]);
+			    	} else {
+				    	indicatorCircle = SVGParent.append("svg:circle").attr("class","indicator-circle")
+				    	.attr("r",5)
+				    	.attr("cx",m[0])
+				    	.attr("cy",m[1]);
+			    	}
+			    	m=vertices[0];
+			    } else if(!d3.select(".indicator-circle").empty()) {
+			    	indicatorCircle.remove();
+			    }
+			    line.attr("x2", m[0])
+		        .attr("y2", m[1]);
 		    }
-		    line.attr("x2", m[0])
-	        .attr("y2", m[1]);
+		    console.log(m);
+		    d3.select(".x-axis-marker").attr("x1", mX).attr("x2",m[0]).attr("y1", m[1]).attr("y2", m[1]);
+		    d3.select(".y-axis-marker").attr("x1", m[0]).attr("x2",m[0]).attr("y1", parseInt(h+mY)).attr("y2", m[1]);
 		}
 		
 		var arc = d3.svg.symbol().type('circle').size(10);
