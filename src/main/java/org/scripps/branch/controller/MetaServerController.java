@@ -292,6 +292,18 @@ public class MetaServerController {
 				}
 				result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 			}
+		} else if(command.contains("get_dataset")) {
+			if(command.equals("get_dataset_training")){
+				Dataset d = dataRepo.findById(data.get("dataset").asLong());
+				List<Dataset> dList= dataRepo.findByCollection(d.getCollection());
+				for(Dataset temp: dList){
+					if(temp.equals(d)){
+						dList.remove(d);
+						break;
+					}
+				}
+				result_json = mapper.writeValueAsString(dList);
+			}
 		}
 		return result_json;
 	}
@@ -303,9 +315,7 @@ public class MetaServerController {
 		ManualTree readtree = new ManualTree();
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
-		Evaluation eval = new Evaluation(wekaObj.getTest());
 		Instances train = wekaObj.getOrigTrain();
-		Instances test = wekaObj.getOrigTest();
 		switch (data.get("testOptions").get("value").asInt()) {
 		case 0:
 			wekaObj.setTrain(train);
@@ -313,7 +323,8 @@ public class MetaServerController {
 			break;
 		case 1:
 			wekaObj.setTrain(train);
-			wekaObj.setTest(test);
+			long testsetid = data.get("testsetid").asLong();
+			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
 			break;
 		case 2:
 			float limitPercent = (data.get("testOptions").get("percentSplit")
@@ -352,7 +363,6 @@ public class MetaServerController {
 	}
 	
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
-		
 		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
@@ -361,7 +371,6 @@ public class MetaServerController {
 				.getCustomClassifierObject();
 		Evaluation eval = new Evaluation(wekaObj.getTest());
 		Instances train = wekaObj.getOrigTrain();
-		Instances test = wekaObj.getOrigTest();
 		switch (data.get("testOptions").get("value").asInt()) {
 		case 0:
 			wekaObj.setTrain(train);
@@ -369,7 +378,8 @@ public class MetaServerController {
 			break;
 		case 1:
 			wekaObj.setTrain(train);
-			wekaObj.setTest(test);
+			long testsetid = data.get("testOptions").get("testsetid").asLong();
+			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
 			break;
 		case 2:
 			float limitPercent = (data.get("testOptions").get("percentSplit")
