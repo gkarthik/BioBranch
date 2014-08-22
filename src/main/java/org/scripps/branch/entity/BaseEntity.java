@@ -12,11 +12,11 @@ import org.joda.time.DateTime;
 @MappedSuperclass
 public abstract class BaseEntity<ID> {
 
-	@Column(name = "creation_time", nullable = false)
+	@Column(name = "creation_time", nullable = false, updatable=false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime creationTime;
 
-	@Column(name = "modification_time", nullable = false)
+	@Column(name = "modification_time", nullable = false, updatable=false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime modificationTime;
 
