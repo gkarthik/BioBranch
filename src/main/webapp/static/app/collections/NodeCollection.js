@@ -31,8 +31,12 @@ NodeCollection = Backbone.Collection.extend({
 		Cure.utils.showLoading(null);
 		var testOptions = {
 				value: $("input[name='testOptions']:checked").val(),
-				percentSplit:  $("input[name='percent-split']").val()
+				percentSplit:  $("input[name='percent-split']").val(),
 		};
+		var testset = Cure.TestSets.findWhere({setTest:true});
+		if(testset.length>0){
+			testOptions.testsetid = testset.get('id'); 
+		}
 		var pickedAttrs = [];
 		if(reqArgs){
 			if(reqArgs.pickedAttrs){
