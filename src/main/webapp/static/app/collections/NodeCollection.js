@@ -34,7 +34,7 @@ NodeCollection = Backbone.Collection.extend({
 				percentSplit:  $("input[name='percent-split']").val(),
 		};
 		var testset = Cure.TestSets.findWhere({setTest:true});
-		if(testset.length>0){
+		if(testset){
 			testOptions.testsetid = testset.get('id'); 
 		}
 		var pickedAttrs = [];

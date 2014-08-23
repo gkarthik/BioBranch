@@ -50,7 +50,7 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
+			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name())+" - "+ i);
 			attr.setFeature(f);
 			attrList.add(attr);
 		}

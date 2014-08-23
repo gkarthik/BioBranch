@@ -39,7 +39,7 @@ public class Attribute {
 	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
 	private Dataset dataset;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feature_id", insertable = true, updatable = true)
 	@JsonBackReference
 	private Feature feature;

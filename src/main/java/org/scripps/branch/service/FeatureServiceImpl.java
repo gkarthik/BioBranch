@@ -53,35 +53,35 @@ public class FeatureServiceImpl implements FeatureService {
 		JsonNode[] sortedList = null;
 		//Must introduce a better check
 		if(entrezIds == null){
-//			AttributeSelection attsel = new AttributeSelection();
-//			InfoGainAttributeEval eval = new InfoGainAttributeEval();
-//			Ranker search = new Ranker();
-//			attsel.setEvaluator(eval);
-//			attsel.setSearch(search);
-//			List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
-//			List<Feature> fList = new ArrayList<Feature>();
-//			Feature f;
-//			double[][] attrRanks = new double[data.numAttributes()][2];
-//			try {
-//				attsel.SelectAttributes(data);
-//				attrRanks = attsel.rankedAttributes();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			for(int i = 0; i < data.numAttributes()-1;i++){
-//				Attribute a = data.attribute((int) attrRanks[i][0]);
-//				if(!a.name().contains("custom_feature")){
-//					for(org.scripps.branch.entity.Attribute attr : aList){
-//						if(attr.getName().equals(a.name())){
-//							attr.setRelieff((float)attrRanks[i][1]);
-//							LOGGER.debug(attr.getName()+": "+attrRanks[i][1]);
-//						}
-//					}
-//				}
-//			}
-//			aRepo.save(aList);
-//			aRepo.flush();
+			AttributeSelection attsel = new AttributeSelection();
+			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+			Ranker search = new Ranker();
+			attsel.setEvaluator(eval);
+			attsel.setSearch(search);
+			List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
+			List<Feature> fList = new ArrayList<Feature>();
+			Feature f;
+			double[][] attrRanks = new double[data.numAttributes()][2];
+			try {
+				attsel.SelectAttributes(data);
+				attrRanks = attsel.rankedAttributes();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			for(int i = 0; i < data.numAttributes()-1;i++){
+				Attribute a = data.attribute((int) attrRanks[i][0]);
+				if(!a.name().contains("custom_feature")){
+					for(org.scripps.branch.entity.Attribute attr : aList){
+						if(attr.getName().equals(a.name())){
+							attr.setRelieff((float)attrRanks[i][1]);
+							LOGGER.debug(attr.getName()+": "+attrRanks[i][1]);
+						}
+					}
+				}
+			}
+			aRepo.save(aList);
+			aRepo.flush();
 		} else {
 			ObjectNode objNode;
 			List<org.scripps.branch.entity.Attribute> tempList;
