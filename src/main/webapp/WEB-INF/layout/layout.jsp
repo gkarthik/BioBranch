@@ -13,14 +13,14 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-<link href='/branch/static/css/bootstrap-tour.min.css' rel='stylesheet'
+<link href='./static/css/bootstrap-tour.min.css' rel='stylesheet'
 	type='text/css'>
-<link href='/branch/static/css/bootstrap-switch.css' rel='stylesheet'
+<link href='./static/css/bootstrap-switch.css' rel='stylesheet'
 	type='text/css'>
-<link href='/branch/static/css/style.css' rel='stylesheet'
+<link href='./static/css/style.css' rel='stylesheet'
 	type='text/css'>
 <link rel="stylesheet"
-	href="/branch/static/css/odometer-theme-train-station.css" />
+	href="./static/css/odometer-theme-train-station.css" />
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <style>
@@ -36,13 +36,13 @@
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="/branch/">Branch</a>
+					<a class="navbar-brand" href="/">Branch</a>
 				</div>
 
 				<ul class="nav navbar-nav navbar-right header-right-menu">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="/branch/user/login">Login</a></li>
-						<li><a href="/branch/user/register">Register</a></li>
+						<li><a href="./user/login">Login</a></li>
+						<li><a href="./user/register">Register</a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li>
@@ -59,24 +59,24 @@
 									<spring:message code="label.navigation.signed.in.as.text" />
 								</c:if>
 								<!-- <sec:authentication property="principal.username" /> -->
-								<strong><a href="/branch/profile/"><sec:authentication
+								<strong><a href="./profile/"><sec:authentication
 											property="principal.firstName" /></a></strong>
 							</p>
 						</li>
-
+<!-- 
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
 
 								<a
-									href="/branch/collection?user_id=<sec:authentication property="principal.id" />">My
+									href="./collection?user_id=<sec:authentication property="principal.id" />">My
 									Collection</a>
 
 							</p>
 						</li>
-
+ -->
 						<li>
 							<p>
-							<form action="/branch/logout" method="POST">
+							<form action="./logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
 								<button type="submit" class="btn btn-link">

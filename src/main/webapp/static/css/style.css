@@ -1033,11 +1033,11 @@ text-align:left;
 	top:40%;
 	z-index: 10;
 	left: 35%;
-	width:30%;
+	width:20%;
 }
 
-#loading-wrapper .progress-bar{
-	background-color: #F69;
+#loading-wrapper .progress{
+	margin: 20px 0px;
 }
 
 #InfoWrapper{

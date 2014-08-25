@@ -5,7 +5,7 @@
 		</div>
 		<div class="panel-content">
 			<center>
-				Drawing Nodes <span id="loadingCount"></span>
+				<span id="loadingCount"></span>
 			</center>
 			<div class="progress progress-striped active">
 				<div class="progress-bar" role="progressbar" aria-valuenow="45"
@@ -139,7 +139,7 @@
 						cure_tree_id = null, 
 						badge_desc = null, 
 						badge_id = null, 
-						base_url = (document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href.split("branch")[0]+"branch/",
+						base_url = (document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href/*(document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href.split("branch")[0]+"branch/"*/,
 						_csb = [ [ null, null ] ];
 				<%if (request.getParameter("treeid") != null) {%>
 					cure_tree_id =

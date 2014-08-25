@@ -175,14 +175,14 @@
 									</div>
 									 -->
 											<div>
-												<div class="social-button-row">
+												<div class="social-button-row" style="display: none;">
 													<a href="<c:url value="/auth/facebook"/>"><button
 															class="btn btn-facebook">
 															<i class="icon-facebook"></i>
 															<spring:message code="label.facebook.sign.in.button" />
 														</button></a>
 												</div>
-												<div class="social-button-row">
+												<div class="social-button-row"  style="display: none;">
 													<a href="<c:url value="/auth/twitter"/>">
 
 														<button class="btn btn-twitter">
@@ -195,7 +195,7 @@
 												</div>
 
 
-												<div class="social-button-row">
+												<div class="social-button-row" style="display: none;">
 
 													<%
 														/*
