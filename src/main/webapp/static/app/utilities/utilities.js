@@ -288,7 +288,7 @@ CureUtils.isJSON = function(str) {
 
 CureUtils.showLoading = function(countString){
 	if(countString!=null){
-		$("#loadingCount").html(countString);
+		$("#loadingCount").html("Drawing Nodes "+countString);
 	}
 	$("#loading-wrapper").show();
 }

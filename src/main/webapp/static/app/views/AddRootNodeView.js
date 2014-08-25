@@ -103,7 +103,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 		    	          }
 	  				});
 	  			},
-	  				minLength: 1,
+	  				minLength: 0,
 	  				select: function( event, ui ) {
 	  					if(ui.item.label != undefined){//To ensure "no gene name has been selected" is not accepted.
 	  						if(!Cure.initTour.ended()){
@@ -163,7 +163,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  						Cure.PlayerNodeCollection.sync();
 	  					}
 	  				},
-	  			});
+	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
 	showAggregateNodes: function(){
 		if(this.model){
@@ -194,7 +194,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	    	        }
 	    	      });
 	  				},
-	  				minLength: 1,
+	  				minLength: 0,
 	  				select: function( event, ui ) {
 	  					if(ui.item.label != undefined){//To ensure "no gene name has been selected" is not accepted.
 	  						if(!Cure.initTour.ended()){
@@ -253,7 +253,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  						Cure.PlayerNodeCollection.sync();
 	  					}
 	  				},
-	  			});
+	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
 	showCustomFeatures: function(){
 		 if(this.model){
@@ -284,7 +284,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	    	        }
 	    	      });
 	  				},
-	  				minLength: 1,
+	  				minLength: 0,
 	  				select: function( event, ui ) {
 	  					if(ui.item.label != undefined){//To ensure "no gene name has been selected" is not accepted.
 	  						if(!Cure.initTour.ended()){
@@ -343,7 +343,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  						Cure.PlayerNodeCollection.sync();
 	  					}
 	  				},
-	  			});
+	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
 	showCf: function(){
 		if (this.model) {
@@ -484,7 +484,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 				var scrollTop = $(event.target).offset().top-400;
 				$("html, body").animate({scrollTop:scrollTop}, '500');
 			},
-			minLength: 1,
+			minLength: 0,
 			focus: function( event, ui ) {
 				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
 				if($("#SpeechBubble")){
