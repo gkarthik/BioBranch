@@ -62,15 +62,18 @@ public class AttributeServiceImpl implements AttributeService {
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
 		BufferedReader fileReader = null;
-		final String DELIMITER = "\t";
+		final String DELIMITER = ",";
 		try {
 			String line = "";
 			Resource input = ctx.getResource("file:"+inputPath);
 			fileReader = new BufferedReader(new InputStreamReader(input.getInputStream()));
 			while ((line = fileReader.readLine()) != null) {
 				String[] tokens = line.split(DELIMITER);
-				if (tokens.length == 3) {
-					mp.put(tokens[0], tokens[2]);
+				if (tokens.length > 0) {
+					if(tokens[1].contains("///")){
+						tokens[1] = tokens[1].split("///")[0];
+					}
+					mp.put(tokens[0], tokens[1]);
 				}
 			}
 		} catch (Exception e) {

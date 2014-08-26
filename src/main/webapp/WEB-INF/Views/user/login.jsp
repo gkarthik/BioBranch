@@ -124,7 +124,7 @@
 													<spring:message code="text.login.page.login.failed.error" />
 												</div>
 											</c:if>
-											<form action="/branch/login/authenticate" method="POST"
+											<form action="./login/authenticate" method="POST"
 												role="form">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" /> <input type="hidden"
@@ -155,7 +155,7 @@
 											</form>
 											<div>
 												<div class="form-group">
-													<a href="/branch/user/register"><spring:message
+													<a href="./user/register"><spring:message
 															code="label.navigation.registration.link" /></a> <span
 														id="toggleSocial"> </span>
 

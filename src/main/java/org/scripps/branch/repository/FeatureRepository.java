@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface FeatureRepository extends JpaRepository<Feature, Long> {
-
+	
+	@Transactional(readOnly = true)
 	@Query("select F from Feature F where F.unique_id =?1")
 	Feature findByUniqueId(String unique_id);
 
