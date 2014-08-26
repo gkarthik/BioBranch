@@ -101,8 +101,8 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	    "GenePoolRegion": "#GenePoolRegion",
 	    "FeatureBuilderRegion": "#FeatureBuilderRegion"
 	  },
-	  posNodeName : "y",
-	  negNodeName : "n",
+	  posNodeName : "CBF1"/*"y"*/,
+	  negNodeName : "CBF0"/*"n"*/,
 	  startTour: true,
 	  scoreWeights: {
 	  	pct_correct: 1000,
