@@ -33,8 +33,8 @@
   		<input id="add_gene_to_aggNode_query" class="query_target" placeholder="Enter Gene">
   	</div>
   	<div id="add_cf_to_aggNode_wrapper" class="input-elements" style="display:<% if(Cure.dataset.get('validateNonGenes')){ print('block') } else {print('none');}%>">
- 		<span class="label label-default">Add Clinical Features</span>
-  		<input id="add_cf_to_aggNode_query" class="query_target" placeholder="Enter Clinical Feature">
+ 		<span class="label label-default">Add Non Gene Features</span>
+  		<input id="add_cf_to_aggNode_query" class="query_target" placeholder="Enter Non Gene Feature">
   	</div>
   	<% if(Cure.dataset.get('validateGenes')){ %>
   	<button type="button" class="btn btn-primary btn-small open-pathway-search input-elements">Pathway Search</button>
