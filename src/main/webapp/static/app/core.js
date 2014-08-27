@@ -75,7 +75,7 @@ define([
 		Cure.startTour = options.startTour;
 		
 		//Dataset
-		Cure.dataset = 229586;
+		Cure.dataset = dataset;
 
 		// Scales
 		Cure.accuracyScale = d3.scale.linear().domain([ 0, 100 ]).range(

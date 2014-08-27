@@ -19,4 +19,6 @@ import weka.core.Instances;
 public interface FeatureService {
 	
 	public JsonNode[] rankFeatures(Instances data, List<String> entrezIds, Dataset d);
+	
+	public List<Feature> generateFeaturesFromDataset(Instances data, Dataset d); 
 }

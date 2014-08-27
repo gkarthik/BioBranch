@@ -21,12 +21,17 @@ optionsView = Marionette.ItemView.extend({
 		radius = parseFloat((width - 4)/20);
 		var limit = Cure.binScale(this.model.get('bin_size'));
 		Cure.utils.drawChart(d3.selectAll(id), limit, this.model.get('accLimit'), radius, this.model.get('kind'), this.model.get('AttributeNode').get('name'));
-		var classToChoose = {"className":" .posCircle","color":""};
-		if(this.model.get('AttributeNode').get('name') == Cure.negNodeName){
-			classToChoose["color"]= "red";
-		} else{
-			classToChoose["color"]= "blue";
+		var classToChoose = {"className":" .posCircle","color":"green"};
+		if(this.model.get('kind')=="leaf_node"){
+			if(this.model.get('AttributeNode').get('name').toUpperCase() == Cure.negNodeName.toUpperCase()){
+				classToChoose["color"]= "red";
+			} else {
+				classToChoose["color"]= "blue";
+			} 
+		} else {
+			classToChoose["color"] = "blue";
 		}
+		
 		d3.selectAll(id+classToChoose["className"]).style("fill",classToChoose["color"]);
 	},
 	onRender: function(){

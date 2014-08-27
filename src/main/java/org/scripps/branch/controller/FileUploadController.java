@@ -3,13 +3,16 @@ package org.scripps.branch.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
+import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.DatasetMap;
@@ -17,6 +20,7 @@ import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.AttributeService;
+import org.scripps.branch.service.FeatureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -76,6 +80,9 @@ public class FileUploadController {
 	
 	@Autowired 
 	String uploadPath; 
+	
+	@Autowired
+	FeatureService fSer;
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -155,6 +162,10 @@ public class FileUploadController {
 		Boolean check = false;
 		for (i = 0; i < files.length; i++) {
 			MultipartFile file = files[i];
+			if(file.isEmpty()){
+				LOGGER.debug("empty file!");
+				break;
+			}
 			String name = file.getOriginalFilename();
 			names[i] = file.getOriginalFilename();
 			LOGGER.debug("File Name: " + name);
@@ -201,6 +212,18 @@ public class FileUploadController {
 				 }
 			} catch (Exception e) {
 				LOGGER.error("Exception",e);
+			}
+		}
+		if(check == true && i == 1){
+			weka = new Weka();
+			try {
+				weka.buildWeka(new FileInputStream(uploadPath+md5FileName[0]), null, "");
+				List<Feature> fList = fSer.generateFeaturesFromDataset(weka.getOrigTrain(), ds);
+				attrSer.generateAttributesFromDatasetWithoutMapping(weka.getOrigTrain(), ds, fList);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				check = false;
 			}
 		}
 		if (!(auth instanceof AnonymousAuthenticationToken && check == true)) {

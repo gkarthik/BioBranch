@@ -1,3 +1,7 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <div id="loading-wrapper">
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -140,11 +144,17 @@
 						badge_desc = null, 
 						badge_id = null, 
 						base_url = (document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href/*(document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href.split("branch")[0]+"branch/"*/,
-						_csb = [ [ null, null ] ];
+						dataset = 229586,		
+						_csb = [ [ null, null ] ],
+						classValues = ["y","n"]
+						datasetName = "Metabric";
 				<%if (request.getParameter("treeid") != null) {%>
-					cure_tree_id =
-				<%=request.getParameter("treeid")%>
-					;
+					cure_tree_id =	<%=request.getParameter("treeid")%>;
+				<%}%>
+				<%if (request.getParameter("dataset") != null) {%>
+					dataset = <%=request.getParameter("dataset")%>;
+					classValues = ["${pos}", "${neg}"];
+					datasetName = "${datasetName}";
 				<%}%>
 					
 				</script>

@@ -87,4 +87,30 @@ public class AttributeServiceImpl implements AttributeService {
 		}
 		return mp;
 	}
+	
+	@Override
+	public void generateAttributesFromDatasetWithoutMapping(Instances data, Dataset dataset, List<Feature> fList){
+		List<Attribute> attrList = new ArrayList<Attribute>();
+		Attribute attr;
+		Feature f;
+		for (int i = 0; i < data.numAttributes(); i++) {
+			attr = new Attribute();
+			f = null;
+			for(Feature fTemp:fList){
+				if(fTemp.getShort_name().equals(data.attribute(i).name())){
+					f = fTemp;
+				}
+			}
+			attr.setName(data.attribute(i).name());
+			attr.setCol_index(data.attribute(i).index());
+			attr.setDataset(dataset);
+			if(f!=null){
+				LOGGER.debug(data.attribute(i).name()+": "+f.getShort_name()+" - "+ i);
+				attr.setFeature(f);
+				attrList.add(attr);
+			}
+		}
+		attrRepo.save(attrList);
+		attrRepo.flush();
+	}
 }

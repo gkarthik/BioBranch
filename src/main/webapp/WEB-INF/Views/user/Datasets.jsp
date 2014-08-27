@@ -16,7 +16,7 @@
 					<tr>
 						<td>${o.name}</td>
 						<td>${o.description}</td>
-						<td><a class='btn btn-link'>Use</a></td>
+						<td><a href="./?dataset=${o.id}" class='btn btn-link'>Use</a></td>
 					</tr>
 				</c:forEach>
 			</table>
