@@ -693,7 +693,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				bin_size = Utils.sum(distribution[i]);
 				maxIndex = Utils.maxIndex(distribution[i]);
 				maxCount = distribution[i][maxIndex];
-				if (m_Info.classAttribute().value(maxIndex).equals("y")) {// Somehow
+				if (m_Info.classAttribute().value(maxIndex).equals(data.classAttribute().value(1))) {// Somehow
 																			// get
 																			// the
 																			// favorable

@@ -124,18 +124,6 @@ public class MetaServerController {
 	@Autowired
 	private FeatureService fSer;
 
-	public String getClinicalFeatures(JsonNode data) {
-		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();
-		String result_json = "";
-		try {
-			result_json = mapper.writeValueAsString(fList);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			LOGGER.error("Couldn't write clinical feature to string",e);
-		}
-		return result_json;
-	}
-
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
 			throws Exception {
@@ -192,7 +180,9 @@ public class MetaServerController {
 				result_json = mapper.writeValueAsString(tList);
 			}
 		} else if (command.equals("get_clinical_features")) {
-			result_json = getClinicalFeatures(data);
+			Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+			List<Feature> fList = featureRepo.getNonGeneFeatures(d);
+			result_json = mapper.writeValueAsString(fList);
 		} else if (command.contains("custom_feature_")) {
 			if (command.equals("custom_feature_create")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));

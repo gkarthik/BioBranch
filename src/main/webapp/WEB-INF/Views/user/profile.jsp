@@ -35,7 +35,7 @@
 	<td><center><@= comment @></center></td>
 	<td><svg id="treePreview<@= cid @>"></svg></td>
 	<td><@= created @></td>
-	<td><center><a href="/branch/?treeid=<@= id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
+	<td><center><a href="/branch/?treeid=<@= id @>&dataset=<@= score.dataset @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
 	<@ } else { @>
 	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th>
 	<th><span class='keyValue'><@= player_name @></span></th>

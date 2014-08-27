@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,41 +49,75 @@ public class FeatureServiceImpl implements FeatureService {
 	@Autowired
 	HibernateAwareObjectMapper mapper;
 	
+	public String hashAttrName(String name) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		md.update(name.getBytes());
+		byte[] digest = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (byte b : digest) {
+			sb.append(String.format("%02x", b & 0xff));
+		}
+		return sb.toString();
+	}
+	
+	public List<Feature> generateFeaturesFromDataset(Instances data, Dataset d){
+		List<Feature> fList = new ArrayList<Feature>();
+		Feature f;
+		LOGGER.debug(String.valueOf(data.numAttributes()));
+		for(int i = 0; i< data.numAttributes();i++){
+			LOGGER.debug(data.attribute(i).name());
+			f = new Feature();
+			f.setLong_name(data.attribute(i).name());
+			f.setShort_name(data.attribute(i).name());
+			f.setUnique_id(hashAttrName(System.currentTimeMillis() + data.attribute(i).name()));
+			f.setDescription(data.attribute(i).name());
+			fList.add(f);
+		}
+		fList = fRepo.save(fList);
+		fRepo.flush();
+		return fList;
+	}
+	
 	@Transactional
 	public JsonNode[] rankFeatures(Instances data, List<String> entrezIds, Dataset d) {
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		JsonNode[] sortedList = null;
 		//Must introduce a better check
 		if(entrezIds == null){
-			AttributeSelection attsel = new AttributeSelection();
-			InfoGainAttributeEval eval = new InfoGainAttributeEval();
-			Ranker search = new Ranker();
-			attsel.setEvaluator(eval);
-			attsel.setSearch(search);
-			List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
-			List<Feature> fList = new ArrayList<Feature>();
-			Feature f;
-			double[][] attrRanks = new double[data.numAttributes()][2];
-			try {
-				attsel.SelectAttributes(data);
-				attrRanks = attsel.rankedAttributes();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for(int i = 0; i < data.numAttributes()-1;i++){
-				Attribute a = data.attribute((int) attrRanks[i][0]);
-				if(!a.name().contains("custom_feature")){
-					for(org.scripps.branch.entity.Attribute attr : aList){
-						if(attr.getName().equals(a.name())){
-							attr.setRelieff((float)attrRanks[i][1]);
-							LOGGER.debug(attr.getName()+": "+attrRanks[i][1]);
-						}
-					}
-				}
-			}
-			aRepo.save(aList);
-			aRepo.flush();
+//			AttributeSelection attsel = new AttributeSelection();
+//			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+//			Ranker search = new Ranker();
+//			attsel.setEvaluator(eval);
+//			attsel.setSearch(search);
+//			List<org.scripps.branch.entity.Attribute> aList = aRepo.findByDatasetOrderByRelieffDesc(d);
+//			List<Feature> fList = new ArrayList<Feature>();
+//			Feature f;
+//			double[][] attrRanks = new double[data.numAttributes()][2];
+//			try {
+//				attsel.SelectAttributes(data);
+//				attrRanks = attsel.rankedAttributes();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			for(int i = 0; i < data.numAttributes()-1;i++){
+//				Attribute a = data.attribute((int) attrRanks[i][0]);
+//				if(!a.name().contains("custom_feature")){
+//					for(org.scripps.branch.entity.Attribute attr : aList){
+//						if(attr.getName().equals(a.name())){
+//							attr.setRelieff((float)attrRanks[i][1]);
+//							LOGGER.debug(attr.getName()+": "+attrRanks[i][1]);
+//						}
+//					}
+//				}
+//			}
+//			aRepo.save(aList);
+//			aRepo.flush();
 		} else {
 			ObjectNode objNode;
 			List<org.scripps.branch.entity.Attribute> tempList;

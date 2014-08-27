@@ -1,6 +1,11 @@
 package org.scripps.branch.controller;
 
+import java.util.HashMap;
+
 import org.scripps.branch.entity.User;
+import org.scripps.branch.entity.Weka;
+import org.scripps.branch.globalentity.DatasetMap;
+import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +30,13 @@ public class HomeController {
 
 	@Autowired
 	UserRepository userRepo;
-
+	
+	@Autowired
+	DatasetMap wekaMap;
+	
+	@Autowired
+	DatasetRepository dRepo;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String showHomePage(WebRequest request, Model model) {
 		LOGGER.debug("Rendering homepage.");
@@ -34,6 +45,13 @@ public class HomeController {
 				.getAuthentication();
 		model.addAttribute("userId", -1);
 		model.addAttribute("firstName", "Guest");
+		if(request.getParameter("dataset")!=null){
+			long id = Long.valueOf(request.getParameter("dataset"));
+			Weka weka = wekaMap.getWeka(id);
+			model.addAttribute("pos", weka.getOrigTrain().classAttribute().value(1));
+			model.addAttribute("neg", weka.getOrigTrain().classAttribute().value(0));
+			model.addAttribute("datasetName", dRepo.findById(id).getName());
+		}
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			userDetails = (UserDetails) auth.getPrincipal();
 			User user = userRepo.findByEmail(userDetails.getUsername());

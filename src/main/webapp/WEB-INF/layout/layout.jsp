@@ -63,6 +63,11 @@
 											property="principal.firstName" /></a></strong>
 							</p>
 						</li>
+						<li>
+							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+								<a href="./datasets">Datasets</a>
+							</p>
+						</li>
 <!-- 
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">

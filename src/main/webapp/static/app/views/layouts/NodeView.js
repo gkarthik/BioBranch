@@ -217,10 +217,10 @@ NodeView = Marionette.Layout.extend({
 			"borderColor": "#000"
 		};
 		if(this.model.get('options').get('kind')=="leaf_node"){
-			if(this.model.get('name')==Cure.negNodeName) {
+			if(this.model.get('name').toUpperCase()==Cure.negNodeName.toUpperCase()) {
 				styleObject.background = "rgba(255,0,0,0.2)";
 				styleObject.borderColor = "red";
-			} else if(this.model.get('name')==Cure.posNodeName) {
+			} else if(this.model.get('name').toUpperCase()==Cure.posNodeName.toUpperCase()) {
 				styleObject.background = "rgba(0,0,255,0.2)";
 				styleObject.borderColor = "blue";
 			}

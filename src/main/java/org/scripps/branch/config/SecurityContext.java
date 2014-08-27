@@ -52,7 +52,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.loginProcessingUrl("/login/authenticate")
 				.failureUrl("/login?error=bad_credentials")
-				.defaultSuccessUrl("/", true)
+				.defaultSuccessUrl("/datasets", true)
 				// Configures the logout function
 				.and()
 				.logout()
