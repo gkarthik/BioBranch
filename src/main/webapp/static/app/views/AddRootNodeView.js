@@ -22,6 +22,9 @@ define([
     ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, AttrRankLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
 AddRootNodeView = Marionette.ItemView.extend({
 	initialize : function() {
+		this.listenTo(Cure.dataset, 'change:validateGenes', this.render);
+		this.listenTo(Cure.dataset, 'change:validateNonGenes', this.render);
+		this.listenTo(Cure.ClinicalFeatureCollection, 'add', this.render);
 	},
 	ui : {
 		'input' : '.mygene_query_target',
@@ -355,6 +358,25 @@ AddRootNodeView = Marionette.ItemView.extend({
 		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 		
 		$(this.ui.cf_query).autocomplete({
+			create: function(){
+				$(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
+					var rankIndicator = $("<div>")
+					.css({"background": Cure.infogainScale(item.infogain)})
+					.attr("class", "rank-indicator");
+					
+					var a = $("<a>")
+							.attr("tabindex", "-1")
+							.attr("class", "ui-corner-all")
+							.html(item.label)
+							.append(rankIndicator);
+					
+					return $( "<li>" )
+					.attr("role", "presentation")
+					.attr("class", "ui-menu-item")
+					.append(a)
+					.appendTo( ul );
+				}
+			},
 			source : availableTags,
 			minLength: 0,
 			open: function(event){
@@ -460,17 +482,17 @@ AddRootNodeView = Marionette.ItemView.extend({
 					Cure.PlayerNodeCollection.sync();
 				}
 			},
-		}).bind('focus', function(){ $(this).autocomplete("search"); } )
-			.data("ui-autocomplete")._renderItem = function (ul, item) {
-		    return $("<li></li>")
-	        .data("item.autocomplete", item)
-	        .append("<a>" + item.label + "</a>")
-	        .appendTo(ul);
-	    };
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+//			.data("ui-autocomplete")._renderItem = function (ul, item) {
+//		    return $("<li></li>")
+//	        .data("item.autocomplete", item)
+//	        .append("<a>" + item.label + "</a>")
+//	        .appendTo(ul);
+//	    };
 	},
 	template : AddNodeTemplate,
 	url: base_url+"MetaServer",
-	onShow : function() {
+	onRender : function() {
 		if (this.model) {
 			var model = this.model;
 		}

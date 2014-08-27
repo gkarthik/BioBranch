@@ -66,7 +66,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var args = {
     	        command : "custom_feature_testcase",
     	        id: this.model.get('options').get('unique_id'),
-    	        dataset: Cure.dataset
+    	        dataset: Cure.dataset.get('id')
     	      };
     	      $.ajax({
     	          type : 'POST',
@@ -160,7 +160,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var args = {
 				command:"custom_set_get",
 				customset_id: this.model.get('options').get('unique_id').replace("custom_set_",""),
-    	        dataset: Cure.dataset
+    	        dataset: Cure.dataset.get('id')
     	      };
     	      $.ajax({
     	          type : 'POST',
@@ -191,7 +191,7 @@ JSONItemView = Marionette.ItemView.extend({
 		}
 		var args = {
 				command : "scoretree",
-				dataset : Cure.dataset,
+				dataset : Cure.dataset.get('id'),
 				treestruct : tree,
 				comment: Cure.Comment.get("content"),
 				player_id : Cure.Player.get('id'),
@@ -298,7 +298,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var args = {
 				command:"get_tree_by_id",
 				treeid: this.model.get('options').get('unique_id').replace("custom_tree_",""),
-    	        dataset: Cure.dataset
+    	        dataset: Cure.dataset.get('id')
     	      };
     	      $.ajax({
     	          type : 'POST',
@@ -350,7 +350,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var args = {
 				command:"custom_classifier_getById",
 				id: this.model.get('options').get('unique_id').replace("custom_classifier_",""),
-    	        dataset: Cure.dataset
+    	        dataset: Cure.dataset.get('id')
     	      };
 		if(this.model.get('options').get('unique_id').indexOf("new")==-1){
 			$.ajax({

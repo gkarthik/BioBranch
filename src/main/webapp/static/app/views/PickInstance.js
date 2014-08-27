@@ -381,6 +381,25 @@ PickInstanceView = Marionette.ItemView.extend({
 		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 		
 		$(this.ui.cf_query).autocomplete({
+			create: function(){
+				$(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
+					var rankIndicator = $("<div>")
+					.css({"background": Cure.infogainScale(item.infogain)})
+					.attr("class", "rank-indicator");
+					
+					var a = $("<a>")
+							.attr("tabindex", "-1")
+							.attr("class", "ui-corner-all")
+							.html(item.label)
+							.append(rankIndicator);
+					
+					return $( "<li>" )
+					.attr("role", "presentation")
+					.attr("class", "ui-menu-item")
+					.append(a)
+					.appendTo( ul );
+				}
+			},
 			source : availableTags,
 			minLength: 0,
 			open: function(event){
@@ -437,13 +456,7 @@ PickInstanceView = Marionette.ItemView.extend({
 						$(this).val(ui.item.label);
 					}
 			},
-		}).bind('focus', function(){ $(this).autocomplete("search"); } )
-			.data("ui-autocomplete")._renderItem = function (ul, item) {
-		    return $("<li></li>")
-	        .data("item.autocomplete", item)
-	        .append("<a>" + item.label + "</a>")
-	        .appendTo(ul);
-	    };
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	}
 });
 

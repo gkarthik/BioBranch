@@ -36,7 +36,7 @@ DatasetLayout = Marionette.Layout.extend({
 	   this.checkVal();
 	   var args = {
 				command : "get_dataset_training",
-				dataset: Cure.dataset
+				dataset: Cure.dataset.get('id')
 			};
 		//POST request to server.
 		$.ajax({

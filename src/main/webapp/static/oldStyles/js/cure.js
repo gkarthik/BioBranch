@@ -324,7 +324,7 @@ CURE.boardgame = {
     }
     //data will contain the array of cards used to build the board for this game
     $.getJSON("MetaServer", args, function(data) {
-      CURE.dataset = data.dataset;
+      Cure.dataset.get('id') = data.dataset;
 
       //-- Update thecure cards with the rooms cards
       game.cards = data.cards;
@@ -560,7 +560,7 @@ CURE.boardgame = {
 
 
     } else if ( game.p1_score > game.p2_score &&
-                CURE.dataset == 'mammal' &&
+                Cure.dataset.get('id') == 'mammal' &&
                 game.board_id == 204 ) {
       winnerEl.append("<h2>Congratulations! You finished your training!</h1>")
       winnerEl.append("<h3>You have gained access to the challenge area.</h3>")
@@ -660,7 +660,7 @@ CURE.boardgame = {
   setupInfoToggle : function() {
     var game = CURE.boardgame;
 
-    if( CURE.dataset == "mammal") {
+    if( Cure.dataset.get('id') == "mammal") {
       $("#tabs ul li.ontology").hide();
       $("#tabs ul li.rifs").hide();
       $("input#search").hide();
@@ -695,11 +695,11 @@ CURE.boardgame = {
   setupGameMetaInfo : function() {
     var game = CURE.boardgame,
         msg = "";
-    if( CURE.dataset == "mammal" ) {
+    if( Cure.dataset.get('id') == "mammal" ) {
       var fs = "features that distinguish";
       if ( game.max_hand == "1" ) { fs = "feature that distinguishes"; }
       msg = "Pick <strong>"+ game.max_hand +"</strong> "+ fs +" mammals from other creatures.  Think of things that separate mammals from fish, insects, amphibians, reptiles...";
-    } else if ( CURE.dataset == "dream_breast_cancer" ) {
+    } else if ( Cure.dataset.get('id') == "dream_breast_cancer" ) {
       msg = "Pick <b>"+ game.max_hand +"</b> genes that track breast cancer survival.  Look for genes that you think will have prognostic RNA expression or copy number variation.";
     }
     $("#modal").html("<p>"+ msg +"</p>").leanModal();
@@ -883,7 +883,7 @@ CURE.boardroom = {
 	var args = {
       command : "boardroom",
       user_id : CURE.user_id,
-      dataset : CURE.dataset,
+      dataset : Cure.dataset.get('id'),
       room : "1" //cure dataset room
     }
     var boardsCompleted = 0;

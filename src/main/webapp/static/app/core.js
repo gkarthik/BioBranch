@@ -16,6 +16,7 @@ define([
         'app/models/zoom', 
         'app/models/Player',
         'app/models/ConfusionMatrix',
+        'app/models/Dataset',
         // Views
         'app/views/JSONCollectionView',
         'app/views/NodeCollectionView',
@@ -30,7 +31,7 @@ define([
         'app/tour/tree'
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
-        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, Comment, Score, Zoom, Player, CfMatrix, JSONCollectionView,
+        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
         		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
@@ -44,6 +45,7 @@ define([
 	//Tour Init
 	Cure.initTour = InitTour;
 	Cure.treeTour = TreeTour;
+	
 	
 	//Color Scale
 	Cure.infogainScale = d3.scale.linear().domain([0, 0.1]).range(["#E5F5E0","#00441B"]);
@@ -75,7 +77,32 @@ define([
 		Cure.startTour = options.startTour;
 		
 		//Dataset
-		Cure.dataset = dataset;
+		Cure.dataset = new Dataset();
+		Cure.dataset.set('id', dataset);
+		Cure.validateFeature = {};
+		var args = {
+				command : "validate_features",
+				dataset : Cure.dataset.get('id')
+		};
+
+		//POST request to server.		
+		$.ajax({
+			type : 'POST',
+			url : base_url+'MetaServer',
+			data : JSON.stringify(args),
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			success : function(data){
+				Cure.dataset.set('validateGenes', data.genes);
+				Cure.dataset.set('validateNonGenes', data.non_genes);
+				Cure.dataset.set('name', datasetName);
+			},
+			error : function(){
+				Cure.utils
+				.showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);
+			}
+		});
+		
 
 		// Scales
 		Cure.accuracyScale = d3.scale.linear().domain([ 0, 100 ]).range(
@@ -239,6 +266,7 @@ define([
 		Cure.LoginRegion.show(Cure.LoginView);
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
 		Cure.instanceData = {};
+		
 		if(cure_tree_id!=undefined){
 			var args = {
 					command : "get_tree_by_id",

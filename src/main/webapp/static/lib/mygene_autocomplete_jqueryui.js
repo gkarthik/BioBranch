@@ -95,7 +95,7 @@ $.widget("my.genequery_autocomplete", $.ui.autocomplete, {
                             }
                             var args = {
                     				command : "rank_attributes",
-                    				dataset : Cure.dataset,
+                    				dataset : Cure.dataset.get('id'),
                     				treestruct : tree,
                     				comment: Cure.Comment.get("content"),
                     				testOptions: testOptions,
