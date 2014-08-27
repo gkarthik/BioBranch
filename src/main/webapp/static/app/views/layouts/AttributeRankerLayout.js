@@ -41,7 +41,7 @@ AttributeRanker = Marionette.Layout.extend({
     	
     	var args = {
 				command : "rank_attributes",
-				dataset : Cure.dataset,
+				dataset : Cure.dataset.get('id'),
 				treestruct : tree,
 				testOptions: testOptions
 			};

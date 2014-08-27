@@ -22,5 +22,10 @@ public interface FeatureRepository extends JpaRepository<Feature, Long> {
 
 	@Query("select F from Feature F, Attribute A where A.dataset=?1 and F.id = A.feature and LENGTH(F.unique_id) =32")
 	ArrayList<Feature> getNonGeneFeatures(Dataset d);
-
+	
+	@Query("select count(F) from Feature F, Attribute A where A.dataset=?1 and F.id = A.feature and LENGTH(F.unique_id) =32")
+	long getCountOfNonGeneFeature(Dataset d);
+	
+	@Query("select count(F) from Feature F, Attribute A where A.dataset=?1 and F.id = A.feature")
+	long getCountOfFeatures(Dataset d);
 }

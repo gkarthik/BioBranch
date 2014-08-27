@@ -154,7 +154,7 @@ AggNodeLayout = Marionette.Layout.extend({
         	        description: $(this.ui.descInput).val(),
         	        user_id: Cure.Player.get("id"),
         	        type: parseInt($(this.ui.classifierType).filter(":checked").val()),
-        	        dataset: Cure.dataset
+        	        dataset: Cure.dataset.get('id')
         	      };
         	console.log(args);
         	      $.ajax({
@@ -244,6 +244,25 @@ AggNodeLayout = Marionette.Layout.extend({
 		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 		
 		$(this.ui.cf_query).autocomplete({
+			create: function(){
+				$(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
+					var rankIndicator = $("<div>")
+					.css({"background": Cure.infogainScale(item.infogain)})
+					.attr("class", "rank-indicator");
+					
+					var a = $("<a>")
+							.attr("tabindex", "-1")
+							.attr("class", "ui-corner-all")
+							.html(item.label)
+							.append(rankIndicator);
+					
+					return $( "<li>" )
+					.attr("role", "presentation")
+					.attr("class", "ui-menu-item")
+					.append(a)
+					.appendTo( ul );
+				}
+			},
 			source : availableTags,
 			minLength: 0,
 			open: function(event){
@@ -303,13 +322,7 @@ AggNodeLayout = Marionette.Layout.extend({
 						$(this).val("");
 					}
 			},
-		}).bind('focus', function(){ $(this).autocomplete("search"); } )
-			.data("ui-autocomplete")._renderItem = function (ul, item) {
-		    return $("<li></li>")
-	        .data("item.autocomplete", item)
-	        .append("<a>" + item.label + "</a>")
-	        .appendTo(ul);
-	    };
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
     error : function(data) {
 		Cure.utils

@@ -64,8 +64,9 @@ PathwayLayout = Marionette.Layout.extend({
   					var args = {
   	  	        command : "get_genes_of_pathway",
   	  	        pathway_id:	ui.item.data.id,
-  	  	        dataset: Cure.dataset
+  	  	        dataset: Cure.dataset.get('id')
   	  	      };
+  			  Cure.utils.showLoading(null);
   	  	      $.ajax({
   	  	          type : 'POST',
   	  	          url : thisURL,
@@ -73,6 +74,7 @@ PathwayLayout = Marionette.Layout.extend({
   	  	          dataType : 'json',
   	  	          contentType : "application/json; charset=utf-8",
   	  	          success : function(data){
+  	  	        	Cure.utils.hideLoading();
   	  	        	thisView.GeneCollection.reset();
   	  	        	thisView.GeneCollection.add(data);
   	  	          }

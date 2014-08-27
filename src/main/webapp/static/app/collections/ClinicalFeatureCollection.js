@@ -12,8 +12,9 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 	fetch: function(){
 		var args = {
 				command : "get_clinical_features",
-				dataset : Cure.dataset
+				dataset : Cure.dataset.get('id')
 		};
+		Cure.utils.showLoading(null);
 		$.ajax({
 			type : 'POST',
 			url : this.url,
@@ -25,6 +26,7 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 		});
 	},
 	parseResponse : function(data) {
+		Cure.utils.hideLoading();
 		if(data.length > 0) {
 			this.add(data);
 		}

@@ -45,7 +45,7 @@ NodeCollection = Backbone.Collection.extend({
 		}
 		var args = {
 				command : "scoretree",
-				dataset : Cure.dataset,
+				dataset : Cure.dataset.get('id'),
 				treestruct : tree,
 				comment: Cure.Comment.get("content"),
 				player_id : Cure.Player.get('id'),
@@ -255,7 +255,7 @@ NodeCollection = Backbone.Collection.extend({
       console.log(Cure.Comment.get('flagPrivate'));
       var args = {
         command : "savetree",
-        dataset : Cure.dataset,
+        dataset : Cure.dataset.get('id'),
         treestruct : tree,
         player_id : Cure.Player.get('id'),
         comment : Cure.Comment.get("content"),
@@ -277,7 +277,7 @@ NodeCollection = Backbone.Collection.extend({
             	if(Cure.PlayerNodeCollection.length>0 && Cure.PlayerNodeCollection.tree_id != 0 && Cure.Comment.get('flagPrivate')==0 && false){
           			var args = {
           	        command : "get_rank",
-          	        dataset : Cure.dataset,
+          	        dataset : Cure.dataset.get('id'),
           	        tree_id: Cure.PlayerNodeCollection.tree_id
           	      };
           	      $.ajax({

@@ -182,7 +182,11 @@ public class MetaServerController {
 		} else if (command.equals("get_clinical_features")) {
 			Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 			List<Feature> fList = featureRepo.getNonGeneFeatures(d);
-			result_json = mapper.writeValueAsString(fList);
+			List<String> entrezIds = new ArrayList<String>();
+			for(Feature f: fList){
+				entrezIds.add(f.getUnique_id());
+			}
+			result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 		} else if (command.contains("custom_feature_")) {
 			if (command.equals("custom_feature_create")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
@@ -294,6 +298,19 @@ public class MetaServerController {
 				}
 				result_json = mapper.writeValueAsString(dList);
 			}
+		} else if (command.equals("validate_features")) {
+			Dataset d = dataRepo.findById(data.get("dataset").asLong());
+			HashMap mp = new HashMap();
+			mp.put("genes", true);
+			mp.put("non_genes", true);
+			long nonGeneCount = featureRepo.getCountOfNonGeneFeature(d);
+			long total_count = featureRepo.getCountOfFeatures(d);
+			if(nonGeneCount == 0){
+				mp.put("non_genes", false);
+			} else if(total_count==nonGeneCount){
+				mp.put("genes", false);
+			}
+			result_json = mapper.writeValueAsString(mp);
 		}
 		return result_json;
 	}

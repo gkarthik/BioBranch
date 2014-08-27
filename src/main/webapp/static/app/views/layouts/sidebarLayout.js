@@ -131,7 +131,7 @@ sidebarLayout = Marionette.Layout.extend({
       Cure.CfMatrixView = new CfMatrixView({
     	  model: Cure.CfMatrix
       });
-      Cure.DatasetLayout = new DatasetLayout();
+      Cure.datasetLayout = new DatasetLayout();
       this.ScoreRegion.show(Cure.ScoreView);
       this.ScoreBoardRegion.show(Cure.ScoreBoardView);
       this.CommentRegion.show(Cure.CommentView);
@@ -139,7 +139,7 @@ sidebarLayout = Marionette.Layout.extend({
       this.CollaboratorsRegion.show(Cure.CollaboratorCollectionView);
       this.ScoreKeyRegion.show(Cure.ScoreKeyView);
       this.BadgeRegion.show(Cure.BadgeCollectionView);
-      this.DatasetRegion.show(Cure.DatasetLayout);
+      this.DatasetRegion.show(Cure.datasetLayout);
       this.ConfusionMatrixRegion.show(Cure.CfMatrixView);
     },
     onShow: function(){
