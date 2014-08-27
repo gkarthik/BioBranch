@@ -62,7 +62,7 @@
 			<p>
 				<button class="btn btn-sm btn-default" id="taketour">Take
 					Tour</button>
-				<img align="right" src="/branch/static/img/helpimage.png"
+				<img align="right" src="./static/img/helpimage.png"
 					width="500" />
 			<dl class="dl-horizontal">
 				<dt>Add a Gene</dt>
@@ -72,7 +72,7 @@
 				<dt>Add a Clinical Feature</dt>
 				<dd>
 					You can choose a clinical feature by clicking on <img width="30"
-						src="/branch/static/img/doctor.png">. Click on the text box
+						src="./static/img/doctor.png">. Click on the text box
 					that appears to view a drop down of the available clinical
 					features.
 				</dd>
@@ -169,5 +169,5 @@
 					}
 						}
 				%>
-		<script type="text/javascript" data-main="/branch/static/config.js"
-			src="/branch/static/lib/require.js" charset="utf-8"></script>
+		<script type="text/javascript" data-main="./static/config.js"
+			src="./static/lib/require.js" charset="utf-8"></script>

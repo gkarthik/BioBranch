@@ -184,7 +184,7 @@ CureUtils.render_network = function() {
 		var nodeOffsets = CureUtils.setOffsets();
 
 		link.enter().append("path").attr("class", "link").style("stroke-width", "1").style("stroke",function(d){
-			if(d.name==Cure.negNodeName.toUpperCase()){
+			if(d.name.toUpperCase()==Cure.negNodeName.toUpperCase()){
 				return "red";
 			} else {
 				return "blue";
@@ -210,7 +210,7 @@ CureUtils.render_network = function() {
 			} 
 			return edgeWidth;
 		}).style("stroke",function(d){
-			if(d.name==Cure.negNodeName.toUpperCase()){
+			if(d.name.toUpperCase()==Cure.negNodeName.toUpperCase()){
 				return "red";
 			} else {
 				return "blue";
