@@ -45,7 +45,7 @@ UserTreeCollection = Backbone.Collection.extend({
 	initialize : function(){
 		_.bindAll(this,'parseResponse');
 	},
-	url: '/branch/MetaServer',
+	url: '../MetaServer',
 	fetch: function(){
 		var args = {
 				command : "get_trees_user_id",
@@ -53,7 +53,7 @@ UserTreeCollection = Backbone.Collection.extend({
 		};
 		$.ajax({
 			type : 'POST',
-			url : '/branch/MetaServer',
+			url : '../MetaServer',
 			data : JSON.stringify(args),
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
@@ -100,7 +100,7 @@ CommunityTreeCollection = Backbone.Collection.extend({
          : a < b ? -1
          :          0;
 	},   
-	url : '/branch/MetaServer',
+	url : '../MetaServer',
 	fetch: function(direction){
 		if(this.allowRequest){
 			var args = {
@@ -272,7 +272,7 @@ MainLayout = Marionette.Layout.extend({
   				};
   				$.ajax({
   					type : 'POST',
-  					url : '/branch/MetaServer',
+  					url : '../MetaServer',
   					data : JSON.stringify(args),
   					dataType : 'json',
   					contentType : "application/json; charset=utf-8",

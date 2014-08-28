@@ -45,10 +45,6 @@ define([
 	//Tour Init
 	Cure.initTour = InitTour;
 	Cure.treeTour = TreeTour;
-	
-	
-	//Color Scale
-	Cure.infogainScale = d3.scale.linear().domain([0, 0.1]).range(["#E5F5E0","#00441B"]);
 
 	Cure
 	.addInitializer(function(options) {
@@ -84,7 +80,8 @@ define([
 				command : "validate_features",
 				dataset : Cure.dataset.get('id')
 		};
-
+		
+		Cure.utils.showLoading(null);
 		//POST request to server.		
 		$.ajax({
 			type : 'POST',
@@ -93,9 +90,13 @@ define([
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
 			success : function(data){
+				Cure.utils.hideLoading(null);
 				Cure.dataset.set('validateGenes', data.genes);
 				Cure.dataset.set('validateNonGenes', data.non_genes);
 				Cure.dataset.set('name', datasetName);
+				Cure.dataset.set('infoGainMin',data.infoGainMin);
+				Cure.dataset.set('infoGainMax',data.infoGainMax);
+				Cure.infogainScale = d3.scale.linear().domain([data.infoGainMin, data.infoGainMax]).range(["#E5F5E0","#00441B"]);
 			},
 			error : function(){
 				Cure.utils
