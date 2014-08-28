@@ -310,6 +310,9 @@ public class MetaServerController {
 			} else if(total_count==nonGeneCount){
 				mp.put("genes", false);
 			}
+			List<Attribute> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
+			mp.put("infoGainMax", aList.get(0).getRelieff());
+			mp.put("infoGainMin", aList.get(aList.size()-1).getRelieff());
 			result_json = mapper.writeValueAsString(mp);
 		}
 		return result_json;
