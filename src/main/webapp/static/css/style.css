@@ -1248,6 +1248,7 @@ text-align:left;
 	height: 70px;
 	overflow: hidden;
 	resize: none;
+	box-shadow: 0px 0px 1px 0px inset;
 }
 
 .focus-option{
