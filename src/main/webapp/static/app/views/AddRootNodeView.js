@@ -9,7 +9,7 @@ define([
 	'app/views/layouts/PathwaySearchLayout',
 	'app/views/layouts/AggregateNodeLayout',
 	'app/views/layouts/AttributeRankerLayout',
-	'app/views/FeatureBuilderView',
+	'app/views/CustomFeatureBuilder',
 	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
@@ -49,8 +49,9 @@ AddRootNodeView = Marionette.ItemView.extend({
 	},
 	openFeatureBuilder: function(){
 		Cure.FeatureBuilderRegion.close();
-		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
-		Cure.FeatureBuilderRegion.show(Cure.FeatureBuilderView);
+		Cure.FeatureBuilderRegion.show(new FeatureBuilder());
+//		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
+//		Cure.FeatureBuilderRegion.show(Cure.FeatureBuilderView);
 	},
 	openAggNode: function(){
 		Cure.sidebarLayout.AggNodeRegion.close();
