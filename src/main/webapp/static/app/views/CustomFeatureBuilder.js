@@ -21,13 +21,14 @@ FeatureBuilderView = Marionette.Layout.extend({
 		customfeature_query: '.customfeature_query',
 		cf_query: '.cf_query',
 		equation: '#feature-builder-equation',
-		testWidth: '#test-span-width'
+		testWidth: '#test-span-width',
+		equationWrapper: '#feature-builder-equation-wrapper'
 	},
 	events: {
 		'click .choose-gene': 'openGene',
 		'click .choose-cf': 'openCf',
 		'click .choose-customfeature': 'openCustomFeature',
-		'keypress #feature-builder-equation': 'highlightFeatures'
+		'keyup #feature-builder-equation': 'highlightFeatures'
 	},
 	regions: {
 		geneCollRegion: '.gene-coll-region'
@@ -37,19 +38,71 @@ FeatureBuilderView = Marionette.Layout.extend({
 		this.geneColl = new GeneCollection();
 	},
 	highlightFeatures: function(){
-		var split = $(this.ui.equation).val().match(/([A-Za-z0-9])+/g);
-		var terms;
-		for(var temp in split){
-			if(this.geneColl.findWhere({"short_name":split[temp].toUpperCase()})){
-				console.log(split[temp].toLowerCase());
-				$(this.ui.testWidth).html(split[temp].toUpperCase());
-				terms = $(this.ui.equation).val().match(split[temp]);
-				for(var term in terms){
-					
+		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
+		var termstring = $(this.ui.equation).val();
+		var index = 0;
+		var mp = {};
+		var buffer = 0;
+		var el;
+		var indices;
+		var splits;
+		$(".feature-tag").remove();
+		for(var i =0;i<split.length;i++){
+			split[i] = split[i].trim();
+		}
+		for(var i=0;i<split.length;i++){
+			for(var j =0; j< split.length;j++){
+				if(i!=j && split[i] == split[j]){
+					split.splice(i,1);
+					i--;
+					j--;
 				}
-				$(this.ui.testWidth).width();
 			}
 		}
+		for(var temp in split){
+			if(this.geneColl.findWhere({"short_name":split[temp].toUpperCase()})){
+				indices = [];
+				termstring = $(this.ui.equation).val();
+				console.log(split[temp].toLowerCase());
+				indices = this.getAllIndices(split[temp], termstring);
+				console.log(indices);
+				for(var i in indices){
+					if(termstring.substring(indices[i], indices[i] + split[temp].length).indexOf(" ")==-1){
+						splits = termstring.substring(indices[i], indices[i] + split[temp].length);
+						mp = this.getWidthInSpan(termstring.substring(0, indices[i]));
+						console.log(mp);
+						el = $("<span>").html(splits).attr("class","feature-tag").css({'margin-left':mp.w+"px",'margin-top':mp.h+"px"});
+						$(this.ui.equationWrapper).prepend(el);
+					} else {
+						buffer = 0;
+						splits = termstring.substring(indices[i], indices[i] + split[temp].length).split(" ");
+						for(var t in splits){
+							mp = this.getWidthInSpan(termstring.substring(0, buffer + indices[i]));
+							el = $("<span>").html(splits[t]).attr("class","feature-tag").css({'margin-left':mp.w+"px",'margin-top':mp.h+"px"});
+							$(this.ui.equationWrapper).prepend(el);
+							buffer+=splits[t].length+1;
+						}
+					}
+				}
+			}
+		}
+	},
+	getAllIndices: function(searchStr, str) {
+	    var startIndex = 0, searchStrLen = searchStr.length;
+	    var index, indices = [];
+	    str = str.toLowerCase();
+	    searchStr = searchStr.toLowerCase();
+	    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+	        indices.push(index);
+	        startIndex = index + searchStrLen;
+	    }
+	    return indices;
+	},
+	getWidthInSpan: function(tString){
+		$(this.ui.testWidth).html(tString);
+		wSpan = $(this.ui.testWidth).outerWidth() % $(this.ui.equation).width();
+		hSpan = $(".feature-tag").height() * parseInt($(this.ui.testWidth).outerWidth()/$(this.ui.equation).width());
+		return {w: wSpan, h:hSpan};
 	},
 	openGene: function(){
 		$(".category-wrapper").hide();

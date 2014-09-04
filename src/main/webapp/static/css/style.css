@@ -1230,6 +1230,32 @@ text-align:left;
 	padding:2%;
 }
 
+#test-span-width{
+	position: absolute;
+	visibility: hidden;
+	padding:0px;
+	margin: 0px;
+	font-size: 14px;
+	font-family: inherit;
+}
+
+#feature-builder-equation{
+	width: 100%;
+padding: 0px;
+background: none repeat scroll 0% 0% transparent;
+border: 1px solid #DDD;
+border-radius: 10px;
+position: relative;
+z-index: 1;
+}
+
+.feature-tag{
+position: absolute;
+background: none repeat scroll 0% 0% #79BBF5;
+color: #79BBF5;
+z-index: 1;
+}
+
 /*
 #FeatureBuilderRegion{
 	top: 300px;
