@@ -71,9 +71,7 @@ public class FeatureJobConfig {
 				setLineTokenizer(new DelimitedLineTokenizer(
 						DelimitedLineTokenizer.DELIMITER_TAB) {
 					{
-						setNames(new String[] { "", "uniqueid", "short_name",
-								"", "", "", "", "", "description", "", "",
-								"long_name", "", "", "" });
+						setNames(new String[] { "unique_id", "short_name", "description","long_name"});
 					}
 				});
 				setFieldSetMapper(new BeanWrapperFieldSetMapper<Feature>() {
