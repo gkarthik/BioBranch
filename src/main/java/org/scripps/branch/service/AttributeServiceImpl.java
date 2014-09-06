@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +37,22 @@ public class AttributeServiceImpl implements AttributeService {
 	ApplicationContext ctx;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceImpl.class);
+	
+	public String hashAttrName(String name) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		md.update(name.getBytes());
+		byte[] digest = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (byte b : digest) {
+			sb.append(String.format("%02x", b & 0xff));
+		}
+		return sb.toString();
+	}
 
 	@Override
 	public void generateAttributesFromDataset(Instances data, Dataset dataset,
@@ -50,6 +68,10 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
+			if(mp.get(data.attribute(i).name()).contains("metabric")){
+				f.setUnique_id(hashAttrName(System.currentTimeMillis()+mp.get(data.attribute(i).name())));
+				f = featureRepo.saveAndFlush(f);
+			}
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name())+" - "+ i);
 			attr.setFeature(f);
 			attrList.add(attr);
@@ -62,7 +84,7 @@ public class AttributeServiceImpl implements AttributeService {
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
 		BufferedReader fileReader = null;
-		final String DELIMITER = ",";
+		final String DELIMITER = "\t";
 		try {
 			String line = "";
 			Resource input = ctx.getResource("file:"+inputPath);
@@ -73,7 +95,7 @@ public class AttributeServiceImpl implements AttributeService {
 					if(tokens[1].contains("///")){
 						tokens[1] = tokens[1].split("///")[0];
 					}
-					mp.put(tokens[0], tokens[1]);
+					mp.put(tokens[0], tokens[2]);
 				}
 			}
 		} catch (Exception e) {
