@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -40,10 +42,28 @@ public class CustomFeature {
 
 	@Column
 	private String expression;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentCustomFeature")
+	private List<Component> components;
+	
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "cfeature")
+	private List<Component> parentComponent;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "custom_feature_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
-	private List<Feature> feature;
+	public List<Component> getComponents() {
+		return components;
+	}
+
+	public void setComponents(List<Component> components) {
+		this.components = components;
+	}
+
+	public List<Component> getParentComponent() {
+		return parentComponent;
+	}
+
+	public void setParentComponent(List<Component> parentComponent) {
+		this.parentComponent = parentComponent;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -74,10 +94,6 @@ public class CustomFeature {
 
 	public String getExpression() {
 		return expression;
-	}
-
-	public List<Feature> getFeatures() {
-		return feature;
 	}
 
 	public long getId() {
@@ -113,10 +129,6 @@ public class CustomFeature {
 
 	public void setExpression(String expression) {
 		this.expression = expression;
-	}
-
-	public void setFeatures(List<Feature> fList) {
-		this.feature = fList;
 	}
 
 	public void setId(int id) {

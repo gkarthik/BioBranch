@@ -56,9 +56,6 @@ public class Feature {
 	private List<Tree> trees;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
-	private List<CustomFeature> custom_feature;
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomClassifier> custom_classifier;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
@@ -132,10 +129,6 @@ public class Feature {
 		return custom_classifier;
 	}
 
-	public List<CustomFeature> getCustom_feature() {
-		return custom_feature;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -194,10 +187,6 @@ public class Feature {
 
 	public void setCustom_classifier(List<CustomClassifier> custom_classifier) {
 		this.custom_classifier = custom_classifier;
-	}
-
-	public void setCustom_feature(List<CustomFeature> custom_feature) {
-		this.custom_feature = custom_feature;
 	}
 
 	public void setDescription(String description) {

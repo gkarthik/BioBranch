@@ -10,6 +10,7 @@ import java.util.Random;
 import org.joda.time.DateTime;
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Component;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.CustomSet;
@@ -189,11 +190,24 @@ public class MetaServerController {
 			result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 		} else if (command.contains("custom_feature_")) {
 			if (command.equals("custom_feature_create")) {
+				List<Component> cList = new ArrayList<Component>();
+				Component c;
+				for (JsonNode el : data.path("components")) {
+					c = new Component();
+					if(el.get("id").asText().contains("custom_feature")){
+						c.setCfeature(cfeatureRepo.findById(Long.valueOf(el.get("id").asText().replace("custom_feature",""))));
+					} else {
+						c.setFeature(featureRepo.findByUniqueId(el.get("id").asText()));
+					}
+					c.setUpperLimit(el.get("uLimit").asLong());
+					c.setLowerLimit(el.get("lLimit").asLong());
+					cList.add(c);
+				}
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 				HashMap mp = cfeatureService.findOrCreateCustomFeature(data
 						.get("name").asText(), data.get("expression").asText(),
 						data.get("description").asText(), data.get("user_id")
-								.asLong(), d, weka
+								.asLong(), d, cList, weka
 								.getWeka(d.getId()));
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_feature_search")) {
@@ -202,9 +216,9 @@ public class MetaServerController {
 				result_json = mapper.writeValueAsString(cfList);
 			} else if (command.equals("custom_feature_testcase")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
-				HashMap mp = cfeatureService.getTestCase(data.get("id")
-						.asText(), weka.getWeka(d.getId()));
-				result_json = mapper.writeValueAsString(mp);			
+//				HashMap mp = cfeatureService.getTestCase(data.get("id")
+//						.asText(), weka.getWeka(d.getId()));
+//				result_json = mapper.writeValueAsString(mp);			
 			}
 		} else if (command.contains("custom_classifier_")) {
 			if (command.equals("custom_classifier_create")) {

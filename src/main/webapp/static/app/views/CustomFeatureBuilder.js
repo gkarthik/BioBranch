@@ -267,7 +267,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
 	onRender: function(){
-		this.geneCollRegion.show(new GeneCollView({collection: this.geneColl}));
+		this.geneCollRegion.show(new GeneCollView({collection: this.geneColl, options: {showLimits:true}}));
 	},
 	onShow: function(){
 		this.showCustomFeatures();
