@@ -1,7 +1,22 @@
 <% if(short_name == "Short Name"){ %>
 <th><%= short_name %></th>
+<% if(showLimits){ %>
+<th>Limits</th>
+<% } %>
 <th>Delete Gene</th>
 <% } else { %>
 <td><%= short_name %></td>
+<% if(showLimits){ %>
+	<td>
+		<div class="input-group input-group-sm">
+		  <span class="input-group-addon">Upper</span>
+		  <input type="text" class="form-control upperLimit" placeholder="None">
+		</div>
+		<div class="input-group input-group-sm">
+		  <span class="input-group-addon">Lower</span>
+		  <input type="text" class="form-control lowerLimit" placeholder="None">
+		</div>
+	</td>
+<% } %>
 <td class="delete"><button class="btn btn-link">Delete</button></td>
 <% } %>

@@ -94,7 +94,7 @@ public class DatasetMap implements ApplicationContextAware {
 			Resource test_file = ctx.getResource("file:"+uploadPath+test);
 			try {
 				wekaObj.buildWeka(train_file.getInputStream(), test_file.getInputStream(), "test_set");
-				cfService.addInstanceValues(wekaObj, d); 
+				//cfService.addInstanceValues(wekaObj, d); 
 				wekaObj.generateLimits();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

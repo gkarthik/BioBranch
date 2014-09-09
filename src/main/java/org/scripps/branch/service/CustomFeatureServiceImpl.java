@@ -8,12 +8,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Component;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.ComponentRepository;
 import org.scripps.branch.repository.CustomFeatureCustomRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
@@ -48,20 +50,21 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired 
+	ComponentRepository compRepo;
 
 	@Override
 	public void addInstanceValues(Weka weka, Dataset d) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
 		for (CustomFeature cf : cfList) {
-			if(cfeatureRepo.getAttrDatasets(cf, d).size()>=cf.getFeatures().size()){
-				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getTrain());
-			}
+				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getTrain(), cf.getComponents(), d);
 		}
 	}
 
 	@Override
 	public int evalAndAddNewFeatureValues(String name, String exp,
-			Instances data) {
+			Instances data, List<Component> cList, Dataset d) {
 		int attIndex = -1;
 		AddExpression newFeature = new AddExpression();
 		newFeature.setExpression(exp);// Attribute is supplied with index
@@ -76,10 +79,37 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Instance tempInst;
+		List<Attribute> aList;
+		String attr_name = null;
+		Long limit;
 		for (int i = 0; i < data.numInstances(); i++) {// Index here starts from
 														// 0.
 			try {
-				newFeature.input(data.instance(i));
+				tempInst = new Instance(data.instance(i));
+				for(Component c : cList){
+					if(c.getFeature()!=null){
+						aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
+						for(Attribute a: aList){
+							attr_name = a.getName();
+						}
+					}
+					limit = c.getUpperLimit();
+					if(limit != null){
+						if(tempInst.value(data.attribute(attr_name))>c.getUpperLimit()){
+							tempInst.setValue(data.attribute(attr_name), limit);
+						}
+					}
+					limit = c.getLowerLimit();
+					if(limit != null){
+						if(tempInst.value(data.attribute(attr_name))<c.getLowerLimit()){
+							tempInst.setValue(data.attribute(attr_name), limit);
+						}
+					}
+							
+						
+				}
+				newFeature.input(tempInst);
 				int numAttr = newFeature.outputPeek().numAttributes();
 				Instance out = newFeature.output();
 				data.instance(i).setValue(data.attribute(attIndex),
@@ -94,7 +124,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Override
 	public HashMap findOrCreateCustomFeature(String feature_name, String exp,
-			String description, long user_id, Dataset dataset, Weka weka) {
+			String description, long user_id, Dataset dataset, List<Component> cList, Weka weka) {
 		HashMap mp = new HashMap();
 		Boolean success = true;
 		String message = "";
@@ -128,7 +158,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		try {
 			_attrExp.convertInfixToPostfix(exp);
 		} catch (Exception e) {
-			message = "Expression could not be converted to postfix.";
+			message = "Expression not valid.";
 			success = false;
 			e.printStackTrace();
 		}
@@ -147,15 +177,17 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			cf.setExpression(exp);
 			cf.setDescription(description);
 			cf.setUser(newuser);
-			cf.setFeatures(allFeatures);
+			compRepo.save(cList);
+			compRepo.flush();
+			cf.setComponents(cList);
 			cf = cfeatureRepo.saveAndFlush(cf);
 		} else {
-			message = "Feauture with this expression already exists";
+			message = "Feature with this expression already exists";
 			exists = true;
 		}
 		int cFeatureId = (int) cf.getId();
 		int attIndex = evalAndAddNewFeatureValues("custom_feature_"
-				+ cFeatureId, exp, weka.getTrain());
+				+ cFeatureId, exp, weka.getTrain(), cList, dataset);
 		if (attIndex == -1) {
 			message = "Adding feature to dataset failed.";
 			success = false;
@@ -170,33 +202,33 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		return mp;
 	}
 
-	@Override
-	@Transactional
-	public HashMap getTestCase(String id, Weka weka) {
-		HashMap mp = new HashMap();
-		id = id.replace("custom_feature_", "");
-		CustomFeature cf = cfeatureRepo.findById(Long.valueOf(id));
-		Instances data = weka.getTrain();
-		String att_name = "";
-		int attIndex = 0;
-		Random rand = new Random();
-		int instanceIndex = rand.nextInt(data.numInstances());
-		HashMap feature_values = new HashMap();
-		List<Feature> fList = cf.getFeatures();
-		for (Feature _feature : fList) {
-			List<Attribute> attrs = _feature.getAttributes();
-			att_name = "";
-			for (Attribute attr : attrs) {
-				att_name = attr.getName();
-			}
-			attIndex = data.attribute(att_name).index();
-			feature_values.put(_feature.getShort_name(),
-					data.instance(instanceIndex).value(attIndex));
-		}
-		mp.put("features", feature_values);
-		attIndex = data.attribute("custom_feature_" + id).index();
-		mp.put("custom_feature", data.instance(instanceIndex).value(attIndex));
-		mp.put("sample", instanceIndex);
-		return mp;
-	}
+//	@Override
+//	@Transactional
+//	public HashMap getTestCase(String id, Weka weka) {
+//		HashMap mp = new HashMap();
+//		id = id.replace("custom_feature_", "");
+//		CustomFeature cf = cfeatureRepo.findById(Long.valueOf(id));
+//		Instances data = weka.getTrain();
+//		String att_name = "";
+//		int attIndex = 0;
+//		Random rand = new Random();
+//		int instanceIndex = rand.nextInt(data.numInstances());
+//		HashMap feature_values = new HashMap();
+//		List<Feature> fList = cf.getComponents();
+//		for (Feature _feature : fList) {
+//			List<Attribute> attrs = _feature.getAttributes();
+//			att_name = "";
+//			for (Attribute attr : attrs) {
+//				att_name = attr.getName();
+//			}
+//			attIndex = data.attribute(att_name).index();
+//			feature_values.put(_feature.getShort_name(),
+//					data.instance(instanceIndex).value(attIndex));
+//		}
+//		mp.put("features", feature_values);
+//		attIndex = data.attribute("custom_feature_" + id).index();
+//		mp.put("custom_feature", data.instance(instanceIndex).value(attIndex));
+//		mp.put("sample", instanceIndex);
+//		return mp;
+//	}
 }

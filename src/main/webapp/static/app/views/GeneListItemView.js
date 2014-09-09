@@ -12,11 +12,25 @@ GeneItemView = Marionette.ItemView.extend({
 	events: {
 		'click .delete': 'deleteThisItem',
 	},
+	showLimit: false,
+	initialize: function(args){
+		console.log(args);
+		if(args.showLimits){
+			this.showLimits = args.showLimits;
+		}
+	},
 	ui: {
 		'keepAll': '.keepAll',
 		'keepInCollection': '.keepInCollection'
 	},
-	template: GeneItemTmpl,
+	template: function(serialized_model){
+		return GeneItemTmpl(serialized_model);
+	},
+	templateHelpers: function(){
+		return {
+		   	showLimits: this.showLimits
+		}
+	},
 	deleteThisItem: function(){
 		this.model.destroy();
 	}
