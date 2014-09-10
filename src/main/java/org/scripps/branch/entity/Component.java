@@ -25,7 +25,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "custom_feature")
+@Table(name = "component")
 public class Component {
 
 	@Basic(optional = false)
@@ -34,23 +34,31 @@ public class Component {
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
 
-	@OneToOne
+	@ManyToOne
 	@JoinTable(name = "component_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
 	private Feature feature;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinTable(name = "component_custom_feature", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
 	private CustomFeature cfeature;
 	
+	public CustomFeature getParentCustomFeature() {
+		return parentCustomFeature;
+	}
+
+	public void setParentCustomFeature(CustomFeature parentCustomFeature) {
+		this.parentCustomFeature = parentCustomFeature;
+	}
+
 	@ManyToOne
 	@JoinTable(name = "custom_feature_component", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
 	private CustomFeature parentCustomFeature;
 	
 	@Column
-	private long upperLimit;
+	private Long upperLimit;
 	
 	@Column
-	private long lowerLimit;
+	private Long lowerLimit;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,19 +87,19 @@ public class Component {
 		this.cfeature = cfeature;
 	}
 
-	public long getUpperLimit() {
+	public Long getUpperLimit() {
 		return upperLimit;
 	}
 
-	public void setUpperLimit(long upperLimit) {
+	public void setUpperLimit(Long upperLimit) {
 		this.upperLimit = upperLimit;
 	}
 
-	public long getLowerLimit() {
+	public Long getLowerLimit() {
 		return lowerLimit;
 	}
 
-	public void setLowerLimit(long lowerLimit) {
+	public void setLowerLimit(Long lowerLimit) {
 		this.lowerLimit = lowerLimit;
 	}
 

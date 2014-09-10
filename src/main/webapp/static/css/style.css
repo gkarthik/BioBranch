@@ -273,6 +273,7 @@ display: block;
 	border:2px solid #000;
 	text-align:center;
 }
+
 .distribution-chart-wrapper{
 	position:absolute;
 	top:-90px;
@@ -281,6 +282,18 @@ display: block;
 	z-index: 10;
 	border: 1px solid #000;
 	padding: 5px;
+}
+
+#cfeature-class-distribution-wrapper .distribution-chart-wrapper{
+	top: auto;
+	left: auto;
+	margin:10px;
+}
+
+.distribution-chart-wrapper .close-view{
+	float: left;
+    cursor: pointer;
+    color: #808080;
 }
 
 .distribution-chart{

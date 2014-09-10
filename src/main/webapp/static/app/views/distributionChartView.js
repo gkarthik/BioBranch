@@ -23,7 +23,11 @@ DistChartView = Marionette.ItemView.extend({
 	},
 	events: {
 		'change #range-input': 'changeRangeValue',
-		'click #range-input': 'selectAllText'
+		'click #range-input': 'selectAllText',
+		'click .close-view': 'closeView'
+	},
+	closeView: function(){
+		this.remove();
 	},
 	onResize: function(){
 			this.drawChart();
@@ -86,8 +90,12 @@ DistChartView = Marionette.ItemView.extend({
 			var plotValues = [];
 			var frequencies = [];
 			var isNominal = this.model.get("isNominal");
-			var splitPoint = this.model.get('splitNode').get('options').get('split_point');
-			var origSplitPoint = this.model.get('splitNode').get('options').get('orig_split_point');
+			var splitPoint = null;
+			var origSplitPoint = null;
+			if(this.model.get('splitNode')){
+				splitPoint = this.model.get('splitNode').get('options').get('split_point');
+				origSplitPoint = this.model.get('splitNode').get('options').get('orig_split_point');
+			}
 			var lowerLimit = data[0].value;
 			var upperLimit = data[data.length-1].value;
 			var lowerFlag = true, upperFlag = true;
@@ -189,11 +197,14 @@ DistChartView = Marionette.ItemView.extend({
 			var yAxis = d3.svg.axis().scale(frequencyScale).orient("left");
 			SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+marginX+","+(yLength+marginY)+")").call(xAxis)
 				.append("svg:text").attr("transform","translate(0,30)").text(function(){
-					if(thisModel.get('splitNode').get("options").get("unique_id").indexOf("metabric")==-1){
-						return "Gene Expression Values";
-					} else {
-						return thisModel.get('splitNode').get("name");
+					if(thisModel.get('splitNode')){
+						if(thisModel.get('splitNode').get("options").get("unique_id").indexOf("metabric")==-1){
+							return "Gene Expression Values";
+						} else {
+							return thisModel.get('splitNode').get("name");
+						}
 					}
+					return "Gene Expression Values";
 				}).style("fill","#808080");
 			SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+marginX+","+marginY+")").call(yAxis)
 				 .append("svg:text").text("Number of Instances").attr("transform","translate(-30,"+yLength+")rotate(-90)").style("fill","#808080");
@@ -269,7 +280,7 @@ DistChartView = Marionette.ItemView.extend({
 	    	return frequencyScale(frequencies[frequencies.length-1] - d);
 			});
 			
-			if(!isNominal){
+			if(!isNominal && this.model.get('splitNode')){
 				xLength = xLength - ((xLength)/(plotValues.length));
 				var splitScale = d3.scale.linear().domain([plotValues[0].value, plotValues[plotValues.length-1].value]).range([0,xLength]);
 				var reverseSplitScale = d3.scale.linear().domain([0,xLength]).range([plotValues[0].value, plotValues[plotValues.length-1].value]);

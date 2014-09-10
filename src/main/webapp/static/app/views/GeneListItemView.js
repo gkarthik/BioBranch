@@ -11,6 +11,14 @@ GeneItemView = Marionette.ItemView.extend({
 	tagName: 'tr',
 	events: {
 		'click .delete': 'deleteThisItem',
+		'change .upperLimit': 'setUpperLimit',
+		'change .lowerLimit': 'setLowerLimit'
+	},
+	setLowerLimit: function(){
+		this.model.set('lLimit', $(this.ui.lLimit).val());
+	},
+	setUpperLimit: function(){
+		this.model.set('uLimit', $(this.ui.uLimit).val());
 	},
 	showLimit: false,
 	initialize: function(args){
@@ -21,7 +29,9 @@ GeneItemView = Marionette.ItemView.extend({
 	},
 	ui: {
 		'keepAll': '.keepAll',
-		'keepInCollection': '.keepInCollection'
+		'keepInCollection': '.keepInCollection',
+		'uLimit': '.upperLimit',
+		'lLimit': '.lowerLimit'
 	},
 	template: function(serialized_model){
 		return GeneItemTmpl(serialized_model);

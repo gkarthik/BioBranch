@@ -189,26 +189,48 @@ public class MetaServerController {
 			}
 			result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
 		} else if (command.contains("custom_feature_")) {
-			if (command.equals("custom_feature_create")) {
+			if (command.equals("custom_feature_create") || command.equals("custom_feature_preview")) {
 				List<Component> cList = new ArrayList<Component>();
-				Component c;
+				Component c;Boolean toAdd = false;
 				for (JsonNode el : data.path("components")) {
+					toAdd = false;
 					c = new Component();
 					if(el.get("id").asText().contains("custom_feature")){
 						c.setCfeature(cfeatureRepo.findById(Long.valueOf(el.get("id").asText().replace("custom_feature",""))));
 					} else {
 						c.setFeature(featureRepo.findByUniqueId(el.get("id").asText()));
 					}
-					c.setUpperLimit(el.get("uLimit").asLong());
-					c.setLowerLimit(el.get("lLimit").asLong());
-					cList.add(c);
+					c.setUpperLimit(null);
+					c.setLowerLimit(null);
+					if(!el.get("uLimit").isNull()){
+						LOGGER.debug("NOT NULL");
+						c.setUpperLimit(el.get("uLimit").asLong());
+						toAdd = true;
+					}
+					if(!el.get("uLimit").isNull()){
+						c.setLowerLimit(el.get("lLimit").asLong());
+						toAdd = true;
+					}
+					if(toAdd && command.equals("custom_feature_preview")){
+						cList.add(c);
+					} else if(command.equals("custom_feature_create")) {
+						cList.add(c);
+					}
 				}
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
-				HashMap mp = cfeatureService.findOrCreateCustomFeature(data
-						.get("name").asText(), data.get("expression").asText(),
-						data.get("description").asText(), data.get("user_id")
-								.asLong(), d, cList, weka
-								.getWeka(d.getId()));
+				HashMap mp = new HashMap();
+				if(command.equals("custom_feature_create")){
+					mp = cfeatureService.findOrCreateCustomFeature(data
+							.get("name").asText(), data.get("expression").asText(),
+							data.get("description").asText(), data.get("user_id")
+									.asLong(), d, cList, weka
+									.getWeka(d.getId()));
+				} else if(command.equals("custom_feature_preview")) {
+					ArrayList l = cfeatureService.previewCustomFeature(data.get("name").asText(), data.get("expression").asText(),
+							 cList, weka.getWeka(d.getId()).getOrigTrain(), d);
+					mp.put("isNominal", false);
+					mp.put("dataArray", l);
+				}
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_feature_search")) {
 				List<CustomFeature> cfList = cfeatureRepo
@@ -219,7 +241,7 @@ public class MetaServerController {
 //				HashMap mp = cfeatureService.getTestCase(data.get("id")
 //						.asText(), weka.getWeka(d.getId()));
 //				result_json = mapper.writeValueAsString(mp);			
-			}
+			} 
 		} else if (command.contains("custom_classifier_")) {
 			if (command.equals("custom_classifier_create")) {
 				List entrezIds = new ArrayList();
@@ -279,7 +301,7 @@ public class MetaServerController {
 				List<String> entrezIds = new ArrayList<String>();
 				for(Feature f: fList){
 					for(Attribute a: f.getAttributes()){
-						if(a.getDataset().equals(d)){
+						if(a.getDataset().getId() == d.getId()){
 							exists = true;
 							entrezIds.add(f.getUnique_id());
 						}

@@ -24,6 +24,7 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -107,14 +108,21 @@ public class ApplicationContextConfig {
 // 
 //    }
 	
+//	private DatabasePopulator createDatabasePopulator(ApplicationContext ctx) {
+//		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+//		databasePopulator.setContinueOnError(true);
+//		databasePopulator.addScript(new ClassPathResource("/WEB-INF/data/schema-postgresql.sql"));
+//		return databasePopulator;
+//	}
+	
 	@Bean
-	public DataSource dataSource() {
+	public DataSource dataSource(ApplicationContext ctx) {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("db.driver"));
 		dataSource.setUrl(env.getProperty("db.url"));
 		dataSource.setUsername(env.getProperty("db.username"));
 		dataSource.setPassword(env.getProperty("db.password"));
-//		DatabasePopulatorUtils.execute(createDatabasePopulator(), dataSource);
+//		DatabasePopulatorUtils.execute(createDatabasePopulator(ctx), dataSource);
 		return dataSource;
 	}
 
@@ -140,13 +148,6 @@ public class ApplicationContextConfig {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(emf);
 		return transactionManager;
-	}
-	
-	private DatabasePopulator createDatabasePopulator(ApplicationContext ctx) {
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setContinueOnError(true);
-		databasePopulator.addScript(new ClassPathResource("/WEB-INF/data/schema-postgresql.sql"));
-		return databasePopulator;
 	}
 	
 	@Bean(name = "globalWeka")
