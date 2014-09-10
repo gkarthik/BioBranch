@@ -21,7 +21,4 @@ public interface CustomFeatureRepository extends
 
 	@Query("select cf from CustomFeature cf where cf.name like concat('%',concat(?1,'%')) or cf.description like concat('%',concat(?1,'%'))")
 	List<CustomFeature> searchCustomFeatures(String searchText);
-	
-	@Query("select f from CustomFeature cf inner join cf.feature f inner join f.attributes a where cf=?1 and a.dataset=?2 group by f")
-	List<Feature> getAttrDatasets(CustomFeature cf, Dataset d);
 }

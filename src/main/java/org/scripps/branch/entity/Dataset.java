@@ -26,6 +26,9 @@ public class Dataset {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
 	private List<Attribute> attributes;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+	private List<CustomFeature> customfeature;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "collection_id", insertable = true, updatable = true)

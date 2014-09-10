@@ -7,13 +7,15 @@ define([
 	//View
 	'app/views/GeneListCollectionView',
 	'app/collections/GeneCollection',
+	'app/views/distributionChartView',
+	'app/models/DistributionData',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'
-    ], function($, Marionette, FeatureBuilderTmpl, GeneCollView, GeneCollection, geneinfosummary, cfsummary) {
+    ], function($, Marionette, FeatureBuilderTmpl, GeneCollView, GeneCollection, DistributionChartView, DistributionData, geneinfosummary, cfsummary) {
 FeatureBuilderView = Marionette.Layout.extend({
 	className: 'panel panel-default',
 	ui: {
@@ -22,20 +24,110 @@ FeatureBuilderView = Marionette.Layout.extend({
 		cf_query: '.cf_query',
 		equation: '#feature-builder-equation',
 		testWidth: '#test-span-width',
-		equationWrapper: '#feature-builder-equation-wrapper'
+		equationWrapper: '#feature-builder-equation-wrapper',
+		name: "#cf-name",
+		description: "#cf-description"
 	},
 	events: {
 		'click .choose-gene': 'openGene',
 		'click .choose-cf': 'openCf',
 		'click .choose-customfeature': 'openCustomFeature',
-		'keyup #feature-builder-equation': 'highlightFeatures'
+		'keyup #feature-builder-equation': 'highlightFeatures',
+		'click .preview-custom-feature': 'previewCustomFeature',
+		'click .add-custom-feature': 'addCustomFeature'
 	},
 	regions: {
-		geneCollRegion: '.gene-coll-region'
+		geneCollRegion: '.gene-coll-region',
+		cFeatureDistribution: '#cfeature-class-distribution-wrapper'
 	},
 	url: base_url+'MetaServer',
 	initialize: function(){
 		this.geneColl = new GeneCollection();
+	},
+	addCustomFeature: function(){
+		var exp = $(this.ui.equation).val().toUpperCase();
+		var components = [];
+		var reg;
+		var thieView = this;
+		this.geneColl.each(function(gene){
+			if(gene.get("unique_id")!="Unique ID"){
+				reg = new RegExp(gene.get('short_name'), 'g');
+				exp = exp.replace(reg,"@"+gene.get('unique_id'));
+				components.push({
+					id: gene.get('unique_id'),
+					uLimit: gene.get('uLimit'),
+					lLimit: gene.get('lLimit')
+				});
+			}
+		});
+		Cure.utils.showLoading(null);
+		var args = {
+    	        command : "custom_feature_create",
+    	        expression: exp,
+    	        components: components,
+    	        description: $(this.ui.description).val(),
+    	        user_id: Cure.Player.get('id'),
+    	        name: $(this.ui.name).val(),
+    	        dataset: Cure.dataset.get('id')
+    	      };
+		console.log(args);
+    	      $.ajax({
+    	          type : 'POST',
+    	          url : this.url,
+    	          data : JSON.stringify(args),
+    	          dataType : 'json',
+    	          contentType : "application/json; charset=utf-8",
+    	          success : function(data){
+    	        	  Cure.utils.hideLoading();
+    	          	console.log(data);
+    	        },
+    	        error: this.error
+    	      });
+	},
+	previewCustomFeature: function(){
+		var exp = $(this.ui.equation).val().toUpperCase();
+		var components = [];
+		var reg;
+		var thieView = this;
+		this.geneColl.each(function(gene){
+			if(gene.get("unique_id")!="Unique ID"){
+				reg = new RegExp(gene.get('short_name'), 'g');
+				exp = exp.replace(reg,"@"+gene.get('unique_id'));
+				components.push({
+					id: gene.get('unique_id'),
+					uLimit: gene.get('uLimit'),
+					lLimit: gene.get('lLimit')
+				});
+			}
+		});
+		Cure.utils.showLoading(null);
+		var args = {
+    	        command : "custom_feature_preview",
+    	        expression: exp,
+    	        components: components,
+    	        name: $(this.ui.name).val(),
+    	        dataset: Cure.dataset.get('id')
+    	      };
+		console.log(args);
+    	      $.ajax({
+    	          type : 'POST',
+    	          url : this.url,
+    	          data : JSON.stringify(args),
+    	          dataType : 'json',
+    	          contentType : "application/json; charset=utf-8",
+    	          success : function(data){
+    	        	  Cure.utils.hideLoading();
+    	          	console.log(data);
+    	          	var newModel = new DistributionData(data);
+    	          	console.log(newModel);
+    	          	thieView.cFeatureDistribution.show(new DistributionChartView({model: newModel}));
+    	        },
+    	        error: this.error
+    	      });
+	},
+	error: function(){
+		Cure.utils
+	    .showAlert("<strong>Server Error</strong><br>Please try saving again in a while.", 0);
 	},
 	highlightFeatures: function(){
 		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);

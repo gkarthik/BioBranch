@@ -1264,7 +1264,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			f = fList.get(i);
 			LOGGER.debug(f.getShort_name());
 			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
-				if(a.getDataset().equals(d)){
+				if(a.getDataset().getId() == d.getId()){
 					attr = data.attribute(a.getName());
 				}
 			}

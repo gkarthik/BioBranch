@@ -88,6 +88,25 @@ public class Feature {
 	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updated;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<Component> parentComponent;
+
+	public List<CustomSet> getCustom_set() {
+		return custom_set;
+	}
+
+	public void setCustom_set(List<CustomSet> custom_set) {
+		this.custom_set = custom_set;
+	}
+
+	public List<Component> getParentComponent() {
+		return parentComponent;
+	}
+
+	public void setParentComponent(List<Component> parentComponent) {
+		this.parentComponent = parentComponent;
+	}
 
 	public Feature() {
 

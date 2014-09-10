@@ -2,6 +2,16 @@
 <div class="panel-body">
 	<div class="col-md-4">
 		<div class="row">
+			<div class="input-group input-group-sm">
+			  <span class="input-group-addon">Name</span>
+			  <input type="text" id="cf-name">
+			</div>
+			<div class="input-group input-group-sm">
+			  <span class="input-group-addon">Name</span>
+			  <textarea id="cf-description" placeholder="Description"></textarea>
+			</div>
+		</div>
+		<div class="row">
 			<div class="btn-group" data-toggle="buttons">
 			  <label class="btn btn-primary active choose-gene <% if(!Cure.dataset.get('validateGenes')){ print('disabled'); }%>">
 			    <input type="radio"><img title="Switch to Genes" src="<% print(base_url) %>/static/img/dna.png" class="switch-image" >
@@ -30,8 +40,17 @@
 			<div class="gene-coll-region"></div>
 		</div>
 	</div>
-	<div class="col-md-8" id="feature-builder-equation-wrapper">
-		<pre id="test-span-width"></pre>
-		<input type="text" id="feature-builder-equation" maxLength="100">
+	<div class="col-md-8">
+		<div class="row">
+			<div id="feature-builder-equation-wrapper">
+			<pre id="test-span-width"></pre>
+			<input type="text" id="feature-builder-equation" maxLength="100">
+			<button class="btn btn-primary preview-custom-feature">Preview</button>
+			<button class="btn btn-primary add-custom-feature">Add Feature</button>
+			</div>
+		</div>
+		<div class="row">
+			<div id="cfeature-class-distribution-wrapper"></div>
+		</div>
 	</div>
 </div>

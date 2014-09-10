@@ -35,9 +35,6 @@ public class CustomFeature {
 	private DateTime created;
 
 	@Column
-	private String dataset;
-
-	@Column
 	private String description;
 
 	@Column
@@ -46,7 +43,7 @@ public class CustomFeature {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentCustomFeature")
 	private List<Component> components;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "cfeature")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cfeature")
 	private List<Component> parentComponent;
 
 	public List<Component> getComponents() {
@@ -79,13 +76,21 @@ public class CustomFeature {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
+	private Dataset dataset;
+
+	public Dataset getDataset() {
+		return dataset;
+	}
+
+	public void setDataset(Dataset dataset) {
+		this.dataset = dataset;
+	}
 
 	public DateTime getCreated() {
 		return created;
-	}
-
-	public String getDataset() {
-		return dataset;
 	}
 
 	public String getDescription() {
@@ -117,10 +122,6 @@ public class CustomFeature {
 
 	public void setCreated(DateTime created) {
 		this.created = created;
-	}
-
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
 	}
 
 	public void setDescription(String description) {

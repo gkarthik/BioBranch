@@ -68,9 +68,13 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-			if(mp.get(data.attribute(i).name()).contains("metabric")){
-				f.setUnique_id(hashAttrName(System.currentTimeMillis()+mp.get(data.attribute(i).name())));
-				f = featureRepo.saveAndFlush(f);
+			try{
+				if(mp.get(data.attribute(i).name()).contains("metabric")){
+					f.setUnique_id(hashAttrName(System.currentTimeMillis()+mp.get(data.attribute(i).name())));
+					f = featureRepo.saveAndFlush(f);
+				}
+			} catch(Exception e) {
+				
 			}
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name())+" - "+ i);
 			attr.setFeature(f);
