@@ -53,17 +53,22 @@ FeatureBuilderView = Marionette.Layout.extend({
 		var components = [];
 		var reg;
 		var thieView = this;
-		this.geneColl.each(function(gene){
-			if(gene.get("unique_id")!="Unique ID"){
-				reg = new RegExp(gene.get('short_name'), 'g');
-				exp = exp.replace(reg,"@"+gene.get('unique_id'));
+		var geneArr = this.geneColl.toJSON();
+		geneArr.sort(function(a,b){
+			return b.short_name.length > a.short_name.length;
+		});
+		
+		for(var temp in geneArr){
+			if(geneArr[temp].unique_id!="Unique ID"){
+				reg = new RegExp(geneArr[temp].short_name, 'g');
+				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
 				components.push({
-					id: gene.get('unique_id'),
-					uLimit: gene.get('uLimit'),
-					lLimit: gene.get('lLimit')
+					id: geneArr[temp].unique_id,
+					uLimit: geneArr[temp].uLimit,
+					lLimit: geneArr[temp].lLimit
 				});
 			}
-		});
+		}
 		Cure.utils.showLoading(null);
 		var args = {
     	        command : "custom_feature_create",
@@ -93,17 +98,22 @@ FeatureBuilderView = Marionette.Layout.extend({
 		var components = [];
 		var reg;
 		var thieView = this;
-		this.geneColl.each(function(gene){
-			if(gene.get("unique_id")!="Unique ID"){
-				reg = new RegExp(gene.get('short_name'), 'g');
-				exp = exp.replace(reg,"@"+gene.get('unique_id'));
+		var geneArr = this.geneColl.toJSON();
+		geneArr.sort(function(a,b){
+			return b.short_name.length > a.short_name.length;
+		});
+		
+		for(var temp in geneArr){
+			if(geneArr[temp].unique_id!="Unique ID"){
+				reg = new RegExp(geneArr[temp].short_name, 'g');
+				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
 				components.push({
-					id: gene.get('unique_id'),
-					uLimit: gene.get('uLimit'),
-					lLimit: gene.get('lLimit')
+					id: geneArr[temp].unique_id,
+					uLimit: geneArr[temp].uLimit,
+					lLimit: geneArr[temp].lLimit
 				});
 			}
-		});
+		}
 		Cure.utils.showLoading(null);
 		var args = {
     	        command : "custom_feature_preview",
