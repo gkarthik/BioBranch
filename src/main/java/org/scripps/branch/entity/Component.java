@@ -24,6 +24,9 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "component")
 public class Component {
@@ -36,10 +39,12 @@ public class Component {
 
 	@ManyToOne
 	@JoinTable(name = "component_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
+	@JsonManagedReference
 	private Feature feature;
 	
 	@ManyToOne
 	@JoinTable(name = "component_custom_feature", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
+	@JsonManagedReference
 	private CustomFeature cfeature;
 	
 	public CustomFeature getParentCustomFeature() {
@@ -52,6 +57,7 @@ public class Component {
 
 	@ManyToOne
 	@JoinTable(name = "custom_feature_component", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
+	@JsonBackReference
 	private CustomFeature parentCustomFeature;
 	
 	@Column

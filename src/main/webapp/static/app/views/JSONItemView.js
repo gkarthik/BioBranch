@@ -9,8 +9,9 @@ define([
 	'text!static/app/templates/JSONSplitNodeCfSummary.html',
 	'text!static/app/templates/CustomSplitNode.html',
 	'text!static/app/templates/ClassifierInString.html',
-	'text!static/app/templates/TreeDetails.html'
-    ], function($, Marionette, Node, splitNodeGeneSummary, splitValueSummary, splitNodeCfSummary, customNodeSummaryTmpl, classifierInString, treeDetails) {
+	'text!static/app/templates/TreeDetails.html',
+	'text!static/app/templates/CustomFeatureSummary.html'
+    ], function($, Marionette, Node, splitNodeGeneSummary, splitValueSummary, splitNodeCfSummary, customNodeSummaryTmpl, classifierInString, treeDetails, customFeatureSummary) {
 JSONItemView = Marionette.ItemView.extend({
 	model : Node,
 	ui : {
@@ -19,7 +20,8 @@ JSONItemView = Marionette.ItemView.extend({
 		sampleTable: '#sample-wrapper',
 		featuresInClassifier: ".features-in-classifier",
 		treeStructure: ".tree-structure .tree-details",
-		SvgPreview: ".tree-structure svg"
+		SvgPreview: ".tree-structure svg",
+		componentSummary: ".component_summary"
 	},
 	events : {
 		'click .showjson' : 'ShowJSON',
@@ -59,8 +61,29 @@ JSONItemView = Marionette.ItemView.extend({
 				this.getCustomTreeStructure();
 			} else if(this.model.get('options').get('unique_id').indexOf("custom_set")!=-1) {
 				this.getCustomSet();
+			} else if(this.model.get('options').get('unique_id').indexOf("custom_feature")!=-1) {
+				this.getCustomFeature();
 			}
 		}
+	},
+	getCustomFeature: function(){
+		var thisView = this;
+		var args = {
+    	        command : "custom_feature_getById",
+    	        id: this.model.get('options').get('unique_id').replace("custom_feature_",""),
+    	        dataset: Cure.dataset.get('id')
+    	      };
+    	      $.ajax({
+    	          type : 'POST',
+    	          url : this.url,
+    	          data : JSON.stringify(args),
+    	          dataType : 'json',
+    	          contentType : "application/json; charset=utf-8",
+    	          success : function(data){
+    	        	  $(thisView.ui.componentSummary).html(customFeatureSummary(data));
+    	          },
+    	          error: this.error
+    	});
 	},
 	testExp: function(){
 		var args = {

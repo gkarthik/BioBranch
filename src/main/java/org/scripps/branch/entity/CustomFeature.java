@@ -24,6 +24,9 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "custom_feature")
 public class CustomFeature {
@@ -40,10 +43,12 @@ public class CustomFeature {
 	@Column
 	private String expression;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentCustomFeature")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parentCustomFeature")
+	@JsonManagedReference
 	private List<Component> components;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cfeature")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "cfeature")
+	@JsonBackReference
 	private List<Component> parentComponent;
 
 	public List<Component> getComponents() {

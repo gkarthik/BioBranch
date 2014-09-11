@@ -110,6 +110,8 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 						for(Attribute a: aList){
 							attr_name = a.getName();
 						}
+					} else if(c.getCfeature()!=null){
+						attr_name = "custom_feature_"+c.getCfeature().getId();
 					}
 					limit = c.getUpperLimit();
 					if(limit != null){

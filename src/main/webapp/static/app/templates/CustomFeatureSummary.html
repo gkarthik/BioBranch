@@ -1,0 +1,22 @@
+<h3>Components</h3>
+<table class="table">
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Upper Limit</th>
+		<th>Lower Limit</th>
+	</tr>
+	<% for(var temp in components){ %>
+	 	<tr>
+		<% if(components[temp].feature!=null){ %>
+			<td><%= components[temp].feature.short_name %></td>
+			<td><%= components[temp].feature.long_name %></td>
+		<% } else if(components[temp].cfeature!=null) { %>
+			<td><%= components[temp].cfeature.name %></td>
+			<td><%= components[temp].cfeature.description %></td>
+		<% } %>
+			 <td><%= components[temp].upperLimit %></td>
+			 <td><%= components[temp].lowerLimit %></td>
+		</tr>
+	<% } %>
+</table>
