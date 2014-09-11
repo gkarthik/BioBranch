@@ -196,7 +196,7 @@ public class MetaServerController {
 					toAdd = false;
 					c = new Component();
 					if(el.get("id").asText().contains("custom_feature")){
-						c.setCfeature(cfeatureRepo.findById(Long.valueOf(el.get("id").asText().replace("custom_feature",""))));
+						c.setCfeature(cfeatureRepo.findById(Long.valueOf(el.get("id").asText().replace("custom_feature_",""))));
 					} else {
 						c.setFeature(featureRepo.findByUniqueId(el.get("id").asText()));
 					}
