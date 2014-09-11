@@ -728,7 +728,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				} else if(m_Attribute >= data.numAttributes()+custom_classifiers.size() -1 ){
 					CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+custom_classifiers.size()), cSetList);
 					LOGGER.debug(cSet.getId()+": child Name");
-					JsonNode vertices = mapper.readTree(cSet.getConstraints());
+						JsonNode vertices = mapper.readTree(cSet.getConstraints());
 					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 					List<Attribute> aList = generateAttributeList(cSet, data, ds);
 					double[] testPoint = new double[2];
