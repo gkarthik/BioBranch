@@ -241,7 +241,10 @@ public class MetaServerController {
 //				HashMap mp = cfeatureService.getTestCase(data.get("id")
 //						.asText(), weka.getWeka(d.getId()));
 //				result_json = mapper.writeValueAsString(mp);			
-			} 
+			} else if (command.equals("custom_feature_getById")){
+				CustomFeature cf = cfeatureRepo.findById(data.get("id").asLong());
+				result_json = mapper.writeValueAsString(cf);
+			}
 		} else if (command.contains("custom_classifier_")) {
 			if (command.equals("custom_classifier_create")) {
 				List entrezIds = new ArrayList();

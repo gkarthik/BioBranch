@@ -89,7 +89,8 @@ public class Feature {
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updated;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "feature")
+	@JsonBackReference
 	private List<Component> parentComponent;
 
 	public List<CustomSet> getCustom_set() {
