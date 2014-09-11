@@ -242,7 +242,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 	  						}
 	  						$("#SpeechBubble").remove();
 	  						thisView.geneColl.add([{
-	  							unique_id: "custom_feature_"+ui.item.data.name,
+	  							unique_id: "custom_feature_"+ui.item.data.id,
 	  							short_name: ui.item.data.name.toUpperCase(),
 	  							long_name: ui.item.data.name
 	  						}]);
