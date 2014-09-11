@@ -34,11 +34,15 @@ FeatureBuilderView = Marionette.Layout.extend({
 		'click .choose-customfeature': 'openCustomFeature',
 		'keyup #feature-builder-equation': 'highlightFeatures',
 		'click .preview-custom-feature': 'previewCustomFeature',
-		'click .add-custom-feature': 'addCustomFeature'
+		'click .add-custom-feature': 'addCustomFeature',
+		'click .close': 'closeView'
 	},
 	regions: {
 		geneCollRegion: '.gene-coll-region',
 		cFeatureDistribution: '#cfeature-class-distribution-wrapper'
+	},
+	closeView: function(){
+		this.remove();
 	},
 	url: base_url+'MetaServer',
 	initialize: function(){
