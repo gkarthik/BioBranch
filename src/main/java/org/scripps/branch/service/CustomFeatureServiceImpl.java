@@ -182,6 +182,30 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		cf = cfeatureRepo.findByName(feature_name);
 		if (cf == null) {
 			cf = cfeatureCusRepo.getByPostfixExpr(exp);
+			if(cf!=null){
+				Boolean equalTo = true;
+				if(cf.getComponents().size()==cList.size()){
+					for(Component c1: cf.getComponents()){
+						for(Component c2 : cList){
+							if(c1.getFeature()!=null && c2.getFeature()!=null){
+								if(c1.getFeature().getId()!=c2.getFeature().getId()){
+									equalTo = false;
+								}
+							}
+							if(c1.getCfeature()!=null && c2.getCfeature()!=null){
+								if(c1.getCfeature().getId()!=c2.getCfeature().getId()){
+									equalTo = false;
+								}
+							}
+						}
+					}
+				} else {
+					equalTo = false;
+				}
+				if(!equalTo){
+					cf = null;
+				}
+			}
 		} else {
 			message = "Feauture with this name already exists";
 			exists = true;
@@ -201,15 +225,17 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			compRepo.save(cList);
 			compRepo.flush();
 		} else {
-			message = "Feature with this expression already exists";
+			message = "Feature with this expression and limits already exists";
 			exists = true;
 		}
 		int cFeatureId = (int) cf.getId();
-		int attIndex = evalAndAddNewFeatureValues("custom_feature_"
-				+ cFeatureId, exp, weka.getTrain(), cList, dataset, true);
-		if (attIndex == -1) {
-			message = "Adding feature to dataset failed.";
-			success = false;
+		if(!exists){
+			int attIndex = evalAndAddNewFeatureValues("custom_feature_"
+					+ cFeatureId, exp, weka.getTrain(), cList, dataset, true);
+			if (attIndex == -1) {
+				message = "Adding feature to dataset failed.";
+				success = false;
+			}
 		}
 		System.out.println("cFeatureId: " + cFeatureId);
 		mp.put("exists", exists);

@@ -207,7 +207,7 @@ public class MetaServerController {
 						c.setUpperLimit(el.get("uLimit").asLong());
 						toAdd = true;
 					}
-					if(!el.get("uLimit").isNull()){
+					if(!el.get("lLimit").isNull()){
 						c.setLowerLimit(el.get("lLimit").asLong());
 						toAdd = true;
 					}
