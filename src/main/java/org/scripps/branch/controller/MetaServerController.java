@@ -211,19 +211,24 @@ public class MetaServerController {
 						c.setLowerLimit(el.get("lLimit").asLong());
 						toAdd = true;
 					}
+					if(!data.get("ref_id").isNull()){
+						toAdd=true;
+					}
 					if(toAdd && command.equals("custom_feature_preview")){
 						cList.add(c);
 					} else if(command.equals("custom_feature_create")) {
 						cList.add(c);
 					}
 				}
-				Component ref = null;
-				if(!data.get("ref_id").asText().equals(null) && !data.get("ref_id").asText().equals("")){
+				Component ref = new Component();
+				if(!data.get("ref_id").isNull()){
 					LOGGER.debug("NOT NULL");	
 					ref = new Component();
 					ref.setUpperLimit(null);
 					ref.setLowerLimit(null);
+					LOGGER.debug(data.get("ref_id").asText());
 					if(data.get("ref_id").asText().contains("custom_feature")){
+						LOGGER.debug("cFeature");
 						ref.setCfeature(cfeatureRepo.findById(Long.valueOf(data.get("ref_id").asText().replace("custom_feature_",""))));
 					} else {
 						ref.setFeature(featureRepo.findByUniqueId(data.get("ref_id").asText()));

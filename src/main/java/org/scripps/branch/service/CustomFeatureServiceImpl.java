@@ -117,7 +117,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 				tempInst = new Instance(data.instance(i));
 				newFeature.setInputFormat(data);
 				for(Component c : cList){
-					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null){
+					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null || ref!=null){
 						if(c.getFeature()!=null){
 							aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
 							for(Attribute a: aList){
@@ -140,16 +140,21 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 						}
 					}
 					if(ref!=null){
-						ref_name="";
-						if(ref.getFeature()!=null){
-							aList = attrRepo.findByFeatureUniqueId(ref.getFeature().getUnique_id(), d);
-							for(Attribute a: aList){
-								ref_name = a.getName();
+						if(ref.getFeature()!=null || ref.getCfeature()!=null){
+							ref_name="";
+							if(ref.getFeature()!=null){
+								LOGGER.debug("feature not null");
+								aList = attrRepo.findByFeatureUniqueId(ref.getFeature().getUnique_id(), d);
+								for(Attribute a: aList){
+									ref_name = a.getName();
+								}
+							} else if (ref.getCfeature()!=null) {
+								LOGGER.debug("cfeature not null");
+								ref_name = "custom_feature_"+ref.getCfeature().getId();
 							}
-						} else if (ref.getCfeature()!=null) {
-							ref_name = "custom_feature_"+ref.getCfeature().getId();
+							LOGGER.debug(attr_name);
+							tempInst.setValue(data.attribute(attr_name), tempInst.value(data.attribute(attr_name))+tempInst.value(data.attribute(ref_name)));
 						}
-						tempInst.setValue(data.attribute(attr_name), tempInst.value(data.attribute(attr_name))+tempInst.value(data.attribute(ref_name)));
 					}
 				}
 				if(!saveInstance){
