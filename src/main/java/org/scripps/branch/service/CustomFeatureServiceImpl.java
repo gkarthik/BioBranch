@@ -68,20 +68,31 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	@Override
 	public void addInstanceValues(Weka weka, Dataset d) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
+		Collections.sort(cfList, new Comparator<CustomFeature>(){
+			@Override
+			public int compare(CustomFeature o1, CustomFeature o2) {
+			    if (o1.getId() > o2.getId()) {
+			        return 1;
+			    } else if (o1.getId() < o2.getId()) {
+			        return -1;
+			    }
+			    return 0;
+			}
+		});
 		for (CustomFeature cf : cfList) {
 			LOGGER.debug(cf.getDataset().getName());
 			LOGGER.debug(d.getName());
 			if(cf.getDataset().getId() == d.getId()){
 				LOGGER.debug("Custom Feature got");
 				LOGGER.debug(String.valueOf(cf.getComponents().size()));
-				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getOrigTrain(), cf.getComponents(), d, true);
+				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getOrigTrain(), cf.getComponents(), cf.getReference(), d, true);
 			}
 		}
 	}
 
 	@Override
 	public int evalAndAddNewFeatureValues(String name, String exp,
-			Instances data, List<Component> cList, Dataset d, Boolean saveInstance) {
+			Instances data, List<Component> cList, Component ref, Dataset d, Boolean saveInstance) {
 		int attIndex = -1;
 		AddExpression newFeature = new AddExpression();
 		newFeature.setExpression(exp);// Attribute is supplied with index
@@ -98,6 +109,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		Instance tempInst;
 		List<Attribute> aList;
 		String attr_name = null;
+		String ref_name;
 		Long limit;
 		for (int i = 0; i < data.numInstances(); i++) {// Index here starts from
 														// 0.
@@ -105,27 +117,39 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 				tempInst = new Instance(data.instance(i));
 				newFeature.setInputFormat(data);
 				for(Component c : cList){
-					if(c.getFeature()!=null){
-						aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
-						for(Attribute a: aList){
-							attr_name = a.getName();
+					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null){
+						if(c.getFeature()!=null){
+							aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
+							for(Attribute a: aList){
+								attr_name = a.getName();
+							}
+						} else if(c.getCfeature()!=null){
+							attr_name = "custom_feature_"+c.getCfeature().getId();
 						}
-					} else if(c.getCfeature()!=null){
-						attr_name = "custom_feature_"+c.getCfeature().getId();
+						limit = c.getUpperLimit();
+						if(limit != null){
+							if(tempInst.value(data.attribute(attr_name))>c.getUpperLimit()){
+								tempInst.setValue(data.attribute(attr_name), limit);
+							}
+						}
+						limit = c.getLowerLimit();
+						if(limit != null){
+							if(tempInst.value(data.attribute(attr_name))<c.getLowerLimit()){
+								tempInst.setValue(data.attribute(attr_name), limit);
+							}
+						}
 					}
-					limit = c.getUpperLimit();
-					if(limit != null){
-						if(tempInst.value(data.attribute(attr_name))>c.getUpperLimit()){
-							tempInst.setValue(data.attribute(attr_name), limit);
-							LOGGER.debug(String.valueOf(limit));
+					if(ref!=null){
+						ref_name="";
+						if(ref.getFeature()!=null){
+							aList = attrRepo.findByFeatureUniqueId(ref.getFeature().getUnique_id(), d);
+							for(Attribute a: aList){
+								ref_name = a.getName();
+							}
+						} else if (ref.getCfeature()!=null) {
+							ref_name = "custom_feature_"+ref.getCfeature().getId();
 						}
-					}
-					limit = c.getLowerLimit();
-					if(limit != null){
-						if(tempInst.value(data.attribute(attr_name))<c.getLowerLimit()){
-							tempInst.setValue(data.attribute(attr_name), limit);
-							LOGGER.debug(String.valueOf(limit));
-						}
+						tempInst.setValue(data.attribute(attr_name), tempInst.value(data.attribute(attr_name))+tempInst.value(data.attribute(ref_name)));
 					}
 				}
 				if(!saveInstance){
@@ -162,7 +186,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Override
 	public HashMap findOrCreateCustomFeature(String feature_name, String exp,
-			String description, long user_id, Dataset dataset, List<Component> cList, Weka weka) {
+			String description, long user_id, Dataset dataset, List<Component> cList, Component ref, Weka weka) {
 		HashMap mp = new HashMap();
 		Boolean success = true;
 		String message = "Success.";
@@ -233,7 +257,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		int cFeatureId = (int) cf.getId();
 		if(!exists){
 			int attIndex = evalAndAddNewFeatureValues("custom_feature_"
-					+ cFeatureId, exp, weka.getTrain(), cList, dataset, true);
+					+ cFeatureId, exp, weka.getTrain(), cList, ref, dataset, true);
 			if (attIndex == -1) {
 				message = "Adding feature to dataset failed.";
 				success = false;
@@ -289,9 +313,9 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	}
 	
 	@Override
-	public ArrayList previewCustomFeature(String name, String exp, List<Component> cList, Instances data, Dataset d) {
+	public ArrayList previewCustomFeature(String name, String exp, List<Component> cList, Component ref, Instances data, Dataset d) {
 		exp = (String) parseExpression(exp, d, data).get("exp");
-		evalAndAddNewFeatureValues(name, exp, data, cList, d, false);
+		evalAndAddNewFeatureValues(name, exp, data, cList, ref, d, false);
 		return classDistribution;
 	}
 

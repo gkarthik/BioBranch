@@ -46,19 +46,15 @@ public class Component {
 	@JoinTable(name = "component_custom_feature", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
 	@JsonManagedReference
 	private CustomFeature cfeature;
-	
-	public CustomFeature getParentCustomFeature() {
-		return parentCustomFeature;
-	}
-
-	public void setParentCustomFeature(CustomFeature parentCustomFeature) {
-		this.parentCustomFeature = parentCustomFeature;
-	}
 
 	@ManyToOne
 	@JoinTable(name = "custom_feature_component", joinColumns = { @JoinColumn(name = "custom_feature_id") }, inverseJoinColumns = { @JoinColumn(name = "component_id") })
 	@JsonBackReference
 	private CustomFeature parentCustomFeature;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "reference")
+	@JsonBackReference
+	private List<CustomFeature> referenceParentCustomFeatures;
 	
 	@Column
 	private Long upperLimit;
@@ -134,6 +130,14 @@ public class Component {
 			return feature;
 		}
 		return cfeature;
+	}
+	
+	public CustomFeature getParentCustomFeature() {
+		return parentCustomFeature;
+	}
+
+	public void setParentCustomFeature(CustomFeature parentCustomFeature) {
+		this.parentCustomFeature = parentCustomFeature;
 	}
 	
 }

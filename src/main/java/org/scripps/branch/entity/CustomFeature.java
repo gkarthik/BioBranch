@@ -50,22 +50,11 @@ public class CustomFeature {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "cfeature")
 	@JsonBackReference
 	private List<Component> parentComponent;
-
-	public List<Component> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<Component> components) {
-		this.components = components;
-	}
-
-	public List<Component> getParentComponent() {
-		return parentComponent;
-	}
-
-	public void setParentComponent(List<Component> parentComponent) {
-		this.parentComponent = parentComponent;
-	}
+	
+	@ManyToOne
+	@JoinTable(name = "feature_reference", joinColumns = { @JoinColumn(name = "reference_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	@JsonManagedReference
+	private Component reference;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -147,6 +136,30 @@ public class CustomFeature {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public List<Component> getComponents() {
+		return components;
+	}
+
+	public void setComponents(List<Component> components) {
+		this.components = components;
+	}
+
+	public List<Component> getParentComponent() {
+		return parentComponent;
+	}
+
+	public void setParentComponent(List<Component> parentComponent) {
+		this.parentComponent = parentComponent;
+	}
+	
+	public Component getReference() {
+		return reference;
+	}
+
+	public void setReference(Component reference) {
+		this.reference = reference;
 	}
 
 }

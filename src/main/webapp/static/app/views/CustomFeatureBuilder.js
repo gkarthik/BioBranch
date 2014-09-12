@@ -26,7 +26,11 @@ FeatureBuilderView = Marionette.Layout.extend({
 		testWidth: '#test-span-width',
 		equationWrapper: '#feature-builder-equation-wrapper',
 		name: "#cf-name",
-		description: "#cf-description"
+		description: "#cf-description",
+		refWrapper: '.ref-feature-wrapper',
+		refDetails: '.ref-feature',
+		setRef: ".set-ref-feature",
+		chooseRef: '.ref-choose'
 	},
 	events: {
 		'click .choose-gene': 'openGene',
@@ -35,7 +39,9 @@ FeatureBuilderView = Marionette.Layout.extend({
 		'keyup #feature-builder-equation': 'highlightFeatures',
 		'click .preview-custom-feature': 'previewCustomFeature',
 		'click .add-custom-feature': 'addCustomFeature',
-		'click .close': 'closeView'
+		'click .close': 'closeView',
+		'click .ref-choose': 'chooseRef',
+		'click .ref-remove': 'removeRef'
 	},
 	regions: {
 		geneCollRegion: '.gene-coll-region',
@@ -44,6 +50,23 @@ FeatureBuilderView = Marionette.Layout.extend({
 	closeView: function(){
 		this.remove();
 	},
+	chooseRef: function(){
+		$(this.ui.refWrapper).toggle();
+		this.setReference = (this.setReference) ? false: true;
+		if(this.setReference){
+			$(this.ui.chooseRef).html("Save Reference");
+		} else {
+			$(this.ui.chooseRef).html("Choose Reference");
+		}
+	},
+	removeRef: function(){
+		this.setReference = false;
+		$(this.ui.refDetails).html("");
+		$(this.ui.refDetails).data('ref_id', undefined);
+		$(this.ui.chooseRef).html("Choose Reference");
+		$(this.ui.refWrapper).toggle();
+	},
+	setReference: false,
 	url: base_url+'MetaServer',
 	initialize: function(){
 		this.geneColl = new GeneCollection();
@@ -77,7 +100,8 @@ FeatureBuilderView = Marionette.Layout.extend({
     	        description: $(this.ui.description).val(),
     	        user_id: Cure.Player.get('id'),
     	        name: $(this.ui.name).val(),
-    	        dataset: Cure.dataset.get('id')
+    	        dataset: Cure.dataset.get('id'),
+    	        ref_id: $(this.ui.refDetails).data('ref_id') || null 
     	      };
 		console.log(args);
     	      $.ajax({
@@ -120,7 +144,8 @@ FeatureBuilderView = Marionette.Layout.extend({
     	        expression: exp,
     	        components: components,
     	        name: $(this.ui.name).val(),
-    	        dataset: Cure.dataset.get('id')
+    	        dataset: Cure.dataset.get('id'),
+    	        ref_id: $(this.ui.refDetails).data('ref_id') || null
     	      };
 		console.log(args);
     	      $.ajax({
@@ -250,7 +275,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 	  				},
 	  				minLength: 0,
 	  				select: function( event, ui ) {
-	  					if(ui.item.label != undefined){//To ensure "no gene name has been selected" is not accepted.
+	  					if(ui.item.label != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
 	  						if(!Cure.initTour.ended()){
 	  							Cure.initTour.end();
 	  						}
@@ -271,6 +296,9 @@ FeatureBuilderView = Marionette.Layout.extend({
 //	  								}
 //	  							});
 //	  						}
+	  					} else if (ui.item.label != undefined && thisView.setReference){
+	  						$(thisView.ui.refDetails).html(ui.item.data.name.toUpperCase());
+	  						$(thisView.ui.refDetails).data('ref_id', "custom_feature_"+ui.item.data.id);
 	  					}
 	  				},
 	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
@@ -350,7 +378,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 				$("#SpeechBubble").remove();
 			},
 			select : function(event, ui) {
-				if(ui.item.long_name != undefined){//To ensure "no gene name has been selected" is not accepted.
+				if(ui.item.long_name != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
 					$("#SpeechBubble").remove();
 					thisView.geneColl.add([{
 							unique_id: ui.item.unique_id,
@@ -368,7 +396,10 @@ FeatureBuilderView = Marionette.Layout.extend({
 //							}
 //						});
 //					}
-				}
+				}  else if (ui.item.label != undefined && thisView.setReference){
+						$(thisView.ui.refDetails).html(ui.item.short_name.replace(/_/g," ").toUpperCase());
+  						$(thisView.ui.refDetails).data('ref_id', ui.item.unique_id);
+  					}
 			},
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
@@ -434,7 +465,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 				$("#SpeechBubble").remove();
 			},
 			select : function(event, ui) {
-				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
+				if(ui.item.name != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
 					$("#SpeechBubble").remove();
 					thisView.geneColl.add([{
 						unique_id: ui.item.entrezgene,
@@ -449,6 +480,9 @@ FeatureBuilderView = Marionette.Layout.extend({
 //								"full_name" : ui.item.name
 //							}
 //						})
+				} else if(ui.item.name != undefined && thisView.setReference) {
+					$(thisView.ui.refDetails).html(ui.item.symbol.toUpperCase());
+						$(thisView.ui.refDetails).data('ref_id', ui.item.entrezgene);
 				}
 			}
 		});
