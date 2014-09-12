@@ -109,23 +109,42 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		Instance tempInst;
 		List<Attribute> aList;
 		String attr_name = null;
-		String ref_name;
-		Long limit;
+		String ref_name = null;
+		Double limit;
+		String[] attrNames = new String[cList.size()+1];
+		int ctr = 0;
+		if(cList.size()>0){
+			for(Component c: cList){
+				if(c.getFeature()!=null){
+					aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
+					for(Attribute a: aList){
+						attrNames[ctr] = a.getName();
+					}
+				} else if(c.getCfeature()!=null){
+					attrNames[ctr] = "custom_feature_"+c.getCfeature().getId();
+				}
+				ctr++;
+			}
+		}
+		if(ref!=null){
+			if(ref.getFeature()!=null){
+				aList = attrRepo.findByFeatureUniqueId(ref.getFeature().getUnique_id(), d);
+				for(Attribute a: aList){
+					ref_name = a.getName();
+				}
+			} else if (ref.getCfeature()!=null) {
+				ref_name = "custom_feature_"+ref.getCfeature().getId();
+			}
+		}
 		for (int i = 0; i < data.numInstances(); i++) {// Index here starts from
 														// 0.
 			try {
 				tempInst = new Instance(data.instance(i));
 				newFeature.setInputFormat(data);
+				ctr = 0;
 				for(Component c : cList){
 					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null || ref!=null){
-						if(c.getFeature()!=null){
-							aList = attrRepo.findByFeatureUniqueId(c.getFeature().getUnique_id(), d);
-							for(Attribute a: aList){
-								attr_name = a.getName();
-							}
-						} else if(c.getCfeature()!=null){
-							attr_name = "custom_feature_"+c.getCfeature().getId();
-						}
+						attr_name = attrNames[ctr];
 						limit = c.getUpperLimit();
 						if(limit != null){
 							if(tempInst.value(data.attribute(attr_name))>c.getUpperLimit()){
@@ -140,22 +159,11 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 						}
 					}
 					if(ref!=null){
-						if(ref.getFeature()!=null || ref.getCfeature()!=null){
-							ref_name="";
-							if(ref.getFeature()!=null){
-								LOGGER.debug("feature not null");
-								aList = attrRepo.findByFeatureUniqueId(ref.getFeature().getUnique_id(), d);
-								for(Attribute a: aList){
-									ref_name = a.getName();
-								}
-							} else if (ref.getCfeature()!=null) {
-								LOGGER.debug("cfeature not null");
-								ref_name = "custom_feature_"+ref.getCfeature().getId();
-							}
-							LOGGER.debug(attr_name);
+						if(ref_name!=null){
 							tempInst.setValue(data.attribute(attr_name), tempInst.value(data.attribute(attr_name))+tempInst.value(data.attribute(ref_name)));
 						}
 					}
+					ctr++;
 				}
 				if(!saveInstance){
 					tempInst.insertAttributeAt(attIndex);
