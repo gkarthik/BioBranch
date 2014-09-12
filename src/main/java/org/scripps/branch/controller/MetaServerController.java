@@ -204,15 +204,15 @@ public class MetaServerController {
 					c.setLowerLimit(null);
 					if(!el.get("uLimit").isNull()){
 						LOGGER.debug("NOT NULL");
-						c.setUpperLimit(el.get("uLimit").asLong());
+						c.setUpperLimit(el.get("uLimit").asDouble());
 						toAdd = true;
 					}
 					if(!el.get("lLimit").isNull()){
-						c.setLowerLimit(el.get("lLimit").asLong());
+						c.setLowerLimit(el.get("lLimit").asDouble());
 						toAdd = true;
 					}
 					if(!data.get("ref_id").isNull()){
-						toAdd=true;
+						toAdd = true;
 					}
 					if(toAdd && command.equals("custom_feature_preview")){
 						cList.add(c);
@@ -220,15 +220,12 @@ public class MetaServerController {
 						cList.add(c);
 					}
 				}
-				Component ref = new Component();
+				Component ref = null;
 				if(!data.get("ref_id").isNull()){
-					LOGGER.debug("NOT NULL");	
 					ref = new Component();
 					ref.setUpperLimit(null);
 					ref.setLowerLimit(null);
-					LOGGER.debug(data.get("ref_id").asText());
 					if(data.get("ref_id").asText().contains("custom_feature")){
-						LOGGER.debug("cFeature");
 						ref.setCfeature(cfeatureRepo.findById(Long.valueOf(data.get("ref_id").asText().replace("custom_feature_",""))));
 					} else {
 						ref.setFeature(featureRepo.findByUniqueId(data.get("ref_id").asText()));

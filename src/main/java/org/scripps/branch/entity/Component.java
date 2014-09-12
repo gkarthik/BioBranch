@@ -57,10 +57,10 @@ public class Component {
 	private List<CustomFeature> referenceParentCustomFeatures;
 	
 	@Column
-	private Long upperLimit;
+	private Double upperLimit;
 	
 	@Column
-	private Long lowerLimit;
+	private Double lowerLimit;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -89,19 +89,19 @@ public class Component {
 		this.cfeature = cfeature;
 	}
 
-	public Long getUpperLimit() {
+	public Double getUpperLimit() {
 		return upperLimit;
 	}
 
-	public void setUpperLimit(Long upperLimit) {
+	public void setUpperLimit(Double upperLimit) {
 		this.upperLimit = upperLimit;
 	}
 
-	public Long getLowerLimit() {
+	public Double getLowerLimit() {
 		return lowerLimit;
 	}
 
-	public void setLowerLimit(Long lowerLimit) {
+	public void setLowerLimit(Double lowerLimit) {
 		this.lowerLimit = lowerLimit;
 	}
 
