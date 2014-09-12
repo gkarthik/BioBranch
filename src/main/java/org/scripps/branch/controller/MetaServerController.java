@@ -217,17 +217,29 @@ public class MetaServerController {
 						cList.add(c);
 					}
 				}
+				Component ref = null;
+				if(!data.get("ref_id").asText().equals(null) && !data.get("ref_id").asText().equals("")){
+					LOGGER.debug("NOT NULL");	
+					ref = new Component();
+					ref.setUpperLimit(null);
+					ref.setLowerLimit(null);
+					if(data.get("ref_id").asText().contains("custom_feature")){
+						ref.setCfeature(cfeatureRepo.findById(Long.valueOf(data.get("ref_id").asText().replace("custom_feature_",""))));
+					} else {
+						ref.setFeature(featureRepo.findByUniqueId(data.get("ref_id").asText()));
+					}
+				}
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 				HashMap mp = new HashMap();
 				if(command.equals("custom_feature_create")){
 					mp = cfeatureService.findOrCreateCustomFeature(data
 							.get("name").asText(), data.get("expression").asText(),
 							data.get("description").asText(), data.get("user_id")
-									.asLong(), d, cList, weka
+									.asLong(), d, cList, ref, weka
 									.getWeka(d.getId()));
 				} else if(command.equals("custom_feature_preview")) {
 					ArrayList l = cfeatureService.previewCustomFeature(data.get("name").asText(), data.get("expression").asText(),
-							 cList, weka.getWeka(d.getId()).getOrigTrain(), d);
+							 cList, ref, weka.getWeka(d.getId()).getOrigTrain(), d);
 					mp.put("isNominal", false);
 					mp.put("dataArray", l);
 				}
@@ -508,6 +520,7 @@ public class MetaServerController {
 		result.put("size", numnodes);
 		result.put("novelty", nov);
 		result.put("confusion_matrix", cfmatrix);
+		result.put("auc", eval.areaUnderROC(0));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
