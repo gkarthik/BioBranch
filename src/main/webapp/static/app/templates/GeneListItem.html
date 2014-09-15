@@ -8,14 +8,18 @@
 <td><%= short_name %></td>
 <% if(showLimits){ %>
 	<td>
-		<div class="input-group input-group-sm">
-		  <span class="input-group-addon">Upper</span>
-		  <input type="text" class="form-control upperLimit" placeholder="None">
-		</div>
-		<div class="input-group input-group-sm">
-		  <span class="input-group-addon">Lower</span>
-		  <input type="text" class="form-control lowerLimit" placeholder="None">
-		</div>
+		<div class="slider-limit"></div>
+		<table class="table table-bordered">
+			<tr>
+				<th>Upper</th>
+				<td><span class="upperLimit"><%= uLimit%></span></td>
+			</tr>
+			<tr>
+				<th>Lower</th>
+				<td><span class="lowerLimit"><%= lLimit%></span></td>
+			</tr>
+		</table>
+
 	</td>
 <% } %>
 <td class="delete"><button class="btn btn-link">Delete</button></td>

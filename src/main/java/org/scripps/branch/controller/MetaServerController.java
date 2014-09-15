@@ -367,6 +367,19 @@ public class MetaServerController {
 			mp.put("infoGainMax", aList.get(0).getRelieff());
 			mp.put("infoGainMin", aList.get(aList.size()-1).getRelieff());
 			result_json = mapper.writeValueAsString(mp);
+		} else if (command.equals("get_feature_limits")){
+			Weka wekaObj = weka.getWeka(data.get("dataset").asLong());
+			Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+			Instances train = wekaObj.getOrigTrain();
+			String attr_name = "";
+			for(Attribute a: attrRepo.findByFeatureUniqueId(data.get("unique_id").asText(), d)){
+				attr_name = a.getName();
+			}
+			train.sort(train.attribute(attr_name));
+			HashMap<String, Double> mp = new HashMap<String, Double>();
+			mp.put("uLimit", train.instance(train.numInstances()-1).value(train.attribute(attr_name)));
+			mp.put("lLimit", train.instance(0).value(train.attribute(attr_name)));
+			result_json = mapper.writeValueAsString(mp);
 		}
 		return result_json;
 	}
