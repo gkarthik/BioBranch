@@ -92,7 +92,6 @@ FeatureBuilderView = Marionette.Layout.extend({
 				});
 			}
 		}
-		Cure.utils.showLoading(null);
 		var args = {
     	        command : "custom_feature_create",
     	        expression: exp,
@@ -104,18 +103,21 @@ FeatureBuilderView = Marionette.Layout.extend({
     	        ref_id: $(this.ui.refDetails).data('ref_id') || null 
     	      };
 		console.log(args);
-    	      $.ajax({
-    	          type : 'POST',
-    	          url : this.url,
-    	          data : JSON.stringify(args),
-    	          dataType : 'json',
-    	          contentType : "application/json; charset=utf-8",
-    	          success : function(data){
-    	        	  Cure.utils.hideLoading();
-    	          	console.log(data);
-    	        },
-    	        error: this.error
-    	      });
+		if(this.validateExpression($(this.ui.equation).val())){
+			Cure.utils.showLoading(null);
+			 $.ajax({
+   	          type : 'POST',
+   	          url : this.url,
+   	          data : JSON.stringify(args),
+   	          dataType : 'json',
+   	          contentType : "application/json; charset=utf-8",
+   	          success : function(data){
+   	        	  Cure.utils.hideLoading();
+   	        	  console.log(data);
+   	        },
+   	        error: this.error
+   	      });
+		}
 	},
 	previewCustomFeature: function(){
 		var exp = $(this.ui.equation).val().toUpperCase();
@@ -138,7 +140,6 @@ FeatureBuilderView = Marionette.Layout.extend({
 				});
 			}
 		}
-		Cure.utils.showLoading(null);
 		var args = {
     	        command : "custom_feature_preview",
     	        expression: exp,
@@ -148,25 +149,47 @@ FeatureBuilderView = Marionette.Layout.extend({
     	        ref_id: $(this.ui.refDetails).data('ref_id') || null
     	      };
 		console.log(args);
-    	      $.ajax({
-    	          type : 'POST',
-    	          url : this.url,
-    	          data : JSON.stringify(args),
-    	          dataType : 'json',
-    	          contentType : "application/json; charset=utf-8",
-    	          success : function(data){
-    	        	  Cure.utils.hideLoading();
-    	          	console.log(data);
-    	          	var newModel = new DistributionData(data);
-    	          	console.log(newModel);
-    	          	thieView.cFeatureDistribution.show(new DistributionChartView({model: newModel}));
-    	        },
-    	        error: this.error
-    	      });
+		console.log(this.validateExpression($(this.ui.equation).val()));
+		if(this.validateExpression($(this.ui.equation).val())){
+			Cure.utils.showLoading(null);
+			$.ajax({
+  	          type : 'POST',
+  	          url : this.url,
+  	          data : JSON.stringify(args),
+  	          dataType : 'json',
+  	          contentType : "application/json; charset=utf-8",
+  	          success : function(data){
+  	        	  Cure.utils.hideLoading();
+  	          	console.log(data);
+  	          	var newModel = new DistributionData(data);
+  	          	console.log(newModel);
+  	          	thieView.cFeatureDistribution.show(new DistributionChartView({model: newModel}));
+  	        },
+  	        error: this.error
+  	      });
+		}
 	},
 	error: function(){
 		Cure.utils
 	    .showAlert("<strong>Server Error</strong><br>Please try saving again in a while.", 0);
+	},
+	validateExpression: function(exp){
+		if($(this.ui.equation).val()==""){
+			return false;
+		}
+		if($(this.ui.description).val()==""){
+			return false;
+		}
+		if($(this.ui.name).val()==""){
+			return false;
+		}
+		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
+		for(var t in split){
+			if(!this.geneColl.findWhere({"short_name":split[t].toUpperCase()})){
+				return false;
+			}
+		}
+		return true;
 	},
 	highlightFeatures: function(){
 		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
