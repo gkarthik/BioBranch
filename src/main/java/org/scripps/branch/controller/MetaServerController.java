@@ -372,8 +372,13 @@ public class MetaServerController {
 			Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 			Instances train = wekaObj.getOrigTrain();
 			String attr_name = "";
-			for(Attribute a: attrRepo.findByFeatureUniqueId(data.get("unique_id").asText(), d)){
-				attr_name = a.getName();
+			String Uid = data.get("unique_id").asText();
+			if(Uid!="" && !Uid.contains("custom_feature")){
+				for(Attribute a: attrRepo.findByFeatureUniqueId(Uid, d)){
+					attr_name = a.getName();
+				}
+			} else if (Uid!="") {
+				attr_name = Uid;
 			}
 			train.sort(train.attribute(attr_name));
 			HashMap<String, Double> mp = new HashMap<String, Double>();
