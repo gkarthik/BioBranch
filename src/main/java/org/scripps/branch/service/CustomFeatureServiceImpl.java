@@ -111,12 +111,10 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			classDistribution = new ArrayList();
 		}
 		HashMap mp;
-		Instance tempInst;
 		List<Attribute> aList;
 		String attr_name = null;
 		String ref_name = null;
 		Double limit;
-		double value = 0;
 		String[] attrNames = new String[cList.size()+1];
 		int ctr = 0;
 		if(cList.size()>0){
@@ -173,7 +171,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 				}
 				m_attributeExpression.evaluateExpression(vals);
 				mp = new HashMap();
-				if(saveInstance){
+				if(saveInstance){	
 					data.instance(i).setValue(data.attribute(attIndex), vals[vals.length-1]);
 				} else {
 					mp.put("value", vals[vals.length-1]);
