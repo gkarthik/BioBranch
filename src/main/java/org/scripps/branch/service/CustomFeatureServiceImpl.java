@@ -94,9 +94,14 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	public int evalAndAddNewFeatureValues(String name, String exp,
 			Instances data, List<Component> cList, Component ref, Dataset d, Boolean saveInstance) {
 		int attIndex = -1;
-		AddExpression newFeature = new AddExpression();
-		newFeature.setExpression(exp);// Attribute is supplied with index
-										// starting from 1
+		AttributeExpression m_attributeExpression = new AttributeExpression();
+		try {
+			m_attributeExpression.convertInfixToPostfix(exp);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		double[] vals = new double[data.numAttributes()+1];
 		weka.core.Attribute attr = new weka.core.Attribute(name);
 		attIndex = data.numAttributes() - 1;
 		if(saveInstance){
@@ -111,6 +116,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		String attr_name = null;
 		String ref_name = null;
 		Double limit;
+		double value = 0;
 		String[] attrNames = new String[cList.size()+1];
 		int ctr = 0;
 		if(cList.size()>0){
@@ -138,45 +144,39 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		}
 		for (int i = 0; i < data.numInstances(); i++) {// Index here starts from
 														// 0.
+			vals = new double[data.numAttributes()+1];
+			vals = data.instance(i).toDoubleArray();
 			try {
-				tempInst = new Instance(data.instance(i));
-				newFeature.setInputFormat(data);
 				ctr = 0;
 				for(Component c : cList){
 					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null || ref!=null){
 						attr_name = attrNames[ctr];
 						limit = c.getUpperLimit();
 						if(limit != null){
-							if(tempInst.value(data.attribute(attr_name))>c.getUpperLimit()){
-								tempInst.setValue(data.attribute(attr_name), limit);
+							if(vals[data.attribute(attr_name).index()]>c.getUpperLimit()){
+								vals[data.attribute(attr_name).index()] = limit;
 							}
 						}
 						limit = c.getLowerLimit();
 						if(limit != null){
-							if(tempInst.value(data.attribute(attr_name))<c.getLowerLimit()){
-								tempInst.setValue(data.attribute(attr_name), limit);
+							if(vals[data.attribute(attr_name).index()]<c.getLowerLimit()){
+								vals[data.attribute(attr_name).index()] = limit;
 							}
 						}
 					}
 					if(ref!=null){
 						if(ref_name!=null){
-							tempInst.setValue(data.attribute(attr_name), tempInst.value(data.attribute(attr_name))+tempInst.value(data.attribute(ref_name)));
+							vals[data.attribute(attr_name).index()] = vals[data.attribute(attr_name).index()]+data.instance(i).value(data.attribute(ref_name));
 						}
 					}
 					ctr++;
 				}
-				if(!saveInstance){
-					tempInst.insertAttributeAt(attIndex);
-				}
-				newFeature.input(tempInst);
-				int numAttr = newFeature.outputPeek().numAttributes();
-				Instance out = newFeature.output();
+				m_attributeExpression.evaluateExpression(vals);
 				mp = new HashMap();
 				if(saveInstance){
-					data.instance(i).setValue(data.attribute(attIndex),
-							out.value(numAttr - 1));
+					data.instance(i).setValue(data.attribute(attIndex), vals[vals.length-1]);
 				} else {
-					mp.put("value", out.value(numAttr-1));
+					mp.put("value", vals[vals.length-1]);
 					mp.put("classprob", data.instance(i).classAttribute().value((int) data.instance(i).classValue()));
 					classDistribution.add(mp);
 				}
