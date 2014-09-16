@@ -335,6 +335,11 @@ display: block;
 	stroke-opacity: 0.2;
 }
 
+.data-polygon{
+	fill: rgba(0,0,0, 0.15);
+	stroke: none;
+}
+
 #instance-data-chart-wrapper{
 	display:none;	
 }

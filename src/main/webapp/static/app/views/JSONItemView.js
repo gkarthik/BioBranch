@@ -269,14 +269,18 @@ JSONItemView = Marionette.ItemView.extend({
 		var indicatorCircle;
 		
 		var arc = d3.svg.symbol().type('circle').size(10);
-		var attrScale1 = d3.scale.linear().domain([min[0]-5,max[0]+5]).range([h,0]);
-		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-5,max[0]+5]);
+		var buffer = 0;
+		buffer = (max[0]-min[0])/10;
+		var attrScale1 = d3.scale.linear().domain([min[0]-buffer,max[0]+buffer]).range([h,0]);
+		var revAttrScale1 = d3.scale.linear().domain([h,0]).range([min[0]-buffer,max[0]+buffer]);
 		var yAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale1).orient("left");
 		SVG.append("g").attr("class","axis yaxis").attr("transform", "translate("+mX+","+mY+")").call(yAxis)
 		.append("svg:text").text(cSetData.features[0].short_name).attr("transform","translate(-25,"+parseInt(h+mY)+")rotate(-90)").style("fill","#808080");
 	
-		var attrScale2 = d3.scale.linear().domain([min[1]-5,max[1]+5]).range([0,w]);
-		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-5,max[1]+5]);
+		buffer = 0;
+		buffer = (max[1]-min[1])/10;
+		var attrScale2 = d3.scale.linear().domain([min[1]-buffer,max[1]+buffer]).range([0,w]);
+		var revAttrScale2 = d3.scale.linear().domain([0,w]).range([min[1]-buffer,max[1]+buffer]);
 		var xAxis = d3.svg.axis().tickFormat(function(d) { return Math.round(d*100)/100;}).scale(attrScale2).orient("bottom");
 		SVG.append("g").attr("class","axis xaxis").attr("transform", "translate("+mX+","+parseInt(h+mY)+")").call(xAxis)
 		.append("svg:text").attr("transform","translate(0,30)").text(cSetData.features[1].short_name).style("fill","#808080");
