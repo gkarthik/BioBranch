@@ -25,7 +25,6 @@ GeneItemView = Marionette.ItemView.extend({
 	initialize: function(args){
 		this.listenTo(this.model,'change:uLimit',this.render);
 		this.listenTo(this.model,'change:lLimit',this.render);
-		console.log(args);
 		if(args.showLimits){
 			this.getLimits();
 			this.showLimits = args.showLimits;
