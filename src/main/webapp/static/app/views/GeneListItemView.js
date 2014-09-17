@@ -11,25 +11,38 @@ GeneItemView = Marionette.ItemView.extend({
 	tagName: 'tr',
 	events: {
 		'click .delete': 'deleteThisItem',
-		'change .upperLimit': 'setUpperLimit',
-		'change .lowerLimit': 'setLowerLimit',
-		'click .setlimit': 'setLimit'
+		'click .set-upper-limit': 'setUpperLimit',
+		'click .set-lower-limit': 'setLowerLimit'
+	},
+	ui: {
+		'keepAll': '.keepAll',
+		'keepInCollection': '.keepInCollection',
+		'uLimit': '.upperLimit',
+		'lLimit': '.lowerLimit',
+		'slider': '.slider-limit',
+		'sliderRange': '.slider-range',
+		'setUpperLimit': '.set-upper-limit',
+		'sliderUpperLimit': '.slider-upper-limit-wrapper',
+		'setLowerLimit': '.set-lower-limit',
+		'sliderLowerLimit': '.slider-lower-limit-wrapper'
 	},
 	url: base_url+"MetaServer",
-	setLowerLimit: function(){
-		this.model.set('lLimit', $(this.ui.lLimit).val());
-	},
 	setUpperLimit: function(){
-		this.model.set('uLimit', $(this.ui.uLimit).val());
-	},
-	setLimit: function(){
-		console.log($(this.ui.setLimitInput));
-		if($(this.ui.setLimitInput).is(':checked')){
-			$(this.ui.sliderLimitWrapper).show();
-			this.model.set('setLimit',true);
+		if($(this.ui.setUpperLimit).is(':checked')){
+			$(this.ui.sliderUpperLimit).show();
+			this.model.set('setUpperLimit',true);
 		} else {
-			$(this.ui.sliderLimitWrapper).hide();
-			this.model.set('setLimit',false);
+			$(this.ui.sliderUpperLimit).hide();
+			this.model.set('setUpperLimit',false);
+		}
+	},
+	setLowerLimit: function(){
+		if($(this.ui.setLowerLimit).is(':checked')){
+			$(this.ui.sliderLowerLimit).show();
+			this.model.set('setLowerLimit',true);
+		} else {
+			$(this.ui.sliderLowerLimit).hide();
+			this.model.set('setLowerLimit',false);
 		}
 	},
 	showLimit: false,
@@ -68,16 +81,6 @@ GeneItemView = Marionette.ItemView.extend({
 		Cure.utils
     .showAlert("<strong>Server Error</strong><br>Please try saving again in a while.", 0);
 	},
-	ui: {
-		'keepAll': '.keepAll',
-		'keepInCollection': '.keepInCollection',
-		'uLimit': '.upperLimit',
-		'lLimit': '.lowerLimit',
-		'slider': '.slider-limit',
-		'sliderRange': '.slider-range',
-		setLimitInput: '.setlimit',
-		sliderLimitWrapper: '.slider-limit-wrapper'
-	},
 	template: function(serialized_model){
 		return GeneItemTmpl(serialized_model);
 	},
@@ -88,17 +91,34 @@ GeneItemView = Marionette.ItemView.extend({
 	},
 	onRender: function(){
 		var thisView = this;
-		 $(this.ui.slider).slider({
-			 range: true,
+		 $(this.ui.sliderLowerLimit).slider({
+			 range: "max",
 			 step: parseFloat(thisView.model.get('uLimit')-thisView.model.get('lLimit'))/1000,
 			 min: thisView.model.get('lLimit'),
 			 max: thisView.model.get('uLimit'),
-			 values: [ thisView.model.get('lLimit'), thisView.model.get('uLimit') ],
+			 value: thisView.model.get('lLimit'),
 			 slide: function( event, ui ) {
-				 thisView.model.set('lLimit',ui.values[0], {'silent':true});
-				 thisView.model.set('uLimit',ui.values[1], {'silent':true});
-				 $(thisView.ui.uLimit).html(ui.values[1]);
-				 $(thisView.ui.lLimit).html(ui.values[0]);
+				 if(ui.value>=thisView.model.get('uLimit')){
+					this.slider("value",thisView.model.get('lLimit'));
+				 } else {
+					 thisView.model.set('lLimit',ui.value, {'silent':true});
+					 $(thisView.ui.lLimit).html(ui.value);
+				 }
+			 }
+		 });
+		 $(this.ui.sliderUpperLimit).slider({
+			 range: "min",
+			 step: parseFloat(thisView.model.get('uLimit')-thisView.model.get('lLimit'))/1000,
+			 min: thisView.model.get('lLimit'),
+			 max: thisView.model.get('uLimit'),
+			 value: thisView.model.get('uLimit'),
+			 slide: function( event, ui ) {
+				 if(ui.value<=thisView.model.get('lLimit')){
+						this.slider("value",thisView.model.get('uLimit'));
+					 } else {
+						 thisView.model.set('uLimit',ui.value, {'silent':true});
+						 $(thisView.ui.uLimit).html(ui.value);
+					 }
 			 }
 		 });
 	},

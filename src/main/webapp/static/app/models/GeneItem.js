@@ -10,7 +10,8 @@ GeneItem = Backbone.RelationalModel.extend({
 		keepAll: 0,
 		uLimit: null,
 		lLimit: null,
-		setLimit: false
+		setUpperLimit: false,
+		setLowerLimit: false
 	},
 	url:base_url
 });
