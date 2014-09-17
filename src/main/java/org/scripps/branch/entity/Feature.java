@@ -76,6 +76,9 @@ public class Feature {
 
 	@Column(name = "description")
 	private String description;
+	
+	@Column(name = "isGene")
+	private Boolean isGene;
 
 	@Basic(optional = false)
 	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -93,6 +96,14 @@ public class Feature {
 	@JsonBackReference
 	private List<Component> parentComponent;
 
+	public Boolean getIsGene() {
+		return isGene;
+	}
+
+	public void setIsGene(Boolean isGene) {
+		this.isGene = isGene;
+	}
+	
 	public List<CustomSet> getCustom_set() {
 		return custom_set;
 	}

@@ -12,7 +12,8 @@ GeneItemView = Marionette.ItemView.extend({
 	events: {
 		'click .delete': 'deleteThisItem',
 		'change .upperLimit': 'setUpperLimit',
-		'change .lowerLimit': 'setLowerLimit'
+		'change .lowerLimit': 'setLowerLimit',
+		'click .setlimit': 'setLimit'
 	},
 	url: base_url+"MetaServer",
 	setLowerLimit: function(){
@@ -20,6 +21,16 @@ GeneItemView = Marionette.ItemView.extend({
 	},
 	setUpperLimit: function(){
 		this.model.set('uLimit', $(this.ui.uLimit).val());
+	},
+	setLimit: function(){
+		console.log($(this.ui.setLimitInput));
+		if($(this.ui.setLimitInput).is(':checked')){
+			$(this.ui.sliderLimitWrapper).show();
+			this.model.set('setLimit',true);
+		} else {
+			$(this.ui.sliderLimitWrapper).hide();
+			this.model.set('setLimit',false);
+		}
 	},
 	showLimit: false,
 	initialize: function(args){
@@ -63,7 +74,9 @@ GeneItemView = Marionette.ItemView.extend({
 		'uLimit': '.upperLimit',
 		'lLimit': '.lowerLimit',
 		'slider': '.slider-limit',
-		'sliderRange': '.slider-range'
+		'sliderRange': '.slider-range',
+		setLimitInput: '.setlimit',
+		sliderLimitWrapper: '.slider-limit-wrapper'
 	},
 	template: function(serialized_model){
 		return GeneItemTmpl(serialized_model);

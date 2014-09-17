@@ -1269,6 +1269,10 @@ color: #79BBF5;
 z-index: 1;
 }
 
+.slider-limit-wrapper{
+	display: none;
+}
+
 /*
 #FeatureBuilderRegion{
 	top: 300px;

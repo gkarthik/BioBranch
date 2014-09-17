@@ -125,37 +125,51 @@ public class FeatureServiceImpl implements FeatureService {
 			int i =0, k=0;
 			Feature f;
 			sortedList = new JsonNode[entrezIds.size()];
+			Boolean toAdd;
 			for(String id: entrezIds){
+				toAdd = false;
 				f = fRepo.findByUniqueId(id);
 				tempList = aRepo.findByFeatureUniqueId(id, d);
+				if(tempList.size()>0){
+					toAdd = true;
+				}
 				infogain = 0;
 				for(org.scripps.branch.entity.Attribute a : tempList){
 					if(a.getRelieff() > infogain){
 						infogain = a.getRelieff();
 					}
 				}
-				objNode = mapper.valueToTree(f);
-				objNode.put("infogain", infogain);
-				i=-1;
-				while(i<entrezIds.size()-1){
-					i++;
-					if(sortedList[i]==null){
-						sortedList[i] = objNode;
-						LOGGER.debug(objNode.get("short_name").asText());
-						break;
-					}
-					if(infogain>sortedList[i].get("infogain").asDouble()){
-						k = entrezIds.size()-1;
-						while(k>=i+1){
-							sortedList[k] = sortedList[k-1];
-							k--;
+				if(toAdd){
+					objNode = mapper.valueToTree(f);
+					objNode.put("infogain", infogain);
+					i=-1;
+					while(i<entrezIds.size()-1){
+						i++;
+						if(sortedList[i]==null){
+							sortedList[i] = objNode;
+							break;
 						}
-						sortedList[i] = objNode;
-						LOGGER.debug(objNode.get("short_name").asText());
-						break;
+						if(infogain>sortedList[i].get("infogain").asDouble()){
+							k = entrezIds.size()-1;
+							while(k>=i+1){
+								sortedList[k] = sortedList[k-1];
+								k--;
+							}
+							sortedList[i] = objNode;
+							break;
+						}
 					}
 				}
 			}
+			List<JsonNode> sorted = new ArrayList<JsonNode>();
+			    for(JsonNode s : sortedList) {
+			       if(s!=null) {
+			    	   if(!s.isNull()){
+					          sorted.add(s);
+			    	   }
+			       }
+			    }
+			    sortedList = sorted.toArray(new JsonNode[sorted.size()]);
 //				for(org.scripps.branch.entity.Attribute attr : aList){
 //					if(attr.getFeature()!=null){
 //						if(entrezIds.contains(attr.getFeature().getUnique_id())){
