@@ -255,6 +255,10 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			cf.setDescription(description);
 			cf.setUser(newuser);
 			cf.setDataset(dataset);
+			if(ref!=null){
+				ref = compRepo.saveAndFlush(ref);
+			}
+			cf.setReference(ref);
 			cf = cfeatureRepo.saveAndFlush(cf);
 			for(Component c: cList){
 				c.setParentCustomFeature(cf);

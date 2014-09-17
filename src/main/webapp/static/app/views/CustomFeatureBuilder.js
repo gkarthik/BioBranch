@@ -81,14 +81,22 @@ FeatureBuilderView = Marionette.Layout.extend({
 			return b.short_name.length > a.short_name.length;
 		});
 		
+		var lLimit;
+		var uLimit;
 		for(var temp in geneArr){
+			lLimit = null;
+			uLimit = null;
 			if(geneArr[temp].unique_id!="Unique ID"){
 				reg = new RegExp(geneArr[temp].short_name, 'g');
 				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
+				if(geneArr[temp].setLimit){
+					lLimit = geneArr[temp].lLimit
+					uLimit = geneArr[temp].uLimit
+				}
 				components.push({
 					id: geneArr[temp].unique_id,
-					uLimit: geneArr[temp].uLimit,
-					lLimit: geneArr[temp].lLimit
+					uLimit: uLimit,
+					lLimit: lLimit
 				});
 			}
 		}
@@ -129,17 +137,27 @@ FeatureBuilderView = Marionette.Layout.extend({
 			return b.short_name.length > a.short_name.length;
 		});
 		
+		var uLimit = null;
+		var lLimit = null;
+		
 		for(var temp in geneArr){
+			lLimit = null;
+			uLimit = null;
 			if(geneArr[temp].unique_id!="Unique ID"){
 				reg = new RegExp(geneArr[temp].short_name, 'g');
 				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
+				if(geneArr[temp].setLimit){
+					lLimit = geneArr[temp].lLimit
+					uLimit = geneArr[temp].uLimit
+				}
 				components.push({
 					id: geneArr[temp].unique_id,
-					uLimit: geneArr[temp].uLimit,
-					lLimit: geneArr[temp].lLimit
+					uLimit: uLimit,
+					lLimit: lLimit
 				});
 			}
 		}
+		
 		var args = {
     	        command : "custom_feature_preview",
     	        expression: exp,
@@ -185,7 +203,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 		}
 		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
 		for(var t in split){
-			if(!this.geneColl.findWhere({"short_name":split[t].toUpperCase()})){
+			if(!this.geneColl.findWhere({"short_name":split[t].toUpperCase()}) && isNaN(parseInt(split[t]))){
 				return false;
 			}
 		}

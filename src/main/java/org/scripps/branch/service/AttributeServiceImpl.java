@@ -99,7 +99,7 @@ public class AttributeServiceImpl implements AttributeService {
 					if(tokens[1].contains("///")){
 						tokens[1] = tokens[1].split("///")[0];
 					}
-					mp.put(tokens[0], tokens[2]);
+					mp.put(tokens[2], tokens[0]);
 				}
 			}
 		} catch (Exception e) {

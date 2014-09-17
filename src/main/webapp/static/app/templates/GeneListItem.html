@@ -8,18 +8,24 @@
 <td><%= short_name %></td>
 <% if(showLimits){ %>
 	<td>
-		<div class="slider-limit"></div>
-		<table class="table">
-			<tr>
-				<th>Upper</th>
-				<td><span class="upperLimit"><%= uLimit%></span></td>
-			</tr>
-			<tr>
-				<th>Lower</th>
-				<td><span class="lowerLimit"><%= lLimit%></span></td>
-			</tr>
-		</table>
-
+		<div class="checkbox">
+		    <label>
+		      <input type="checkbox" class="setlimit"> Set Limits
+		    </label>
+		</div>
+		<div class="slider-limit-wrapper">
+			<div class="slider-limit"></div>
+			<table class="table">
+				<tr>
+					<th>Upper</th>
+					<td><span class="upperLimit"><%= uLimit%></span></td>
+				</tr>
+				<tr>
+					<th>Lower</th>
+					<td><span class="lowerLimit"><%= lLimit%></span></td>
+				</tr>
+			</table>
+		</div>
 	</td>
 <% } %>
 <td class="delete"><button class="btn btn-link">Delete</button></td>
