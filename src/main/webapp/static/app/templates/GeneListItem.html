@@ -1,7 +1,8 @@
 <% if(short_name == "Short Name"){ %>
 <th><%= short_name %></th>
 <% if(showLimits){ %>
-<th>Limits</th>
+<th>Upper Limit</th>
+<th>Lower Limit</th>
 <% } %>
 <th>Delete Gene</th>
 <% } else { %>
@@ -10,16 +11,28 @@
 	<td>
 		<div class="checkbox">
 		    <label>
-		      <input type="checkbox" class="setlimit"> Set Limits
+		      <input type="checkbox" class="set-upper-limit"> Set Upper Limit
 		    </label>
 		</div>
-		<div class="slider-limit-wrapper">
-			<div class="slider-limit"></div>
+		<div class="slider-upper-limit-wrapper slider-limit-wrapper">
+			<div class="slider-upper-limit"></div>
 			<table class="table">
 				<tr>
 					<th>Upper</th>
 					<td><span class="upperLimit"><%= uLimit%></span></td>
 				</tr>
+			</table>
+		</div>
+	</td>
+	<td>
+		<div class="checkbox">
+		    <label>
+		      <input type="checkbox" class="set-lower-limit"> Set Lower Limit
+		    </label>
+		</div>
+		<div class="slider-lower-limit-wrapper slider-limit-wrapper">
+			<div class="slider-lower-limit"></div>
+			<table class="table">
 				<tr>
 					<th>Lower</th>
 					<td><span class="lowerLimit"><%= lLimit%></span></td>

@@ -89,9 +89,11 @@ FeatureBuilderView = Marionette.Layout.extend({
 			if(geneArr[temp].unique_id!="Unique ID"){
 				reg = new RegExp(geneArr[temp].short_name, 'g');
 				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
-				if(geneArr[temp].setLimit){
-					lLimit = geneArr[temp].lLimit
+				if(geneArr[temp].setUpperLimit){
 					uLimit = geneArr[temp].uLimit
+				}
+				if(geneArr[temp].setLowerLimit){
+					lLimit = geneArr[temp].lLimit
 				}
 				components.push({
 					id: geneArr[temp].unique_id,
@@ -146,9 +148,11 @@ FeatureBuilderView = Marionette.Layout.extend({
 			if(geneArr[temp].unique_id!="Unique ID"){
 				reg = new RegExp(geneArr[temp].short_name, 'g');
 				exp = exp.replace(reg,"@"+geneArr[temp].unique_id);
-				if(geneArr[temp].setLimit){
-					lLimit = geneArr[temp].lLimit
+				if(geneArr[temp].setUpperLimit){
 					uLimit = geneArr[temp].uLimit
+				}
+				if(geneArr[temp].setLowerLimit){
+					lLimit = geneArr[temp].lLimit
 				}
 				components.push({
 					id: geneArr[temp].unique_id,
