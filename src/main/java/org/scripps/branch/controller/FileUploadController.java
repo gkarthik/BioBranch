@@ -187,7 +187,7 @@ public class FileUploadController {
 					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
 					InputStream path2 = null;
 					if(col.getDatasets().size()>1){
-						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
+						path2 = ctx.getResource("file:" + uploadPath+col.getDatasets().get(0).getDatasetfile()).getInputStream();
 					} else {
 						check = true;
 					}

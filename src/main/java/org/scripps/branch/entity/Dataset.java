@@ -20,6 +20,9 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "dataset")
 public class Dataset {
@@ -28,10 +31,12 @@ public class Dataset {
 	private List<Attribute> attributes;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+	@JsonBackReference
 	private List<CustomFeature> customfeature;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "collection_id", insertable = true, updatable = true)
+	@JsonManagedReference
 	private Collection collection;
 
 	@Basic(optional = false)

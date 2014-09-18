@@ -21,6 +21,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "collection")
 public class Collection {
@@ -32,6 +34,7 @@ public class Collection {
 	private DateTime created;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "collection")
+	@JsonBackReference
 	private List<Dataset> datasets;
 
 	@Column(length = 1000)

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import weka.classifiers.Classifier;
 
+@Transactional
 public class DatasetMap implements ApplicationContextAware {
 
 	private static ApplicationContext ctx;
