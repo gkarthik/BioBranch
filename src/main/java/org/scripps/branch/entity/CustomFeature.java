@@ -71,8 +71,9 @@ public class CustomFeature {
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dataset_id", insertable = true, updatable = true)
+	@JsonManagedReference
 	private Dataset dataset;
 
 	public Dataset getDataset() {

@@ -37,7 +37,6 @@ import weka.filters.unsupervised.attribute.AddExpression;
 import weka.filters.unsupervised.attribute.Remove;
 
 @Service
-@Transactional
 public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Autowired
@@ -80,9 +79,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			}
 		});
 		for (CustomFeature cf : cfList) {
-			LOGGER.debug(cf.getDataset().getName());
-			LOGGER.debug(d.getName());
-			if(cf.getDataset().getId() == d.getId()){
+			if(cf.getDataset().getCollection().getId()==d.getCollection().getId()){
 				LOGGER.debug("Custom Feature got");
 				LOGGER.debug(String.valueOf(cf.getComponents().size()));
 				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getOrigTrain(), cf.getComponents(), cf.getReference(), d, true);
@@ -147,8 +144,11 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			try {
 				ctr = 0;
 				for(Component c : cList){
+					attr_name = attrNames[ctr];
+					if(data.instance(i).isMissing(data.attribute(attr_name).index())){
+						continue;
+					}
 					if(c.getUpperLimit()!=null || c.getLowerLimit()!=null || ref!=null){
-						attr_name = attrNames[ctr];
 						limit = c.getUpperLimit();
 						if(limit != null){
 							if(vals[data.attribute(attr_name).index()]>c.getUpperLimit()){
@@ -169,7 +169,12 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 					}
 					ctr++;
 				}
-				m_attributeExpression.evaluateExpression(vals);
+				try{
+					m_attributeExpression.evaluateExpression(vals);
+				} catch(Exception e) {
+					LOGGER.error(name,e);
+					break;
+				}
 				mp = new HashMap();
 				if(saveInstance){	
 					data.instance(i).setValue(data.attribute(attIndex), vals[vals.length-1]);

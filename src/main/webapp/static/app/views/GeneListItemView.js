@@ -12,7 +12,9 @@ GeneItemView = Marionette.ItemView.extend({
 	events: {
 		'click .delete': 'deleteThisItem',
 		'click .set-upper-limit': 'setUpperLimit',
-		'click .set-lower-limit': 'setLowerLimit'
+		'click .set-lower-limit': 'setLowerLimit',
+		'change .upperLimit': 'changeUpperLimit',
+		'change .lowerLimit': 'changeLowerLimit'
 	},
 	ui: {
 		'keepAll': '.keepAll',
@@ -27,6 +29,24 @@ GeneItemView = Marionette.ItemView.extend({
 		'sliderLowerLimit': '.slider-lower-limit-wrapper'
 	},
 	url: base_url+"MetaServer",
+	changeLowerLimit: function(){
+		if(this.model.get('uLimit')>$(this.ui.lLimit).val()){
+			
+		} else {
+			alert("Warning: Lower Limit higher than Upper Limit");
+			//$(this.ui.lLimit).val(this.model.get('lLimit'));
+		}
+		this.model.set('lLimit',$(this.ui.lLimit).val(), {'silent':true});
+	},
+	changeUpperLimit: function(){
+		if(this.model.get('lLimit')<$(this.ui.uLimit).val()){
+
+		} else {
+			alert("Warning: Upper Limit lower than Upper Limit.");
+			//$(this.ui.uLimit).val(this.model.get('uLimit'));
+		}
+		this.model.set('uLimit',$(this.ui.uLimit).val(), {'silent':true});
+	},
 	setUpperLimit: function(){
 		if($(this.ui.setUpperLimit).is(':checked')){
 			$(this.ui.sliderUpperLimit).show();
@@ -99,10 +119,10 @@ GeneItemView = Marionette.ItemView.extend({
 			 value: thisView.model.get('lLimit'),
 			 slide: function( event, ui ) {
 				 if(ui.value>=thisView.model.get('uLimit')){
-					this.slider("value",thisView.model.get('lLimit'));
+					 $(this).slider("value",thisView.model.get('lLimit'));
 				 } else {
 					 thisView.model.set('lLimit',ui.value, {'silent':true});
-					 $(thisView.ui.lLimit).html(ui.value);
+					 $(thisView.ui.lLimit).val(ui.value);
 				 }
 			 }
 		 });
@@ -114,10 +134,10 @@ GeneItemView = Marionette.ItemView.extend({
 			 value: thisView.model.get('uLimit'),
 			 slide: function( event, ui ) {
 				 if(ui.value<=thisView.model.get('lLimit')){
-						this.slider("value",thisView.model.get('uLimit'));
+						$(this).slider("value",thisView.model.get('uLimit'));
 					 } else {
 						 thisView.model.set('uLimit',ui.value, {'silent':true});
-						 $(thisView.ui.uLimit).html(ui.value);
+						 $(thisView.ui.uLimit).val(ui.value);
 					 }
 			 }
 		 });
