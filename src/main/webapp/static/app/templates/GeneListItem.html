@@ -1,8 +1,7 @@
 <% if(short_name == "Short Name"){ %>
 <th><%= short_name %></th>
 <% if(showLimits){ %>
-<th>Upper Limit</th>
-<th>Lower Limit</th>
+<th>Limits</th>
 <% } %>
 <th>Delete Gene</th>
 <% } else { %>
@@ -19,12 +18,10 @@
 			<table class="table">
 				<tr>
 					<th>Upper</th>
-					<td><input type="text" class="upperLimit" value="<%= lLimit%>"></td>
+					<td><input type="text" class="upperLimit" value="<%= uLimit%>"></td>
 				</tr>
 			</table>
 		</div>
-	</td>
-	<td>
 		<div class="checkbox">
 		    <label>
 		      <input type="checkbox" class="set-lower-limit"> Set Lower Limit

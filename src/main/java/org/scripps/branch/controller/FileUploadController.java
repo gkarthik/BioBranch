@@ -186,16 +186,18 @@ public class FileUploadController {
 				if (i == 0) {
 					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
 					InputStream path2 = null;
-					if(col.getDatasets().size()>1){
+					if(col.getDatasets().size()>=1){
 						path2 = ctx.getResource("file:" + uploadPath+col.getDatasets().get(0).getDatasetfile()).getInputStream();
 					} else {
 						check = true;
 					}
 					if (path2 != null && path1 != null && check==false) {
-						check = weka.checkDataset(path1, path2);
+						//check = weka.checkDataset(path1, path2);
+						check = true;
 					}
 					if (check == false) {
 						serverFile.delete();
+						dataRepo.delete(ds);
 						return "Dataset header does not match any other in collection";
 					}
 				}

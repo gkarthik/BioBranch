@@ -26,7 +26,9 @@ GeneItemView = Marionette.ItemView.extend({
 		'setUpperLimit': '.set-upper-limit',
 		'sliderUpperLimit': '.slider-upper-limit-wrapper',
 		'setLowerLimit': '.set-lower-limit',
-		'sliderLowerLimit': '.slider-lower-limit-wrapper'
+		'sliderLowerLimit': '.slider-lower-limit-wrapper',
+		'sliderUpperLimitEl': '.slider-upper-limit',
+		'sliderLowerLimitEl': '.slider-lower-limit'
 	},
 	url: base_url+"MetaServer",
 	changeLowerLimit: function(){
@@ -111,14 +113,14 @@ GeneItemView = Marionette.ItemView.extend({
 	},
 	onRender: function(){
 		var thisView = this;
-		 $(this.ui.sliderLowerLimit).slider({
+		 $(this.ui.sliderLowerLimitEl).slider({
 			 range: "max",
 			 step: parseFloat(thisView.model.get('uLimit')-thisView.model.get('lLimit'))/1000,
 			 min: thisView.model.get('lLimit'),
 			 max: thisView.model.get('uLimit'),
 			 value: thisView.model.get('lLimit'),
 			 slide: function( event, ui ) {
-				 if(ui.value>=thisView.model.get('uLimit')){
+				 if(ui.value>=thisView.model.get('uLimit') && thisView.model.get('setUpperLimit')){
 					 $(this).slider("value",thisView.model.get('lLimit'));
 				 } else {
 					 thisView.model.set('lLimit',ui.value, {'silent':true});
@@ -126,14 +128,14 @@ GeneItemView = Marionette.ItemView.extend({
 				 }
 			 }
 		 });
-		 $(this.ui.sliderUpperLimit).slider({
+		 $(this.ui.sliderUpperLimitEl).slider({
 			 range: "min",
 			 step: parseFloat(thisView.model.get('uLimit')-thisView.model.get('lLimit'))/1000,
 			 min: thisView.model.get('lLimit'),
 			 max: thisView.model.get('uLimit'),
 			 value: thisView.model.get('uLimit'),
 			 slide: function( event, ui ) {
-				 if(ui.value<=thisView.model.get('lLimit')){
+				 if(ui.value<=thisView.model.get('lLimit') && thisView.model.get('setLowerLimit')){
 						$(this).slider("value",thisView.model.get('uLimit'));
 					 } else {
 						 thisView.model.set('uLimit',ui.value, {'silent':true});
