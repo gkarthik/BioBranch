@@ -14,7 +14,8 @@
 * Pull code from this repository using mercurial plugin. 
 * Refresh all dependencies in gradle. 
 * Set Up database details in src/main/resources/application.properties.
-* To create database schema for the first time, set hibernate.hbm2ddl.auto=create in applciation.properties. To revert back to update set hibernate.hbm2ddl.auto=update.
+* To create database schema for the first time, set hibernate.hbm2ddl.auto=create in application.properties. To revert back to update set hibernate.hbm2ddl.auto=update.
+* To set up the uploads directory change uploads.dir=/absolute/path/to/folder/
 * Run on Tomcat 7.0. 
 
 ### Db SetUp ###
