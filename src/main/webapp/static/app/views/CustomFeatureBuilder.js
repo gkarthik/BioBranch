@@ -197,17 +197,21 @@ FeatureBuilderView = Marionette.Layout.extend({
 	},
 	validateExpression: function(exp){
 		if($(this.ui.equation).val()==""){
+			Cure.utils.showAlert("Equation is empty", false);
 			return false;
 		}
 		if($(this.ui.description).val()==""){
+			Cure.utils.showAlert("Description is empty", false);
 			return false;
 		}
 		if($(this.ui.name).val()==""){
+			Cure.utils.showAlert("Name is empty", false);
 			return false;
 		}
 		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
 		for(var t in split){
 			if(!this.geneColl.findWhere({"short_name":split[t].toUpperCase()}) && isNaN(parseInt(split[t]))){
+				Cure.utils.showAlert("Equation not valid", false);
 				return false;
 			}
 		}

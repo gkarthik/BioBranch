@@ -84,6 +84,9 @@ public class Weka {
 			wekaObj2 = new Weka();
 			wekaObj2.buildWeka(path2, null, "");
 			value=wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
+			if(!value){
+				LOGGER.debug(wekaObj1.equalHeadersMsg(wekaObj2.getTrain()));
+			}
 			LOGGER.debug("value="+value);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -91,6 +94,26 @@ public class Weka {
 		}
 		return value;
 	}
+	
+	/*
+	 * Function available in weka-dev 3.7.5
+	 */
+	  public String equalHeadersMsg(Instances d1) {
+
+	    // Check class and all attributes
+	    if (train.classIndex() != d1.classIndex()) {
+	      return "Class Index doesn't match";
+	    }
+	    if (train.numAttributes() != d1.numAttributes()) {
+	    	return "Number of Attributes doesn't match";
+	    }
+	    for (int i = 0; i < train.numAttributes(); i++) {
+	      if (!(train.attribute(i).equals(d1.attribute(i)))) {
+	        return train.attribute(i).name()+" doesn't match "+d1.attribute(i).name();
+	      }
+	    }
+	    return "Matches";
+	  }
 
 	public String getDataset() {
 		return dataset;

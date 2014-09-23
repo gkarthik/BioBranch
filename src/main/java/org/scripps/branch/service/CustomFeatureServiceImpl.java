@@ -80,8 +80,6 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		});
 		for (CustomFeature cf : cfList) {
 			if(cf.getDataset().getCollection().getId()==d.getCollection().getId()){
-				LOGGER.debug("Custom Feature got");
-				LOGGER.debug(String.valueOf(cf.getComponents().size()));
 				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getOrigTrain(), cf.getComponents(), cf.getReference(), d, true);
 			}
 		}
@@ -114,6 +112,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		Double limit;
 		String[] attrNames = new String[cList.size()+1];
 		int ctr = 0;
+		Boolean isMissing = false;
 		if(cList.size()>0){
 			for(Component c: cList){
 				if(c.getFeature()!=null){
@@ -121,8 +120,14 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 					for(Attribute a: aList){
 						attrNames[ctr] = a.getName();
 					}
+					if(attrNames[ctr]==null){
+						LOGGER.debug(c.getFeature().getShort_name());
+					}
 				} else if(c.getCfeature()!=null){
 					attrNames[ctr] = "custom_feature_"+c.getCfeature().getId();
+					if(attrNames[ctr]==null){
+						LOGGER.debug(c.getCfeature().getName());
+					}
 				}
 				ctr++;
 			}
@@ -145,6 +150,9 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 				ctr = 0;
 				for(Component c : cList){
 					attr_name = attrNames[ctr];
+					if(attr_name==null){
+						continue;
+					}
 					if(data.instance(i).isMissing(data.attribute(attr_name).index())){
 						continue;
 					}
@@ -169,19 +177,21 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 					}
 					ctr++;
 				}
-				try{
-					m_attributeExpression.evaluateExpression(vals);
-				} catch(Exception e) {
-					LOGGER.error(name,e);
-					break;
-				}
-				mp = new HashMap();
-				if(saveInstance){	
-					data.instance(i).setValue(data.attribute(attIndex), vals[vals.length-1]);
-				} else {
-					mp.put("value", vals[vals.length-1]);
-					mp.put("classprob", data.instance(i).classAttribute().value((int) data.instance(i).classValue()));
-					classDistribution.add(mp);
+				if(!isMissing){
+					try{
+						m_attributeExpression.evaluateExpression(vals);
+					} catch(Exception e) {
+						//LOGGER.error(name,e);
+						LOGGER.error(String.valueOf(vals.length),e);
+					}
+					mp = new HashMap();
+					if(saveInstance){	
+						data.instance(i).setValue(data.attribute(attIndex), vals[vals.length-1]);
+					} else {
+						mp.put("value", vals[vals.length-1]);
+						mp.put("classprob", data.instance(i).classAttribute().value((int) data.instance(i).classValue()));
+						classDistribution.add(mp);
+					}
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -316,12 +326,12 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 					for (Attribute att : atts) {
 						att_name = att.getName();
 					}
-					System.out.println(att_name);
 					index = data.attribute(att_name).index();
 					index++;// WEKA AddExpression() accepts index starting from 1.
 					exp = exp.replace("@" + entrezid, "a" + index);
 				} else {
 					message = "Map Genes to dataset failed.";
+					LOGGER.debug(entrezid+" unsuccessful");
 					success = false;
 				}
 			}
