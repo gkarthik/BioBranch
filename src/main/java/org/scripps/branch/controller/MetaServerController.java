@@ -247,8 +247,9 @@ public class MetaServerController {
 				}
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_feature_search")) {
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt())); 
 				List<CustomFeature> cfList = cfeatureRepo
-						.searchCustomFeatures(data.get("query").asText());
+						.searchCustomFeatures(data.get("query").asText(), d);
 				result_json = mapper.writeValueAsString(cfList);
 			} else if (command.equals("custom_feature_testcase")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));

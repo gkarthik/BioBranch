@@ -30,7 +30,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 		refWrapper: '.ref-feature-wrapper',
 		refDetails: '.ref-feature',
 		setRef: ".set-ref-feature",
-		chooseRef: '.ref-choose'
+		chooseRef: '.ref-choose',
+		message: ".msg-wrapper"
 	},
 	events: {
 		'click .choose-gene': 'openGene',
@@ -75,7 +76,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 		var exp = $(this.ui.equation).val().toUpperCase();
 		var components = [];
 		var reg;
-		var thieView = this;
+		var thisView = this;
 		var geneArr = this.geneColl.toJSON();
 		geneArr.sort(function(a,b){
 			return b.short_name.length > a.short_name.length;
@@ -123,6 +124,17 @@ FeatureBuilderView = Marionette.Layout.extend({
    	          contentType : "application/json; charset=utf-8",
    	          success : function(data){
    	        	  Cure.utils.hideLoading();
+   	        	  var msg = "";
+   	        	  if(data.success){
+   	        		if(!data.exists){
+     	        		  msg = "Success: Custom feature has been saved.";
+     	        	  } else {
+     	        		msg = data.message;
+     	        	  }
+   	        	  } else {
+   	        		  msg = "Failure: Saving could not be completed. Please try again in a while.";
+   	        	  }
+   	        	  $(thisView.ui.message).html(msg);
    	        	  console.log(data);
    	        },
    	        error: this.error
@@ -303,7 +315,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 	  			source: function( request, response ) {
 	  					var args = {
 	    	        command : "custom_feature_search",
-	    	        query: request.term
+	    	        query: request.term,
+	    	        dataset: Cure.dataset.get('id')
 	    	      };
 	    	      $.ajax({
 	    	          type : 'POST',

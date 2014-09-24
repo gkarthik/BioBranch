@@ -164,7 +164,7 @@ public class Feature {
 		return description;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
