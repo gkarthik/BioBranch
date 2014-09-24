@@ -92,6 +92,7 @@ public class User extends BaseEntity<Long> {
 	private List<CustomClassifier> customclassifiers;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonBackReference
 	private List<CustomFeature> customfeatures;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
