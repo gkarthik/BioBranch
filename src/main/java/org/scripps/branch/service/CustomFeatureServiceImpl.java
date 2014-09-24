@@ -231,35 +231,78 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			e.printStackTrace();
 		}
 		Boolean exists = false;
-		cf = cfeatureRepo.findByName(feature_name);
+		cf = cfeatureRepo.findByNameAndCollection(feature_name, dataset.getCollection());
 		if (cf == null) {
 			cf = cfeatureCusRepo.getByPostfixExpr(exp);
+			LOGGER.debug(cf.getName());
 			if(cf!=null){
 				Boolean equalTo = true;
-				if(cf.getComponents().size()==cList.size()){
-					for(Component c1: cf.getComponents()){
-						for(Component c2 : cList){
+				if(cf.getComponents().size()==cList.size() && cf.getDataset().getCollection().getId() == dataset.getCollection().getId()){
+					List<Component> c1List = cf.getComponents();
+					List<Component> c2List = cList;
+					Collections.sort(c1List, new Comparator<Component>(){
+						@Override
+						public int compare(Component o1, Component o2) {
+						    if (o1.getId() > o2.getId()) {
+						        return 1;
+						    } else if (o1.getId() < o2.getId()) {
+						        return -1;
+						    }
+						    return 0;
+						}
+					});
+					Collections.sort(c2List, new Comparator<Component>(){
+						@Override
+						public int compare(Component o1, Component o2) {
+						    if (o1.getId() > o2.getId()) {
+						        return 1;
+						    } else if (o1.getId() < o2.getId()) {
+						        return -1;
+						    }
+						    return 0;
+						}
+					});
+					Component c1;
+					Component c2;
+					for(int k=0;k<c1List.size();k++){
+						c1 = c1List.get(k);
+						c2 = c2List.get(k);
 							if(c1.getFeature()!=null && c2.getFeature()!=null){
 								if(c1.getFeature().getId()!=c2.getFeature().getId()){
+									LOGGER.debug(c1.getFeature().getId()+" "+c2.getFeature().getId());
 									equalTo = false;
 								}
 							}
 							if(c1.getCfeature()!=null && c2.getCfeature()!=null){
 								if(c1.getCfeature().getId()!=c2.getCfeature().getId()){
+									LOGGER.debug(c1.getCfeature().getId()+" "+c2.getCfeature().getId());
 									equalTo = false;
 								}
 							}
-						}
 					}
+					LOGGER.debug(String.valueOf(equalTo));
 				} else {
 					equalTo = false;
+				}
+				LOGGER.debug(String.valueOf(equalTo));
+				if(cf.getReference()!=null && ref!=null && equalTo){
+					if(cf.getReference().getFeature()!=null && ref.getFeature()!=null){
+						if(cf.getReference().getFeature().getId()!=ref.getFeature().getId()){
+							equalTo = false;
+						}
+					}
+					if(cf.getReference().getCfeature()!=null && ref.getCfeature()!=null){
+						if(cf.getReference().getCfeature().getId()!=ref.getCfeature().getId()){
+							equalTo = false;
+						}
+					}
 				}
 				if(!equalTo){
 					cf = null;
 				}
 			}
 		} else {
-			message = "Feauture with this name already exists";
+			message = "Feature with this name already exists";
 			exists = true;
 		}
 		if (cf == null) {
@@ -280,7 +323,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			}
 			compRepo.save(cList);
 			compRepo.flush();
-		} else {
+		} else if(!exists){
 			message = "Feature with this expression and limits already exists";
 			exists = true;
 		}

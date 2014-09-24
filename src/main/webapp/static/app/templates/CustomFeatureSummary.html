@@ -1,3 +1,21 @@
+<% if(reference!=null){ %>
+<h3>Reference</h3>
+<table class="table">
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+	<% if(reference.feature==null){ %>
+		<td><%= reference.cfeature.name %></td>
+		<td><%= reference.cfeature.description %></td>
+	<% } else { %>
+		<td><%= reference.feature.short_name %></td>
+		<td><%= reference.feature.description %></td>
+	<% } %>
+	</tr>
+</table>
+<% } %>
 <h3>Components</h3>
 <table class="table">
 	<tr>

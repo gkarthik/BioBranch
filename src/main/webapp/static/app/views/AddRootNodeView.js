@@ -269,7 +269,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  			source: function( request, response ) {
 	  					var args = {
 	    	        command : "custom_feature_search",
-	    	        query: request.term
+	    	        query: request.term,
+	    	        dataset: Cure.dataset.get('id')
 	    	      };
 	    	      $.ajax({
 	    	          type : 'POST',
