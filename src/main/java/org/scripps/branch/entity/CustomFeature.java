@@ -67,8 +67,9 @@ public class CustomFeature {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customFeatures")
 	private List<Tree> tree;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
+	@JsonManagedReference
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
