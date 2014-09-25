@@ -8,6 +8,7 @@ define([
   'app/views/ScoreView', 'app/views/CollaboratorCollectionView', 
   'app/views/ScoreKey', 'app/views/BadgeCollectionView',
   'app/views/ConfusionMatrixView',
+  'app/views/CustomFeatureBuilder',
   'app/views/layouts/Dataset',
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
@@ -15,7 +16,7 @@ define([
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
-    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
+    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
     regions: {
@@ -48,11 +49,16 @@ sidebarLayout = Marionette.Layout.extend({
     	'click #eval-tab li a': 'showTab',
     	'click .sidebar-show': 'showPanelBody',
     	'click .sidebar-close': 'closePanelBody',
-    	'click .sidebar-open-pathway-search': 'openPathwaySearch'
+    	'click .sidebar-open-pathway-search': 'openPathwaySearch',
+    	'click .sidebar-open-feature-builder': 'openFeatureBuilder'
     },
     className: 'panel panel-default',
     initialize: function(){
     	_.bindAll(this,'toggleTreeExp');
+    },
+    openFeatureBuilder: function(){
+    	Cure.FeatureBuilderRegion.close();
+		Cure.FeatureBuilderRegion.show(new FeatureBuilder());
     },
 	openPathwaySearch: function(){
 		Cure.PathwaySearchLayout = new PathwaySearchLayout({aggNode: false});
