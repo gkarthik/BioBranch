@@ -170,6 +170,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 							}
 						}
 					}
+					LOGGER.debug(ref_name);
 					if(ref!=null){
 						if(ref_name!=null){
 							vals[data.attribute(attr_name).index()] = vals[data.attribute(attr_name).index()]+data.instance(i).value(data.attribute(ref_name));
@@ -234,7 +235,6 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 		cf = cfeatureRepo.findByNameAndCollection(feature_name, dataset.getCollection());
 		if (cf == null) {
 			cf = cfeatureCusRepo.getByPostfixExpr(exp);
-			LOGGER.debug(cf.getName());
 			if(cf!=null){
 				Boolean equalTo = true;
 				if(cf.getComponents().size()==cList.size() && cf.getDataset().getCollection().getId() == dataset.getCollection().getId()){
@@ -269,22 +269,18 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 						c2 = c2List.get(k);
 							if(c1.getFeature()!=null && c2.getFeature()!=null){
 								if(c1.getFeature().getId()!=c2.getFeature().getId()){
-									LOGGER.debug(c1.getFeature().getId()+" "+c2.getFeature().getId());
 									equalTo = false;
 								}
 							}
 							if(c1.getCfeature()!=null && c2.getCfeature()!=null){
 								if(c1.getCfeature().getId()!=c2.getCfeature().getId()){
-									LOGGER.debug(c1.getCfeature().getId()+" "+c2.getCfeature().getId());
 									equalTo = false;
 								}
 							}
 					}
-					LOGGER.debug(String.valueOf(equalTo));
 				} else {
 					equalTo = false;
 				}
-				LOGGER.debug(String.valueOf(equalTo));
 				if(cf.getReference()!=null && ref!=null && equalTo){
 					if(cf.getReference().getFeature()!=null && ref.getFeature()!=null){
 						if(cf.getReference().getFeature().getId()!=ref.getFeature().getId()){

@@ -233,6 +233,7 @@ public class FileUploadController {
 			ds.setMappingfile(md5FileName[1]);
 			ds.setFeaturefile(md5FileName[2]);
 			ds = dataRepo.saveAndFlush(ds);
+			wekaobj.getMap().put("dataset_"+ds.getId(), wekaobj.buildWekaAndClassifiers(ds.getDatasetfile(), ds.getDatasetfile(), ds));
 			LOGGER.debug("Success");
 		} else {
 			LOGGER.debug("Deleted");
