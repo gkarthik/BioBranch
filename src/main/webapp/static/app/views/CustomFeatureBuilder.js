@@ -31,7 +31,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 		refDetails: '.ref-feature',
 		setRef: ".set-ref-feature",
 		chooseRef: '.ref-choose',
-		message: ".msg-wrapper"
+		message: ".msg-wrapper",
+		chooseLabel: '.choose-comp-label'
 	},
 	events: {
 		'click .choose-gene': 'openGene',
@@ -55,8 +56,10 @@ FeatureBuilderView = Marionette.Layout.extend({
 		$(this.ui.refWrapper).toggle();
 		this.setReference = (this.setReference) ? false: true;
 		if(this.setReference){
+			$(this.ui.chooseLabel).html("Choose Reference");
 			$(this.ui.chooseRef).html("Save Reference");
 		} else {
+			$(this.ui.chooseLabel).html("Choose Components");
 			$(this.ui.chooseRef).html("Choose Reference");
 		}
 	},
@@ -64,6 +67,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 		this.setReference = false;
 		$(this.ui.refDetails).html("");
 		$(this.ui.refDetails).data('ref_id', undefined);
+		$(this.ui.chooseLabel).html("Choose Components");
 		$(this.ui.chooseRef).html("Choose Reference");
 		$(this.ui.refWrapper).toggle();
 	},
@@ -298,14 +302,20 @@ FeatureBuilderView = Marionette.Layout.extend({
 	},
 	openGene: function(){
 		$(".category-wrapper").hide();
+		$(".choose-category").removeClass("active");
+		$(".choose-gene").addClass("active");
 		$(".category-gene").show();
 	},
 	openCf: function(){
 		$(".category-wrapper").hide();
+		$(".choose-category").removeClass("active");
+		$(".choose-cf").addClass("active");
 		$(".category-cf").show();
 	},
 	openCustomFeature: function(){
 		$(".category-wrapper").hide();
+		$(".choose-category").removeClass("active");
+		$(".choose-customfeature").addClass("active");
 		$(".category-customfeature").show();
 	},
 	showCustomFeatures: function(){
@@ -362,6 +372,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 	  						$(thisView.ui.refDetails).html(ui.item.data.name.toUpperCase());
 	  						$(thisView.ui.refDetails).data('ref_id', "custom_feature_"+ui.item.data.id);
 	  					}
+	  					$(this).val(''); 
+	  					return false;
 	  				},
 	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
@@ -462,6 +474,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 						$(thisView.ui.refDetails).html(ui.item.short_name.replace(/_/g," ").toUpperCase());
   						$(thisView.ui.refDetails).data('ref_id', ui.item.unique_id);
   					}
+				$(this).val(''); 
+				return false;
 			},
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
@@ -546,6 +560,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 					$(thisView.ui.refDetails).html(ui.item.symbol.toUpperCase());
 						$(thisView.ui.refDetails).data('ref_id', ui.item.entrezgene);
 				}
+				$(this).val(''); 
+				return false;
 			}
 		});
 		$(this.ui.gene_query).focus();
