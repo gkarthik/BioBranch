@@ -66,7 +66,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 	removeRef: function(){
 		this.setReference = false;
 		$(this.ui.refDetails).html("");
-		$(this.ui.refDetails).data('ref_id', undefined);
+		$(this.ui.refDetails).data('ref_id', null);
 		$(this.ui.chooseLabel).html("Choose Components");
 		$(this.ui.chooseRef).html("Choose Reference");
 		$(this.ui.refWrapper).toggle();
