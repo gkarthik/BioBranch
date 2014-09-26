@@ -43,11 +43,15 @@ FeatureBuilderView = Marionette.Layout.extend({
 		'click .add-custom-feature': 'addCustomFeature',
 		'click .close': 'closeView',
 		'click .ref-choose': 'chooseRef',
-		'click .ref-remove': 'removeRef'
+		'click .ref-remove': 'removeRef',
+		'click .new-custom-feature': 'resetCf'
 	},
 	regions: {
 		geneCollRegion: '.gene-coll-region',
 		cFeatureDistribution: '#cfeature-class-distribution-wrapper'
+	},
+	resetCf: function(){
+		this.render();
 	},
 	closeView: function(){
 		this.remove();
@@ -480,11 +484,9 @@ FeatureBuilderView = Marionette.Layout.extend({
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	},
 	onRender: function(){
-		this.geneCollRegion.show(new GeneCollView({collection: this.geneColl, options: {showLimits:true}}));
-	},
-	onShow: function(){
 		this.showCustomFeatures();
 		this.showCf();
+		this.geneCollRegion.show(new GeneCollView({collection: this.geneColl, options: {showLimits:true}}));
 		var thisUi = this.ui;
 		var thisView = this;
 		$(this.ui.gene_query).genequery_autocomplete({
