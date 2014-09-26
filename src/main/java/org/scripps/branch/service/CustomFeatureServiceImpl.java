@@ -170,7 +170,6 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 							}
 						}
 					}
-					LOGGER.debug(ref_name);
 					if(ref!=null){
 						if(ref_name!=null){
 							vals[data.attribute(attr_name).index()] = vals[data.attribute(attr_name).index()]+data.instance(i).value(data.attribute(ref_name));
@@ -182,8 +181,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 					try{
 						m_attributeExpression.evaluateExpression(vals);
 					} catch(Exception e) {
-						//LOGGER.error(name,e);
-						LOGGER.error(String.valueOf(vals.length),e);
+						LOGGER.error(name,e);
 					}
 					mp = new HashMap();
 					if(saveInstance){	
@@ -196,7 +194,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Instance limits failed",e);
 			}
 		}
 		Collections.sort(classDistribution, new Comparator<HashMap>(){

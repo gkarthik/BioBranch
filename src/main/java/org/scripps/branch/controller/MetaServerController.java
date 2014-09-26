@@ -249,7 +249,7 @@ public class MetaServerController {
 			} else if (command.equals("custom_feature_search")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt())); 
 				List<CustomFeature> cfList = cfeatureRepo
-						.searchCustomFeatures(data.get("query").asText(), d);
+						.searchCustomFeatures(data.get("query").asText(), d.getCollection());
 				result_json = mapper.writeValueAsString(cfList);
 			} else if (command.equals("custom_feature_testcase")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));

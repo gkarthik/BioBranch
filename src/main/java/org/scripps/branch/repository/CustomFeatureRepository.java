@@ -22,6 +22,6 @@ public interface CustomFeatureRepository extends
 	@Query("select cf from CustomFeature cf where cf.name = ?1 and cf.dataset.collection=?2")
 	CustomFeature findByNameAndCollection(String name, Collection c);
 
-	@Query("select cf from CustomFeature cf where (cf.name like concat('%',concat(?1,'%')) or cf.description like concat('%',concat(?1,'%'))) and cf.dataset = ?2")
-	List<CustomFeature> searchCustomFeatures(String searchText, Dataset d);
+	@Query("select cf from CustomFeature cf where (cf.name like concat('%',concat(?1,'%')) or cf.description like concat('%',concat(?1,'%'))) and cf.dataset.collection = ?2")
+	List<CustomFeature> searchCustomFeatures(String searchText, Collection c);
 }
