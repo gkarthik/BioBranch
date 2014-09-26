@@ -228,8 +228,9 @@ FeatureBuilderView = Marionette.Layout.extend({
 			Cure.utils.showAlert("Name is empty", false);
 			return false;
 		}
-		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
+		var split = $(this.ui.equation).val().match(/([A-Za-z0-9_-])+/g);
 		for(var t in split){
+			split[t] = split[t].trim();
 			if(!this.geneColl.findWhere({"short_name":split[t].toUpperCase()}) && isNaN(parseInt(split[t]))){
 				Cure.utils.showAlert("Equation not valid", false);
 				return false;
@@ -238,7 +239,7 @@ FeatureBuilderView = Marionette.Layout.extend({
 		return true;
 	},
 	highlightFeatures: function(){
-		var split = $(this.ui.equation).val().match(/([A-Za-z0-9 ])+/g);
+		var split = $(this.ui.equation).val().match(/([A-Za-z0-9_-])+/g);
 		var termstring = $(this.ui.equation).val();
 		var index = 0;
 		var mp = {};
