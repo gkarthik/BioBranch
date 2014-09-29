@@ -3,9 +3,10 @@ define([
 	'marionette',
 	//Views
 	'app/views/AddRootNodeView',
+	'app/views/TutorialView',
 	//Templates
 	'text!static/app/templates/EmptyNodeCollection.html'
-    ], function($, Marionette, AddRootNodeView, EmptyNodeCollectionTemplate) {
+    ], function($, Marionette, AddRootNodeView, TutorialView, EmptyNodeCollectionTemplate) {
 emptyLayout = Marionette.Layout.extend({
     template: EmptyNodeCollectionTemplate,
     ui:{

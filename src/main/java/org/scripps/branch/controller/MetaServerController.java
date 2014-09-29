@@ -404,6 +404,7 @@ public class MetaServerController {
 					mp.put("id", String.valueOf(t1.getId()));
 					mp.put("title", t1.getTitle());
 					mp.put("description", t1.getDescription());
+					mp.put("url", t1.getUrl());
 					for(Tutorial t2 : tList){
 						if(t2.getId()==t1.getId()){
 							nComp = false;

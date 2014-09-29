@@ -10,6 +10,24 @@ html, body{
   height:100%;
 }
 
+.tutorial-wrapper{
+	width:100%;
+	height:100%;
+	position: fixed;
+	z-index: 11;
+	background: rgba(0,0,0,0.4);
+	top: 0px;
+}
+
+.tutorial-text{
+	width: 50%;
+	padding:2%;
+	margin-left: 24%;
+	background: #FFF;
+	border-radius: 5px;
+	margin-top: 70px;
+}
+
 .addnode_wrapper{
 	position:relative;
 	width:100%;	
