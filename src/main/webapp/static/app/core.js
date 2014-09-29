@@ -10,6 +10,7 @@ define([
         'app/collections/BadgeCollection',
         'app/collections/GeneCollection',
         'app/collections/DatasetCollection',
+        'app/collections/TutorialCollection',
         // Models
         'app/models/Comment', 
         'app/models/Score',
@@ -31,7 +32,7 @@ define([
         'app/tour/tree'
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
-        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
+        		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, TutorialCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
         		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, LoginView, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
@@ -252,6 +253,8 @@ define([
 		Cure.Player = new Player();
 		Cure.Player.set("username",cure_user_name);
 		Cure.Player.set("id",cure_user_id);
+		Cure.TutorialCollection = new TutorialCollection();
+		Cure.TutorialCollection.fetch();
 		Cure.LoginView = new LoginView({model: Cure.Player});
 		Cure.PlayerNodeCollectionView = new NodeCollectionView({
 			collection : Cure.PlayerNodeCollection

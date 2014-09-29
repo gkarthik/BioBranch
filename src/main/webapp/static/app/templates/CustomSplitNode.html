@@ -2,7 +2,9 @@
 				<div id="summary_header">
 					<button type="button" class="close close-json-view">&times;</button>
 					<h2><%= name %></h2>
+					<% if(options.unique_id.indexOf("custom_set")==-1){ %>
 					<p><%= description %></p>
+					<% } %>
 				</div>
 				<div id="summary_content">
 				<% if(options.unique_id.indexOf("custom_feature")!=-1){ %>
