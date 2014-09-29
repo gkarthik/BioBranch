@@ -19,6 +19,7 @@ import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Pathway;
 import org.scripps.branch.entity.Score;
 import org.scripps.branch.entity.Tree;
+import org.scripps.branch.entity.Tutorial;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.DatasetMap;
@@ -32,6 +33,7 @@ import org.scripps.branch.repository.PathwayRepository;
 import org.scripps.branch.repository.ScoreRepository;
 import org.scripps.branch.repository.SerializedCustomClassifierRepository;
 import org.scripps.branch.repository.TreeRepository;
+import org.scripps.branch.repository.TutorialRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
@@ -124,6 +126,9 @@ public class MetaServerController {
 	
 	@Autowired
 	private FeatureService fSer;
+	
+	@Autowired
+	private TutorialRepository tRepo;
 
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
@@ -386,6 +391,40 @@ public class MetaServerController {
 			mp.put("uLimit", train.instance(train.numInstances()-1).value(train.attribute(attr_name)));
 			mp.put("lLimit", train.instance(0).value(train.attribute(attr_name)));
 			result_json = mapper.writeValueAsString(mp);
+		} else if (command.contains("tutorial")){
+			if(command.equals("tutorial_user_get")){
+				List<Tutorial> tListComplete = tRepo.findAll();
+				List<Tutorial> tList = userRepo.findById(data.get("user_id").asLong()).getTutorials();
+				ArrayList<HashMap<String,String>> a = new ArrayList<HashMap<String,String>>();
+				Boolean nComp;
+				HashMap<String, String> mp;
+				for(Tutorial t1: tListComplete){
+					nComp = true;
+					mp = new HashMap<String, String>();
+					mp.put("id", String.valueOf(t1.getId()));
+					mp.put("title", t1.getTitle());
+					mp.put("description", t1.getDescription());
+					for(Tutorial t2 : tList){
+						if(t2.getId()==t1.getId()){
+							nComp = false;
+						}
+					}
+					if(nComp){
+						mp.put("completed", "false");
+					} else {
+						mp.put("completed", "true");
+					}
+					a.add(mp);
+				}
+				result_json = mapper.writeValueAsString(a);
+			} else if (command.equals("tutorial_user_add")){
+				User u = userRepo.findById(data.get("user_id").asLong());
+				List<Tutorial> tList = u.getTutorials();
+				tList.add(tRepo.findById(data.get("tutorial_id").asLong()));
+				u.setTutorials(tList);
+				u = userRepo.saveAndFlush(u);
+				result_json = "{message: success}";
+			}
 		}
 		return result_json;
 	}

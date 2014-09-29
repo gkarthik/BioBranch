@@ -891,15 +891,12 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public int checkPointInPolygon(List<double[]> vertices,double[] testPoint){
 		int i, j; 
 		Boolean c = false;
-		LOGGER.debug(vertices.toString());
-		LOGGER.debug(testPoint[0]+","+testPoint[1]);
 		  for (i = 0, j = vertices.size()-1; i < vertices.size(); j = i++) {
 		    if ( ((vertices.get(i)[1]>testPoint[1]) != (vertices.get(j)[1]>testPoint[1])) &&
 		     (testPoint[0] < (vertices.get(j)[0]-vertices.get(i)[0]) * (testPoint[1]-vertices.get(i)[1]) / (vertices.get(j)[1]-vertices.get(i)[1]) + vertices.get(i)[0]) )
 		       c = !c;
 		  }
 		  if(c){
-			  LOGGER.debug("True!");
 			  return 1;
 		  }
 		return 0;
@@ -1196,7 +1193,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		} else if (m_Attribute >= m_Info.numAttributes()-1) {
 			if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
 				CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
-				LOGGER.debug(cSet.getId()+": DIstribution for instance");
 				JsonNode vertices = mapper.readTree(cSet.getConstraints());
 				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 				List<Attribute> aList = generateAttributeList(cSet, m_Info, d);
@@ -1262,7 +1258,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		for(int i=1;i>=0;i--){
 			f = new Feature();
 			f = fList.get(i);
-			LOGGER.debug(f.getShort_name());
 			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
 				if(a.getDataset().getId() == d.getId()){
 					attr = data.attribute(a.getName());
