@@ -99,7 +99,8 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	    "LoginRegion": "#LoginRegion",
 	    "ScoreBoardRegion" : "#scoreboard_innerwrapper",
 	    "GenePoolRegion": "#GenePoolRegion",
-	    "FeatureBuilderRegion": "#FeatureBuilderRegion"
+	    "FeatureBuilderRegion": "#FeatureBuilderRegion",
+	    "TutorialRegion": "#TutorialRegion"
 	  },
 	  posNodeName : classValues[0],
 	  negNodeName : classValues[1],

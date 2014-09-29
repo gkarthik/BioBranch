@@ -19,6 +19,7 @@
 		</div>
 	</div>
 </div>
+<div id="TutorialRegion"></div>
 <div id="NodeDetailsWrapper" class="blurCloseElement">
 	<div id="NodeDetailsContent"></div>
 </div>
