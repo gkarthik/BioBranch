@@ -58,23 +58,69 @@ public class TutorialController {
 			userDetails = (UserDetails) auth.getPrincipal();
 			User user = userRepo.findByEmail(userDetails.getUsername());
 			if(!user.getFirstName().equals("admin")){
-				return "user/login";
+				return "index";
 			}
 		}		
 		model.addAttribute("tutorials", tRepo.findAll());
         return tutorialPage;
     }
 	
+	@RequestMapping(value = "/tutorial", method = RequestMethod.POST)
+    public String deleteTutorial(long id, WebRequest request, Model model) {
+		UserDetails userDetails = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			userDetails = (UserDetails) auth.getPrincipal();
+			User user = userRepo.findByEmail(userDetails.getUsername());
+			if(!user.getFirstName().equals("admin")){
+				return "index";
+			}
+		}	
+		for(User u: userRepo.findAll()){
+			for(int i =0;i<u.getTutorials().size();i++){
+				if(u.getTutorials().get(i).getId() == id){
+					u.getTutorials().remove(i);
+					userRepo.saveAndFlush(u);
+					i--;
+				}
+			}
+			
+		}
+		tRepo.delete(tRepo.findById(id));
+		model.addAttribute("success",true);
+        model.addAttribute("message","Tutorial Deleted.");
+		model.addAttribute("tutorials", tRepo.findAll());
+        return tutorialPage;
+    }
+	
 	@RequestMapping(value = "/tutorial/new", method = RequestMethod.GET)
     public String saveTutorialPage(Model model) {
+		UserDetails userDetails = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			userDetails = (UserDetails) auth.getPrincipal();
+			User user = userRepo.findByEmail(userDetails.getUsername());
+			if(!user.getFirstName().equals("admin")){
+				return "redirect:/";
+			}
+		}	
         model.addAttribute("tutorial", new TutorialForm());
         return SaveTutorialPage;
     }
- 
+	
     @RequestMapping(value = "/tutorial/new", method = RequestMethod.POST)
     public String saveTutorialAction(
             @Valid @ModelAttribute("tutorial") TutorialForm tutorial,
             BindingResult bindingResult, Model model) {
+    	UserDetails userDetails = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			userDetails = (UserDetails) auth.getPrincipal();
+			User user = userRepo.findByEmail(userDetails.getUsername());
+			if(!user.getFirstName().equals("admin")){
+				return "index";
+			}
+		}	
         if (bindingResult.hasErrors()) {
             return SaveTutorialPage;
         }
@@ -84,7 +130,8 @@ public class TutorialController {
         t.setUrl(tutorial.getUrl());
         tRepo.saveAndFlush(t);
         model.addAttribute("tutorial", t);
-        model.addAttribute("message","success");
-        return "redirect:/tutorial/";
+        model.addAttribute("success",true);
+        model.addAttribute("message","Tutorial Added.");
+        return SaveTutorialPage;
     }
 }

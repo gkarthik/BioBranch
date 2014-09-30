@@ -5,26 +5,41 @@
 <body>
 	<div class="container">
 		<div class="row">
-			<% if(request.getParameter("message").equals("success")){ %>
-				<div class="alert alert-success alert-dismissible" role="alert">
+		<c:choose>
+			<c:when test="${!empty success}">
+				<c:choose>
+				  <c:when test="${success==true}">
+				  <div class="alert alert-success alert-dismissible" role="alert">
 				  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				  <strong>Success!</strong> Tutorial Added.
-				</div>
-			<% } %>
+				  ${message}
+				  </div>
+				  </c:when>
+				   <c:otherwise>
+				  <div class="alert alert-warning alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				  ${message}
+				  </div>
+				  </c:otherwise>
+				  </c:choose>
+			</c:when>
+		</c:choose>
 		</div>
 		<div class="row">
-			<h2>Datasets</h2>
+			<h2>Tutorials</h2>
+			<a href="./new" class="btn btn-link">Add Tutorial</a>
 			<table class="table table-striped">
 				<tr>
 					<th>Title</th>
 					<th>Description</th>
 					<th>Url</th>
+					<th>--- ---</th>
 				</tr>
 				<c:forEach var="o" items="${tutorials}">
 					<tr>
 						<td>${o.title}</td>
 						<td>${o.description}</td>
 						<td><a href="${o.url}" target="_blank">${o.url}</a></td>
+						<td><form method="post" url="."><input name="id" type="hidden" value="${o.id}" /><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /><input type="submit" class="btn btn-link" value="Delete"></form></td>
 					</tr>
 				</c:forEach>
 			</table>

@@ -424,7 +424,7 @@ public class MetaServerController {
 				tList.add(tRepo.findById(data.get("tutorial_id").asLong()));
 				u.setTutorials(tList);
 				u = userRepo.saveAndFlush(u);
-				result_json = "{message: success}";
+				result_json = "{\"message\": \"success\"}";
 			}
 		}
 		return result_json;
