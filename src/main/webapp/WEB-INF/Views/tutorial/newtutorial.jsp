@@ -12,6 +12,25 @@
 <body>
 <div class="container">
 <div class="col-md-6" style="float:none; margin:0 auto;">
+		<c:choose>
+			<c:when test="${!empty success}">
+				<c:choose>
+				  <c:when test="${success==true}">
+				  <div class="alert alert-success alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				  ${message}
+				  </div>
+				  </c:when>
+				   <c:otherwise>
+				  <div class="alert alert-warning alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				  ${message}
+				  </div>
+				  </c:otherwise>
+				  </c:choose>
+			</c:when>
+		</c:choose>
+		<a href="./" class="btn btn-link">Back to Tutorials</a>
         <h2>Add Tutorial</h2>
         <form:form action="./new" commandName="tutorial" method="POST" enctype="utf8" role="form">
 					<input type="hidden" name="${_csrf.parameterName}"
