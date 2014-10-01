@@ -156,35 +156,11 @@ define([
 				"dragSvgGroup");
 
 		// Event Initializers
-		$("#HelpText").on("click", function() {
-			var html = $(this).html();
-			Cure.utils.ToggleHelp(false, Cure.helpText);
-		});
-
-		$("#showDataInf").on("click",function(){
-			$("#InfoWrapper").show();
-		});
-
 		$("body").delegate(".close", "click", function() {
 			if ($(this).parent().hasClass("alert")) {
 				$(this).parent().hide();
-			} else if($(this).parent().attr('id')=="HelpText"){
-				Cure.utils.ToggleHelp(true);
 			} else if(!$(this).hasClass("close-json-view")) {
 				$(this).parent().parent().parent().hide();
-			}
-		});
-
-		$("body").delegate("#taketour","click",function(){
-			Cure.utils.ToggleHelp(true);
-			window.localStorage.clear();
-			if(Cure.PlayerNodeCollection.length==0){
-				Cure.initTour.init();
-				if(Cure.tour.startTour){
-					Cure.initTour.start();
-				}
-			} else {
-				alert("Taking a tour will delete your current tree. Refresh page once you're done working to take the tour.");
 			}
 		});
 

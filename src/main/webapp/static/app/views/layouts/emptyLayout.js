@@ -16,10 +16,6 @@ emptyLayout = Marionette.Layout.extend({
       AddRootNode: "#AddRootNodeWrapper"
     },
     onRender: function(){
-    	if(!Cure.helpText){
-        	Cure.helpText = $("#HelpText").html();	
-        	Cure.utils.ToggleHelp(true, Cure.helpText);
-    	}
     	this.AddRootNode.on("show", function(view){
     		window.setTimeout(function(){
     			Cure.initTour.init();

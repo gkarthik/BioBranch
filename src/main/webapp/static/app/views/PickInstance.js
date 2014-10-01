@@ -10,18 +10,21 @@ define([
     ], function($, Marionette, d3, pickInstTmpl, geneinfosummary, cfsummary) {
 PickInstanceView = Marionette.ItemView.extend({
 	template: pickInstTmpl,
-	className: 'pick-instance-wrapper panel panel-default',
 	url:base_url+'MetaServer',
 	ui: {
 		gene_query: ".pick_gene_instances",
 		cf_query: ".pick_cf_instances",
-		chartWrapper: '#instance-data-chart-wrapper'
+		chartWrapper: '#instance-data-chart-wrapper',
+		panel: '.pick-instance-wrapper',
+		previewOverlay: '#preview-overlay'
 	},
 	events: {
 		'click #get-instances': 'getInstances',
 		'click .pick-instance-close': 'closeView',
 		'click #build-selection': 'createCustomSet',
-		'click #clear-selection': 'clearSelection'
+		'click #clear-selection': 'clearSelection',
+		'click #preview-selection': 'previewSelection',
+		'click #preview-close': 'closePreview'
 	},
 	closeView: function(e){
 		e.preventDefault();
@@ -30,8 +33,21 @@ PickInstanceView = Marionette.ItemView.extend({
 	initialize: function(){
 		_.bindAll(this,'getInstances', 'addNode', 'drawChart');
 	},
+	preview: false,
 	attrs: [],
 	attributeVertices: [],
+	closePreview: function(){
+		$(this.ui.previewOverlay).hide();
+		$(this.ui.panel).show();
+		Cure.PlayerNodeCollection.parseResponse(JSON.parse(Cure.PlayerNodeCollection.hisData[Cure.PlayerNodeCollection.hisData.length-2]));
+		this.preview = false;
+	},
+	previewSelection: function(){
+		$(this.ui.previewOverlay).show();
+		$(this.ui.panel).hide();
+		this.preview = true;
+		this.createCustomSet();
+	},
 	createCustomSet: function(){
 		var unique_ids = [];
 		$(".pick-attribute-uniqueid").each(function(){
@@ -118,14 +134,16 @@ PickInstanceView = Marionette.ItemView.extend({
 				});
 			}
 			Cure.PlayerNodeCollection.sync();
-			 Cure.sidebarLayout.pickInstanceRegion.close();
+			if(!this.preview){
+				Cure.sidebarLayout.pickInstanceRegion.close();
+			}
 	},
 	height: 200,
 	width: 300,
 	drawChart: function(attr){
 		$(this.ui.chartWrapper).css({'display':'block'});
-		this.height = this.$el.height() - 200;
-		this.width = this.$el.width() * (5/6) - 30;
+		this.height = $(this.ui.panel).height() - 200;
+		this.width = $(this.ui.panel).width() * (5/6) - 30;
 		d3.select("#instance-data-chart").select(".instance-data-chart-wrapper").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],

@@ -13,7 +13,7 @@ define([
 NodeCollection = Backbone.Collection.extend({
 	model : Node,
 	initialize : function() {
-		_.bindAll(this, 'setDistributionData', 'setInstanceData');
+		_.bindAll(this, 'setDistributionData', 'setInstanceData', 'parseResponse');
 	},
 	text_branches:{
 		branches: [],
@@ -21,6 +21,7 @@ NodeCollection = Backbone.Collection.extend({
 	tree_id: 0,
 	prevTreeId : -1,
 	url : base_url+"MetaServer",
+	hisData: ['{"pct_correct":56,"size":1,"novelty":1,"confusion_matrix":[[0,143],[0,182]],"auc":0.5,"text_tree":"ManualTree: no model has been built yet.","treestruct":{},"distribution_data":{}}'],
 	sync : function(reqArgs) {
 		//Function to send request to Server with current tree information.
 		var tree = [];
@@ -185,6 +186,12 @@ NodeCollection = Backbone.Collection.extend({
 					}
 					Cure.Score.set("previousAttributes",Cure.Score.toJSON());
 					Cure.Score.set(scoreArray);
+					if(Cure.PlayerNodeCollection.length>0){
+						data.treestruct = Cure.PlayerNodeCollection.at(0).toJSON();
+					} else {
+						data.treestruct = {};
+					}
+					Cure.PlayerNodeCollection.hisData.push(JSON.stringify(data));
 				}
 				if(Cure.PlayerNodeCollection.models.length==5){
 					if(!Cure.treeTour.ended()){
