@@ -37,16 +37,12 @@ PickInstanceView = Marionette.ItemView.extend({
 	attrs: [],
 	attributeVertices: [],
 	closePreview: function(){
-		$(this.ui.previewOverlay).hide();
-		$(this.ui.panel).show();
-		Cure.PlayerNodeCollection.parseResponse(JSON.parse(Cure.PlayerNodeCollection.hisData[Cure.PlayerNodeCollection.hisData.length-2]));
+
 		this.preview = false;
 	},
 	previewSelection: function(){
-		$(this.ui.previewOverlay).show();
-		$(this.ui.panel).hide();
-		this.preview = true;
-		this.createCustomSet();
+		//this.preview = true;
+		//this.createCustomSet();
 	},
 	createCustomSet: function(){
 		var unique_ids = [];
@@ -133,9 +129,12 @@ PickInstanceView = Marionette.ItemView.extend({
 					pickInst: false
 				});
 			}
-			Cure.PlayerNodeCollection.sync();
+			
 			if(!this.preview){
+				Cure.PlayerNodeCollection.sync();
 				Cure.sidebarLayout.pickInstanceRegion.close();
+			} else {
+				
 			}
 	},
 	height: 200,

@@ -1,8 +1,7 @@
 <div class="aimWrapper">
-		<h1 class="renderPink">Branch</h1>
-		<p><b>Aim</b>:
+		<p>
 		<% if(badge_desc==null){ %> 
-		Build a decision tree that predicts 10 year survival using gene expression values and clinical variables.
+			<%= Cure.dataset.get('description') %>
 		<% } else { print(badge_desc); } %>
 		</p>
 		</div>

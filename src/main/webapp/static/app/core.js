@@ -75,7 +75,7 @@ define([
 		
 		//Dataset
 		Cure.dataset = new Dataset();
-		Cure.dataset.set('id', dataset);
+		Cure.dataset.set(dataset);
 		Cure.validateFeature = {};
 		var args = {
 				command : "validate_features",
@@ -94,7 +94,6 @@ define([
 				Cure.utils.hideLoading(null);
 				Cure.dataset.set('validateGenes', data.genes);
 				Cure.dataset.set('validateNonGenes', data.non_genes);
-				Cure.dataset.set('name', datasetName);
 				Cure.dataset.set('infoGainMin',data.infoGainMin);
 				Cure.dataset.set('infoGainMax',data.infoGainMax);
 				Cure.infogainScale = d3.scale.linear().domain([data.infoGainMin, data.infoGainMax]).range(["#E5F5E0","#00441B"]);
