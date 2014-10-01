@@ -43,15 +43,20 @@ public class HomeController {
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
-		model.addAttribute("userId", -1);
-		model.addAttribute("firstName", "Guest");
 		if(request.getParameter("dataset")!=null){
 			long id = Long.valueOf(request.getParameter("dataset"));
 			Weka weka = wekaMap.getWeka(id);
+			if(weka==null){
+				return "redirect:/datasets";
+			}
 			model.addAttribute("pos", weka.getOrigTrain().classAttribute().value(1));
 			model.addAttribute("neg", weka.getOrigTrain().classAttribute().value(0));
-			model.addAttribute("datasetName", dRepo.findById(id).getName());
+			model.addAttribute("dataset", dRepo.findById(id));
+		} else {
+			return "redirect:/datasets";
 		}
+		model.addAttribute("userId", -1);
+		model.addAttribute("firstName", "Guest");
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			userDetails = (UserDetails) auth.getPrincipal();
 			User user = userRepo.findByEmail(userDetails.getUsername());

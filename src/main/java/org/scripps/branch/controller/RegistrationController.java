@@ -132,7 +132,7 @@ public class RegistrationController {
 		LOGGER.debug("User {} has been signed in");
 		ProviderSignInUtils.handlePostSignUp(registered.getEmail(), request);
 
-		return "redirect:/";
+		return "redirect:/datasets";
 	}
 
 	/**

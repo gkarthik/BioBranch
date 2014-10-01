@@ -44,17 +44,19 @@
 						badge_desc = null, 
 						badge_id = null, 
 						base_url = (document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href/*(document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href.split("branch")[0]+"branch/"*/,
-						dataset = 229586,		
+						dataset = {},
 						_csb = [ [ null, null ] ],
-						classValues = ["y","n"]
-						datasetName = "Metabric";
+						classValues = ["y","n"],
 				<%if (request.getParameter("treeid") != null) {%>
 					cure_tree_id =	<%=request.getParameter("treeid")%>;
 				<%}%>
 				<%if (request.getParameter("dataset") != null) {%>
-					dataset = <%=request.getParameter("dataset")%>;
+					dataset = {
+						id: ${dataset.id},
+						name: "${dataset.name}",
+						description: "${dataset.description}"
+					};
 					classValues = ["${pos}", "${neg}"];
-					datasetName = "${datasetName}";
 				<%}%>
 					
 				</script>
