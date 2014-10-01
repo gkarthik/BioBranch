@@ -177,6 +177,7 @@ NodeCollection = Backbone.Collection.extend({
 					updateScore = false;
 				}
 				if(updateScore){
+					Cure.PlayerNodeCollection.hisData.push(JSON.stringify(data));
 					Cure.CfMatrix.setupMatrix(data.confusion_matrix);
 					//Storing Score in a Score Model.
 					var scoreArray = data;
@@ -191,7 +192,6 @@ NodeCollection = Backbone.Collection.extend({
 					} else {
 						data.treestruct = {};
 					}
-					Cure.PlayerNodeCollection.hisData.push(JSON.stringify(data));
 				}
 				if(Cure.PlayerNodeCollection.models.length==5){
 					if(!Cure.treeTour.ended()){

@@ -13,7 +13,8 @@ define([
 		pct_correctDiff : 0,
 		noveltyDiff : 0,
 		previousAttributes: {},
-		changeFlag: 0
+		changeFlag: 0,
+		auc: 0
 	},
 	initialize: function(){
 		this.listenTo(this, 'change:score', this.updateScore);
