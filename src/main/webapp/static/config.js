@@ -104,7 +104,7 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	  },
 	  posNodeName : classValues[0],
 	  negNodeName : classValues[1],
-	  startTour: true,
+	  startTour: false,
 	  scoreWeights: {
 	  	pct_correct: 1000,
 	  	novelty: 500,
