@@ -113,9 +113,9 @@ sidebarLayout = Marionette.Layout.extend({
     	}
     },
     onRender: function(){
-    	Cure.ScoreView = new ScoreView({
-        "model" : Cure.Score
-      });
+//    	Cure.ScoreView = new ScoreView({
+//        "model" : Cure.Score
+//      });
       Cure.CommentView = new CommentView({
         model : Cure.Comment
       });
@@ -138,7 +138,7 @@ sidebarLayout = Marionette.Layout.extend({
     	  model: Cure.CfMatrix
       });
       Cure.datasetLayout = new DatasetLayout();
-      this.ScoreRegion.show(Cure.ScoreView);
+      //this.ScoreRegion.show(Cure.ScoreView);
       this.ScoreBoardRegion.show(Cure.ScoreBoardView);
       this.CommentRegion.show(Cure.CommentView);
       this.TreeBranchRegion.show(Cure.TreeBranchCollectionView);
@@ -151,14 +151,14 @@ sidebarLayout = Marionette.Layout.extend({
     onShow: function(){
     	this.$el.attr('id',"cure-panel");
     	this.$el.draggable({handle: '.panel-heading-main'});
-  		var el = document.getElementById("score");
-  		od = new Odometer({
-  		  el: el,
-  		  value: 0,
-  		  duration: '2000',
-  		  format: '',
-  		  theme: 'train-station'
-  		});
+//  		var el = document.getElementById("score");
+//  		od = new Odometer({
+//  		  el: el,
+//  		  value: 0,
+//  		  duration: '2000',
+//  		  format: '',
+//  		  theme: 'train-station'
+//  		});
     }
 });
 return sidebarLayout;
