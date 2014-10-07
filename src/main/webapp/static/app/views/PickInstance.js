@@ -178,7 +178,7 @@ PickInstanceView = Marionette.Layout.extend({
 						thisView.preview = false;
 						thisView.cfMatrix.setupMatrix(data.confusion_matrix);
 						$(thisView.ui.acc).html(Math.floor(data.pct_correct*100)/100);
-						$(thisView.ui.acc).html(Math.floor(data.auc*100)/100);
+						$(thisView.ui.auc).html(Math.floor(data.auc*100)/100);
 					},
 					error : this.error
 				});
