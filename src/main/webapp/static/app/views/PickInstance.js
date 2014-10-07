@@ -452,7 +452,8 @@ PickInstanceView = Marionette.Layout.extend({
 					$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
 					$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.symbol);
 					$(this).parent().find(".attribute-label").html(ui.item.symbol);
-					$(this).val("");
+					$(this).val('');
+					return false;
 				}
 			}
 		});
@@ -537,9 +538,11 @@ PickInstanceView = Marionette.Layout.extend({
 						$("#SpeechBubble").remove();
 						$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
 						$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.label);
-						$(this).parent().find(".attribute-label").html(ui.item.symbol);
-						$(this).val(ui.item.label);
+						$(this).parent().find(".attribute-label").html(ui.item.short_name);
+						$(this).val(ui.item.short_name);
 					}
+				$(this).val('');
+				return false;
 			},
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	}
