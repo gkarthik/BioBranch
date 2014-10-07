@@ -333,6 +333,11 @@ display: block;
 	z-index: 6;
 }
 
+.preview-results{
+	display: none;
+	padding-left:10px;
+}
+
 .axis-marker{
 	stroke: #ddd;
 	strokw-width: 1;
