@@ -81,6 +81,31 @@ define([
 				command : "validate_features",
 				dataset : Cure.dataset.get('id')
 		};
+		//Default Node Attributes
+		Cure.NodeDefaults = {
+				'name' : '',
+				'cid' : 0,
+				getSplitData: false,
+				edit : 0,
+				highlight : 0,
+				modifyAccLimit: 1,
+				pickInst: false,
+				getRankedAttr: false,
+				children : [],
+				manual_pct_correct: 0,
+				gene_summary : {
+					"summaryText" : "",
+					"goTerms" : {},
+					"generif" : {},
+					"name" : ""
+				},
+				accLimit: 0,
+				showJSON : 0,
+				x: 0,
+				y: 0,
+				x0 : 0,
+				y0: 0
+			};
 		
 		Cure.utils.showLoading(null);
 		//POST request to server.		

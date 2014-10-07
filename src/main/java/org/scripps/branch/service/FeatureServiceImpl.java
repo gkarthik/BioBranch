@@ -76,6 +76,7 @@ public class FeatureServiceImpl implements FeatureService {
 			f.setShort_name(data.attribute(i).name());
 			f.setUnique_id(hashAttrName(System.currentTimeMillis() + data.attribute(i).name()));
 			f.setDescription(data.attribute(i).name());
+			f.setIsGene(false);
 			fList.add(f);
 		}
 		fList = fRepo.save(fList);

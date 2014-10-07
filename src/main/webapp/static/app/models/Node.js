@@ -6,29 +6,8 @@ define([
       	'backboneRelational'
     ], function(Backbone, Collaborator, DistributionData, NodeOptions) {
 	Node = Backbone.RelationalModel.extend({
-	defaults : {
-		'name' : '',
-		'cid' : 0,
-		getSplitData: false,
-		edit : 0,
-		highlight : 0,
-		modifyAccLimit: 1,
-		pickInst: false,
-		getRankedAttr: false,
-		children : [],
-		manual_pct_correct: 0,
-		gene_summary : {
-			"summaryText" : "",
-			"goTerms" : {},
-			"generif" : {},
-			"name" : ""
-		},
-		accLimit: 0,
-		showJSON : 0,
-		x: 0,
-		y: 0,
-		x0 : 0,
-		y0: 0
+	defaults : function(){
+		return Cure.NodeDefaults;
 	},
 	initialize : function() {
 		Cure.PlayerNodeCollection.add(this);
