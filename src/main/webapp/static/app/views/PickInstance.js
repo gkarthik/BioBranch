@@ -254,10 +254,9 @@ PickInstanceView = Marionette.Layout.extend({
 			    if(vertices.length>0){
 			    	if(Math.sqrt(Math.pow(vertices[0][0]-m[0],2)+Math.pow(vertices[0][1]-m[1],2))<=5){
 			    		line.attr("x2",vertices[0][0]).attr("y2",vertices[0][1]);
-				    	thisView.highlightDataPoints(attrPos, vertices);
 				    	SVGParent.append("polygon").attr("class","data-polygon").attr("points", function(){
 				    		return vertices.map(function(d){ return [d[0], d[1]].join(",")}).join(" ");
-				    	});
+				    	}).style('fill',thisView.highlightDataPoints(attrPos, vertices));
 				    	for(var temp in vertices){
 				    		vertices[temp][0] = revAttrScale2(vertices[temp][0]-mX);
 				    		vertices[temp][1] = revAttrScale1(vertices[temp][1]-mY);
@@ -345,14 +344,25 @@ PickInstanceView = Marionette.Layout.extend({
 	},
 	highlightDataPoints: function(attr, vertices){
 		var c;
+		var classValue = [0,0];
+		var el;
 		for(var temp in attr){
 			if(!isNaN(attr[temp][0]) && !isNaN(attr[temp][1])){
 				c = this.pointInPolygon(vertices,attr[temp]);
 				if(c){
-					d3.select("#data-point-"+temp).style("stroke","lightgreen");
+					el = d3.select("#data-point-"+temp);
+					console.log(el.data()[0][2]);
+					classValue[el.data()[0][2]]++;
+					//el.style("stroke","lightgreen");
 				}
 			}
 		}
+		if(classValue[0]>classValue[1]){
+			return "rgba(255,0,0,0.15)";
+		} else if (classValue[0]==classValue[1]) {
+			return "rgba(0,0,0,0.15)";
+		}
+		return "rgba(0,0,255,0.15)";
 	},
 	pointInPolygon: function(vertices, testPoint){
 		  var i, j, c = false;
