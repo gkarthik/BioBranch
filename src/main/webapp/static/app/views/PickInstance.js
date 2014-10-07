@@ -2,13 +2,16 @@ define([
 	'jquery',
 	'marionette',
 	'd3',
+	'app/models/Node',
 	//Templates
 	'text!static/app/templates/PickInstances.html',
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
+	'app/models/ConfusionMatrix',
+	'app/views/ConfusionMatrixView',
 	'jqueryui'
-    ], function($, Marionette, d3, pickInstTmpl, geneinfosummary, cfsummary) {
-PickInstanceView = Marionette.ItemView.extend({
+    ], function($, Marionette, d3, Node, pickInstTmpl, geneinfosummary, cfsummary, cfMatrix, cfMatrixView) {
+PickInstanceView = Marionette.Layout.extend({
 	template: pickInstTmpl,
 	url:base_url+'MetaServer',
 	ui: {
@@ -16,7 +19,9 @@ PickInstanceView = Marionette.ItemView.extend({
 		cf_query: ".pick_cf_instances",
 		chartWrapper: '#instance-data-chart-wrapper',
 		panel: '.pick-instance-wrapper',
-		previewOverlay: '#preview-overlay'
+		previewResults: '.preview-results',
+		acc: '#preview-acc',
+		auc: '#preview-auc'
 	},
 	events: {
 		'click #get-instances': 'getInstances',
@@ -25,6 +30,9 @@ PickInstanceView = Marionette.ItemView.extend({
 		'click #clear-selection': 'clearSelection',
 		'click #preview-selection': 'previewSelection',
 		'click #preview-close': 'closePreview'
+	},
+	regions: {
+		cfMatrixRegion: "#preview-cfmatrix"
 	},
 	closeView: function(e){
 		e.preventDefault();
@@ -37,12 +45,12 @@ PickInstanceView = Marionette.ItemView.extend({
 	attrs: [],
 	attributeVertices: [],
 	closePreview: function(){
-
 		this.preview = false;
 	},
 	previewSelection: function(){
-		//this.preview = true;
-		//this.createCustomSet();
+		this.preview = true;
+		$(this.ui.previewResults).show();
+		this.createCustomSet();
 	},
 	createCustomSet: function(){
 		var unique_ids = [];
@@ -76,66 +84,116 @@ PickInstanceView = Marionette.ItemView.extend({
     	this.attributeVertices = [];
 	},
 	addNode: function(data){
-		console.log(data);
 		var model = this.model;
-		var kind_value = "";
-			try {
-				kind_value = model.get("options").get('kind');
-			} catch (exception) {
-			}
-			if (kind_value == "leaf_node") {
-					if(model.get("options")){
-						model.get("options").unset("split_point");
-					}
-					
-					if(model.get("distribution_data")){
-						model.get("distribution_data").set({
-							"range": -1
-						});
-					}
-				model.set("previousAttributes", model.toJSON());
-				model.set("name", "Selection");
-				model.set('accLimit', 0, {silent:true});
-				model.set('pickInst', false);
-				
-				var index = Cure.CollaboratorCollection.pluck("id").indexOf(Cure.Player.get('id'));
-				var newCollaborator;
-				if(index!=-1){
-					newCollaborator = Cure.CollaboratorCollection.at(index);
-				} else {
-					newCollaborator = new Collaborator({
-						"name": cure_user_name,
-						"id": Cure.Player.get('id'),
-						"created" : new Date()
-					});
-					Cure.CollaboratorCollection.add(newCollaborator);
-					index = Cure.CollaboratorCollection.indexOf(newCollaborator);
+		var thisView = this;
+		if(!this.preview){
+			var kind_value = "";
+				try {
+					kind_value = model.get("options").get('kind');
+				} catch (exception) {
 				}
-				model.get("options").set({
-					"unique_id" : "custom_set_"+data.id,
-					"kind" : "split_node",
-					"full_name" : '',
-					"description" : data.constraints
-				});
-			} else {
-				new Node({
-					'name' : "Selection",
-					"options" : {
+				if (kind_value == "leaf_node") {
+						if(model.get("options")){
+							model.get("options").unset("split_point");
+						}
+						
+						if(model.get("distribution_data")){
+							model.get("distribution_data").set({
+								"range": -1
+							});
+						}
+					model.set("previousAttributes", model.toJSON());
+					model.set("name", "Selection");
+					model.set('accLimit', 0, {silent:true});
+					model.set('pickInst', false);
+					
+					var index = Cure.CollaboratorCollection.pluck("id").indexOf(Cure.Player.get('id'));
+					var newCollaborator;
+					if(index!=-1){
+						newCollaborator = Cure.CollaboratorCollection.at(index);
+					} else {
+						newCollaborator = new Collaborator({
+							"name": cure_user_name,
+							"id": Cure.Player.get('id'),
+							"created" : new Date()
+						});
+						Cure.CollaboratorCollection.add(newCollaborator);
+						index = Cure.CollaboratorCollection.indexOf(newCollaborator);
+					}
+					model.get("options").set({
 						"unique_id" : "custom_set_"+data.id,
 						"kind" : "split_node",
 						"full_name" : '',
 						"description" : data.constraints
-					},
-					pickInst: false
-				});
-			}
-			
-			if(!this.preview){
+					});
+				} else {
+					new Node({
+						'name' : "Selection",
+						"options" : {
+							"unique_id" : "custom_set_"+data.id,
+							"kind" : "split_node",
+							"full_name" : '',
+							"description" : data.constraints
+						},
+						pickInst: false
+					});
+				}	
 				Cure.PlayerNodeCollection.sync();
 				Cure.sidebarLayout.pickInstanceRegion.close();
 			} else {
+				var json = (Cure.PlayerNodeCollection.length>0) ? Cure.PlayerNodeCollection.at(0).toJSON() : {};
+				var node = {};
+				if(Cure.PlayerNodeCollection.length==0){
+					json = Cure.NodeDefaults;
+					json.options = {};
+					json.options.unique_id = "custom_set_"+data.id;
+					json.options.kind="split_node";
+				} else {
+					thisView.changeUIDinJSON(json, model.get('options').get('cid'), data.id);
+				}
+				Cure.utils.showLoading(null);
+				var testOptions = {
+						value: $("input[name='testOptions']:checked").val(),
+						percentSplit:  $("input[name='percent-split']").val()
+				};
+				var args = {
+						command : "scoretree",
+						dataset : Cure.dataset.get('id'),
+						treestruct : json,
+						comment: Cure.Comment.get("content"),
+						player_id : Cure.Player.get('id'),
+						previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
+						testOptions: testOptions
+					};
 				
+				//POST request to server.		
+				$.ajax({
+					type : 'POST',
+					url : this.url,
+					data : JSON.stringify(args),
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					success : function(data){
+						Cure.utils.hideLoading();
+						thisView.preview = false;
+						thisView.cfMatrix.setupMatrix(data.confusion_matrix);
+						$(thisView.ui.acc).html(Math.floor(data.pct_correct*100)/100);
+						$(thisView.ui.acc).html(Math.floor(data.auc*100)/100);
+					},
+					error : this.error
+				});
 			}
+	},
+	changeUIDinJSON: function(node, cid, id){
+		if(node.options.cid == cid){
+			node.options.unique_id = "custom_set_"+id;
+			node.options.kind="split_node";
+		} else {
+			for(var temp in node.children){
+				this.changeUIDinJSON(node.children[temp], cid, id);
+			}
+		}
+		
 	},
 	height: 200,
 	width: 300,
@@ -246,7 +304,6 @@ PickInstanceView = Marionette.ItemView.extend({
 			    line.attr("x2", m[0])
 		        .attr("y2", m[1]);
 		    }
-		    console.log(m);
 		    d3.select(".x-axis-marker").attr("x1", mX).attr("x2",m[0]).attr("y1", m[1]).attr("y2", m[1]);
 		    d3.select(".y-axis-marker").attr("x1", m[0]).attr("x2",m[0]).attr("y1", parseInt(h+mY)).attr("y2", m[1]);
 		}
@@ -332,6 +389,8 @@ PickInstanceView = Marionette.ItemView.extend({
 	},
 	onShow: function(){
 		var thisUi = this.ui;
+		this.cfMatrix = new cfMatrix();
+		this.cfMatrixRegion.show(new cfMatrixView({model: this.cfMatrix}));
     	this.showCf();
     	$(this.ui.gene_query).genequery_autocomplete({
 			open: function(event){

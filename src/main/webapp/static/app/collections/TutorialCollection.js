@@ -24,7 +24,7 @@ define([
 				console.log(data);
 				thisCollection.add(data);
 				Cure.utils.hideLoading();
-				//Cure.TutorialRegion.show(new TutorialView({model: Cure.TutorialCollection.findWhere({"id":"277089"})}));
+				//Cure.TutorialRegion.show(new TutorialView({model: Cure.TutorialCollection.findWhere({"id":"277360"})}));
 			}
 		});
 	}
