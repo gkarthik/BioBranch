@@ -18,6 +18,7 @@ color: #FFF;
 </style>
 <div class="container">
 	<div class="row">
+		<h2>Guide</h2>
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title">Choose a Dataset</h3>
