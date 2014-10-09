@@ -75,6 +75,7 @@ public class Feature {
 	private String long_name;
 
 	@Column(name = "description")
+	@Type(type="text")
 	private String description;
 	
 	@Column(name = "isGene")
