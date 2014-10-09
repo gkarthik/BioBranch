@@ -85,6 +85,7 @@ public class Tree {
 	private boolean private_tree = false;
 
 	@Column
+	@Type(type="text")
 	private String json_tree;
 
 	public String getComment() {

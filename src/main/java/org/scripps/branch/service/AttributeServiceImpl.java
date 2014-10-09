@@ -96,8 +96,8 @@ public class AttributeServiceImpl implements AttributeService {
 			while ((line = fileReader.readLine()) != null) {
 				String[] tokens = line.split(DELIMITER);
 				if (tokens.length > 0) {
-					if(tokens[1].contains("///")){
-						tokens[1] = tokens[1].split("///")[0];
+					if(tokens[2].contains("///")){
+						tokens[2] = tokens[2].split(" /// ")[0];
 					}
 					mp.put(tokens[0], tokens[2]);
 				}

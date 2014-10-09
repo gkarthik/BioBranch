@@ -34,6 +34,7 @@ public class CustomSet {
 	private long id;
 
 	@Column
+	@Type(type="text")
 	private String constraints;
 
 	@Basic(optional = false)
