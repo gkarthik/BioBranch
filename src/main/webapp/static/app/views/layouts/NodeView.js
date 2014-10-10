@@ -220,9 +220,11 @@ NodeView = Marionette.Layout.extend({
 			if(this.model.get('name').toUpperCase()==Cure.negNodeName.toUpperCase()) {
 				styleObject.background = "rgba(255,0,0,0.2)";
 				styleObject.borderColor = "red";
+				this.$el.find(".chartContainer").css({"stroke":"red"});
 			} else if(this.model.get('name').toUpperCase()==Cure.posNodeName.toUpperCase()) {
 				styleObject.background = "rgba(0,0,255,0.2)";
 				styleObject.borderColor = "blue";
+				this.$el.find(".chartContainer").css({"stroke":"blue"});
 			}
 		}
 		this.$el.attr('class','node dragHtmlGroup');//To refresh class every time node is rendered.

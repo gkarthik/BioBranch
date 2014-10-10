@@ -422,7 +422,7 @@ JSONItemView = Marionette.ItemView.extend({
 					description = this.model.get('name')+" expression level of "+ this.model.get('parentNode').get('name');
 				}
 		} else {
-			if(this.model.get('name')==Cure.posNodeName){
+			if(this.model.get('majClass').toUpperCase()==Cure.posNodeName){
 				description = "Predicted to survive beyond ten years.";
 			} else {
 				description = "<b>Not</b> Predicted to survive beyond ten years.";
