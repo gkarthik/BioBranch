@@ -357,12 +357,12 @@ PickInstanceView = Marionette.Layout.extend({
 				}
 			}
 		}
-		if(classValue[0]>classValue[1]){
-			return "rgba(255,0,0,0.15)";
-		} else if (classValue[0]==classValue[1]) {
-			return "rgba(0,0,0,0.15)";
-		}
-		return "rgba(0,0,255,0.15)";
+//		if(classValue[0]>classValue[1]){
+//			return "rgba(255,0,0,0.15)";
+//		} else if (classValue[0]<classValue[1]) {
+//			return "rgba(0,0,255,0.15)";
+//		}
+		return "rgba(0,0,0,0.15)";
 	},
 	pointInPolygon: function(vertices, testPoint){
 		  var i, j, c = false;
