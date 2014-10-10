@@ -25,6 +25,18 @@
 		</c:choose>
 		</div>
 		<div class="row">
+			<h2>Populate Pathway</h2>
+			<form method="POST" action="./populate-pathway">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				Source: 
+				<select name="source">
+					<option value="cpdb">CPDB</option>
+				</select>
+				<br><br>
+				<input type="submit" class="btn btn-primary">
+			</form>
+		</div>
+		<div class="row">
 			<h2>Tutorials</h2>
 			<a href="./new" class="btn btn-link">Add Tutorial</a>
 			<table class="table table-striped">
