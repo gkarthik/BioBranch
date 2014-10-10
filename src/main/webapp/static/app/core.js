@@ -88,6 +88,7 @@ define([
 				getSplitData: false,
 				edit : 0,
 				highlight : 0,
+				majClass: '', 
 				modifyAccLimit: 1,
 				pickInst: false,
 				getRankedAttr: false,

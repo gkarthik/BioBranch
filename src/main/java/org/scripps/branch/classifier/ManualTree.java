@@ -693,29 +693,17 @@ public class ManualTree extends Classifier implements OptionHandler,
 				bin_size = Utils.sum(distribution[i]);
 				maxIndex = Utils.maxIndex(distribution[i]);
 				maxCount = distribution[i][maxIndex];
-				if (m_Info.classAttribute().value(maxIndex).equals(data.classAttribute().value(1))) {// Somehow
-																			// get
-																			// the
-																			// favorable
-																			// className
-																			// programatically.
+				if (m_Info.classAttribute().value(maxIndex).equals(data.classAttribute().value(1))) {
 					errors += bin_size - maxCount;
 				} else {
 					errors += maxCount;
 				}
-
 				// test an instance to see which child node to send its subset
 				// down.
 				// after split, should hold for all in set
 				String child_name = "";
 				Instances subset = subsets[i];
-				if (subset == null || subset.numInstances() == 0) { // if no
-																	// instances
-																	// fall down
-																	// this
-																	// path,
-																	// don't
-																	// show it.
+				if (subset == null || subset.numInstances() == 0) {
 					continue;
 				}
 				Instance inst = subset.instance(0);
@@ -736,9 +724,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 					testPoint[1] = inst.value(aList.get(1));
 					int check = checkPointInPolygon(attrVertices, testPoint);
 					if(check == 0){
-						child_name="Not Selected";
+						child_name="Outside";
 					} else {
-						child_name = "Selected";
+						child_name = "Inside";
 					}
 				} else {
 					// which nominal attribute is this split linked to?
@@ -837,6 +825,15 @@ public class ManualTree extends Classifier implements OptionHandler,
 					}
 				}
 				String class_name = m_Info.classAttribute().value(maxIndex);
+				_node.put("majClass", class_name);
+				if(node.get("setClass")!=null){
+					String setClass = node.get("setClass").asText();
+					if(setClass.equals("inside")){
+						class_name = m_Info.classAttribute().value(0);
+					} else if (setClass.equals("outside")) {
+						class_name = m_Info.classAttribute().value(1);
+					}
+				}
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
 				evalresults.put("kind", "leaf_node");
@@ -866,13 +863,22 @@ public class ManualTree extends Classifier implements OptionHandler,
 					errors = bin_size - maxCount;
 					pct_correct = (bin_size - errors) / bin_size;
 				}
-
 				ArrayNode children = (ArrayNode) node.get("children");
 				if (children == null) {
 					children = mapper.createArrayNode();
 				}
 				ObjectNode child = mapper.createObjectNode();
 				String class_name = m_Info.classAttribute().value(maxIndex);
+				child.put("majClass", class_name);
+				String nodeName = node.get("name").asText();
+				LOGGER.debug("Node Name: "+ node.get("name").asText());
+				if(nodeName.equals("Inside")){
+					class_name = m_Info.classAttribute().value(0);
+					child.put("setClass", "inside");
+				} else if (nodeName.equals("Outside")) {
+					class_name = m_Info.classAttribute().value(1);
+					child.put("setClass", "outside");
+				}
 				child.put("name", class_name);
 				ObjectNode c_options = mapper.createObjectNode();
 				c_options.put("attribute_name", class_name);

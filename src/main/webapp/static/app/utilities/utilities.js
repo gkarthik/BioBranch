@@ -328,7 +328,7 @@ CureUtils.getDepth = function(node){
 	return givenDepth;
 }
 
-CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, nodeName){
+CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, nodeName, predictedClass){
 	parentElement.selectAll(".chartWrapper").remove();
 	var chartWrapper = parentElement.attr("width",function(){
 		return (radius*20)+8;
@@ -348,9 +348,9 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 	}).attr("fill",function(){
 		return "none";
 	}).attr("transform","translate(-2,2)").attr("stroke",function(){
-		if(nodeName.toUpperCase() == Cure.negNodeName.toUpperCase()){
+		if(predictedClass.toUpperCase() == Cure.negNodeName.toUpperCase()){
 			return "rgba(255, 0, 0, 1)";
-		} else if(nodeName.toUpperCase() == Cure.posNodeName.toUpperCase()) {
+		} else if(predictedClass.toUpperCase() == Cure.posNodeName.toUpperCase()) {
 			return "rgba(0, 0, 255, 1)";
 		}
 		return "#000";
