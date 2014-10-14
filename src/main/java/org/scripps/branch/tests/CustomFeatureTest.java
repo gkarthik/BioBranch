@@ -62,14 +62,14 @@ public class CustomFeatureTest {
 //		assertEquals(cfList == null, false);
 //	}
 	
-	@Test
-	public void getAttrDataset(){
-		CustomFeature c  = cfRepo.findById(95218);
-		Dataset d = dRepo.findById(1);
-		List<Feature> aList = cfRepo.getAttrDatasets(c, d);
-		for(Feature dt: aList){
-			System.out.println(dt.getShort_name());
-		}
-		assertEquals(aList!=null,true);
-	}
+//	@Test
+//	public void getAttrDataset(){
+//		CustomFeature c  = cfRepo.findById(95218);
+//		Dataset d = dRepo.findById(1);
+//		List<Feature> aList = cfRepo.getAttrDatasets(c, d);
+//		for(Feature dt: aList){
+//			System.out.println(dt.getShort_name());
+//		}
+//		assertEquals(aList!=null,true);
+//	}
 }

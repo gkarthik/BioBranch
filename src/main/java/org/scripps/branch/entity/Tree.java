@@ -100,6 +100,14 @@ public class Tree {
 		return customClassifiers;
 	}
 
+	public List<CustomSet> getCustomSets() {
+		return customSets;
+	}
+
+	public void setCustomSets(List<CustomSet> customSets) {
+		this.customSets = customSets;
+	}
+
 	public List<CustomFeature> getCustomFeatures() {
 		return customFeatures;
 	}

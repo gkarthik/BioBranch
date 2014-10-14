@@ -8,26 +8,13 @@ Plot Graph<span><button type="button" class="close pick-instance-close" data-dis
 <div class="panel-content">
 <span class="row col-md-2">
 <div class="form-group pull-left choose-attribute-group">
-	<h4>Y Axis</h4>
-	<div class="attribute-label"></div>
+	<h4>Y Axis : <span class="attribute-label"></span></h4>
  		<label class="label label-default">Choose Genes</label>
   		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
   		<label class="label label-default">Choose Non Genes</label>
   		<input class="pick_cf_instances" class="query_target" placeholder="Enter Non Gene Feature">
   		 <input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-one">
   	</div>
-  	<div class="form-group pull-left choose-attribute-group">
-		<h4>X Axis</h4>
-		<div class="attribute-label"></div>
-  		<label class="label label-default">Choose Genes</label>
-  		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
- 		<label class="label label-default">Choose Non Genes</label>
-  		<input class="pick_cf_instances" class="query_target" placeholder="Enter Non Gene Feature">
-  		  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-two">
-  	</div>
-  	<span class="row">
-  		<button class="btn btn-primary" id="get-instances">Plot Graph</button>
-  	</span>
   	<div class="preview-results">
 	<h3>Preview</h3>
 	<table class="table table-condensed">
@@ -35,25 +22,32 @@ Plot Graph<span><button type="button" class="close pick-instance-close" data-dis
 			<td>Accuracy</td>
 			<td><span id="preview-acc"></span></td>
 		</tr>
-		<tr>
-			<td>Accuracy</td>
-			<td><span id="preview-auc"></span></td>
-		</tr>
 	</table>
 <div id="preview-cfmatrix"></div>
 </div>
   	  	</span>
 <span id="instance-data-chart-wrapper" class="row col-md-10">
-<button class="btn btn-warning" id="clear-selection">Clear Selection</button>
+<button class="btn btn-warning chart-functions" id="clear-selection">Clear Selection</button>
 <span class="row">
 <svg id="instance-data-chart"></svg>
 </span>
 <span class="row">
-<div id="pick-instance-draw-controls">
+<div id="pick-instance-draw-controls" class="chart-functions">
 	<button class="btn btn-primary" id="preview-selection">Preview</button>
 	<button class="btn btn-primary" id="build-selection">Build Split</button>
 </div>
 </span>
+</span>
+<span class="row col-md-10">
+	<div class="form-group pull-right choose-attribute-group">
+		<h4>X Axis : <span class="attribute-label"></span></h4>
+  		<label class="label label-default">Choose Genes</label>
+  		<input class="pick_gene_instances" class="query_target" placeholder="Enter Gene">
+ 		<label class="label label-default">Choose Non Genes</label>
+  		<input class="pick_cf_instances" class="query_target" placeholder="Enter Non Gene Feature">
+  		  	  	<input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-two">
+  		  	  	<button class="btn btn-primary" id="get-instances">Plot Graph</button>
+  	</div>
 </span>
 </div>
 </div>

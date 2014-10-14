@@ -54,7 +54,7 @@
 					dataset = {
 						id: ${dataset.id},
 						name: "${dataset.name}",
-						description: "${dataset.description}"
+						description: '${dataset.description}'
 					};
 					classValues = ["${pos}", "${neg}"];
 				<%}%>

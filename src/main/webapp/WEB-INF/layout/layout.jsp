@@ -36,13 +36,13 @@
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="/">Branch</a>
+					<a class="navbar-brand" href="${pageContext.request.contextPath}/">Branch</a>
 				</div>
 
 				<ul class="nav navbar-nav navbar-right header-right-menu">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="./user/login">Login</a></li>
-						<li><a href="./user/register">Register</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/login">Login</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/register">Register</a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li>
@@ -59,13 +59,18 @@
 									<spring:message code="label.navigation.signed.in.as.text" />
 								</c:if>
 								<!-- <sec:authentication property="principal.username" /> -->
-								<strong><a href="./profile/"><sec:authentication
+								<strong><a href="${pageContext.request.contextPath}/profile/"><sec:authentication
 											property="principal.firstName" /></a></strong>
 							</p>
 						</li>
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-								<a href="./datasets">Datasets</a>
+								<a href="${pageContext.request.contextPath}/datasets">Datasets</a>
+							</p>
+						</li>
+						<li>
+							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+								<a href="${pageContext.request.contextPath}/profile/">Tree Collection</a>
 							</p>
 						</li>
 <!-- 
@@ -81,7 +86,7 @@
  -->
 						<li>
 							<p>
-							<form action="./logout" method="POST">
+							<form action="${pageContext.request.contextPath}/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
 								<button type="submit" class="btn btn-link">

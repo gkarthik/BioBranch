@@ -178,4 +178,3 @@ eclipse {
 dependencies {
     compile files('src/main/resources/StatUtils.jar')
 }
-
