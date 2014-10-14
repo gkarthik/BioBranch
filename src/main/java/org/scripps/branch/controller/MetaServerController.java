@@ -22,6 +22,7 @@ import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Tutorial;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.evaluation.Evaluation;
 import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
@@ -57,7 +58,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -612,6 +612,7 @@ public class MetaServerController {
 			newTree.setCustomFeatures(cfList);
 			newTree.setCustomClassifiers(ccList);
 			newTree.setCustomTreeClassifiers(tList);
+			newTree.setCustomSets(csList);
 			newTree.setJson_tree(result_json);
 			newTree.setPrivate_tree(false);
 			newTree.setUser(user);

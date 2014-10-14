@@ -18,6 +18,7 @@ PickInstanceView = Marionette.Layout.extend({
 		gene_query: ".pick_gene_instances",
 		cf_query: ".pick_cf_instances",
 		chartWrapper: '#instance-data-chart-wrapper',
+		chartFunctions:".chart-functions",
 		panel: '.pick-instance-wrapper',
 		previewResults: '.preview-results',
 		acc: '#preview-acc',
@@ -195,20 +196,21 @@ PickInstanceView = Marionette.Layout.extend({
 		}
 		
 	},
-	height: 200,
-	width: 300,
+	height: function(){
+		return $(this.ui.panel).height() - 350;
+	},
+	width: function(){
+		return $(this.ui.panel).width() * (9/12)+50;
+	},
 	drawChart: function(attr){
-		$(this.ui.chartWrapper).css({'display':'block'});
-		this.height = $(this.ui.panel).height() - 200;
-		this.width = $(this.ui.panel).width() * (5/6) - 30;
-		d3.select("#instance-data-chart").select(".instance-data-chart-wrapper").remove();
+		d3.select("#instance-data-chart").selectAll("*").remove();
 		var max = [Number.MIN_VALUE, Number.MIN_VALUE],
 			min = [Number.MAX_VALUE, Number.MAX_VALUE],
-			h=this.height,
-			w=this.width,
+			h=this.height(),
+			w=this.width(),
 			mX = 40,
 			mY = 20,
-			SVG = d3.select("#instance-data-chart").attr({"height":h+60,"width":w+60}).append("svg:g").attr("class","instance-data-chart-wrapper"),
+			SVG = d3.select("#instance-data-chart").attr({"height":h+50,"width":w+50}).append("svg:g").attr("class","instance-data-chart-wrapper"),
 			thisView = this;
 		for(var temp in attr){
 			for(var i =0; i<2;i++){
@@ -395,11 +397,13 @@ PickInstanceView = Marionette.Layout.extend({
 		args.splits = splits;
 		if(args.pickedAttrs.length==2){
 			Cure.PlayerNodeCollection.sync(args);
+			$(this.ui.chartFunctions).css({'display':'block'});
 		}
 	},
 	onShow: function(){
 		var thisUi = this.ui;
 		this.cfMatrix = new cfMatrix();
+		this.drawChart([[1,2,3,4,5],[1,2,3,4,5]]);
 		this.cfMatrixRegion.show(new cfMatrixView({model: this.cfMatrix}));
     	this.showCf();
     	$(this.ui.gene_query).genequery_autocomplete({

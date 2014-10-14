@@ -363,12 +363,22 @@ display: block;
 	stroke: none;
 }
 
-#instance-data-chart-wrapper{
-	display:none;	
+.chart-functions{
+	display:none;
 }
 
 .choose-attribute-group{
-	margin:10px;
+	margin:0px 10px;
+}
+
+.choose-attribute-group h4{
+	text-align: center;
+	margin:0px;
+	margin-bottom: 10px;
+}
+
+.attribute-label{
+	font-weight: bold;
 }
 
 #instance-data-chart{
@@ -850,6 +860,14 @@ margin-left: 5px;
 width: 200px;
 }
 
+.description-mini{
+height: 150px;
+overflow: auto;
+color: #000;
+padding: 5px;
+width: 100%;
+}
+
 .branch-nodes-list{
 	font-weight: bold;
 	color: #000;
@@ -1048,8 +1066,10 @@ text-align:left;
 
 .aimWrapper p{
 	color: #555;
-	text-align: center;
-	font-size: 1.5em;
+	text-align: left;
+	font-size: 1em;
+	font-weight: normal;
+	margin-left: 200px;
 }
 
 .renderPink{
@@ -1208,7 +1228,7 @@ text-align:left;
 	width: 150px;
 	font-size: 12px;
 	position: absolute;
-	top: 230px;
+	top: 320px;
 	z-index: 5;
 	left: 20px;
 }

@@ -196,6 +196,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected CustomClassifierService ccSer;
 	
 	protected Dataset d;
+	
+	protected int m_pred = -1;
+	
+	protected ManualTree parentNode;
 
 	/**
 	 * Trying to get generate distribution of classes
@@ -1159,6 +1163,113 @@ public class ManualTree extends Classifier implements OptionHandler,
 		if (m_ZeroR != null) {
 			return m_ZeroR.distributionForInstance(instance);
 		}
+		
+		double[] returnedDist = null;
+		
+		//Set Parent Node to set m_pred in case custom set occurs.
+		if(m_Successors!=null){
+			for(int i=0;i<m_Successors.length;i++){
+				m_Successors[i].setParentNode(parentNode);
+			}
+		}
+
+		if (m_Attribute > -1 && m_Attribute < m_Info.numAttributes()) {
+
+			// Node is not a leaf
+			if (instance.isMissing(m_Attribute)) {
+
+				// Value is missing
+				returnedDist = new double[m_Info.numClasses()];
+
+				// Split instance up
+				for (int i = 0; i < m_Successors.length; i++) {
+					double[] help = m_Successors[i]
+							.distributionForInstance(instance);
+					if (help != null) {
+						for (int j = 0; j < help.length; j++) {
+							returnedDist[j] += m_Prop[i] * help[j];
+						}
+					}
+				}
+			} else if (m_Info.attribute(m_Attribute).isNominal()) {
+
+				// For nominal attributes
+				returnedDist = m_Successors[(int) instance.value(m_Attribute)]
+						.distributionForInstance(instance);
+			} else {
+
+				// For numeric attributes
+				if (instance.value(m_Attribute) < m_SplitPoint) {
+					returnedDist = m_Successors[0]
+							.distributionForInstance(instance);
+				} else {
+					returnedDist = m_Successors[1]
+							.distributionForInstance(instance);
+				}
+			}
+		} else if (m_Attribute >= m_Info.numAttributes()-1) {
+			if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
+				CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
+				JsonNode vertices = mapper.readTree(cSet.getConstraints());
+				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
+				List<Attribute> aList = generateAttributeList(cSet, m_Info, d);
+				double[] testPoint = new double[2];
+					testPoint[0] = instance.value(aList.get(0));
+					testPoint[1] = instance.value(aList.get(1));
+					int check = checkPointInPolygon(attrVertices, testPoint);
+					if(m_Successors[check].getM_Attribute() == -1){
+						parentNode.setM_pred((check==0) ? 1 : 0);//Inside - 0, Outside - 1
+					}
+					returnedDist = m_Successors[check].distributionForInstance(instance);
+				
+			} else {
+				String classifierId = "";
+				classifierId = getKeyinMap(listOfFc, m_Attribute, m_Info);
+				Classifier fc = listOfFc.get(classifierId);
+				double predictedClass = fc.classifyInstance(instance);
+				if (predictedClass != Instance.missingValue()) {
+					returnedDist = m_Successors[(int) predictedClass]
+							.distributionForInstance(instance);
+				}
+			}
+		}
+
+		// Node is a leaf or successor is empty?
+		if ((m_Attribute == -1) || (returnedDist == null)) {
+
+			// Is node empty?
+			if (m_ClassDistribution == null) {
+				if (getAllowUnclassifiedInstances()) {
+					return new double[m_Info.numClasses()];
+				} else {
+					return null;
+				}
+			}
+
+			// Else return normalized distribution
+			double[] normalizedDistribution = m_ClassDistribution.clone();
+			Utils.normalize(normalizedDistribution);
+			return normalizedDistribution;
+		} else {
+			return returnedDist;
+		}
+	}
+	
+	/**
+	 * Computes class distribution of an instance using the decision tree.
+	 * 
+	 * @param instance
+	 *            the instance to compute the distribution for
+	 * @return the computed class distribution
+	 * @throws Exception
+	 *             if computation fails
+	 */
+	public double[] predForInstance(Instance instance) throws Exception {
+
+		// default model?
+		if (m_ZeroR != null) {
+			return m_ZeroR.distributionForInstance(instance);
+		}
 
 		double[] returnedDist = null;
 
@@ -1467,6 +1578,15 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 		return m_randomSeed;
 	}
+	
+	
+	public int getM_pred() {
+		return m_pred;
+	}
+
+	public void setM_pred(int m_pred) {
+		this.m_pred = m_pred;
+	}
 
 	/**
 	 * Returns a string describing classifier
@@ -1736,6 +1856,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public void setD(Dataset d) {
 		this.d = d;
 	}
+	
+	public ManualTree getParentNode() {
+		return parentNode;
+	}
+
+	public void setParentNode(ManualTree parentNode) {
+		this.parentNode = parentNode;
+	}
 
 	/**
 	 * Parses a given list of options.
@@ -1839,6 +1967,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 		this.requiredInst = requiredInst;
 	}
 	
+	public int getM_Attribute() {
+		return m_Attribute;
+	}
+
 	/**
 	 * Set the seed for random number generation.
 	 * 

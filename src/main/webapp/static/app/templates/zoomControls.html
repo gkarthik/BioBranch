@@ -5,15 +5,14 @@
           				<input id="toggle-fittoscreen" type="checkbox" value="true" <% if(fitToScreen){ print("checked");} %>> Fit To Screen
         			</label>
       			</div>
-      			<p class="renderPink">
       			<% if(Cure.PlayerNodeCollection.length>0){
       				if(badge_desc==null){
-      					print(Cure.dataset.get('description'));	
+      					print('<h4>Dataset Description</h4><div class="description-mini">'+Cure.dataset.get('description')+"</div>");	
       				} else {
-      					print("<b>"+badge_desc+"</b>");
+      					print('<div class="description-mini"><b>'+badge_desc+"</b></div>");
       				}
       			} else {
       				print("");
       			}
       			 %>
-      			</p>
+      			 
