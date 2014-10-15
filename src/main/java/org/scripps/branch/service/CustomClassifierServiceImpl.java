@@ -134,8 +134,10 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				for (Attribute att : atts) {
 					att_name = att.getName();
 				}
-				indices += String.valueOf(data.attribute(att_name).index() + 1)
-						+ ",";
+				if(data.attribute(att_name)!=null){
+					indices += String.valueOf(data.attribute(att_name).index() + 1)
+							+ ",";
+				}
 			}
 		}
 		LOGGER.debug("Building Classifier");
