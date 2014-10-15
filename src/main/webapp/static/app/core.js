@@ -29,7 +29,8 @@ define([
         'app/utilities/utilities',
         //Tour
         'app/tour/tour',
-        'app/tour/tree'
+        'app/tour/tree',
+    	'bootstrapJs'
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
         		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, TutorialCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,

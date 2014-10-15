@@ -1,18 +1,18 @@
 <div id="choose-category" class="btn-group" data-toggle="buttons">
   <label class="btn btn-primary active choose-category <% if(!Cure.dataset.get('validateGenes')){ print('disabled'); }%>" id="genes">
-    <input type="radio"><img title="Switch to Genes" src="<% print(base_url) %>/static/img/dna.png" class="switch-image" >
+    <input type="radio"><img data-original-title="Switch to Genes" src="<% print(base_url) %>/static/img/dna.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validateNonGenes')){ print('disabled'); }%>" id="clinicalfeatures">
-    <input type="radio"><img title="Switch to Non Gene Features" src="<% print(base_url) %>/static/img/doctor.png" class="switch-image" >
+    <input type="radio"><img title="Switch to Non Gene Features" src="<% print(base_url) %>/static/img/doctor.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatecf')){ print('disabled'); }%>" id="customfeatures">
-    <input type="radio"><img title="Switch to Custom Features" src="<% print(base_url) %>/static/img/function.png" class="switch-image" >
+    <input type="radio"><img title="Switch to Custom Features" src="<% print(base_url) %>/static/img/function.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatecc')){ print('disabled'); }%>" id="aggregatenodes">
-    <input type="radio"><img title="Switch to Classifiers" src="<% print(base_url) %>/static/img/aggregatenode.png" class="switch-image" >
+    <input type="radio"><img title="Switch to Classifiers" src="<% print(base_url) %>/static/img/aggregatenode.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatet')){ print('disabled'); }%>" id="choosetrees">
-    <input type="radio"><span title="Switch to Trees"><i class="switch-image glyphicon glyphicon-folder-open" ></i></span>
+    <input type="radio"><span data-toggle="tooltip" data-placement="bottom" data-original-title="Switch to Trees"><i class="switch-image glyphicon glyphicon-folder-open" ></i></span>
   </label>
 </div>
 <div id="genes_wrapper" class="category-wrapper" style="display:<% if(Cure.dataset.get('validateGenes')){ print('block'); } else {print("none");} %>">
