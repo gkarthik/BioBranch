@@ -1,16 +1,16 @@
 	<tbody>
 	<tr>
-		<td style="color:red;"><%= Cure.negNodeName %></td>
-		<td style="color:blue;"><%= Cure.posNodeName %></td>
+		<td style="color:red;"><%= Cure.negNodeName.replace("_"," ") %></td>
+		<td style="color:blue;"><%= Cure.posNodeName.replace("_"," ") %></td>
 	</tr>
 	<tr>
 		<td style="color:red;"><%= tp %></td>
 		<td><%= fn %></td>
-		<td style="color:red;"><%= Cure.negNodeName %></td>
+		<td style="color:red;"><%= Cure.negNodeName.replace("_"," ") %></td>
 	</tr>
 	<tr>
 		<td><%= fp %></td>
 		<td style="color:blue;"><%= tn %></td>
-		<td style="color:blue;"><%= Cure.posNodeName %></td>
+		<td style="color:blue;"><%= Cure.posNodeName.replace("_"," ") %></td>
 	</tr>
 	</tbody>

@@ -385,7 +385,10 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 			chartWrapper.append("rect").attr("class",function(){
 				return "negCircle";
 			}).attr("height",(radius*2)-2).attr("width",function(){
-				return  ((radius*2)-2) * (1- (accLimit % 1));
+				if(accLimit!=limit){
+					return  ((radius*2)-2) * (((limit-accLimit > 1) ? 1 : limit-accLimit)- (accLimit % 1));
+				}
+				return 0;
 			}).style("fill",function(){
 				if(nodeName.toUpperCase()==Cure.negNodeName.toUpperCase()){
 					return "blue";//Opposite Color

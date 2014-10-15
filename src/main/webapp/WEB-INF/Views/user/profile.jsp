@@ -34,7 +34,7 @@
 	<td><span class='keyValue'><@ print(Math.round(json_tree.novelty*10)/10) @></span></td>
 	<td><center><@= comment @></center></td>
 	<td><svg id="treePreview<@= cid @>"></svg></td>
-	<td><@= created @></td>
+	<td><@ print(created.hourOfDay+":"+created.minuteOfHour+" "+created.monthOfYear+"/"+created.dayOfMonth+"/"+created.yearOfEra) @></td>
 	<td><center><a href="../?treeid=<@= id @>&dataset=<@= score.dataset @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
 	<@ } else { @>
 	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th>

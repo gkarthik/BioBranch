@@ -20,7 +20,6 @@
 
 <!-- Bootstrap core CSS -->
 <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="static/oldStyles/css/landing-style.css" rel="stylesheet">
 
 <title></title>
 <link rel="stylesheet" type="text/css"
@@ -30,7 +29,11 @@
 <link rel="stylesheet" type="text/css"
 	href="static/oldStyles/css/bootstrap.css" />
 </head>
-
+<style>
+.list-group-item {
+    display: list-item;
+}
+</style>
 <body>
 
 	<div class="container">
@@ -44,40 +47,32 @@
 			</section>
 			<div id="column-content" class="col-md-8">
 				<div id="sections" class="section">
-					<h3 class="about">About</h3>
-					<div id="about">
-						<p>Branch is a new Web-based tool for the interactive
-							construction of decision trees from genomic datasets. Branch
-							offers the ability to</p>
-						<ul>
-							<li>Construct decision trees by manually selecting features
-								such as genes for a gene expression dataset.</li>
-							<li>Collaboratively edit and built decision trees.</li>
-							<li>Create feature functions that aggregate content from
-								multiple independent features into single decision nodes (e.g.
-								pathways)</li>
-							<li>Evaluate decision tree classifiers in terms of precision
-								and recall.</li>
-						</ul>
-						<p>The tool is optimized for genomic use cases through the
-							inclusion of gene and pathway-based search functions.</p>
-					</div>
-					<h3 class="background">Background</h3>
+					<h3 class="about">Decision Trees</h3>
+					<p id="about">
+						Decision trees help visualize a sequence of rules in a hierarchical fashion.  Rules can encapsulate *hypotheses that can be tested* with data.  They can also be used to make *predictions*.  
+					</p>
+					<h3 class="background">TOOL: "BRANCH"</h3>
 					<div id="background">
-						<p>A crucial task in modern biology is the prediction of
-							complex phenotypes, such as breast cancer prognosis, from
-							genome-wide measurements. Machine learning algorithms can
-							sometimes infer predictive patterns, but there is rarely enough
-							data to train and test them effectively and the patterns that
-							they identify are often expressed in forms (e.g. support vector
-							machines, neural networks, random forests composed of 10s of
-							thousands of trees) that are highly difficult to understand.</p>
+						<ul class="unordered">
+							<li>Allows you to incrementally construct a decision tree</li>
+							<li>At every stage, provides feedback about the accuracy of the tree based on its agreement with known examples from a training dataset.</li>
+							<li>Allows you to evaluate the tree on examples from a separate test data set</li>
+							<li>
+								Provides access to public datasets related to:
+								<ol>
+									<li>breast cancer progression</li>
+									<li>kidney transplant rejection</li>
+									<li>HIV tropism</li>
+								</ol>
+								....coming soon - your dataset!
+							</li>
+						</ul>
 					</div>
 
 					<h3 class="contact">Contact</h3>
 					<div id="contact">
 						<p>Please feel free to get in touch with us via email,
-							twitter, messenger pigeon etc.
+							twitter, messenger pigeon etc. See details on <a href="${pageContext.request.contextPath}/contact">Contact Page</a>.
 					</div>
 					<!--
             <h3 class="faq">FAQ</h3>
@@ -124,7 +119,7 @@
 													<spring:message code="text.login.page.login.failed.error" />
 												</div>
 											</c:if>
-											<form action="./login/authenticate" method="POST"
+											<form action="${pageContext.request.contextPath}/login/authenticate" method="POST"
 												role="form">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" /> <input type="hidden"
@@ -264,12 +259,6 @@
 
 
 					</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-
-				<div class="footer">
-					<p>&copy; Company 2014</p>
 				</div>
 			</div>
 		</div>

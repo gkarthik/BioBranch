@@ -2,11 +2,11 @@
 <div class="chartRegion" id="chartRegion<%= options.cid %>"></div>
 		<% if(name == Cure.negNodeName)
 		{
-			print ('<span class="name attrvalue" style="background:red;">'+name.toUpperCase()+'</span>');
+			print ('<span class="name attrvalue" style="background:red;">'+name.toUpperCase().replace("_"," ")+'</span>');
 		}
 		else if(name == Cure.posNodeName)
 		{
-			print ('<span class="name attrvalue" style="background:blue;">'+name.toUpperCase()+'</span>');
+			print ('<span class="name attrvalue" style="background:blue;">'+name.toUpperCase().replace("_"," ")+'</span>');
 		} 
       	%>	
     <input type="text" class="edit d3edit" value="<%= name %>">

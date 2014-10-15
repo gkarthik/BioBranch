@@ -362,12 +362,24 @@ public class MetaServerController {
 			HashMap mp = new HashMap();
 			mp.put("genes", true);
 			mp.put("non_genes", true);
+			mp.put("cf", true);
+			mp.put("cc", true);
+			mp.put("t", true);
 			long nonGeneCount = featureRepo.getCountOfNonGeneFeature(d);
 			long total_count = featureRepo.getCountOfFeatures(d);
 			if(nonGeneCount == 0){
 				mp.put("non_genes", false);
 			} else if(total_count==nonGeneCount){
 				mp.put("genes", false);
+			}
+			if(cfeatureRepo.getCountFromCollection(d.getCollection())==0){
+				mp.put("cf", false);
+			}
+			if(cClassifierRepo.getCount()==0){
+				mp.put("cc", false);
+			}
+			if(treeRepo.getCount()==0){
+				mp.put("t", false);
 			}
 			List<Attribute> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
 			mp.put("infoGainMax", aList.get(0).getRelieff());

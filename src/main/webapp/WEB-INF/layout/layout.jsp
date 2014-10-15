@@ -28,6 +28,13 @@
 	border-left: 1px solid #EEE;
 	padding-right: 10px;
 }
+
+footer{
+	background: #F8F8F8;
+	padding: 10px 0px;
+	margin-top: 70px;
+	box-shadow: 0px -1px 0px rgba(255, 255, 255, 0.15) inset, 0px -1px 5px rgba(0, 0, 0, 0.075);
+}
 </style>
 <sitemesh:write property="head" />
 </head>
@@ -84,6 +91,13 @@
 							</p>
 						</li>
  -->
+ 					</sec:authorize>
+ 					<li>
+ 						<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+ 							<a href="${pageContext.request.contextPath}/contact">Contact</a>
+ 						</p>
+ 					</li>
+ 					<sec:authorize access="isAuthenticated()">
 						<li>
 							<p>
 							<form action="${pageContext.request.contextPath}/logout" method="POST">
@@ -102,14 +116,37 @@
 	</div>
 	<!-- /.container-fluid -->
 
-
-	</nav>
-	</div>
 	<div class="content">
 		<div id="view-holder">
 			<sitemesh:write property="body" />
 		</div>
 	</div>
+	
+	<footer>
+	<div class="container">
+	  <div class="col-md-6 row">
+	    <p><a href="http://sulab.org">The Su Laboratory</a></p>
+	    <p><b>Project Team</b>: Benjamin Good, Max Nanis, Salvatore Loguercio, Chunlei Wu, Andrew Su, Karthik G, Vyshakh Babji.</p>
+	    <p>An <a href="https://bitbucket.org/sulab/branch/" target="_blank"><span class="pink">Open Source</span></a> Project</p>
+	  </div>
+	  
+	  <div class="col-md-6 row">
+	  	<div class="pull-right">
+	    <p><a href="http://www.scripps.edu/" target="_blank">The Scripps Research Institute</a></p>
+	    <p>10550 North Torrey Pines Road</p>
+	    <p>La Jolla, CA 92037</p>
+	    </div>
+	  </div>
+	  <div class="col-md-12 row">
+	  <center>
+	  <h5><b>Disclaimers</b></h5>
+	  <ol>
+	  <li>This resource is intended for purely research, educational and entertainment purposes. It should not be used for medical or professional advice.</li>
+	  <li>Unless otherwise noted, all non-personally identifiable data entered into this site is stored in a database that will be publicly accessible.</li>
+	  </ol>
+	  </center>
 	</div>
+	</div>
+	</footer>
 </body>
 </html>
