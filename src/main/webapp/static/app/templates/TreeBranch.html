@@ -4,11 +4,7 @@
 <li class="list-group-item"><% print(splitvalues[i].name +" "+splitnodes[i].node.name ) %></li>
 <% } %>
 </ul>
-<% if(leafnode.name == Cure.posNodeName){ %>
-are predicted to survive beyond ten years.
-<% } else if(leafnode.name == Cure.negNodeName) { %>
-are predicted to have a span less than 10 years.
-<% } %>
+are predicted to be classified as "<%= leafnode.name %>".
 <span style="color:steelblue;font-weight:bold;font-size:15px;"><% print(Math.round(Cure.binScale(leafnode.options.bin_size)*100)/100) %>%</span> of all cases match these conditions.
 Among these cases, this rule is <span style="color:orange;font-weight:bold;font-size:15px;"><% print(Math.round(Cure.accuracyScale(leafnode.options.pct_correct)*100)) %>%</span> accurate.
 </p>

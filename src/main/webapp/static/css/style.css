@@ -109,7 +109,6 @@ html, body{
 #CollaboratorsRegion{
 	position: absolute;
 	background: none repeat scroll 0% 0% rgb(255, 255, 255);
-	padding: 5px;
 	margin-left: -110px;
 	margin-top: 25px;
 }

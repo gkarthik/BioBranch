@@ -2,6 +2,7 @@ package org.scripps.branch.repository;
 
 import java.util.List;
 
+import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
@@ -46,5 +47,8 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	// Community view
 	@Query("select t from Tree t where t.user_saved = true and t.private_tree = false and (t.json_tree like concat(concat('%',?1),'%') or t.comment like concat(concat('%',?1),'%'))")
 	List<Tree> getTreesBySearch(String query);
+	
+	@Query("select count(t) from Tree t")
+	long getCount();
 
 }

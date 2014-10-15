@@ -122,6 +122,9 @@ define([
 				Cure.dataset.set('validateNonGenes', data.non_genes);
 				Cure.dataset.set('infoGainMin',data.infoGainMin);
 				Cure.dataset.set('infoGainMax',data.infoGainMax);
+				Cure.dataset.set('validatecf',true);
+				Cure.dataset.set('validatecc',true);
+				Cure.dataset.set('validatet',true);
 				Cure.infogainScale = d3.scale.linear().domain([data.infoGainMin, data.infoGainMax]).range(["#E5F5E0","#00441B"]);
 			},
 			error : function(){

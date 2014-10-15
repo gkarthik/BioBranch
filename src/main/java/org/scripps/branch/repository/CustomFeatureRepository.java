@@ -19,6 +19,9 @@ public interface CustomFeatureRepository extends
 
 	CustomFeature findByName(String name);
 	
+	@Query("select count(cf) from CustomFeature cf where cf.dataset.collection=?1")
+	long getCountFromCollection(Collection c);
+	
 	@Query("select cf from CustomFeature cf where cf.name = ?1 and cf.dataset.collection=?2")
 	CustomFeature findByNameAndCollection(String name, Collection c);
 

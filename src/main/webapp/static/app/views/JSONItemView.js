@@ -138,15 +138,15 @@ JSONItemView = Marionette.ItemView.extend({
 	template : function(serialized_model) {
 		var name = serialized_model.name;
 		var options = serialized_model.options;
-		if(serialized_model.options.hasOwnProperty("unique_id") && serialized_model.options.unique_id.indexOf("custom_")==-1){
-			if(serialized_model.options.kind == "split_node" && serialized_model.options.unique_id.indexOf("metabric") == -1) {
+		if(serialized_model.options.hasOwnProperty("unique_id") && !isNaN(serialized_model.options.unique_id)){
+			if(serialized_model.options.kind == "split_node" && !isNaN(serialized_model.options.unique_id)) {
 				return splitNodeGeneSummary({
 					id: serialized_model.cid,
 					name : name,
 					summary : serialized_model.gene_summary,
 					kind : serialized_model.options.kind
 				});
-			} else if (serialized_model.options.kind == "split_node" && serialized_model.options.unique_id.indexOf("metabric") != -1){
+			} else if (serialized_model.options.kind == "split_node" && isNaN(serialized_model.options.unique_id)){
 				return splitNodeCfSummary({
 					id: serialized_model.cid,
 					name : name,
@@ -398,7 +398,7 @@ JSONItemView = Marionette.ItemView.extend({
 		var idFlag = 1;
 		if(this.model.get('options').get('kind') == "split_node"){
 			if(this.model.get('options').get('unique_id')!="" && this.model.get('options').get('unique_id')!=null && this.model.get('options').get('unique_id').indexOf("custom_")==-1){
-				if(this.model.get('options').get('unique_id').indexOf("metabric") == -1){
+				if(!isNaN(this.model.get('options').get('unique_id'))){
 					idFlag = 0;
 					this.getSummary();
 				} else {
@@ -408,7 +408,7 @@ JSONItemView = Marionette.ItemView.extend({
 				//For Custom Features
 			}
 		} else if(this.model.get('options').get('kind') == "split_value") {
-				if(this.model.get('parentNode').get('options').get('unique_id').indexOf("metabric")!=-1){
+				if(isNaN(this.model.get('parentNode').get('options').get('unique_id'))){
 					var summaryTextArray = this.model.get('parentNode').get('options').get('description').split("\n");
 					for(var temp in summaryTextArray){
 						if(summaryTextArray[temp].match(this.model.get('name').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"))){//To escape +

@@ -16,14 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
-public class HelpController {
+public class HeaderController {
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(HelpController.class);
+			.getLogger(HeaderController.class);
 
 	protected static final String VIEW_NAME_PROFILEPAGE = "help";
 
 	@RequestMapping(value = "/features", method = RequestMethod.GET)
 	public String showHomePage(WebRequest request, Model model) {
 		return VIEW_NAME_PROFILEPAGE;
+	}
+	
+	@RequestMapping(value = "/contact", method = RequestMethod.GET)
+	public String showContactPage(WebRequest request, Model model) {
+		return "contact";
 	}
 }
