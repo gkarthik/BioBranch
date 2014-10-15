@@ -675,6 +675,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 			evalresults.put("bin_size", quantity);
 			evalresults.put("infogain", vals[m_Attribute]);
+			evalresults.put("majClass", m_Info.classAttribute().value(Utils.maxIndex(m_ClassDistribution)));
 			evalresults.put("split_point", m_SplitPoint);
 			evalresults.put("orig_split_point", mp.get("orig_split_point"));
 			
