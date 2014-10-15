@@ -24,11 +24,29 @@ DatasetLayout = Marionette.Layout.extend({
 	 TestSets: '.show-testing-sets'
    },
    checkVal: function(){
+	   $("input[name='percent-split']").val("");
 	   if($($("input[name='testOptions']")[1]).is(":checked")){
 		   $(this.ui.TestSets).show();
 		   Cure.TestSets.at(0).set('setTest',true);
 	   } else {
 		   $(this.ui.TestSets).hide();
+	   }
+	   if($($("input[name='testOptions']")[2]).is(":checked")){
+		   $("input[name='percent-split']").val(66);
+	   }
+   },
+   setTestSetLabel: function(){
+	   var el = $("#test-set-label");
+	   switch($("input[name='testOptions']:checked").val()) {
+		case "0":
+			el.html(Cure.dataset.get('name'));
+			break;
+		case "1":
+			el.html(Cure.TestSets.findWhere({setTest:true}).get('name'));
+			break;
+		case "2": 
+			el.html("Training set split - "+$("input[name='percent-split']").val()+"%");
+			break;
 	   }
    },
    showWrapper: function(){
@@ -55,6 +73,7 @@ DatasetLayout = Marionette.Layout.extend({
 		});
    },
    applyOptions: function(){
+	   this.setTestSetLabel();
 	   Cure.PlayerNodeCollection.sync();
    },
    onRender: function(){
