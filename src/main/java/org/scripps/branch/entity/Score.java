@@ -2,9 +2,12 @@ package org.scripps.branch.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -13,6 +16,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tree_score")
@@ -21,8 +25,10 @@ public class Score {
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime created = null;
 
-	@Column
-	private String dataset;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonManagedReference
+	@JoinColumn(name = "dataset", insertable = true, updatable = true)
+	private Dataset dataset;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,7 +51,7 @@ public class Score {
 	@JsonBackReference
 	private Tree tree;
 
-	public String getDataset() {
+	public Dataset getDataset() {
 		return dataset;
 	}
 
@@ -75,7 +81,7 @@ public class Score {
 		this.created = now;
 	}
 
-	public void setDataset(String dataset) {
+	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
 	}
 

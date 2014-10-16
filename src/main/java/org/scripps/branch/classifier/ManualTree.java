@@ -200,6 +200,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected int m_pred = -1;
 	
 	protected ManualTree parentNode;
+	
+	protected HashMap<String, Integer> m_ClassAssignment = new HashMap<String,Integer>(); 
 
 	/**
 	 * Trying to get generate distribution of classes
@@ -662,6 +664,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// stop if input json tree does not contain any more children
 		// replacing Utils.gr(vals[m_Attribute], 0)&&
 		if (kind != null && kind.equals("split_node") && att_name != null) {
+			m_ClassAssignment.put("Inside", Utils.maxIndex(dists[m_Attribute][1]));
+			m_ClassAssignment.put("Outside", (Utils.maxIndex(dists[m_Attribute][1]) == 1) ? 0 : 1);
 			// Build subtrees
 			m_SplitPoint = splits[m_Attribute];
 			m_Prop = props[m_Attribute];
@@ -720,7 +724,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 				} else if(m_Attribute >= data.numAttributes()+custom_classifiers.size() -1 ){
 					CustomSet cSet = getReqCustomSet(m_Attribute-(data.numAttributes()-1+custom_classifiers.size()), cSetList);
-					LOGGER.debug(cSet.getId()+": child Name");
 						JsonNode vertices = mapper.readTree(cSet.getConstraints());
 					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
 					List<Attribute> aList = generateAttributeList(cSet, data, ds);
@@ -749,6 +752,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 						}
 					}
 				}
+				m_Successors[i].setM_ClassAssignment(m_ClassAssignment);
 				JsonNode son = sons.get(child_name);
 				if (son != null) {
 					m_Successors[i].buildTree(subsets[i], distribution[i],
@@ -833,11 +837,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 				_node.put("majClass", class_name);
 				if(node.get("setClass")!=null){
 					String setClass = node.get("setClass").asText();
-					if(setClass.equals("inside")){
-						class_name = m_Info.classAttribute().value(0);
-					} else if (setClass.equals("outside")) {
-						class_name = m_Info.classAttribute().value(1);
-					}
+					class_name = m_Info.classAttribute().value(m_ClassAssignment.get(setClass));
+					LOGGER.debug(setClass+" "+class_name);
 				}
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
@@ -877,13 +878,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 				child.put("majClass", class_name);
 				String nodeName = node.get("name").asText();
 				LOGGER.debug("Node Name: "+ node.get("name").asText());
-				if(nodeName.equals("Inside")){
-					class_name = m_Info.classAttribute().value(0);
-					child.put("setClass", "inside");
-				} else if (nodeName.equals("Outside")) {
-					class_name = m_Info.classAttribute().value(1);
-					child.put("setClass", "outside");
-				}
+				if(nodeName.equals("Inside") || nodeName.equals("Outside")){
+					child.put("setClass", nodeName);
+					class_name = m_Info.classAttribute().value(m_ClassAssignment.get(nodeName));
+				} 
 				child.put("name", class_name);
 				ObjectNode c_options = mapper.createObjectNode();
 				c_options.put("attribute_name", class_name);
@@ -1099,7 +1097,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				}
 				int check = checkPointInPolygon(attrVertices, testPoint);
 				dist[check][(int) data.instance(k).classValue()] += data.instance(k).weight();
-			}	
+			}
 		}
 
 		// Compute weights for subsetsCustomClassifierIndex
@@ -1219,7 +1217,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					testPoint[1] = instance.value(aList.get(1));
 					int check = checkPointInPolygon(attrVertices, testPoint);
 					if(m_Successors[check].getM_Attribute() == -1){
-						parentNode.setM_pred((check==0) ? 1 : 0);//Inside - 0, Outside - 1
+						parentNode.setM_pred(m_ClassAssignment.get((check == 0) ? "Outside": "Inside"));
 					}
 					returnedDist = m_Successors[check].distributionForInstance(instance);
 				
@@ -1455,6 +1453,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 		}
 		return CustomClassifierId;
 	}
+	
+	
 
 	/**
 	 * Get the value of K.
@@ -1548,6 +1548,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 			cs = csList.get(att);
 		}
 		return cs;
+	}
+
+	public HashMap<String, Integer> getM_ClassAssignment() {
+		return m_ClassAssignment;
+	}
+
+	public void setM_ClassAssignment(HashMap<String, Integer> m_ClassAssignment) {
+		this.m_ClassAssignment = m_ClassAssignment;
 	}
 
 	/**

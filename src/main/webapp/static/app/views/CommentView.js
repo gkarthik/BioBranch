@@ -21,7 +21,8 @@ CommentView = Backbone.Marionette.ItemView.extend({
 		"change .commentContent": 'saveComment',
 		'click #save_tree': 'saveTree',
 		'click #init_save_tree': 'initSave',
-		'click #save-private': 'flagPrivate'
+		'click #save-private': 'flagPrivate',
+		
 	},
 	initialize : function(){
 		this.model.bind('change', this.render);

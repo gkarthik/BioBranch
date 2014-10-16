@@ -17,8 +17,7 @@ define([
 	'text!static/app/templates/AddNode.html',
 	//Plugins
 	'myGeneAutocomplete',
-	'jqueryui',
-	'bootstrapJs'
+	'jqueryui'
     ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, AttrRankLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate) {
 AddRootNodeView = Marionette.ItemView.extend({
 	initialize : function() {
@@ -493,7 +492,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 	template : AddNodeTemplate,
 	url: base_url+"MetaServer",
 	onRender : function() {
-		$("[data-toggle=\"tooltip\"]").tooltip();
+		
 		if (this.model) {
 			var model = this.model;
 		}
