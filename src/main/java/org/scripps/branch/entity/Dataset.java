@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -77,6 +78,10 @@ public class Dataset {
 
 	@Column
 	private boolean privateset;
+	
+	@OneToMany(mappedBy = "dataset")
+	@JsonBackReference
+	private List<Score> score;
 
 	public List<Attribute> getAttributes() {
 		return attributes;

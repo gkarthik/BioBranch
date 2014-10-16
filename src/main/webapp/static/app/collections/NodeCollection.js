@@ -280,8 +280,8 @@ NodeCollection = Backbone.Collection.extend({
             success : function(data){
             	Cure.utils.showAlert("Tree Saved!<br />Your tree has been saved.", 1);
             	Cure.PlayerNodeCollection.tree_id = data.tree_id;
-            	var badges = data.badges;
             	if(Cure.PlayerNodeCollection.length>0 && Cure.PlayerNodeCollection.tree_id != 0 && Cure.Comment.get('flagPrivate')==0 && false){
+            		var badges = data.badges;
           			var args = {
           	        command : "get_rank",
           	        dataset : Cure.dataset.get('id'),

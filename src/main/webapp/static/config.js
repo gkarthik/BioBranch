@@ -24,9 +24,6 @@ require.config({
         //Bootstrap Tour
         bootstrapTour: 'lib/bootstrap-tour-standalone.min',
         
-        //Bootstrap js
-        bootstrapJs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min',
-        
         //Bootstrap Switch
         bootstrapSwitch : 'lib/bootstrap-switch',
         tmpldir: base_url+"static",
@@ -83,10 +80,6 @@ require.config({
         bootstrapSwitch: {
         	deps: ['jquery'],
         	exports: 'bootstrapSwitch'
-        },
-        bootstrapJs: {
-        	deps: ['jquery'],
-        	exports: 'bootstrapJs'
         }
       }
     });

@@ -609,7 +609,7 @@ public class MetaServerController {
 		}
 		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
 			newScore.setNovelty(nov);
-			newScore.setDataset(data.get("dataset").asText());
+			newScore.setDataset(dataRepo.findById(data.get("dataset").asLong()));
 			newScore.setPct_correct(eval.pctCorrect());
 			newScore.setSize(numnodes);
 			double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval

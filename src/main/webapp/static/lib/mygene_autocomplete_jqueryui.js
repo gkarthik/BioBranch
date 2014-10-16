@@ -134,10 +134,10 @@ $.widget("my.genequery_autocomplete", $.ui.autocomplete, {
             };
 
         //set default title attribute if not set already.
-        if (this.element.attr("title") === undefined){
-            this.element.attr("title", 'Powered by mygene.info');
-        }
-        //set default select callback if not provided.
+//        if (this.element.attr("title") === undefined){
+//            this.element.attr("title", 'Powered by mygene.info');
+//        }
+        //set default select callback if not provided.	
         _options.select = _options.select || this._default_select_callback;
 
         //set default loading icon

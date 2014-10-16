@@ -15,8 +15,7 @@ define([
 	//Templates
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
-	'odometer',
-	'bootstrapJs'
+	'odometer'
     ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
@@ -114,7 +113,6 @@ sidebarLayout = Marionette.Layout.extend({
     	}
     },
     onRender: function(){
-    	$("[data-toggle=\"tooltip\"]").tooltip();
 //    	Cure.ScoreView = new ScoreView({
 //        "model" : Cure.Score
 //      });

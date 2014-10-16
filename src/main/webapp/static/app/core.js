@@ -29,8 +29,7 @@ define([
         'app/utilities/utilities',
         //Tour
         'app/tour/tour',
-        'app/tour/tree',
-    	'bootstrapJs'
+        'app/tour/tree'
         ],
         function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
         		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, TutorialCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
@@ -275,7 +274,19 @@ define([
 		Cure.LoginRegion.show(Cure.LoginView);
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
 		Cure.instanceData = {};
-		
+		$(document).tooltip({
+			show: false,
+			hide: false,
+			position: { my: "top-70", at: "right center" },
+			 using: function( position, feedback ) {
+				 $( this ).css( position );
+				 $( "<div>" )
+				 .addClass( "arrow" )
+				 .addClass( feedback.vertical )
+				 .addClass( feedback.horizontal )
+				 .appendTo( this );
+				 }
+		});
 		if(cure_tree_id!=undefined){
 			var args = {
 					command : "get_tree_by_id",
