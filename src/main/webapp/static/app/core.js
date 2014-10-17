@@ -277,7 +277,7 @@ define([
 		$(document).tooltip({
 			show: false,
 			hide: false,
-			position: { my: "top-70", at: "right center" },
+			position: { my: "top-50", at: "right center" },
 			 using: function( position, feedback ) {
 				 $( this ).css( position );
 				 $( "<div>" )
@@ -285,7 +285,8 @@ define([
 				 .addClass( feedback.vertical )
 				 .addClass( feedback.horizontal )
 				 .appendTo( this );
-				 }
+				 },
+				 tooltipClass: 'custom-tooltip'
 		});
 		if(cure_tree_id!=undefined){
 			var args = {
