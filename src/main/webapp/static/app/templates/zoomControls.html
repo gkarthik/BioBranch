@@ -7,7 +7,11 @@
       			</div>
       			<% if(Cure.PlayerNodeCollection.length>0){
       				if(badge_desc==null){
-      					print('<h4>Dataset Description</h4><div class="description-mini">'+Cure.dataset.get('description')+"</div>");	
+      					if(expandDesc){
+      						print('<h4>Dataset Description</h4><div class="description-mini">'+Cure.dataset.get('description')+"<span class='reduce-desc btn-link'>Show Less</span></div>");	
+      					} else {
+      						print('<h4>Dataset Description</h4><div class="description-mini">'+Cure.dataset.get('description').substring(0,200)+"... <span class='expand-desc btn-link'>Show More</span></div>");
+      					}
       				} else {
       					print('<div class="description-mini"><b>'+badge_desc+"</b></div>");
       				}

@@ -24,7 +24,15 @@ ZoomView = Marionette.ItemView.extend({
 	events:{
 		'click #toggle-fittoscreen': 'clickFitToScreen',
 		'click .zoomin': 'zoomIn',
-		'click .zoomout': 'zoomOut'
+		'click .zoomout': 'zoomOut',
+		'click .expand-desc': 'expandDesc',
+		'click .reduce-desc': 'reduceDesc'
+	},
+	expandDesc: function(){
+		this.model.set('expandDesc',true);
+	},
+	reduceDesc: function(){
+		this.model.set('expandDesc',false);
 	},
 	zoomIn: function(){
 		if (Cure.PlayerNodeCollection.models.length > 0){

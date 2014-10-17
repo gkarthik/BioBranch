@@ -5,7 +5,8 @@ define([
 Zoom = Backbone.RelationalModel.extend({
 	defaults : {
 		scaleLevel: 1,
-		fitToScreen: true
+		fitToScreen: true,
+		expandDesc: false
 	}
 });
 
