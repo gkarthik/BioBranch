@@ -664,6 +664,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// stop if input json tree does not contain any more children
 		// replacing Utils.gr(vals[m_Attribute], 0)&&
 		if (kind != null && kind.equals("split_node") && att_name != null) {
+			//Assign Classes for custom sets(visual splits).
 			m_ClassAssignment.put("Inside", Utils.maxIndex(dists[m_Attribute][1]));
 			m_ClassAssignment.put("Outside", (Utils.maxIndex(dists[m_Attribute][1]) == 1) ? 0 : 1);
 			// Build subtrees
@@ -752,7 +753,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 						}
 					}
 				}
-				m_Successors[i].setM_ClassAssignment(m_ClassAssignment);
+				m_Successors[i].setM_ClassAssignment((HashMap<String, Integer>) m_ClassAssignment.clone());
 				JsonNode son = sons.get(child_name);
 				if (son != null) {
 					m_Successors[i].buildTree(subsets[i], distribution[i],

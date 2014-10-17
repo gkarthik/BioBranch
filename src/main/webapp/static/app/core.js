@@ -223,7 +223,7 @@ define([
 		Cure.Scorewidth = options["Scorewidth"];
 		Cure.Scoreheight = options["Scoreheight"];
 		Cure.duration = 500;
-		Cure.cluster = d3.layout.tree().size([ (Cure.width-100), "auto" ])
+		Cure.cluster = d3.layout.tree().size([ (Cure.width-10), "auto" ])
 		.separation(function(a, b) {
 			try {
 				if (a.children.length > 2) {
