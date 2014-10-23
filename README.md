@@ -14,24 +14,21 @@
 * Pull code from this repository using mercurial plugin. 
 * Refresh all dependencies in gradle. 
 * Set Up database details in src/main/resources/application.properties.
-* To create database schema for the first time, set hibernate.hbm2ddl.auto=create in application.properties. To revert back to update set hibernate.hbm2ddl.auto=update.
-* To set up the uploads directory change uploads.dir=/absolute/path/to/folder/
+* To create database schema for the first time, set hibernate.hbm2ddl.auto=create in application.properties. To revert back to update on subsequent sessions set hibernate.hbm2ddl.auto=update.
+* There are two configuration files, config_prod and config_dev for production and development environments respectively. To configure the profile to run the application in, add a setenv.sh file to the bin folder of your tomcat installation. Add the following line to the file.
+```
+	JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=*profile_name*"
+```
+Replace *profile_name* with prod or dev.
+* To set up the uploads directory set uploads.dir=/absolute/path/to/folder/ in the appropriate properties file.
+* Refresh dependencies using Gradle plugin.
 * Run on Tomcat 7.0. 
 
 ### Db SetUp ###
-* Download db_dump.sql from <coming soon>
-* Login to postgresql command line.
-* Run following commands
-```
-    DROP TABLE attribute;
-    DROP TABLE feature CASCADE;
-    DROP TABLE pathway CASCADE;
-    DROP TABLE pathway_feature;
-```
-* Exit postgresql command line and execute this command on the shell/cmd.
-```
-    pg_dump -U <username> -h localhost <database-name> < db_dump.sql
-``` 
+* Setup an account wiht username "admin". 
+* Log in using admin account and go to localhost:8080/branch/tutorials/.
+* Click on Populate Pathway and choose appropriate source to add pathways to the database.
+* Adding datasets... (Coming Soon)
 
 ### Tests: ###
 Run using JUnit.

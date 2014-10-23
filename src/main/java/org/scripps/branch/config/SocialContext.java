@@ -23,7 +23,6 @@ import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 
 @Configuration
 @EnableSocial
-// @Profile("application")
 public class SocialContext implements SocialConfigurer {
 
 	@Autowired
