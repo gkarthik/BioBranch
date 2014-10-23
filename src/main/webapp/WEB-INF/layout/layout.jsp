@@ -148,5 +148,10 @@ footer{
 	</div>
 	</div>
 	</footer>
+	<% if(System.getProperty("spring.profiles.active").equals("dev")){ %>
+		<!-- Dev. No Analytics -->
+	<% } else if(System.getProperty("spring.profiles.active").equals("prod")) { %>
+		<jsp:include page="analytics.jsp" />
+	<% } %>
 </body>
 </html>

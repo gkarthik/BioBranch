@@ -43,7 +43,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 @Import({ WebApplicationContext.class, SecurityContext.class, SocialContext.class, FeatureJobConfig.class })
 @EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
 @EnableTransactionManagement
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:config_${spring.profiles.active}.properties")
 public class ApplicationContextConfig {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
