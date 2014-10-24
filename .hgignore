@@ -4,8 +4,10 @@ glob:build/*
 glob:target/*
 glob:bin/*
 glob:.settings/*
+glob:.hgrc
 glob:.gradle/*
 glob:.hgignore~
+glob:README.md~
 glob:src/main/resources/config_dev.properties
 glob:src/main/resources/config_prod.properties
 
