@@ -131,8 +131,10 @@ public class ApplicationContextConfig {
 	public Flyway initFlyway(DataSource ds){
 		Flyway f = new Flyway();
 		f.setDataSource(ds);
-		f.setSqlMigrationPrefix("Migration_");
+		f.setSqlMigrationPrefix("V");
 		f.setInitOnMigrate(true);
+		f.setInitVersion("1");
+		f.setInitDescription("Base version");
 		f.migrate();
 		return f;
 	}
