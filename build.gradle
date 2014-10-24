@@ -177,4 +177,5 @@ eclipse {
 
 dependencies {
     compile files('src/main/resources/StatUtils.jar')
+    compile files('src/main/resources/flyway-core-3.0.jar')
 }

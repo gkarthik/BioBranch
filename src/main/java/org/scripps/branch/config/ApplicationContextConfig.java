@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.flywaydb.core.Flyway;
 import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,17 @@ public class ApplicationContextConfig {
 //		DatabasePopulatorUtils.execute(createDatabasePopulator(ctx), dataSource);
 		return dataSource;
 	}
-
+	
+	@Bean(initMethod="migrate")
+	public Flyway initFlyway(DataSource ds){
+		Flyway f = new Flyway();
+		f.setDataSource(ds);
+		f.setSqlMigrationPrefix("Migration_");
+		f.setInitOnMigrate(true);
+		f.migrate();
+		return f;
+	}
+	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) throws IOException {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
