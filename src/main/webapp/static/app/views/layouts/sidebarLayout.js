@@ -84,7 +84,9 @@ sidebarLayout = Marionette.Layout.extend({
     	$("#"+id).show();
     },
     createNewTree: function(){
-    	$("div.node:nth-child(1) > .delete").trigger('click');
+    	if(confirm("Are you sure you want to create a new tree?\nYou will lose all your unsaved work.")){
+    		$("div.node:nth-child(1) > .delete").trigger('click');
+    	}
     },
     showCurrentRank: function(){
     	$(this.ui.ScoreWrapper).show();
