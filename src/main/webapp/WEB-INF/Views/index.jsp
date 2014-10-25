@@ -2,41 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-<div id="loading-wrapper">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<center>LOADING</center>
-		</div>
-		<div class="panel-content">
-			<center>
-				<span id="loadingCount"></span>
-			</center>
-			<div class="progress progress-striped active">
-				<div class="progress-bar" role="progressbar" aria-valuenow="45"
-					aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-			</div>
-			<center>Loading might take a while.</center>
-		</div>
-	</div>
-</div>
-<div id="TutorialRegion"></div>
-<div id="NodeDetailsWrapper" class="blurCloseElement">
-	<div id="NodeDetailsContent"></div>
-</div>
-<div id="jsonSummary"></div>
-<div class="container-fluid CureContainer">
-	<div class="alert alert-warning alert-dismissable" id="alertWrapper">
-		<button type="button" class="close" data-dismiss="alert"
-			aria-hidden="true">&times;</button>
-		<strong id="alertMsg"></strong>
-	</div>
-
-	<div class="row">
-		<div id="zoom-controls"></div>
-		<div id="PlayerTreeRegion"></div>
-		<div id="cure-panel-wrapper"></div>
-		<div id="GenePoolRegion"></div>
-		<div id="FeatureBuilderRegion"></div>
+<div id="main-app-wrapper"></div>
 		<script type="text/javascript">
 					var cure_user_id = ${userId}, 
 						cure_user_name = "${firstName}", 

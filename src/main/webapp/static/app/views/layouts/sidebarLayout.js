@@ -85,6 +85,10 @@ sidebarLayout = Marionette.Layout.extend({
     },
     createNewTree: function(){
     	if(confirm("Are you sure you want to create a new tree?\nYou will lose all your unsaved work.")){
+    		var t = document.location.href;
+    		if(t.indexOf("treeid")==-1){
+    			//Change url
+    		}
     		$("div.node:nth-child(1) > .delete").trigger('click');
     	}
     },

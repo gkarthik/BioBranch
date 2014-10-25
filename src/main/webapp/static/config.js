@@ -92,15 +92,7 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	  "Scorewidth" : 270,
 	  "Scoreheight" : 270,
 	  "regions" : {
-	    "PlayerTreeRegion" : "#PlayerTreeRegion",
-	    "JSONSummaryRegion" : "#jsonSummary",
-	    "SideBarRegion": "#cure-panel-wrapper",
-	    "ZoomControlsRegion": "#zoom-controls",
-	    "LoginRegion": "#LoginRegion",
-	    "ScoreBoardRegion" : "#scoreboard_innerwrapper",
-	    "GenePoolRegion": "#GenePoolRegion",
-	    "FeatureBuilderRegion": "#FeatureBuilderRegion",
-	    "TutorialRegion": "#TutorialRegion"
+		  "appRegion": "#main-app-wrapper"
 	  },
 	  posNodeName : classValues[0],
 	  negNodeName : classValues[1],
