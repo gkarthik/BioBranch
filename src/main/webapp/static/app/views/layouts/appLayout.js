@@ -31,9 +31,7 @@ define([
 appLayout = Marionette.Layout.extend({
     template: appLayoutTemplate,
     regions: {
-    	"PlayerTreeRegion" : "#PlayerTreeRegion",
     	"PlayerTreeRegionTree" : "#PlayerTreeRegionTree",
-    	"PlayerTreeRegionSVG" : "#PlayerTreeRegionSVG",
 	    "JSONSummaryRegion" : "#jsonSummary",
 	    "SideBarRegion": "#cure-panel-wrapper",
 	    "ZoomControlsRegion": "#zoom-controls",
@@ -41,10 +39,16 @@ appLayout = Marionette.Layout.extend({
 	    "ScoreBoardRegion" : "#scoreboard_innerwrapper",
 	    "GenePoolRegion": "#GenePoolRegion",
 	    "FeatureBuilderRegion": "#FeatureBuilderRegion",
-	    "TutorialRegion": "#TutorialRegion"
+	    "TutorialRegion": "#TutorialRegion",
+	    "PathwaySearchRegion": "#PathwaySearchRegion",
+	    "pickInstanceRegion": "#pickInstRegion",
+	    "AggNodeRegion":"#AggNodeRegion",
+	    "AttrRankRegion": "#AttrRankRegion"
     },
     ui: {
-    	
+      	"PlayerTreeRegion" : "#PlayerTreeRegion",
+    	"PlayerTreeRegionTree" : "#PlayerTreeRegionTree",
+    	"PlayerTreeRegionSVG" : "#PlayerTreeRegionSVG",
     },
     events:{
     	
@@ -79,15 +83,29 @@ appLayout = Marionette.Layout.extend({
 			}
 		}
 	},
-    onRender: function(){
-
+    onShow: function(){
+    	$(document).tooltip({
+			show: false,
+			hide: false,
+			position: { my: "top-50", at: "right center" },
+			 using: function( position, feedback ) {
+				 $( this ).css( position );
+				 $( "<div>" )
+				 .addClass( "arrow" )
+				 .addClass( feedback.vertical )
+				 .addClass( feedback.horizontal )
+				 .appendTo( this );
+				 },
+				 tooltipClass: 'custom-tooltip'
+		});
+    	
 		$(this.ui.PlayerTreeRegion).css({
 			"width" : Cure.width
 		});
 
 		var zoom = d3.behavior.zoom().scaleExtent([ 1, 1 ]).on("zoom", this.zoomed);
 
-		Cure.PlayerSvg = d3.select(this.ui.PlayerTreeRegionSVG).attr("width",
+		Cure.PlayerSvg = d3.select("#PlayerTreeRegionSVG").attr("width",
 				Cure.width).attr("height", Cure.height).call(zoom).append(
 				"svg:g").attr("transform", "translate(0,0)").attr("class",
 				"dragSvgGroup");
@@ -116,11 +134,10 @@ appLayout = Marionette.Layout.extend({
 		Cure.JSONCollectionView = new JSONCollectionView({
 			collection : Cure.PlayerNodeCollection
 		});
-		Cure.sidebarLayout = new sidebarLayout();
 		this.GenePoolRegion.show(new GenePoolLayout());
-		this.PlayerTreeRegion.show(Cure.PlayerNodeCollectionView);
+		this.PlayerTreeRegionTree.show(Cure.PlayerNodeCollectionView);
 		this.JSONSummaryRegion.show(Cure.JSONCollectionView);
-		this.SideBarRegion.show(Cure.sidebarLayout);
+		this.SideBarRegion.show(new sidebarLayout());
 		this.ZoomControlsRegion.show(Cure.ZoomView);
 		this.LoginRegion.show(Cure.LoginView);
     }

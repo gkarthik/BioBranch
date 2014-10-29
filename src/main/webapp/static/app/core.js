@@ -168,20 +168,7 @@ define([
 		
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
 		Cure.instanceData = {};
-		$(document).tooltip({
-			show: false,
-			hide: false,
-			position: { my: "top-50", at: "right center" },
-			 using: function( position, feedback ) {
-				 $( this ).css( position );
-				 $( "<div>" )
-				 .addClass( "arrow" )
-				 .addClass( feedback.vertical )
-				 .addClass( feedback.horizontal )
-				 .appendTo( this );
-				 },
-				 tooltipClass: 'custom-tooltip'
-		});
+		
 		if(cure_tree_id!=undefined){
 			var args = {
 					command : "get_tree_by_id",

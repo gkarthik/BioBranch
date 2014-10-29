@@ -9,6 +9,11 @@ html, body{
   padding:0px;
   height:100%;
 }
+
+.overlay-regions{
+	z-index: 4;	
+}
+
 .custom-tooltip{
 	padding: 5px !important;
 	border-radius: 5px !important;
@@ -1144,7 +1149,6 @@ text-align:left;
 	left: 25%;
 	width: 50%;
 	top: 50px;
-	z-index: 2;
 }
 
 #DatasetRegion{
@@ -1165,7 +1169,6 @@ text-align:left;
 	left: 25%;
 	width: 50%;
 	top: 50px;
-	z-index: 1;
 }
 
 #aggnode_wrapper{
@@ -1217,7 +1220,6 @@ text-align:left;
 	left: 25%;
 	width: 50%;
 	top: 50px;
-	z-index: 1;
 }
 
 #PathwaySearchRegion .panel-content{
@@ -1237,7 +1239,6 @@ text-align:left;
 	font-size: 12px;
 	position: absolute;
 	top: 320px;
-	z-index: 5;
 	left: 20px;
 }
 
