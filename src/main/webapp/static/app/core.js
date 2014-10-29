@@ -26,7 +26,6 @@ define([
 	Cure
 	.addInitializer(function(options) {
 		Backbone.emulateHTTP = true;
-		
 		Cure.width = options["width"];
 		Cure.height = options["height"];
 		Cure.posNodeName = options["posNodeName"];
