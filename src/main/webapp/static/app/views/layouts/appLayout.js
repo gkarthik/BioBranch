@@ -98,18 +98,14 @@ appLayout = Marionette.Layout.extend({
 				 },
 				 tooltipClass: 'custom-tooltip'
 		});
-    	
 		$(this.ui.PlayerTreeRegion).css({
 			"width" : Cure.width
 		});
-
 		var zoom = d3.behavior.zoom().scaleExtent([ 1, 1 ]).on("zoom", this.zoomed);
-
 		Cure.PlayerSvg = d3.select("#PlayerTreeRegionSVG").attr("width",
 				Cure.width).attr("height", Cure.height).call(zoom).append(
 				"svg:g").attr("transform", "translate(0,0)").attr("class",
 				"dragSvgGroup");
-		
     	Cure.PlayerNodeCollection = new NodeCollection();
 		Cure.TreeBranchCollection = new TreeBranchCollection();
 		Cure.CollaboratorCollection = new CollaboratorCollection();
