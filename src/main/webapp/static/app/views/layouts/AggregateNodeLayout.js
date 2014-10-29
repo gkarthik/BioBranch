@@ -52,15 +52,15 @@ AggNodeLayout = Marionette.Layout.extend({
       GeneCollectionRegion: "#Aggnode_GeneCollectionRegion"
     },
     openAttrRanker: function(){
-    	Cure.sidebarLayout.AttrRankRegion.close();
-		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: true}));
+    	Cure.appLayout.AttrRankRegion.close();
+		Cure.appLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: true}));
     },
     closeAggNode: function(){
-    	Cure.sidebarLayout.AggNodeRegion.close();
+    	Cure.appLayout.AggNodeRegion.close();
     },
 	openPathwaySearch: function(){
 		Cure.PathwaySearchLayout = new PathwaySearchLayout({aggNode: true});
-		Cure.sidebarLayout.PathwaySearchRegion.show(Cure.PathwaySearchLayout);
+		Cure.appLayout.PathwaySearchRegion.show(Cure.PathwaySearchLayout);
 	},
 	addToGeneCollection: function(models){
 		this.newGeneCollection.add(models);

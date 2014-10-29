@@ -234,11 +234,11 @@ NodeCollection = Backbone.Collection.extend({
 	setInstanceData: function(data){
 		var requiredModel = this.findWhere({pickInst: true});
 		if(requiredModel){
-			Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
+			Cure.appLayout.pickInstanceRegion.currentView.drawChart(data);
 			requiredModel.set('pickInst',false);
 		}
 		if(this.length == 0){
-			Cure.sidebarLayout.pickInstanceRegion.currentView.drawChart(data);
+			Cure.appLayout.pickInstanceRegion.currentView.drawChart(data);
 		}
 //			if(requiredModel.get('distribution_data')==null){
 //				var newDistData = new DistributionData(data);//Assuming only data of 1 model is sent with any request
