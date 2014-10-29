@@ -24,7 +24,7 @@ AttributeRanker = Marionette.Layout.extend({
     	this.aggNode = options.aggNode;
     },
     closeAttrRank: function(){
-    	Cure.sidebarLayout.AttrRankRegion.close();
+    	Cure.appLayout.AttrRankRegion.close();
     },
     getRankedAttributes: function(){
     	if(this.model){
@@ -82,10 +82,10 @@ AttributeRanker = Marionette.Layout.extend({
     			i--;
     		}
     	}
-    	Cure.sidebarLayout.PathwaySearchRegion.close();
+    	Cure.appLayout.PathwaySearchRegion.close();
     	console.log(this.aggNode);
     	if(this.aggNode){
-    		var layout = Cure.sidebarLayout.AggNodeRegion.currentView;
+    		var layout = Cure.appLayout.AggNodeRegion.currentView;
     		layout.addToGeneCollection(this.GeneCollection.toArray());
     		this.GeneCollection.reset();
     	} else {

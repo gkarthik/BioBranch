@@ -37,7 +37,7 @@ PickInstanceView = Marionette.Layout.extend({
 	},
 	closeView: function(e){
 		e.preventDefault();
-		Cure.sidebarLayout.pickInstanceRegion.close();
+		Cure.appLayout.pickInstanceRegion.close();
 	},
 	initialize: function(){
 		_.bindAll(this,'getInstances', 'addNode', 'drawChart');
@@ -140,7 +140,7 @@ PickInstanceView = Marionette.Layout.extend({
 					});
 				}	
 				Cure.PlayerNodeCollection.sync();
-				Cure.sidebarLayout.pickInstanceRegion.close();
+				Cure.appLayout.pickInstanceRegion.close();
 			} else {
 				var json = (Cure.PlayerNodeCollection.length>0) ? Cure.PlayerNodeCollection.at(0).toJSON() : {};
 				var node = {};

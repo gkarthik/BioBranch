@@ -27,12 +27,8 @@ sidebarLayout = Marionette.Layout.extend({
 	    "CollaboratorsRegion": "#CollaboratorsRegion",
 	    "ScoreKeyRegion": "#ScoreKeyRegion",
 	    "BadgeRegion": "#BadgeRegion",
-	    "PathwaySearchRegion": "#PathwaySearchRegion",
-	    "AggNodeRegion":"#AggNodeRegion",
 	    "DatasetRegion":"#DatasetRegion",
-	    "ConfusionMatrixRegion": "#CfMatrixRegion",
-	    "pickInstanceRegion": "#pickInstRegion",
-	    "AttrRankRegion": "#AttrRankRegion"
+	    "ConfusionMatrixRegion": "#CfMatrixRegion"
     },
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",
@@ -57,12 +53,12 @@ sidebarLayout = Marionette.Layout.extend({
     	_.bindAll(this,'toggleTreeExp');
     },
     openFeatureBuilder: function(){
-    	Cure.FeatureBuilderRegion.close();
-		Cure.FeatureBuilderRegion.show(new FeatureBuilder());
+    	Cure.appLayout.FeatureBuilderRegion.close();
+		Cure.appLayout.FeatureBuilderRegion.show(new FeatureBuilder());
     },
 	openPathwaySearch: function(){
 		Cure.PathwaySearchLayout = new PathwaySearchLayout({aggNode: false});
-		this.PathwaySearchRegion.show(Cure.PathwaySearchLayout);
+		Cure.appLayout.PathwaySearchRegion.show(Cure.PathwaySearchLayout);
 	},
     showPanelBody: function(){
     	$(this.ui.panelBody).show();

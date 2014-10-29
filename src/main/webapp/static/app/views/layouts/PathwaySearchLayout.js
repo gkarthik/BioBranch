@@ -23,7 +23,7 @@ PathwayLayout = Marionette.Layout.extend({
       GeneCollectionRegion: "#GeneCollectionRegion"
     },
     closePathwaySearch: function(){
-    	Cure.sidebarLayout.PathwaySearchRegion.close();
+    	Cure.appLayout.PathwaySearchRegion.close();
     },
     initialize: function(options){
     	this.aggNode = options.aggNode;
@@ -100,13 +100,13 @@ PathwayLayout = Marionette.Layout.extend({
     	}
     	console.log(this.aggNode);
     	if(this.aggNode){
-    		var layout = Cure.sidebarLayout.AggNodeRegion.currentView;
+    		var layout = Cure.appLayout.AggNodeRegion.currentView;
     		layout.addToGeneCollection(this.GeneCollection.toArray());
     		this.GeneCollection.reset();
     	} else {
-    		Cure.GenePoolRegion.currentView.addGeneCollection(this.GeneCollection);
+    		Cure.appLayout.GenePoolRegion.currentView.addGeneCollection(this.GeneCollection);
     	}
-    	Cure.sidebarLayout.PathwaySearchRegion.close();
+    	Cure.appLayout.PathwaySearchRegion.close();
     }
 });
 return PathwayLayout;
