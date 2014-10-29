@@ -43,25 +43,25 @@ AddRootNodeView = Marionette.ItemView.extend({
 		'click .rank-attributes': 'showRankAttr'
 	},
 	showRankAttr: function(){
-		Cure.sidebarLayout.AttrRankRegion.close();
-		Cure.sidebarLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: false}));
+		Cure.appLayout.AttrRankRegion.close();
+		Cure.appLayout.AttrRankRegion.show(new AttrRankLayout({model: this.model, aggNode: false}));
 	},
 	openFeatureBuilder: function(){
 //		Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
 //		Cure.FeatureBuilderRegion.show(Cure.FeatureBuilderView);
 	},
 	openAggNode: function(){
-		Cure.sidebarLayout.AggNodeRegion.close();
+		Cure.appLayout.AggNodeRegion.close();
 		Cure.AggNodeLayout = new AggNodeLayout({model: this.model});
-		Cure.sidebarLayout.AggNodeRegion.show(Cure.AggNodeLayout);
+		Cure.appLayout.AggNodeRegion.show(Cure.AggNodeLayout);
 	},
 	showPickInstance: function(){
 		if(this.model){
 			 this.model.set('showPickInst',true);
 		 } else {
-			 Cure.sidebarLayout.pickInstanceRegion.close();
+			 Cure.appLayout.pickInstanceRegion.close();
 			 var newpickInstView = new pickInstView();
-			 Cure.sidebarLayout.pickInstanceRegion.show(newpickInstView);
+			 Cure.appLayout.pickInstanceRegion.show(newpickInstView);
 		 }
 	},
 	chooseCategory: function(e){
