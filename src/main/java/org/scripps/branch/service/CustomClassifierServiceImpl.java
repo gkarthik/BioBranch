@@ -119,7 +119,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		HashMap mp = new HashMap();
 		CustomClassifier c = ccRepo.findById(id);
 		int classifierType = c.getType();
-		List<Feature> fList = c.getFeature();
+		List<Feature> fList = c.getFeatures();
 		long[] featureDbIds = new long[fList.toArray().length];
 		int ctr = 0;
 		for (Feature f: fList) {
@@ -200,7 +200,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				"custom_classifier_" + id).toString();
 		HashMap featureAttributeMapping = new HashMap();
 		String att_name = "";
-		for (Feature f : cc.getFeature()) {
+		for (Feature f : cc.getFeatures()) {
 			for (Attribute attr : f.getAttributes()) {
 				att_name = attr.getName();
 			}
@@ -263,7 +263,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				message = "Classifier with same name already exists.";
 				break;
 			}
-			List<Feature> fList = cf.getFeature();
+			List<Feature> fList = cf.getFeatures();
 			if (cf.getType() == classifierType) {
 				int count = fList.size();
 				int match = 0;
@@ -321,7 +321,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		newCC.setName(name);
 		newCC.setType(classifierType);
 		newCC.setDescription(description);
-		newCC.setFeature(featureList);
+		newCC.setFeatures(featureList);
 		newCC.setUser(user);
 		newCC = ccRepo.saveAndFlush(newCC);
 		return newCC;

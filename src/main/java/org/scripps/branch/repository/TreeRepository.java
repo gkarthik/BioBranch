@@ -5,6 +5,7 @@ import java.util.List;
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
@@ -45,8 +46,8 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	long getTotalCount();
 
 	// Community view
-	@Query("select t from Tree t where t.user_saved = true and t.private_tree = false and (t.json_tree like concat(concat('%',?1),'%') or t.comment like concat(concat('%',?1),'%'))")
-	List<Tree> getTreesBySearch(String query);
+	@Query("select t from Tree t where t.user_saved = true and t.private_tree = false and t.score.dataset=?2 and (t.json_tree like concat(concat('%',?1),'%') or t.comment like concat(concat('%',?1),'%'))")
+	List<Tree> getTreesBySearch(String query, Dataset d);
 	
 	@Query("select count(t) from Tree t")
 	long getCount();

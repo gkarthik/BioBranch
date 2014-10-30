@@ -56,33 +56,6 @@ appLayout = Marionette.Layout.extend({
     initialize: function(){
     	
     },
-    zoomed: function() {
-		if(d3.event.sourceEvent.type!="mousemove"){
-			var top = $("body").scrollTop();
-			$("body").scrollTop(top+d3.event.sourceEvent.deltaY);
-		} else {
-			if (Cure.PlayerNodeCollection.models.length > 0) {
-				var t = d3.event.translate, s = d3.event.scale, height = Cure.height, width = Cure.width;
-				if (Cure.PlayerSvg.attr('width') != null
-						&& Cure.PlayerSvg.attr('height') != null) {
-					width = Cure.PlayerSvg.attr('width') * (8 / 9),
-					height = Cure.PlayerSvg.attr('height');
-				}
-				t[0] = Math.min(width / 2 * (s), Math.max(width / 2 * (-1 * s),
-						t[0]));
-				t[1] = Math.min(height / 2 * (s), Math.max(height / 2
-						* (-1 * s), t[1]));
-				zoom.translate(t);
-				Cure.PlayerSvg.attr("transform", "translate(" + t + ")scale("+Cure.Zoom.get('scaleLevel')+")");
-				var splitTranslate = String(t).match(/-?[0-9\.]+/g);
-				$("#PlayerTreeRegionTree").css(
-						{
-							"transform" : "translate(" + splitTranslate[0] + "px,"
-							+ splitTranslate[1] + "px)scale("+Cure.Zoom.get('scaleLevel')+")"
-						});
-			}
-		}
-	},
     onShow: function(){
     	$(document).tooltip({
 			show: false,
@@ -101,7 +74,35 @@ appLayout = Marionette.Layout.extend({
 		$(this.ui.PlayerTreeRegion).css({
 			"width" : Cure.width
 		});
-		var zoom = d3.behavior.zoom().scaleExtent([ 1, 1 ]).on("zoom", this.zoomed);
+		
+		
+		var zoom = d3.behavior.zoom().scaleExtent([ 1, 1 ]).on("zoom", function() {
+			if(d3.event.sourceEvent.type!="mousemove"){
+				var top = $("body").scrollTop();
+				$("body").scrollTop(top+d3.event.sourceEvent.deltaY);
+			} else {
+				if (Cure.PlayerNodeCollection.models.length > 0) {
+					var t = d3.event.translate, s = d3.event.scale, height = Cure.height, width = Cure.width;
+					if (Cure.PlayerSvg.attr('width') != null
+							&& Cure.PlayerSvg.attr('height') != null) {
+						width = Cure.PlayerSvg.attr('width') * (8 / 9),
+						height = Cure.PlayerSvg.attr('height');
+					}
+					t[0] = Math.min(width / 2 * (s), Math.max(width / 2 * (-1 * s),
+							t[0]));
+					t[1] = Math.min(height / 2 * (s), Math.max(height / 2
+							* (-1 * s), t[1]));
+					zoom.translate(t);
+					Cure.PlayerSvg.attr("transform", "translate(" + t + ")scale("+Cure.Zoom.get('scaleLevel')+")");
+					var splitTranslate = String(t).match(/-?[0-9\.]+/g);
+					$("#PlayerTreeRegionTree").css(
+							{
+								"transform" : "translate(" + splitTranslate[0] + "px,"
+								+ splitTranslate[1] + "px)scale("+Cure.Zoom.get('scaleLevel')+")"
+							});
+				}
+			}
+		});
 		Cure.PlayerSvg = d3.select("#PlayerTreeRegionSVG").attr("width",
 				Cure.width).attr("height", Cure.height).call(zoom).append(
 				"svg:g").attr("transform", "translate(0,0)").attr("class",
