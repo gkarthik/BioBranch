@@ -146,6 +146,13 @@ public class MetaServerController {
 				List<Tree> tList = treeRepo.getTreesBySearch(data.get("query")
 						.asText(), d);
 				result_json = mapper.writeValueAsString(tList);
+			} else if (command.equals("get_trees_by_profile_search")) {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				UserDetails userDetails = (UserDetails) auth.getPrincipal();
+				User authUser = userRepo.findByEmail(userDetails.getUsername());
+				List<Tree> tList = treeRepo.getTreesByProfileSearch(data.get("query")
+						.asText(), authUser);
+				result_json = mapper.writeValueAsString(tList);
 			} else if (command.equals("get_trees_user_id")) {
 				User user = userRepo.findById(data.get("user_id").asLong());
 				UserDetails userDetails = null;

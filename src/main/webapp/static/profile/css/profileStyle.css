@@ -5,14 +5,16 @@
 }
 
 #profile-container{
-	padding-top: 60px;
+	
 }
 
 #sidebar-fixed{
-	position:fixed;
-	width: 20%;
-	border: 2px solid #CCC;
-	padding:10px;
+	border-bottom: 2px solid #CCC;
+	padding:2px;
+	padding-bottom: 20px;
+	z-index: 1;
+	background: #FFF;
+	margin-bottom:15px;
 }
 
 #sidebar-fixed .input-group{

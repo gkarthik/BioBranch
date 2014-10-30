@@ -267,7 +267,7 @@ MainLayout = Marionette.Layout.extend({
   		var t = window.setTimeout(function(){
   			if($(thisLayout.ui.searchInput).val()!=""){
   				var args = {
-  						command : "get_trees_by_search",
+  						command : "get_trees_by_profile_search",
   						query: $(thisLayout.ui.searchInput).val()
   				};
   				$.ajax({
@@ -306,6 +306,8 @@ MainLayout = Marionette.Layout.extend({
   					error : this.error,
   					async: true
   				});
+  			} else {
+  				$("#loading-wrapper").hide();
   			}
   			window.clearTimeout(t);
   		},300);

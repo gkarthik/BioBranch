@@ -1,12 +1,13 @@
-<div class="row">
 	<div class="container-fluid" id="profile-container"></div>
 	<link href='../static/profile/css/profileStyle.css' rel='stylesheet'
 		type='text/css'>
 	<script type="text/template" id="main-layout-template">
-		<div class="col-md-4">
-		<div id="sidebar-fixed">
-		<h3>${firstName}</h3><br><br>
-		<ul class="nav nav-pills nav-stacked">
+		<div id="sidebar-fixed" class="col-md-12">
+<span class="col-md-12">
+		<h3>${firstName}</h3>
+</span>
+<span class="col-md-6">
+		<ul class="nav nav-pills">
 		  <li id="user-treecollection-button" class="active"><a href="#">Tree Collection</a></li>
 		  <li id="community-treecollection-button"><a href="#">Community</a></li>
 		</ul>
@@ -15,13 +16,13 @@
 	<input type="text" class="form-control" id="search_collection" placeholder="Search through users, genes and comments.">
 </div>
 	<span id="loading-wrapper">Searching... </span>
+</span>
 </div>
+	<div class="col-md-12 collection-wrapper" id="user-treecollection-wrapper">
 	</div>
-	<div class="col-md-6 collection-wrapper" id="user-treecollection-wrapper">
+	<div class="col-md-12 collection-wrapper" id="community-treecollection-wrapper" style="display:none;">
 	</div>
-	<div class="col-md-6 collection-wrapper" id="community-treecollection-wrapper" style="display:none;">
-	</div>
-	<div class="col-md-6 collection-wrapper" id="search-treecollection-wrapper" style="display:none;">
+	<div class="col-md-12 collection-wrapper" id="search-treecollection-wrapper" style="display:none;">
 	</div>
 	</script>
 	<script type="text/template" id="score-entry-template">
