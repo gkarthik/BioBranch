@@ -19,7 +19,7 @@ public interface CustomClassifierRepository extends
 	@Query("select C.features from CustomClassifier C where C.id=?1")
 	List<Feature> getClassifierByCustomClassifierId(long id);
 
-	@Query("select C from CustomClassifier C, Attribute A inner join C.features F where A.feature in (F) and (C.name like concat('%',concat(?1,'%')) or C.Description like concat('%',concat(?1,'%'))) and A.dataset=?2 group by C")
+	@Query("select C from CustomClassifier C, Attribute A inner join C.features F where A.feature = F and (C.name like concat('%',concat(?1,'%')) or C.Description like concat('%',concat(?1,'%'))) and A.dataset=?2 group by C")
 	List<CustomClassifier> searchCustomClassifiers(String name, Dataset d);
 	
 	@Query("select count(cc) from CustomClassifier cc")
