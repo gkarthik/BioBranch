@@ -49,6 +49,9 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	@Query("select t from Tree t where t.user_saved = true and t.private_tree = false and t.score.dataset=?2 and (t.json_tree like concat(concat('%',?1),'%') or t.comment like concat(concat('%',?1),'%'))")
 	List<Tree> getTreesBySearch(String query, Dataset d);
 	
+	@Query("select t from Tree t where t.user_saved = true and (t.private_tree = false or t.user = ?2) and (t.json_tree like concat(concat('%',?1),'%') or t.comment like concat(concat('%',?1),'%'))")
+	List<Tree> getTreesByProfileSearch(String query, User user);
+	
 	@Query("select count(t) from Tree t")
 	long getCount();
 
