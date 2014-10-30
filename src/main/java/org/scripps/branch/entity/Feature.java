@@ -55,7 +55,7 @@ public class Feature {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<Tree> trees;
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	private List<CustomClassifier> custom_classifier;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")

@@ -84,7 +84,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  			source: function( request, response ) {
 	  				var args = {
 	  						command : "get_trees_by_search",
-	  						query: $(thisUi.trees_query).val()
+	  						query: $(thisUi.trees_query).val(),
+	  						dataset: Cure.dataset.get('id')
 	  				};
 	  				
 	  				$.ajax({
@@ -176,7 +177,8 @@ AddRootNodeView = Marionette.ItemView.extend({
 	  			source: function( request, response ) {
 	  					var args = {
 	    	        command : "custom_classifier_search",
-	    	        query: request.term
+	    	        query: request.term,
+	    	        dataset: Cure.dataset.get('id')
 	    	      };
 	    	      $.ajax({
 	    	          type : 'POST',

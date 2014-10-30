@@ -142,8 +142,9 @@ public class MetaServerController {
 				Tree t = treeRepo.findById(data.get("treeid").asLong());
 				result_json = mapper.writeValueAsString(t);
 			} else if (command.equals("get_trees_by_search")) {
+				Dataset d = dataRepo.findById(data.get("dataset").asLong());
 				List<Tree> tList = treeRepo.getTreesBySearch(data.get("query")
-						.asText());
+						.asText(), d);
 				result_json = mapper.writeValueAsString(tList);
 			} else if (command.equals("get_trees_user_id")) {
 				User user = userRepo.findById(data.get("user_id").asLong());
@@ -283,8 +284,9 @@ public class MetaServerController {
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_classifier_search")) {
+				Dataset d = dataRepo.findById(data.get("dataset").asLong());
 				List<CustomClassifier> cclist = cClassifierRepo
-						.searchCustomClassifiers(data.get("query").asText());
+						.searchCustomClassifiers(data.get("query").asText(), d);
 				result_json = mapper.writeValueAsString(cclist);
 			} else if (command.equals("custom_classifier_getById")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));

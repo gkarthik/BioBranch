@@ -38,7 +38,7 @@ public class CustomClassifier {
 
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
-	private List<Feature> feature;
+	private List<Feature> features;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -77,8 +77,8 @@ public class CustomClassifier {
 		return Description;
 	}
 
-	public List<Feature> getFeature() {
-		return feature;
+	public List<Feature> getFeatures() {
+		return features;
 	}
 
 	public long getId() {
@@ -112,8 +112,8 @@ public class CustomClassifier {
 		Description = description;
 	}
 
-	public void setFeature(List<Feature> feature) {
-		this.feature = feature;
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
 	public void setId(long id) {

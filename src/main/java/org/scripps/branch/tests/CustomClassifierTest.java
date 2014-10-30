@@ -14,6 +14,7 @@ import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.CustomClassifierRepository;
+import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,20 +38,16 @@ public class CustomClassifierTest {
 	private CustomClassifierService ser;
 
 	@Autowired
-	private DatasetMap weka;
-
-	@Test
-	public void addCustomTree() {
-		LinkedHashMap custom_classifiers = new LinkedHashMap();
-//		ser.addCustomTree("custom_tree_5", weka.getWeka(), custom_classifiers,
-//				"metabric_with_clinical");
-		assertEquals(custom_classifiers.size(), 1);
-	}
-
+	private DatasetRepository dRepo;
+	
 	@Test
 	public void searchCustomClassifier() {
 		List<CustomClassifier> cclist = cClassifierRepo
-				.searchCustomClassifiers("test");
-		assertEquals(cclist == null, false);
+				.searchCustomClassifiers("", dRepo.findById(334285));
+		for(CustomClassifier c : cclist){
+			System.out.println(c.getName());
+		}
+		System.out.println(cclist.size());
+		assertEquals(cclist.size()==0, false);
 	}
 }
