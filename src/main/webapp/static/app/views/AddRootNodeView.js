@@ -509,6 +509,101 @@ AddRootNodeView = Marionette.ItemView.extend({
 				$("html, body").animate({scrollTop:scrollTop}, '500');
 			},
 			minLength: 0,
+			source:  function( request, response ) {
+				var _options = this.options;
+                $.ajax({
+                    url: _options.mygene_url,
+                    dataType: "jsonp",
+                    jsonp: 'callback',
+                    data: {
+                        q: _options.q.format({term:request.term}),
+                        sort:_options.sort,
+                        limit:_options.limit,
+                        fields: _options.fields,
+                        species: _options.species,
+                        userfilter:_options.userfilter//Added to send userfilter parameter
+                    },
+                    success: function( data ) {
+                        var species_d = {3702: 'thale-cress',
+                                         6239: 'nematode',
+                                         7227: 'fruitfly',
+                                         7955: 'zebrafish',
+                                         8364: 'frog',
+                                         9606: 'human',
+                                         9823: 'pig',
+                                         10090: 'mouse',
+                                         10116: 'rat'};
+                        if (data.total || !data.success){
+//                            response( $.map( data.hits, function( item ) {
+//                            	  entrezids.push(item.entrezgene);
+//                                var obj = {
+//                                    id: item._id,
+//                                    value: item[_options.value_attr]
+//                                }
+//                                $.extend(obj, item);
+//                                if (species_d[obj.taxid]){
+//                                    obj.species = species_d[obj.taxid];
+//                                }
+//                                obj.label = _options.gene_label.format(obj);
+//                                return obj;
+//                            }));
+                        	var entrezids = [];
+                        	var hits = data.hits || [];
+                            $.map( hits, function( item ) {
+                              entrezids.push(String(item.entrezgene));
+                            });
+                            var testOptions = {
+                    				value: $("input[name='testOptions']:checked").val(),
+                    				percentSplit:  $("input[name='percent-split']").val()
+                    		};
+                            var tree = {};
+                            if(Cure.PlayerNodeCollection.length>0){
+                            	model.set('pickInst', true);
+                            	tree = Cure.PlayerNodeCollection.at(0).toJSON();
+                            }
+                            var args = {
+                    				command : "rank_attributes",
+                    				dataset : Cure.dataset.get('id'),
+                    				treestruct : tree,
+                    				comment: Cure.Comment.get("content"),
+                    				testOptions: testOptions,
+                    				unique_ids: entrezids
+                    			};
+                    		
+                    		//POST request to server.
+                    		$.ajax({
+                    			type : 'POST',
+                    			url : './MetaServer',
+                    			data : JSON.stringify(args),
+                    			dataType : 'json',
+                    			contentType : "application/json; charset=utf-8",
+                    			success : function(data){
+                    				var requiredModel = Cure.PlayerNodeCollection.findWhere({pickInst: true});
+                    				if(requiredModel){
+                    					requiredModel.set('pickInst',false);
+                    				}
+                    				response($.map(data, function(item){
+                    					var obj = {
+                            				entrezgene: item.unique_id,
+                            				name: item.long_name,
+                            				symbol: item.short_name,
+                            				id: item.id,
+                            				infogain: item.infogain
+                    					};
+                    					obj.label = _options.gene_label.format(obj);
+                    					return obj;
+                    				}));
+                    			},
+                    			error : function(data){
+                    				response([{label:'no matched gene found.', value:''}]);
+                    			}
+                    		});
+                        } else {
+                        	response([{label:'no matched gene found.', value:''}]);
+                        }
+                    }
+                });
+            },
 			focus: function( event, ui ) {
 				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
 				if($("#SpeechBubble")){
@@ -598,7 +693,7 @@ AddRootNodeView = Marionette.ItemView.extend({
 					Cure.PlayerNodeCollection.sync();
 				}
 			}
-		});
+		}).bind('focus', function(){ $(this).genequery_autocomplete("search"); } );
 		$(this.ui.gene_query).focus();
 	}
 });

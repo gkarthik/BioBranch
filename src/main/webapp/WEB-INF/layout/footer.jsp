@@ -5,13 +5,6 @@
 					Laboratory</span></a>
 		</p>
 		<p>
-			Team <span class="pink">HIVE</span> in DREAM7 Competition
-		</p>
-		<p>
-			<span class="pink">Project Team:</span> Benjamin Good, Max Nanis,
-			Salvatore Loguercio, Chunlei Wu, Andrew Su, Karthik G.
-		</p>
-		<p>
 			An <a href="https://bitbucket.org/sulab/thecure/"><span
 				class="pink">Open Source</span></a> Project
 		<p>

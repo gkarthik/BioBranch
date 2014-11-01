@@ -7,9 +7,13 @@ import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.AttributeRepository;
@@ -88,6 +92,7 @@ public class FeatureServiceImpl implements FeatureService {
 	public JsonNode[] rankFeatures(Instances data, List<String> entrezIds, Dataset d) {
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		JsonNode[] sortedList = null;
+		int limit = 50;
 		//Must introduce a better check
 		if(entrezIds == null){
 //			AttributeSelection attsel = new AttributeSelection();
@@ -119,14 +124,85 @@ public class FeatureServiceImpl implements FeatureService {
 //			}
 //			aRepo.save(aList);
 //			aRepo.flush();
+		} else if(entrezIds.size()==0){
+			sortedList = new JsonNode[limit];
+			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+			try{
+				eval.buildEvaluator(data);
+			} catch(Exception e) {
+				LOGGER.error("Couldn't evaluate information gain", e);
+			}
+			Double infogain = Double.MIN_VALUE;
+			ObjectNode objNode;
+			int k, i;
+			double[][] ig = new double[data.numAttributes()][2];
+			for(int j=0;j<data.numAttributes();j++){
+				try {
+					ig[j][0] = j;
+					ig[j][1] = eval.evaluateAttribute(j);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						LOGGER.error("Couldn't evaluate information gain for empty entrezIds.",e);
+					}
+			}
+			Arrays.sort(ig, new Comparator<double[]>(){
+				@Override
+				public int compare(double[] o1, double[] o2) {
+					// TODO Auto-generated method stub
+					  if (o1[1] > o2[1]) {
+					        return -1;
+					    } else if (o1[1] < o2[1]) {
+					        return 1;
+					    }
+					    return 0;
+				}
+			});
+			for(int j=0;j<limit;j++){
+				org.scripps.branch.entity.Attribute a = aRepo.findByNameAndDataset(data.attribute((int) ig[j][0]).name(), d);
+				if(a==null){
+					continue;
+				}
+				if(a.getFeature()==null){
+					continue;
+				}
+				objNode = mapper.valueToTree(a.getFeature());
+				objNode.put("infogain", ig[j][1]);
+				i=-1;
+				while(i<limit-1){
+					i++;
+					if(sortedList[i]==null){
+						sortedList[i] = objNode;
+						LOGGER.debug("(empty entrezIds)Info Gain: "+infogain);
+						break;
+					}
+					if(infogain>sortedList[i].get("infogain").asDouble()){
+						k = limit-1;
+						while(k>=i+1){
+							sortedList[k] = sortedList[k-1];
+							k--;
+						}
+						sortedList[i] = objNode;
+						LOGGER.debug("(empty entrezIds)Info Gain: "+infogain);
+						break;
+					}
+				}
+			}
+				
+			
 		} else {
 			ObjectNode objNode;
 			List<org.scripps.branch.entity.Attribute> tempList;
 			double infogain = 0;
 			int i =0, k=0;
 			Feature f;
-			sortedList = new JsonNode[entrezIds.size()];
 			Boolean toAdd;
+			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+			try{
+				eval.buildEvaluator(data);
+			} catch(Exception e) {
+				LOGGER.error("Couldn't evaluate information gain", e);
+			}
+			sortedList = new JsonNode[entrezIds.size()];
 			for(String id: entrezIds){
 				toAdd = false;
 				f = fRepo.findByUniqueId(id);
@@ -134,12 +210,34 @@ public class FeatureServiceImpl implements FeatureService {
 				if(tempList.size()>0){
 					toAdd = true;
 				}
+//				double[][] attrRanks = new double[data.numAttributes()][2];
+//				AttributeSelection attsel = new AttributeSelection();
+//				Ranker search = new Ranker();
+//				try {
+//					search.setStartSet(startSet);
+//					attsel.setEvaluator(eval);
+//					attsel.setSearch(search);
+//					attsel.SelectAttributes(data);
+//					attrRanks = attsel.rankedAttributes();
+//					
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				infogain = 0;
+				double tempIG = 0; 
 				for(org.scripps.branch.entity.Attribute a : tempList){
-					if(a.getRelieff() > infogain){
-						infogain = a.getRelieff();
+					try {
+						tempIG = eval.evaluateAttribute(data.attribute(a.getName()).index());
+						if(tempIG > infogain){
+							infogain = tempIG;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						LOGGER.error("Information Gain Couldn't be calculated", e);
 					}
 				}
+				LOGGER.debug("Info Gain: "+infogain);
 				if(toAdd){
 					objNode = mapper.valueToTree(f);
 					objNode.put("infogain", infogain);
@@ -162,15 +260,6 @@ public class FeatureServiceImpl implements FeatureService {
 					}
 				}
 			}
-			List<JsonNode> sorted = new ArrayList<JsonNode>();
-			    for(JsonNode s : sortedList) {
-			       if(s!=null) {
-			    	   if(!s.isNull()){
-					          sorted.add(s);
-			    	   }
-			       }
-			    }
-			    sortedList = sorted.toArray(new JsonNode[sorted.size()]);
 //				for(org.scripps.branch.entity.Attribute attr : aList){
 //					if(attr.getFeature()!=null){
 //						if(entrezIds.contains(attr.getFeature().getUnique_id())){
@@ -183,6 +272,17 @@ public class FeatureServiceImpl implements FeatureService {
 //					}
 //				}
 			
+		}
+		if(sortedList!=null){
+			List<JsonNode> sorted = new ArrayList<JsonNode>();
+		    for(JsonNode s : sortedList) {
+		       if(s!=null) {
+		    	   if(!s.isNull()){
+				          sorted.add(s);
+		    	   }
+		       }
+		    }
+		    sortedList = sorted.toArray(new JsonNode[sorted.size()]);
 		}
 		return sortedList;
 	}

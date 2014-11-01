@@ -200,7 +200,7 @@ public class MetaServerController {
 			for(Feature f: fList){
 				entrezIds.add(f.getUnique_id());
 			}
-			result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
+			result_json = mapper.writeValueAsString(fSer.rankFeatures(getReqInstances(data), entrezIds, d));
 		} else if (command.contains("custom_feature_")) {
 			if (command.equals("custom_feature_create") || command.equals("custom_feature_preview")) {
 				List<Component> cList = new ArrayList<Component>();
@@ -216,7 +216,6 @@ public class MetaServerController {
 					c.setUpperLimit(null);
 					c.setLowerLimit(null);
 					if(!el.get("uLimit").isNull()){
-						LOGGER.debug("NOT NULL");
 						c.setUpperLimit(el.get("uLimit").asDouble());
 						toAdd = true;
 					}
@@ -350,9 +349,8 @@ public class MetaServerController {
 				List<String> entrezIds = new ArrayList<String>();
 				for(JsonNode el : data.path("unique_ids")){
 					entrezIds.add(el.asText());
-					LOGGER.debug(el.asText());
 				}
-				result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
+				result_json = mapper.writeValueAsString(fSer.rankFeatures(getReqInstances(data), entrezIds, d));
 			}
 		} else if(command.contains("get_dataset")) {
 			if(command.equals("get_dataset_training")){
@@ -390,9 +388,11 @@ public class MetaServerController {
 			if(treeRepo.getCount()==0){
 				mp.put("t", false);
 			}
-			List<Attribute> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
-			mp.put("infoGainMax", aList.get(0).getRelieff());
-			mp.put("infoGainMin", aList.get(aList.size()-1).getRelieff());
+//			List<Attribute> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
+//			mp.put("infoGainMax", aList.get(0).getRelieff());
+//			mp.put("infoGainMin", aList.get(aList.size()-1).getRelieff());
+			mp.put("infoGainMax", 1);
+			mp.put("infoGainMin", 0);
 			result_json = mapper.writeValueAsString(mp);
 		} else if (command.equals("get_feature_limits")){
 			Weka wekaObj = weka.getWeka(data.get("dataset").asLong());

@@ -126,7 +126,6 @@ footer{
 	<div class="container">
 	  <div class="col-md-6 row">
 	    <p><a href="http://sulab.org">The Su Laboratory</a></p>
-	    <p><b>Project Team</b>: Benjamin Good, Max Nanis, Salvatore Loguercio, Chunlei Wu, Andrew Su, Karthik G, Vyshakh Babji.</p>
 	    <p>An <a href="https://bitbucket.org/sulab/branch/" target="_blank"><span class="pink">Open Source</span></a> Project</p>
 	  </div>
 	  
