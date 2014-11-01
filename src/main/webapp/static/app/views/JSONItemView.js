@@ -124,9 +124,14 @@ JSONItemView = Marionette.ItemView.extend({
 		if (summary.length == 0) {
 			$.getJSON("http://mygene.info/v2/gene/" + thisView.model.get("options").get('unique_id') +"?callback=?",
 					function(data) {
+				var goTerms = {
+						CC: data.go.CC || {},
+						MF: data.go.MF || {},
+						BP: data.go.BP || {}
+				};
 						var summary = {
 							"summaryText" : data.summary,
-							"goTerms" : data.go,
+							"goTerms" : goTerms,
 							"generif" : data.generif,
 							"name" : data.name
 						};
