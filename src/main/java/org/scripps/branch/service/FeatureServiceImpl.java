@@ -172,7 +172,6 @@ public class FeatureServiceImpl implements FeatureService {
 					i++;
 					if(sortedList[i]==null){
 						sortedList[i] = objNode;
-						LOGGER.debug("(empty entrezIds)Info Gain: "+infogain);
 						break;
 					}
 					if(infogain>sortedList[i].get("infogain").asDouble()){
@@ -182,7 +181,6 @@ public class FeatureServiceImpl implements FeatureService {
 							k--;
 						}
 						sortedList[i] = objNode;
-						LOGGER.debug("(empty entrezIds)Info Gain: "+infogain);
 						break;
 					}
 				}

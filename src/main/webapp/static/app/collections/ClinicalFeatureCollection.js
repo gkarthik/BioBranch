@@ -10,10 +10,21 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 		_.bindAll(this, 'parseResponse');
 	},
 	fetch: function(){
-		var args = {
-				command : "get_clinical_features",
-				dataset : Cure.dataset.get('id')
-		};
+		 var testOptions = {
+  				value: $("input[name='testOptions']:checked").val(),
+  				percentSplit:  $("input[name='percent-split']").val()
+  		};
+          var tree = {};
+          if(Cure.PlayerNodeCollection.length>0){
+          	tree = Cure.PlayerNodeCollection.at(0).toJSON();
+          }
+          var args = {
+  				command : "get_clinical_features",
+  				dataset : Cure.dataset.get('id'),
+  				treestruct : tree,
+  				comment: Cure.Comment.get("content"),
+  				testOptions: testOptions
+  		};
 		Cure.utils.showLoading(null);
 		$.ajax({
 			type : 'POST',
@@ -26,9 +37,13 @@ ClinicalFeatureCollection = Backbone.Collection.extend({
 		});
 	},
 	parseResponse : function(data) {
+		var requiredModel = Cure.PlayerNodeCollection.findWhere({pickInst: true});
+		if(requiredModel){
+			requiredModel.set('pickInst',false);
+		}
 		Cure.utils.hideLoading();
 		if(data.length > 0) {
-			this.add(data);
+			this.reset(data);
 		}
 	},
 	error : function(data) {

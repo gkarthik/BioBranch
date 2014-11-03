@@ -354,7 +354,11 @@ AddRootNodeView = Marionette.ItemView.extend({
 			var model = this.model;
 		}
 		var thisUi = this.ui;
-		
+		if(Cure.PlayerNodeCollection.length>0){
+          	model.set('pickInst', true);
+          	tree = Cure.PlayerNodeCollection.at(0).toJSON();
+         }
+		Cure.ClinicalFeatureCollection.fetch();
 		//Clinical Features Autocomplete
 		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 		
@@ -498,10 +502,6 @@ AddRootNodeView = Marionette.ItemView.extend({
 		if (this.model) {
 			var model = this.model;
 		}
-		this.showCustomFeatures();
-		this.showCf();
-		this.showAggregateNodes();
-		this.showChooseTrees();
 		var thisUi = this.ui;
 		$(this.ui.gene_query).genequery_autocomplete({
 			open: function(event){
@@ -695,6 +695,10 @@ AddRootNodeView = Marionette.ItemView.extend({
 			}
 		}).bind('focus', function(){ $(this).genequery_autocomplete("search"); } );
 		$(this.ui.gene_query).focus();
+		this.showCustomFeatures();
+		this.showCf();
+		this.showAggregateNodes();
+		this.showChooseTrees();
 	}
 });
 
