@@ -21,7 +21,8 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 	
 	List<Attribute> findByDataset(Dataset d);
 	
-	List<Attribute> findByDatasetOrderByRelieffDesc(Dataset d);
+	@Query("select A.relieff from Attribute A where A.dataset=?1 order by A.relieff desc")
+	List<Double> findByDatasetOrderByRelieffDesc(Dataset d);
 	
 	Attribute findByNameAndDataset(String name, Dataset d);
  

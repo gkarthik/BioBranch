@@ -388,11 +388,11 @@ public class MetaServerController {
 			if(treeRepo.getCount()==0){
 				mp.put("t", false);
 			}
-//			List<Attribute> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
-//			mp.put("infoGainMax", aList.get(0).getRelieff());
-//			mp.put("infoGainMin", aList.get(aList.size()-1).getRelieff());
-			mp.put("infoGainMax", 1);
-			mp.put("infoGainMin", 0);
+			List<Double> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
+			mp.put("infoGainMax", aList.get(0));
+			mp.put("infoGainMin", aList.get(aList.size()-1));
+//			mp.put("infoGainMax", 1);
+//			mp.put("infoGainMin", 0);
 			result_json = mapper.writeValueAsString(mp);
 		} else if (command.equals("get_feature_limits")){
 			Weka wekaObj = weka.getWeka(data.get("dataset").asLong());
