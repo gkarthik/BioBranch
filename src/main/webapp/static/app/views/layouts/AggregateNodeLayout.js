@@ -10,14 +10,15 @@ define([
 	//Layouts
 	'app/views/layouts/AttributeRankerLayout',
 	'app/views/layouts/PathwaySearchLayout',
+	'app/views/AddNodeCustomClassifierView',
 	//Templates
 	'text!static/app/templates/AggregateNodeLayout.html',
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	//Plugins
 	'myGeneAutocomplete',
-	'jqueryui',
-    ], function($, Marionette, GeneItem, GeneCollection, GeneCollectionView, AttrRankLayout, PathwaySearchLayout, AggNodeTmpl, geneinfosummary, cfsummary) {
+	'jqueryui'
+    ], function($, Marionette, GeneItem, GeneCollection, GeneCollectionView, AttrRankLayout, PathwaySearchLayout, searchFeatureView, AggNodeTmpl, geneinfosummary, cfsummary) {
 AggNodeLayout = Marionette.Layout.extend({
     template: AggNodeTmpl,
     className: "panel panel-default",
@@ -30,7 +31,6 @@ AggNodeLayout = Marionette.Layout.extend({
     },
     url: base_url+"MetaServer",
     ui: {
-    	gene_query: '#add_gene_to_aggNode_query',
     	nameInput: "#name_input",
     	descInput: "#desc_input",
     	classifierType: 'input:radio[name=classifierType]',
@@ -38,7 +38,6 @@ AggNodeLayout = Marionette.Layout.extend({
     	msgWrapper: '.message-wrapper',
     	duplicateClassifier: '.duplicate-customclassifier-wrapper',
     	customfeature_query: "#add_customfeature_to_aggNode_query",
-    	cf_query: "#add_cf_to_aggNode_query"
     	
     },
     events: {
@@ -49,7 +48,8 @@ AggNodeLayout = Marionette.Layout.extend({
     	'click .open-attr-rank': 'openAttrRanker'
     },
     regions: {
-      GeneCollectionRegion: "#Aggnode_GeneCollectionRegion"
+      GeneCollectionRegion: "#Aggnode_GeneCollectionRegion",
+      searchFeaturesRegion: ".searchFeatureRegion"
     },
     openAttrRanker: function(){
     	Cure.appLayout.AttrRankRegion.close();
@@ -69,77 +69,9 @@ AggNodeLayout = Marionette.Layout.extend({
     	this.newGeneCollection = new GeneCollection();
     	var newGeneView = new GeneCollectionView({collection:this.newGeneCollection});
     	this.GeneCollectionRegion.show(newGeneView);
-    },
-    onShow: function(){
-    	var thisUi = this.ui;
-    	var thisCollection = this.newGeneCollection;
-    	this.showCf();
-    	$(this.ui.gene_query).genequery_autocomplete({
-			open: function(event){
-				var scrollTop = $(event.target).offset().top-400;
-				$("html, body").animate({scrollTop:scrollTop}, '500');
-			},
-			minLength: 1,
-			focus: function( event, ui ) {
-				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
-				if($("#SpeechBubble")){
-					$("#SpeechBubble").remove();
-				}
-				focueElement.append("<div id='SpeechBubble'></div>")
-				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id+"?callback=?",function(data){
-					var summary = {
-							summaryText: data.summary,
-							goTerms: data.go,
-							generif: data.generif,
-							name: data.name
-					};
-					var html = geneinfosummary({
-						symbol : data.symbol,
-						summary : summary
-					}, {
-						variable : 'args'
-					});
-					var dropdown = $(thisUi.gene_query).data('my-genequery_autocomplete').bindings[0];
-					var offset = $(dropdown).offset();
-					var uiwidth = $(dropdown).width();
-					var width = 0.9 * (offset.left);
-					var left = 0;
-					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
-						left = offset.left+uiwidth+10;
-						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
-					}
-					$("#SpeechBubble").css({
-						"top": "10%",
-						"left": left,
-						"height": "50%",
-						"width": width,
-						"display": "block"
-					});
-					$("#SpeechBubble").html(html);
-					$("#SpeechBubble .summary_header").css({
-						"width": (0.9*width)
-					});
-					$("#SpeechBubble .summary_content").css({
-						"margin-top": $("#SpeechBubble .summary_header").height()+10
-					});
-				});
-			},
-			search: function( event, ui ) {
-				$("#SpeechBubble").remove();
-			},
-			select : function(event, ui) {
-				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
-					$("#SpeechBubble").remove();
-					thisCollection.add([{
-						unique_id: ui.item.entrezgene,
-						short_name: ui.item.symbol,
-						long_name: ui.item.label
-					}]);
-					$(this).val("");
-				}
-			}
-		});
-		$(this.ui.gene_query).focus();
+    	this.searchFeaturesRegion.show(new searchFeatureView({
+    		model: this.model
+    	}));
     },
     sendRequest: function(){
     	var uniqueIds = this.newGeneCollection.pluck("unique_id");
@@ -236,98 +168,11 @@ AggNodeLayout = Marionette.Layout.extend({
 			Cure.PlayerNodeCollection.sync();
 			this.closeAggNode();
     },
-	showCf: function(){
-		var thisUi = this.ui;
-		var thisCollection = this.newGeneCollection;
-		
-		//Clinical Features Autocomplete
-		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
-		
-		$(this.ui.cf_query).autocomplete({
-			create: function(){
-				$(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
-					var rankIndicator = $("<div>")
-					.css({"background": Cure.infogainScale(item.infogain)})
-					.attr("class", "rank-indicator");
-					
-					var a = $("<a>")
-							.attr("tabindex", "-1")
-							.attr("class", "ui-corner-all")
-							.html(item.label)
-							.append(rankIndicator);
-					
-					return $( "<li>" )
-					.attr("role", "presentation")
-					.attr("class", "ui-menu-item")
-					.append(a)
-					.appendTo( ul );
-				}
-			},
-			source : availableTags,
-			minLength: 0,
-			open: function(event){
-				var scrollTop = $(event.target).offset().top-400;
-				$("html, body").animate({scrollTop:scrollTop}, '500');
-			},
-			close: function(){
-				$(this).val("");
-			},
-			minLength: 0,
-			focus: function( event, ui ) {
-				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
-				if($("#SpeechBubble")){
-					$("#SpeechBubble").remove();
-				}
-				focueElement.append("<div id='SpeechBubble'></div>")
-					var html = cfsummary({
-						long_name : ui.item.long_name,
-						description : ui.item.description
-					});
-					var dropdown = $(thisUi.cf_query).data('ui-autocomplete').bindings[1];
-					var offset = $(dropdown).offset();
-					var uiwidth = $(dropdown).width();
-					var width = 0.9 * (offset.left);
-					var left = 0;
-					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
-						left = offset.left+uiwidth+10;
-						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
-					}
-					$("#SpeechBubble").css({
-						"top": "10%",
-						"left": left,
-						"height": "50%",
-						"width": width,
-						"display": "block"
-					});
-					$("#SpeechBubble").html(html);
-					$("#SpeechBubble .summary_header").css({
-						"width": (0.9*width)
-					});
-					$("#SpeechBubble .summary_content").css({
-						"margin-top": $("#SpeechBubble .summary_header").height()+10
-					});
-			},
-			search: function( event, ui ) {
-				$("#SpeechBubble").remove();
-			},
-			select : function(event, ui) {
-				console.log(ui.item);
-				if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
-						$("#SpeechBubble").remove();
-						thisCollection.add([{
-							unique_id: ui.item.unique_id,
-							short_name: ui.item.short_name.replace(/_/g," "),
-							long_name: ui.item.description
-						}]);
-						$(this).val("");
-					}
-			},
-		}).bind('focus', function(){ $(this).autocomplete("search"); } );
-	},
     error : function(data) {
 		Cure.utils
     .showAlert("<strong>Server Error</strong><br>Please try saving again in a while.", 0);
 	}
 });
+
 return AggNodeLayout;
 });

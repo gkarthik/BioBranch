@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.GainRatioAttributeEval;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
 import weka.core.Attribute;
@@ -126,11 +127,11 @@ public class FeatureServiceImpl implements FeatureService {
 //			aRepo.flush();
 		} else if(entrezIds.size()==0){
 			sortedList = new JsonNode[limit];
-			InfoGainAttributeEval eval = new InfoGainAttributeEval();
+			GainRatioAttributeEval eval = new GainRatioAttributeEval();
 			try{
 				eval.buildEvaluator(data);
 			} catch(Exception e) {
-				LOGGER.error("Couldn't evaluate information gain", e);
+				LOGGER.error("Couldn't evaluate gain ratio", e);
 			}
 			Double infogain = Double.MIN_VALUE;
 			ObjectNode objNode;
@@ -142,7 +143,7 @@ public class FeatureServiceImpl implements FeatureService {
 					ig[j][1] = eval.evaluateAttribute(j);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						LOGGER.error("Couldn't evaluate information gain for empty entrezIds.",e);
+						LOGGER.error("Couldn't evaluate gain ratio for empty entrezIds.",e);
 					}
 			}
 			Arrays.sort(ig, new Comparator<double[]>(){
@@ -198,7 +199,7 @@ public class FeatureServiceImpl implements FeatureService {
 			try{
 				eval.buildEvaluator(data);
 			} catch(Exception e) {
-				LOGGER.error("Couldn't evaluate information gain", e);
+				LOGGER.error("Couldn't evaluate gain ratio", e);
 			}
 			sortedList = new JsonNode[entrezIds.size()];
 			for(String id: entrezIds){
@@ -232,10 +233,9 @@ public class FeatureServiceImpl implements FeatureService {
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						LOGGER.error("Information Gain Couldn't be calculated", e);
+						LOGGER.error("Gain ratio Couldn't be calculated", e);
 					}
 				}
-				LOGGER.debug("Info Gain: "+infogain);
 				if(toAdd){
 					objNode = mapper.valueToTree(f);
 					objNode.put("infogain", infogain);

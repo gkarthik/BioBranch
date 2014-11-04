@@ -28,14 +28,7 @@
 	    Naive Bayes
 	  </label>
 	</div>
- 	<div id="add_gene_to_aggNode_wrapper" class="input-elements" style="display:<% if(Cure.dataset.get('validateGenes')){ print('block') } else {print('none');}%>">
- 		<span class="label label-default">Add Genes</span>
-  		<input id="add_gene_to_aggNode_query" class="query_target" placeholder="Enter Gene">
-  	</div>
-  	<div id="add_cf_to_aggNode_wrapper" class="input-elements" style="display:<% if(Cure.dataset.get('validateNonGenes')){ print('block') } else {print('none');}%>">
- 		<span class="label label-default">Add Non Gene Features</span>
-  		<input id="add_cf_to_aggNode_query" class="query_target" placeholder="Enter Non Gene Feature">
-  	</div>
+ 	<div class="searchFeatureRegion"></div>
   	<% if(Cure.dataset.get('validateGenes')){ %>
   	<button type="button" class="btn btn-primary btn-small open-pathway-search input-elements">Pathway Search</button>
   	<% } %>
