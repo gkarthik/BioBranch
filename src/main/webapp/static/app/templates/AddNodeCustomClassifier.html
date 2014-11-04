@@ -8,12 +8,6 @@
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatecf')){ print('disabled'); }%>" id="customfeatures">
     <input type="radio"><img title="Switch to Custom Features" src="<% print(base_url) %>/static/img/function.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
-  <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatecc')){ print('disabled'); }%>" id="aggregatenodes">
-    <input type="radio"><img title="Switch to Classifiers" src="<% print(base_url) %>/static/img/aggregatenode.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
-  </label>
-  <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatet')){ print('disabled'); }%>" id="choosetrees">
-    <input type="radio"><span data-toggle="tooltip" data-placement="bottom" title="Switch to Trees"><i class="switch-image glyphicon glyphicon-folder-open" ></i></span>
-  </label>
 </div>
 <%
 if(!Cure.dataset.get('validateGenes') && !Cure.dataset.get('validateNonGenes')){
@@ -38,23 +32,5 @@ if(!Cure.dataset.get('validateGenes') && !Cure.dataset.get('validateNonGenes')){
 		<span class="label label-default">Add Custom Features</span>
   		<input id="customfeature_query" class="customfeature_query_target query_target">
   	</div>
-</div>
-<div id="aggregatenodes_wrapper" class="category-wrapper">
- 	<div id="addnode_customfeatures">
-		<span class="label label-default">Add Classifier</span>
-  		<input id="aggregatenode_query" class="aggregatenode_query_target query_target">
-  	</div>
-</div>
-<div id="choosetrees_wrapper" class="category-wrapper">
- 	<div id="addnode_customfeatures">
-		<span class="label label-default">Add Trees</span>
-  		<input id="tree_query" class="tree_query_target query_target">
-  	</div>
-</div>
-<div class="btn-group">
-	<!--  <button class="btn btn-xs btn-primary open-feature-builder">Build Feature</button> -->
-	<button class="btn btn-xs btn-primary open-addnode">Build Classifier</button>
-	<button class="btn btn-xs btn-primary show-pick-instance">Plot</button>
-	<!-- <button class="btn btn-xs btn-primary rank-attributes">Rank</button> -->
 </div>
 	
