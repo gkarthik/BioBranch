@@ -2,12 +2,12 @@ define([
   //Libraries
 	'jquery',
 	'marionette',
-	'app/views/AddRootNodeView',
+	'app/views/SearchFeatures',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'
-    ], function($, Marionette, SearchFeatures){
-AddNodeCustomClassifier = SearchFeatures.extend({
+    ], function($, Marionette, searchFeature) {
+	AddNodeCustomClassifier = searchFeature.extend({
 	selectTree: function(event, ui){},
 	selectCustomCLassifier: function(event, ui){},
 	selectCustomFeature: function(event, ui){},
@@ -15,7 +15,7 @@ AddNodeCustomClassifier = SearchFeatures.extend({
 		console.log(ui.item);
 		if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
 				$("#SpeechBubble").remove();
-				thisCollection.add([{
+				Cure.appLayout.AggNodeRegion.currentView.newGeneCollection.add([{
 					unique_id: ui.item.unique_id,
 					short_name: ui.item.short_name.replace(/_/g," "),
 					long_name: ui.item.description
@@ -26,7 +26,7 @@ AddNodeCustomClassifier = SearchFeatures.extend({
 	selectGene: function(event, ui){
 		if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
 			$("#SpeechBubble").remove();
-			this.newGeneCollection.add([{
+			Cure.appLayout.AggNodeRegion.currentView.newGeneCollection.add([{
 				unique_id: ui.item.entrezgene,
 				short_name: ui.item.symbol,
 				long_name: ui.item.label

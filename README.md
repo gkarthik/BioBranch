@@ -4,8 +4,8 @@
 ## Requirements ##
 1. Tomcat 7.0(<http://tomcat.apache.org/download-70.cgi>).
 2. Eclipse Java EE IDE for Web Developers
-3. Gradle Plugin for Eclipse(Can be installed directly form Eclipse market place).
-4. Mercurial Plugin for Eclipse(Can be installed directly form Eclipse market place).
+3. Gradle Plugin for Eclipse(Can be installed directly from Eclipse market place).
+4. Mercurial Plugin for Eclipse(Can be installed directly from Eclipse market place).
 4. Java 7.0.
 
 ## Setup ##
@@ -32,3 +32,6 @@
 
 ### Tests: ###
 Run using JUnit.
+
+FAQs
+If the tables for Spring batch(such as batch_job_instace) are not automatically created, copy and manually run the SQL script in src/main/webapp/WEB-INF/data.

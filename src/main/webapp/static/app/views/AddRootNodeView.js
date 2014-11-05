@@ -290,6 +290,5 @@ AddRootNodeView = searchFeature.extend({
 	}
 });
 
-
 return AddRootNodeView;
 });
