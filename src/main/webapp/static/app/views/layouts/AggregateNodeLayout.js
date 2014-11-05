@@ -70,7 +70,8 @@ AggNodeLayout = Marionette.Layout.extend({
     	var newGeneView = new GeneCollectionView({collection:this.newGeneCollection});
     	this.GeneCollectionRegion.show(newGeneView);
     	this.searchFeaturesRegion.show(new searchFeatureView({
-    		model: this.model
+    		model: this.model,
+    		view: "aggNode"
     	}));
     },
     sendRequest: function(){

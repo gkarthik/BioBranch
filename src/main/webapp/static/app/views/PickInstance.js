@@ -9,8 +9,9 @@ define([
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	'app/models/ConfusionMatrix',
 	'app/views/ConfusionMatrixView',
+	'app/views/AddNodePickInstanceView',
 	'jqueryui'
-    ], function($, Marionette, d3, Node, pickInstTmpl, geneinfosummary, cfsummary, cfMatrix, cfMatrixView) {
+    ], function($, Marionette, d3, Node, pickInstTmpl, geneinfosummary, cfsummary, cfMatrix, cfMatrixView, searchFeature) {
 PickInstanceView = Marionette.Layout.extend({
 	template: pickInstTmpl,
 	url:base_url+'MetaServer',
@@ -33,7 +34,9 @@ PickInstanceView = Marionette.Layout.extend({
 		'click #preview-close': 'closePreview'
 	},
 	regions: {
-		cfMatrixRegion: "#preview-cfmatrix"
+		cfMatrixRegion: "#preview-cfmatrix",
+		pickXaxis: "#pick-xaxis",
+		pickYaxis: "#pick-yaxis"
 	},
 	closeView: function(e){
 		e.preventDefault();
@@ -45,6 +48,7 @@ PickInstanceView = Marionette.Layout.extend({
 	preview: false,
 	attrs: [],
 	attributeVertices: [],
+	uniqueIds: [],
 	closePreview: function(){
 		this.preview = false;
 	},
@@ -405,73 +409,75 @@ PickInstanceView = Marionette.Layout.extend({
 		this.cfMatrix = new cfMatrix();
 		this.drawChart([[1,2,3,4,5],[1,2,3,4,5]]);
 		this.cfMatrixRegion.show(new cfMatrixView({model: this.cfMatrix}));
-    	this.showCf();
-    	$(this.ui.gene_query).genequery_autocomplete({
-			open: function(event){
-				var scrollTop = $(event.target).offset().top-400;
-				$("html, body").animate({scrollTop:scrollTop}, '500');
-			},
-			minLength: 1,
-			focus: function( event, ui ) {
-				var thisEl = this;
-				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
-				if($("#SpeechBubble")){
-					$("#SpeechBubble").remove();
-				}
-				focueElement.append("<div id='SpeechBubble'></div>")
-				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id+"?callback=?",function(data){
-					var summary = {
-							summaryText: data.summary,
-							goTerms: data.go,
-							generif: data.generif,
-							name: data.name
-					};
-					var html = geneinfosummary({
-						symbol : data.symbol,
-						summary : summary
-					}, {
-						variable : 'args'
-					});
-					var dropdown = $(thisEl).data('my-genequery_autocomplete').bindings[1];
-					var offset = $(dropdown).offset();
-					var uiwidth = $(dropdown).width();
-					var width = 0.9 * (offset.left);
-					var left = 0;
-					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
-						left = offset.left+uiwidth+10;
-						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
-					}
-					$("#SpeechBubble").css({
-						"top": "10%",
-						"left": left,
-						"height": "50%",
-						"width": width,
-						"display": "block"
-					});
-					$("#SpeechBubble").html(html);
-					$("#SpeechBubble .summary_header").css({
-						"width": (0.9*width)
-					});
-					$("#SpeechBubble .summary_content").css({
-						"margin-top": $("#SpeechBubble .summary_header").height()+10
-					});
-				});
-			},
-			search: function( event, ui ) {
-				$("#SpeechBubble").remove();
-			},
-			select : function(event, ui) {
-				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
-					$("#SpeechBubble").remove();
-					$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
-					$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.symbol);
-					$(this).parent().find(".attribute-label").html(ui.item.symbol);
-					$(this).val('');
-					return false;
-				}
-			}
-		});
-		$(this.ui.gene_query)[0].focus();
+		this.pickXaxis.show(new searchFeature({view: 'pickInst'}));
+		this.pickYaxis.show(new searchFeature({view: 'pickInst'}));
+//    	this.showCf();
+//    	$(this.ui.gene_query).genequery_autocomplete({
+//			open: function(event){
+//				var scrollTop = $(event.target).offset().top-400;
+//				$("html, body").animate({scrollTop:scrollTop}, '500');
+//			},
+//			minLength: 1,
+//			focus: function( event, ui ) {
+//				var thisEl = this;
+//				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
+//				if($("#SpeechBubble")){
+//					$("#SpeechBubble").remove();
+//				}
+//				focueElement.append("<div id='SpeechBubble'></div>")
+//				$.getJSON("http://mygene.info/v2/gene/"+ui.item.id+"?callback=?",function(data){
+//					var summary = {
+//							summaryText: data.summary,
+//							goTerms: data.go,
+//							generif: data.generif,
+//							name: data.name
+//					};
+//					var html = geneinfosummary({
+//						symbol : data.symbol,
+//						summary : summary
+//					}, {
+//						variable : 'args'
+//					});
+//					var dropdown = $(thisEl).data('my-genequery_autocomplete').bindings[1];
+//					var offset = $(dropdown).offset();
+//					var uiwidth = $(dropdown).width();
+//					var width = 0.9 * (offset.left);
+//					var left = 0;
+//					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
+//						left = offset.left+uiwidth+10;
+//						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
+//					}
+//					$("#SpeechBubble").css({
+//						"top": "10%",
+//						"left": left,
+//						"height": "50%",
+//						"width": width,
+//						"display": "block"
+//					});
+//					$("#SpeechBubble").html(html);
+//					$("#SpeechBubble .summary_header").css({
+//						"width": (0.9*width)
+//					});
+//					$("#SpeechBubble .summary_content").css({
+//						"margin-top": $("#SpeechBubble .summary_header").height()+10
+//					});
+//				});
+//			},
+//			search: function( event, ui ) {
+//				$("#SpeechBubble").remove();
+//			},
+//			select : function(event, ui) {
+//				if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
+//					$("#SpeechBubble").remove();
+//					$(this).parent().parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
+//					$(this).parent().parent().find(".pick-attribute-uniqueid").data('name', ui.item.symbol);
+//					$(this).parent().parent().find(".attribute-label").html(ui.item.symbol);
+//					$(this).val('');
+//					return false;
+//				}
+//			}
+//		});
+//		$(this.ui.gene_query)[0].focus();
 	},
 	showCf: function(){
 		var thisUi = this.ui;
@@ -550,9 +556,9 @@ PickInstanceView = Marionette.Layout.extend({
 			select : function(event, ui) {
 				if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
 						$("#SpeechBubble").remove();
-						$(this).parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
-						$(this).parent().find(".pick-attribute-uniqueid").data('name', ui.item.label);
-						$(this).parent().find(".attribute-label").html(ui.item.short_name);
+						$(this).parent().parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
+						$(this).parent().parent().find(".pick-attribute-uniqueid").data('name', ui.item.label);
+						$(this).parent().parent().find(".attribute-label").html(ui.item.short_name);
 						$(this).val(ui.item.short_name);
 					}
 				$(this).val('');

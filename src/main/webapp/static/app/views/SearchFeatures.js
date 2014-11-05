@@ -7,33 +7,32 @@ define([
 	'app/models/Collaborator',
 	//Views
 	'app/views/layouts/PathwaySearchLayout',
-	'app/views/layouts/AggregateNodeLayout',
 	'app/views/layouts/AttributeRankerLayout',
 	'app/views/CustomFeatureBuilder',
-	'app/views/PickInstance',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	'text!static/app/templates/AddNode.html',
 	'text!static/app/templates/AddNodeCustomClassifier.html',
+	'text!static/app/templates/AddNodePickInstance.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'
-    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AggNodeLayout, AttrRankLayout, FeatureBuilder, pickInstView, geneinfosummary, cfsummary, AddNodeTemplate, AddNodeCustomClassifierTmpl) {
-	var searchFeatures = function (args) {
+    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AttrRankLayout, FeatureBuilder, geneinfosummary, cfsummary, AddNodeTemplate, AddNodeCustomClassifierTmpl, AddNodePickInstanceTmpl) {
+	var searchFeatures = Marionette.ItemView.extend({
+		initialize: function(args){
 			_.bindAll(this, 'selectTree', 'selectCustomFeature', 'selectCustomClassifier', 'selectCf', 'selectGene');
 			this.listenTo(Cure.dataset, 'change:validateGenes', this.render);
 			this.listenTo(Cure.dataset, 'change:validateNonGenes', this.render);
 			this.listenTo(Cure.ClinicalFeatureCollection, 'add', this.render);
 			this.parentViewName = (args) ? args.view : null;
-	    Marionette.ItemView.apply(this, [options]);
-	};
-	
-	_.extend(searchFeatures.prototype, Marionette.ItemView.prototype, {
+		},
 			getTemplate: function(serialized_model){
 				if(this.parentViewName != null){
-					if(args.view== "aggNode"){
+					if(this.parentViewName== "aggNode"){
 						return AddNodeCustomClassifierTmpl;
+					} else if(this.parentViewName== "pickInst"){
+						return AddNodePickInstanceTmpl;
 					} 
 				} else {
 					return AddNodeTemplate;
@@ -67,27 +66,34 @@ define([
 			},
 			openAggNode: function(){
 				Cure.appLayout.AggNodeRegion.close();
-				Cure.AggNodeLayout = new AggNodeLayout({model: this.model});
-				Cure.appLayout.AggNodeRegion.show(Cure.AggNodeLayout);
+				var aggNodeLayout;
+				var model = this.model;
+				//To avoid circular dependency
+				require(['app/views/layouts/AggregateNodeLayout'], function( A ){
+			            aggNodeLayout = new A({model: model});
+			            Cure.appLayout.AggNodeRegion.show(aggNodeLayout);
+			    });
 			},
 			showPickInstance: function(){
 				if(this.model){
 					 this.model.set('showPickInst',true);
 				 } else {
 					 Cure.appLayout.pickInstanceRegion.close();
-					 var newpickInstView = new pickInstView();
-					 Cure.appLayout.pickInstanceRegion.show(newpickInstView);
+					 var newpickInstView;
+					 require(['app/views/PickInstance'], function( A ){
+						Cure.appLayout.pickInstanceRegion.show(new A());
+				    });
 				 }
 			},
 			chooseCategory: function(e){
-				var id = $(e.currentTarget).attr("id");
+				var id = $(e.currentTarget).data("target");
 				$(this.ui.chooseCategory).removeClass("active");
 				$(e.currentTarget).addClass("active");
 				$(this.ui.categoryWrappers).hide();
 				if(id=="clinicalfeatures"){
 					this.showCf();
 				}
-				$("#"+id+"_wrapper").show();
+				this.$el.find("."+id+"_wrapper").show();
 			},
 			showChooseTrees: function(){
 				if(this.model){
@@ -427,7 +433,7 @@ define([
 			selectGene: function(){},
 	});
 
-	searchFeatures.extend = Marionette.ItemView.extend;
+	//searchFeatures.extend = Marionette.ItemView.extend;
 	
 return searchFeatures;
 });

@@ -1,3 +1,5 @@
+<span class="attribute-label"></span>
+<input type="hidden" class="pick-attribute-uniqueid">
 <div id="choose-category" class="btn-group" data-toggle="buttons">
   <label class="btn btn-primary active choose-category <% if(!Cure.dataset.get('validateGenes')){ print('disabled'); }%>" data-target="genes">
     <input type="radio"><img title="Switch to Genes" src="<% print(base_url) %>/static/img/dna.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
@@ -17,17 +19,13 @@ if(!Cure.dataset.get('validateGenes') && !Cure.dataset.get('validateNonGenes')){
 }
 %>
 <div class="category-wrapper genes_wrapper" style="display:<% if(Cure.dataset.get('validateGenes')){ print('block'); } else {print("none");} %>">
-  		<div id="addnode_genes">
   			<span class="label label-default">Add Genes</span>
   			<input id="gene_query" class="mygene_query_target query_target">
   			<button class="pull-right rank-attributes btn btn-primary btn-xs">Rank Genes</button>
-  		</div>
 </div>
 <div class="category-wrapper clinicalfeatures_wrapper" style="display:<% if(!Cure.dataset.get('validateGenes') && Cure.dataset.get('validateNonGenes')){ print('block'); } else {print("none");} %>">
- 	<div id="addnode_clinicalfeatures">
 		<span class="label label-default">Add Non Gene Features</span>
   		<input id="cf_query" class="cf_query_target query_target">
-  	</div>
 </div>
 <!-- 
 <div class="category-wrapper customfeatures_wrapper">
