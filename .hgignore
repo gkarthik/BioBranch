@@ -12,3 +12,4 @@ glob:src/main/resources/uploads/*
 glob:.settings/*
 glob:.gradle/*
 glob:.hgignore~
+glob:.hgrc
