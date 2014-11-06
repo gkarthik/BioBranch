@@ -33,5 +33,5 @@
 ### Tests: ###
 Run using JUnit.
 
-FAQs
-If the tables for Spring batch(such as batch_job_instace) are not automatically created, copy and manually run the SQL script in src/main/webapp/WEB-INF/data.
+### FAQs ###
+* If the tables for Spring batch(such as batch_job_instace) are not automatically created, copy and manually run the SQL script in src/main/webapp/WEB-INF/data.
