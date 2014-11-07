@@ -346,6 +346,10 @@ display: block;
 	z-index: 6;
 }
 
+#pick-instance-xaxis{
+	margin-left:40%;	
+}
+
 .preview-results{
 	display: none;
 	padding-left:10px;
