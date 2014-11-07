@@ -8,17 +8,17 @@ define([
 	//Views
 	'app/views/layouts/PathwaySearchLayout',
 	'app/views/layouts/AttributeRankerLayout',
-	'app/views/CustomFeatureBuilder',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	'text!static/app/templates/AddNode.html',
 	'text!static/app/templates/AddNodeCustomClassifier.html',
 	'text!static/app/templates/AddNodePickInstance.html',
+	'text!static/app/templates/AddNodeFeatureBuilder.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'
-    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AttrRankLayout, FeatureBuilder, geneinfosummary, cfsummary, AddNodeTemplate, AddNodeCustomClassifierTmpl, AddNodePickInstanceTmpl) {
+    ], function($, Marionette, Node, Collaborator, PathwaySearchLayout, AttrRankLayout, geneinfosummary, cfsummary, AddNodeTemplate, AddNodeCustomClassifierTmpl, AddNodePickInstanceTmpl, AddNodeCfFeatureBuilderTmpl) {
 	var searchFeatures = Marionette.ItemView.extend({
 		initialize: function(args){
 			_.bindAll(this, 'selectTree', 'selectCustomFeature', 'selectCustomClassifier', 'selectCf', 'selectGene');
@@ -33,7 +33,9 @@ define([
 						return AddNodeCustomClassifierTmpl;
 					} else if(this.parentViewName== "pickInst"){
 						return AddNodePickInstanceTmpl;
-					} 
+					} else if (this.parentViewName == "cfbuilderview") {
+						return AddNodeCfFeatureBuilderTmpl;
+					}
 				} else {
 					return AddNodeTemplate;
 				}
@@ -52,14 +54,9 @@ define([
 			},
 			events:{
 				'click .open-addnode': 'openAggNode',
-				'click .open-feature-builder': 'openFeatureBuilder',
 				'click .choose-category': 'chooseCategory',
 				'click .show-pick-instance': 'showPickInstance',
 				'click .rank-attributes': 'listAllRanked'
-			},
-			openFeatureBuilder: function(){
-//				Cure.FeatureBuilderView = new FeatureBuilder({model:this.model});
-//				Cure.FeatureBuilderRegion.show(Cure.FeatureBuilderView);
 			},
 			listAllRanked: function(){
 				$(this.ui.gene_query).genequery_autocomplete("search");
