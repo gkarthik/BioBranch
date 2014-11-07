@@ -24,6 +24,9 @@ define([
 			_.bindAll(this, 'selectTree', 'selectCustomFeature', 'selectCustomClassifier', 'selectCf', 'selectGene');
 			this.listenTo(Cure.dataset, 'change:validateGenes', this.render);
 			this.listenTo(Cure.dataset, 'change:validateNonGenes', this.render);
+			this.listenTo(Cure.dataset, 'change:validatecf', this.render);
+			this.listenTo(Cure.dataset, 'change:validatecc', this.render);
+			this.listenTo(Cure.dataset, 'change:validatet', this.render);
 			this.listenTo(Cure.ClinicalFeatureCollection, 'add', this.render);
 			this.parentViewName = (args) ? args.view : null;
 		},
@@ -201,7 +204,6 @@ define([
 		          	model.set('pickInst', true);
 		          	tree = Cure.PlayerNodeCollection.at(0).toJSON();
 		         }
-				Cure.ClinicalFeatureCollection.fetch();
 				//Clinical Features Autocomplete
 				var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 				
@@ -418,6 +420,7 @@ define([
 					select : thisView.selectGene
 				});
 				$(this.ui.gene_query).focus();
+				Cure.ClinicalFeatureCollection.fetch();
 				this.showCustomFeatures();
 				this.showCf();
 				this.showAggregateNodes();

@@ -58,6 +58,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import weka.classifiers.Classifier;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Instances;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -512,7 +513,6 @@ public class MetaServerController {
 		ManualTree readtree = new ManualTree();
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
-		Evaluation eval = new Evaluation(wekaObj.getTest());
 		Instances train = wekaObj.getOrigTrain();
 		switch (data.get("testOptions").get("value").asInt()) {
 		case 0:
@@ -556,6 +556,7 @@ public class MetaServerController {
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				d, custom_classifiers, attr,
 				cClassifierService, customSetRepo, d);
+		Evaluation eval = new Evaluation(wekaObj.getTest());
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
@@ -602,6 +603,13 @@ public class MetaServerController {
 		result.put("size", numnodes);
 		result.put("novelty", nov);
 		result.put("confusion_matrix", cfmatrix);
+		//Threshold Curve
+		ThresholdCurve tc = new ThresholdCurve();
+		Instances rs = tc.getCurve(eval.getM_Predictions(), 0);
+		for(int i=0;i<rs.numInstances();i++){
+			LOGGER.debug(rs.instance(i).toString());
+		}
+		result.put("auccurve", mapper.valueToTree(rs));
 		result.put("auc", eval.areaUnderROC(0));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);

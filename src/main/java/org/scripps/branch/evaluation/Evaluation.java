@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -61,8 +61,11 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	      }
 	      m_pred = (int) pred;
 	      updateStatsForClassifier(dist, instance);
-	      m_Predictions.addElement(new NominalPrediction(instance.classValue(), dist, 
-		  instance.weight()));
+	      NominalPrediction n = new NominalPrediction(instance.classValue(), dist, 
+	    		  instance.weight());
+	      n.setM_pred(m_pred);
+	      n.updatePredicted();
+	      m_Predictions.addElement(n);
 	    } else {
 	      pred = classifier.classifyInstance(classMissing);
 	      updateStatsForPredictor(pred, instance);
@@ -70,7 +73,15 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	    return pred;
 	  }
 		
-		 /**
+		 public FastVector getM_Predictions() {
+		return m_Predictions;
+	}
+
+	public void setM_Predictions(FastVector m_Predictions) {
+		this.m_Predictions = m_Predictions;
+	}
+
+		/**
 		   * Updates all the statistics about a classifiers performance for 
 		   * the current test instance.
 		   *
@@ -159,6 +170,26 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		      }
 		    } else {
 		      m_MissingClass += instance.weight();
+		    }
+		  }
+		
+		  /**
+		   * Returns the area under ROC for those predictions that have been collected
+		   * in the evaluateClassifier(Classifier, Instances) method. Returns
+		   * Instance.missingValue() if the area is not available.
+		   * 
+		   * @param classIndex the index of the class to consider as "positive"
+		   * @return the area under the ROC curve or not a number
+		   */
+		  public double areaUnderROC(int classIndex) {
+
+		    // Check if any predictions have been collected
+		    if (m_Predictions == null) {
+		      return Instance.missingValue();
+		    } else {
+		      ThresholdCurve tc = new ThresholdCurve();
+		      Instances result = tc.getCurve(m_Predictions, classIndex);
+		      return ThresholdCurve.getROCArea(result);
 		    }
 		  }
 	
