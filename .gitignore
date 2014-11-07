@@ -6,4 +6,4 @@ bin/*
 .gradle/*
 src/main/resources/config_dev.properties
 src/main/resources/config_prod.properties
-
+.hgrc
