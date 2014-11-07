@@ -9,6 +9,8 @@ glob:src/main/resources/META-INF/persistence.xml
 glob:src/main/resources/META-INF/liquibase.properties
 glob:src/main/resources/dbConfig/hibernate.cfg.xml
 glob:src/main/resources/uploads/*
+glob:src/main/resources/config_dev.properties
+glob:src/main/resources/config_prod.properties
 glob:.settings/*
 glob:.gradle/*
 glob:.hgignore~
