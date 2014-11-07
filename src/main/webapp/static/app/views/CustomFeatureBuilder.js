@@ -9,13 +9,14 @@ define([
 	'app/collections/GeneCollection',
 	'app/views/distributionChartView',
 	'app/models/DistributionData',
+	'app/views/AddNodeCustomFeatureBuilderView',
 	//Templates
 	'text!static/app/templates/GeneSummary.html',
 	'text!static/app/templates/ClinicalFeatureSummary.html',
 	//Plugins
 	'myGeneAutocomplete',
 	'jqueryui'
-    ], function($, Marionette, FeatureBuilderTmpl, GeneCollView, GeneCollection, DistributionChartView, DistributionData, geneinfosummary, cfsummary) {
+    ], function($, Marionette, FeatureBuilderTmpl, GeneCollView, GeneCollection, DistributionChartView, DistributionData, addNodeView, geneinfosummary, cfsummary) {
 FeatureBuilderView = Marionette.Layout.extend({
 	className: 'panel panel-default',
 	ui: {
@@ -48,7 +49,8 @@ FeatureBuilderView = Marionette.Layout.extend({
 	},
 	regions: {
 		geneCollRegion: '.gene-coll-region',
-		cFeatureDistribution: '#cfeature-class-distribution-wrapper'
+		cFeatureDistribution: '#cfeature-class-distribution-wrapper',
+		selectFeatureRegion: '#select-feature-region'
 	},
 	resetCf: function(){
 		this.render();
@@ -305,269 +307,10 @@ FeatureBuilderView = Marionette.Layout.extend({
 		hSpan = $(".feature-tag").height() * parseInt($(this.ui.testWidth).outerWidth()/$(this.ui.equation).width());
 		return {w: wSpan, h:hSpan};
 	},
-	openGene: function(){
-		$(".category-wrapper").hide();
-		$(".choose-category").removeClass("active");
-		$(".choose-gene").addClass("active");
-		$(".category-gene").show();
-	},
-	openCf: function(){
-		$(".category-wrapper").hide();
-		$(".choose-category").removeClass("active");
-		$(".choose-cf").addClass("active");
-		$(".category-cf").show();
-	},
-	openCustomFeature: function(){
-		$(".category-wrapper").hide();
-		$(".choose-category").removeClass("active");
-		$(".choose-customfeature").addClass("active");
-		$(".category-customfeature").show();
-	},
-	showCustomFeatures: function(){
-		 var thisURL = this.url;
-		 var thisView = this;
-	      $(this.ui.customfeature_query).autocomplete({
-	  			source: function( request, response ) {
-	  					var args = {
-	    	        command : "custom_feature_search",
-	    	        query: request.term,
-	    	        dataset: Cure.dataset.get('id')
-	    	      };
-	    	      $.ajax({
-	    	          type : 'POST',
-	    	          url : thisURL,
-	    	          data : JSON.stringify(args),
-	    	          dataType : 'json',
-	    	          contentType : "application/json; charset=utf-8",
-	    	          success : function(data){
-	    	          	response( $.map( data, function( item ) {
-	    	          		return {
-	    	          		  label: item.name+": "+item.description,
-	    	          		  value: item.name,
-	    	          		  data: item
-	    	          	  };
-	    	          	}));
-	    	        }
-	    	      });
-	  				},
-	  				minLength: 0,
-	  				select: function( event, ui ) {
-	  					if(ui.item.label != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
-	  						if(!Cure.initTour.ended()){
-	  							Cure.initTour.end();
-	  						}
-	  						$("#SpeechBubble").remove();
-	  						thisView.geneColl.add([{
-	  							unique_id: "custom_feature_"+ui.item.data.id,
-	  							short_name: ui.item.data.name.toUpperCase(),
-	  							long_name: ui.item.data.name
-	  						}]);
-//	  						 else {
-//	  							new Node({
-//	  								'name' : ui.item.data.name,
-//	  								"options" : {
-//	  									"unique_id" : "custom_feature_"+ui.item.data.name,
-//		  								"kind" : "split_node",
-//		  								"full_name" : '',
-//		  								"description" : ui.item.data.description
-//	  								}
-//	  							});
-//	  						}
-	  					} else if (ui.item.label != undefined && thisView.setReference){
-	  						$(thisView.ui.refDetails).html(ui.item.data.name.toUpperCase());
-	  						$(thisView.ui.refDetails).data('ref_id', "custom_feature_"+ui.item.data.id);
-	  					}
-	  					$(this).val(''); 
-	  					return false;
-	  				},
-	  			}).bind('focus', function(){ $(this).autocomplete("search"); } );
-	},
 	template: FeatureBuilderTmpl,
-	showCf: function(){
-		var thisUi = this.ui;
-		var thisView = this;
-		//Clinical Features Autocomplete
-		var availableTags = Cure.ClinicalFeatureCollection.toJSON();
-		
-		$(this.ui.cf_query).autocomplete({
-			create: function(){
-				$(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
-					var rankIndicator = $("<div>")
-					.css({"background": Cure.infogainScale(item.infogain)})
-					.attr("class", "rank-indicator");
-					
-					var a = $("<a>")
-							.attr("tabindex", "-1")
-							.attr("class", "ui-corner-all")
-							.html(item.label)
-							.append(rankIndicator);
-					
-					return $( "<li>" )
-					.attr("role", "presentation")
-					.attr("class", "ui-menu-item")
-					.append(a)
-					.appendTo( ul );
-				}
-			},
-			source : availableTags,
-			minLength: 0,
-			open: function(event){
-				var scrollTop = $(event.target).offset().top-400;
-				$("html, body").animate({scrollTop:scrollTop}, '500');
-			},
-			close: function(){
-				$(this).val("");
-			},
-			minLength: 0,
-			focus: function( event, ui ) {
-				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
-				if($("#SpeechBubble")){
-					$("#SpeechBubble").remove();
-				}
-				focueElement.append("<div id='SpeechBubble'></div>")
-					var html = cfsummary({
-						long_name : ui.item.long_name,
-						description : ui.item.description
-					});
-					var dropdown = $(thisUi.cf_query).data('ui-autocomplete').bindings[1];
-					var offset = $(dropdown).offset();
-					var uiwidth = $(dropdown).width();
-					var width = 0.9 * (offset.left);
-					var left = 0;
-					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
-						left = offset.left+uiwidth+10;
-						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
-					}
-					$("#SpeechBubble").css({
-						"top": "10%",
-						"left": left,
-						"height": "50%",
-						"width": width,
-						"display": "block"
-					});
-					$("#SpeechBubble").html(html);
-					$("#SpeechBubble .summary_header").css({
-						"width": (0.9*width)
-					});
-					$("#SpeechBubble .summary_content").css({
-						"margin-top": $("#SpeechBubble .summary_header").height()+10
-					});
-			},
-			search: function( event, ui ) {
-				$("#SpeechBubble").remove();
-			},
-			select : function(event, ui) {
-				if(ui.item.long_name != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
-					$("#SpeechBubble").remove();
-					thisView.geneColl.add([{
-							unique_id: ui.item.unique_id,
-							short_name: ui.item.short_name.replace(/_/g," ").toUpperCase(),
-							long_name: ui.item.long_name
-						}]);
-//					else {
-//						var newNode = new Node({
-//							'name' : ui.item.short_name.replace(/_/g," "),
-//							"options" : {
-//								"unique_id" : ui.item.unique_id,					if(!Cure.initTour.ended()){
-//								"kind" : "split_node",
-//								"full_name" : ui.item.long_name,
-//								"description" : ui.item.description,
-//							}
-//						});
-//					}
-				}  else if (ui.item.label != undefined && thisView.setReference){
-						$(thisView.ui.refDetails).html(ui.item.short_name.replace(/_/g," ").toUpperCase());
-  						$(thisView.ui.refDetails).data('ref_id', ui.item.unique_id);
-  					}
-				$(this).val(''); 
-				return false;
-			},
-		}).bind('focus', function(){ $(this).autocomplete("search"); } );
-	},
 	onRender: function(){
-		this.showCustomFeatures();
-		this.showCf();
 		this.geneCollRegion.show(new GeneCollView({collection: this.geneColl, options: {showLimits:true}}));
-		var thisUi = this.ui;
-		var thisView = this;
-		$(this.ui.gene_query).genequery_autocomplete({
-			open: function(event){
-				var scrollTop = $(event.target).offset().top-400;
-				$("html, body").animate({scrollTop:scrollTop}, '500');
-			},
-			minLength: 0,
-			focus: function( event, ui ) {
-				focueElement = $(event.currentTarget);//Adding PopUp to .ui-auocomplete
-				if($("#SpeechBubble")){
-					$("#SpeechBubble").remove();
-				}
-				focueElement.append("<div id='SpeechBubble'></div>")
-				$.getJSON("http://mygene.info/v2/gene/"+ui.item.entrezgene+"?callback=?",function(data){
-					var summary = {
-							summaryText: data.summary,
-							goTerms: data.go,
-							generif: data.generif,
-							name: data.name
-					};
-					var html = geneinfosummary({
-						symbol : data.symbol,
-						summary : summary
-					}, {
-						variable : 'args'
-					});
-					var dropdown = $(thisUi.gene_query).data('my-genequery_autocomplete').bindings[0];
-					var offset = $(dropdown).offset();
-					var uiwidth = $(dropdown).width();
-					var width = 0.9 * (offset.left);
-					var left = 0;
-					if(window.innerWidth - (offset.left+uiwidth) > offset.left ){
-						left = offset.left+uiwidth+10;
-						width = 0.9 * (window.innerWidth - (offset.left+uiwidth));
-					}
-					$("#SpeechBubble").css({
-						"top": "10%",
-						"left": left,
-						"height": "50%",
-						"width": width,
-						"display": "block"
-					});
-					$("#SpeechBubble").html(html);
-					$("#SpeechBubble .summary_header").css({
-						"width": (0.9*width)
-					});
-					$("#SpeechBubble .summary_content").css({
-						"margin-top": $("#SpeechBubble .summary_header").height()+10
-					});
-				});
-			},
-			search: function( event, ui ) {
-				$("#SpeechBubble").remove();
-			},
-			select : function(event, ui) {
-				if(ui.item.name != undefined && !thisView.setReference){//To ensure "no gene name has been selected" is not accepted.
-					$("#SpeechBubble").remove();
-					thisView.geneColl.add([{
-						unique_id: ui.item.entrezgene,
-						short_name: ui.item.symbol.toUpperCase(),
-						long_name: ui.item.name
-					}]);
-//						var newNode = new Node({
-//							'name' : ui.item.symbol,
-//							"options" : {
-//								"unique_id" : ui.item.entrezgene,
-//								"kind" : "split_node",
-//								"full_name" : ui.item.name
-//							}
-//						})
-				} else if(ui.item.name != undefined && thisView.setReference) {
-					$(thisView.ui.refDetails).html(ui.item.symbol.toUpperCase());
-						$(thisView.ui.refDetails).data('ref_id', ui.item.entrezgene);
-				}
-				$(this).val(''); 
-				return false;
-			}
-		});
-		$(this.ui.gene_query).focus();
+		this.selectFeatureRegion.show(new addNodeView({view: "cfbuilderview"}));
 	}
 });
 
