@@ -23,6 +23,7 @@ import org.scripps.branch.entity.Tutorial;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.evaluation.Evaluation;
+import org.scripps.branch.evaluation.ThresholdCurve;
 import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
@@ -58,7 +59,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Instances;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -606,10 +606,14 @@ public class MetaServerController {
 		//Threshold Curve
 		ThresholdCurve tc = new ThresholdCurve();
 		Instances rs = tc.getCurve(eval.getM_Predictions(), 0);
+		
+		double[][] aucpoints = new double[rs.numInstances()][rs.numAttributes()];
 		for(int i=0;i<rs.numInstances();i++){
-			LOGGER.debug(rs.instance(i).toString());
+			for(int j=0;j<rs.numAttributes();j++){
+				aucpoints[i][j] = rs.instance(i).value(j);
+			}
 		}
-		result.put("auccurve", mapper.valueToTree(rs));
+		result.put("auccurve", mapper.valueToTree(aucpoints));
 		result.put("auc", eval.areaUnderROC(0));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
