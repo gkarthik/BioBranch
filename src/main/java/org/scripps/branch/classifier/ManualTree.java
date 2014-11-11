@@ -1241,7 +1241,11 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 			// Else return normalized distribution
 			double[] normalizedDistribution = m_ClassDistribution.clone();
-			Utils.normalize(normalizedDistribution);
+			try{
+				Utils.normalize(normalizedDistribution);
+			} catch(Exception e) {
+				LOGGER.debug("Sum is 0. Coudln't Normalize");
+			}
 			return normalizedDistribution;
 		} else {
 			return returnedDist;

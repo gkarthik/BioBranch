@@ -91,6 +91,7 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	  "width" : window.innerWidth - 365,
 	  "Scorewidth" : 270,
 	  "Scoreheight" : 270,
+	  "sidebarHeight": 622,
 	  "regions" : {
 		  "appRegion": "#main-app-wrapper"
 	  },
