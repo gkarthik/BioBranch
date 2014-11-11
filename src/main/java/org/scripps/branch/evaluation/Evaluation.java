@@ -24,6 +24,8 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	
 	private int m_pred = -1;
 	
+	private Double[] rocDataPoints;
+	
 	LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 
 	  /**
@@ -187,9 +189,19 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		      return Instance.missingValue();
 		    } else {
 		      ThresholdCurve tc = new ThresholdCurve();
+		      LOGGER.debug("predictions length eval: "+m_Predictions.size());
 		      Instances result = tc.getCurve(m_Predictions, classIndex);
+		      rocDataPoints = tc.getRocDataPoints();
 		      return ThresholdCurve.getROCArea(result);
 		    }
 		  }
+
+		public Double[] getRocDataPoints() {
+			return rocDataPoints;
+		}
+
+		public void setRocDataPoints(Double[] rocDataPoints) {
+			this.rocDataPoints = rocDataPoints;
+		}
 	
 }

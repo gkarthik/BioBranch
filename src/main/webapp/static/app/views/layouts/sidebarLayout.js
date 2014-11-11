@@ -9,6 +9,7 @@ define([
   'app/views/ScoreKey', 'app/views/BadgeCollectionView',
   'app/views/ConfusionMatrixView',
   'app/views/CustomFeatureBuilder',
+  'app/views/RocCurve',
   'app/views/layouts/Dataset',
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
@@ -16,7 +17,7 @@ define([
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
-    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
+    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, RocCurve, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
     regions: {
@@ -28,7 +29,8 @@ sidebarLayout = Marionette.Layout.extend({
 	    "ScoreKeyRegion": "#ScoreKeyRegion",
 	    "BadgeRegion": "#BadgeRegion",
 	    "DatasetRegion":"#DatasetRegion",
-	    "ConfusionMatrixRegion": "#CfMatrixRegion"
+	    "ConfusionMatrixRegion": "#CfMatrixRegion",
+	    "RocRegion": "#RocRegion"
     },
     ui: {
     	ScoreWrapper: "#score-board-outerWrapper",
@@ -133,6 +135,9 @@ sidebarLayout = Marionette.Layout.extend({
       Cure.ScoreKeyView = new ScoreKeyView({
       	model: Cure.Score
       });
+      Cure.RocCurve = new RocCurve({
+    	  model: Cure.Score
+      });
       Cure.BadgeCollectionView = new BadgeCollectionView({
       	collection: Cure.BadgeCollection
       });
@@ -149,6 +154,7 @@ sidebarLayout = Marionette.Layout.extend({
       this.BadgeRegion.show(Cure.BadgeCollectionView);
       this.DatasetRegion.show(Cure.datasetLayout);
       this.ConfusionMatrixRegion.show(Cure.CfMatrixView);
+      this.RocRegion.show(Cure.RocCurve);
     },
     onShow: function(){
     	this.$el.attr('id',"cure-panel");

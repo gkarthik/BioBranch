@@ -14,7 +14,8 @@ define([
 		noveltyDiff : 0,
 		previousAttributes: {},
 		changeFlag: 0,
-		auc: 0
+		auc: 0,
+		auc_data_points: {}
 	},
 	initialize: function(){
 		this.listenTo(this, 'change:score', this.updateScore);

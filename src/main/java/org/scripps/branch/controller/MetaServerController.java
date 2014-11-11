@@ -603,18 +603,8 @@ public class MetaServerController {
 		result.put("size", numnodes);
 		result.put("novelty", nov);
 		result.put("confusion_matrix", cfmatrix);
-		//Threshold Curve
-		ThresholdCurve tc = new ThresholdCurve();
-		Instances rs = tc.getCurve(eval.getM_Predictions(), 0);
-		
-		double[][] aucpoints = new double[rs.numInstances()][rs.numAttributes()];
-		for(int i=0;i<rs.numInstances();i++){
-			for(int j=0;j<rs.numAttributes();j++){
-				aucpoints[i][j] = rs.instance(i).value(j);
-			}
-		}
-		result.put("auccurve", mapper.valueToTree(aucpoints));
 		result.put("auc", eval.areaUnderROC(0));
+		result.put("auc_data_points", mapper.valueToTree(eval.getRocDataPoints()));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
