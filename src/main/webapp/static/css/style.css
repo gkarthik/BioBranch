@@ -635,6 +635,10 @@ padding: 1%;
 	border-top: 1px solid #ececec;
 }
 
+#ScoreKeyRegion table{
+	margin-bottom: 0px;
+}
+
 .eval-tab-content{
 	margin-top: 10px;
 }

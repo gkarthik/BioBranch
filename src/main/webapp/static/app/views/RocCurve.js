@@ -13,14 +13,35 @@ RocCurve = Marionette.ItemView.extend({
 		this.listenTo(this.model, 'change:auc', this.drawChart);
 	},
 	ui:{
-		rocChart: "#roc-curve"
+		rocChart: "#roc-curve",
+		toggleCurve: ".toggleCurve"
+	},
+	events: {
+		'click .toggleCurve': 'toggleCurve'
+	},
+	toggleCurve: function(){
+		if($(this.ui.toggleCurve).hasClass("showCurve")){
+			$(this.ui.rocChart).show();
+			$(this.ui.toggleCurve).removeClass("showCurve");
+			$(this.ui.toggleCurve).addClass("hideCurve");
+			$(this.ui.toggleCurve).html("Hide ROC Curve");
+		} else if($(this.ui.toggleCurve).hasClass("hideCurve")){
+			$(this.ui.rocChart).hide();
+			$(this.ui.toggleCurve).removeClass("hideCurve");
+			$(this.ui.toggleCurve).addClass("showCurve");
+			$(this.ui.toggleCurve).html("Show ROC Curve");
+		}
 	},
 	points : [],
 	template: RocCurveTemplate,
+	width: 280,
+	height: 200,
+	_x: 50,
+	_y: 50,
 	drawChart: function(){
 		var data = this.model.get('auc_data_points'),
-			w = 300,
-			h = 300,
+			w = parseFloat(this.width),
+			h = parseFloat(this.height),
 			SVGParent = d3.select(".roc-line-wrapper");
 		var t=[0 ,0];//X - FPR, Y - TPR
 		for(var temp in data){
@@ -42,8 +63,8 @@ RocCurve = Marionette.ItemView.extend({
 		}
 		this.points = this.points.slice(0,data.length);
 		w-=10;
-		var _x= 50,
-			_y= 50,
+		var _x= parseFloat(this._x),
+			_y= parseFloat(this._y),
 			xScale = d3.scale.linear().domain([0, 1]).range([0, parseFloat(w-_x)]),
 			yScale = d3.scale.linear().domain([0, 1]).range([parseFloat(h-_y), 0]);
 		
@@ -93,12 +114,12 @@ RocCurve = Marionette.ItemView.extend({
 	drawAxis: function(){
 		console.log(this.ui.rocChart);
 		var data = this.model.get('auc_data_points'),
-		w = 300,
-		h = 300,
+		w = parseFloat(this.width),
+		h = parseFloat(this.height),
 		SVGParent = d3.select(this.ui.rocChart[0]).attr("width", w).attr("height", h).append("svg:g").attr("class","roc-line-wrapper").attr("transform","translate(0,10)");
 	w-=10;
-	var _x= 50,
-		_y= 50,
+	var _x= parseFloat(this._x),
+		_y= parseFloat(this._y),
 		xScale = d3.scale.linear().domain([0, 1]).range([0, parseFloat(w-_x)]),
 		yScale = d3.scale.linear().domain([0, 1]).range([parseFloat(h-_y), 0]),
 		xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
@@ -130,6 +151,9 @@ RocCurve = Marionette.ItemView.extend({
 	onShow: function(){
 		this.drawAxis();
 		this.drawChart();
+		if(window.innerHeight > Cure.sidebarHeight){
+			$(this.ui.toggleCurve).trigger('click');
+		}
 	}
 });
 

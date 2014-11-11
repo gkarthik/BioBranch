@@ -32,6 +32,7 @@ define([
 		Cure.negNodeName = options["negNodeName"];
 		Cure.scoreWeights = options.scoreWeights;
 		Cure.startTour = options.startTour;
+		Cure.sidebarHeight = options.sidebarHeight;
 		
 		//Dataset
 		Cure.dataset = new Dataset();
