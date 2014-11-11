@@ -33,6 +33,13 @@ public class NominalPrediction extends weka.classifiers.evaluation.NominalPredic
 	public double getM_pred() {
 		return m_pred;
 	}
+	
+	public double getActual(){
+		if(m_pred!=-1){
+			return m_pred;
+		}
+		return m_Actual;
+	}
 
 	public void setM_pred(double m_pred) {
 		this.m_pred = m_pred;
