@@ -42,8 +42,8 @@ RocCurve = Marionette.ItemView.extend({
 		}
 		this.points = this.points.slice(0,data.length);
 		w-=10;
-		var _x= 30,
-			_y= 30,
+		var _x= 50,
+			_y= 50,
 			xScale = d3.scale.linear().domain([0, 1]).range([0, parseFloat(w-_x)]),
 			yScale = d3.scale.linear().domain([0, 1]).range([parseFloat(h-_y), 0]);
 		
@@ -97,8 +97,8 @@ RocCurve = Marionette.ItemView.extend({
 		h = 300,
 		SVGParent = d3.select(this.ui.rocChart[0]).attr("width", w).attr("height", h).append("svg:g").attr("class","roc-line-wrapper").attr("transform","translate(0,10)");
 	w-=10;
-	var _x= 30,
-		_y= 30,
+	var _x= 50,
+		_y= 50,
 		xScale = d3.scale.linear().domain([0, 1]).range([0, parseFloat(w-_x)]),
 		yScale = d3.scale.linear().domain([0, 1]).range([parseFloat(h-_y), 0]),
 		xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
@@ -108,6 +108,9 @@ RocCurve = Marionette.ItemView.extend({
 										 .attr("class", "xaxis axis").call(xAxis);
 	this.yaxis = SVGParent.append("svg:g").attr("transform","translate("+_x+",0)")
 	 .attr("class", "yaxis axis").call(yAxis);
+	
+	SVGParent.append("svg:text").text("False Positive Rate").attr("transform","translate("+_x+","+parseFloat(h-_y+30)+")");
+	SVGParent.append("svg:text").text("True Positive Rate").attr("transform","translate(20,"+parseFloat(h-_y)+") rotate(-90)");
 	
 	SVGParent.append("svg:line")
 		.attr("class","middle-line")
