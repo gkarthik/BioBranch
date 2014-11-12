@@ -2,6 +2,7 @@ package org.scripps.branch.config;
 
 import javax.sql.DataSource;
 
+import org.scripps.branch.login.CustomLoginSuccessHandler;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.SocialUserDetailsServices;
 import org.scripps.branch.service.UserRepositoryDetailService;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -50,9 +52,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		// Configures form login
 		.formLogin()
 				.loginPage("/login")
-				.loginProcessingUrl("/login/authenticate")
+				.successHandler(successHandler())
+				.loginProcessingUrl("/login")
 				.failureUrl("/login?error=bad_credentials")
-				.defaultSuccessUrl("/datasets", true)
 				// Configures the logout function
 				.and()
 				.logout()
@@ -60,7 +62,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 						"SPRING_SECURITY_REMEMBER_ME_COOKIE")
 				.logoutUrl("/logout")
 				.invalidateHttpSession(true)
-				.logoutSuccessUrl("/")
+				.logoutSuccessUrl("/login")
 				.and()
 				.rememberMe()
 				.key("uniqueSecret")
@@ -72,7 +74,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
 						"/user/register/**", "/profile", "/save",
-						"/publicCollection", "/features", "/contact").permitAll()
+						"/publicCollection", "/features", "/contact", "/MetaServer").permitAll()
 				// The rest of the our application is protected.
 				.antMatchers("/**").hasRole("USER").antMatchers("/new")
 				.hasRole("USER")
@@ -82,6 +84,11 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.and().apply(new SpringSocialConfigurer());
 		// .and().csrf().disable();
 
+	}
+	
+	@Bean
+	public AuthenticationSuccessHandler successHandler() {
+	    return new CustomLoginSuccessHandler();
 	}
 
 	@Override

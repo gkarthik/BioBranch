@@ -43,6 +43,15 @@ public class HomeController {
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			userDetails = (UserDetails) auth.getPrincipal();
+			User user = userRepo.findByEmail(userDetails.getUsername());
+			model.addAttribute("userId", user.getId());
+			model.addAttribute("firstName", user.getFirstName());
+		} else {
+			LOGGER.debug("redirecting to Login");
+			return "user/login";
+		}
 		if(request.getParameter("dataset")!=null){
 			long id = Long.valueOf(request.getParameter("dataset"));
 			Weka weka = wekaMap.getWeka(id);
@@ -57,12 +66,6 @@ public class HomeController {
 		}
 		model.addAttribute("userId", -1);
 		model.addAttribute("firstName", "Guest");
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			model.addAttribute("userId", user.getId());
-			model.addAttribute("firstName", user.getFirstName());
-		}
 		return VIEW_NAME_HOMEPAGE;
 	}
 }

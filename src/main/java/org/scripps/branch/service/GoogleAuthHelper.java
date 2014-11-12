@@ -57,10 +57,6 @@ public final class GoogleAuthHelper {
 				(Collection<String>) SCOPE).build();
 
 		generateStateToken();
-		LOGGER.debug("flow in google auth: " + flow);
-		LOGGER.debug("HTTP_TRANSPORT: " + HTTP_TRANSPORT);
-		LOGGER.debug("JSON_FACTORY: " + JSON_FACTORY);
-		LOGGER.debug("SCOPE: " + SCOPE);
 
 	}
 
@@ -71,7 +67,6 @@ public final class GoogleAuthHelper {
 
 		final GoogleAuthorizationCodeRequestUrl url = flow
 				.newAuthorizationUrl();
-		LOGGER.debug("url google auth: " + url);
 		return url.setRedirectUri(CALLBACK_URI).setState(stateToken).build();
 
 	}
@@ -80,13 +75,8 @@ public final class GoogleAuthHelper {
 	 * Generates a secure state token
 	 */
 	private void generateStateToken() {
-
 		SecureRandom sr1 = new SecureRandom();
-
 		stateToken = "google;" + sr1.nextInt();
-
-		LOGGER.debug("state toke google auth: " + stateToken);
-
 	}
 
 	/**
@@ -119,13 +109,6 @@ public final class GoogleAuthHelper {
 		ObjectMapper mapper = new ObjectMapper();
 		jsonIdentity = request.execute().parseAsString();
 		JsonNode obj = mapper.readTree(jsonIdentity);
-		LOGGER.debug("response: " + response);
-		LOGGER.debug("credential: " + credential);
-		LOGGER.debug("requestFactory: " + requestFactory);
-		LOGGER.debug("url: " + url);
-		LOGGER.debug("request: " + request);
-		LOGGER.debug("jsonIdentity: " + obj.get("id"));
-
 		return jsonIdentity;
 
 	}

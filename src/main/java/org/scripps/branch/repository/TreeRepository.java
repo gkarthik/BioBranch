@@ -9,6 +9,7 @@ import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,15 +20,15 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	Tree findById(long id);
 
 	// Includes private trees
-	@Query("select t from Tree t where t.user=?1 and t.user_saved=true order by t.score.score")
+	@Query("select t from Tree t where t.user=?1 and t.user_saved=true order by t.score.score desc")
 	List<Tree> findByUser(User user);
 
 	// Community Collection
-	@Query("select t from Tree t where user_saved=true and t.private_tree=false order by t.score.score")
-	List<Tree> getAllTrees();
+	@Query("select t from Tree t where user_saved=true and t.private_tree=false order by t.score.score desc")
+	List<Tree> getAllTrees(Pageable pageable);
 
 	// Does not include private trees
-	@Query("select t from Tree t where t.user=?1 and t.private_tree=false and t.user_saved=true order by t.score.score")
+	@Query("select t from Tree t where t.user=?1 and t.private_tree=false and t.user_saved=true order by t.score.score desc")
 	List<Tree> getByOtherUser(User user);
 
 	@Query("select count(f) from Tree t inner join t.customClassifiers f where f in (?1) and t.user != ?2")

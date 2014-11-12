@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
 import org.scripps.branch.globalentity.DatasetMap;
+import org.scripps.branch.login.CustomLoginSuccessHandler;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +32,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
