@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -6,38 +5,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 <%@page import="org.scripps.branch.service.GoogleAuthHelper"%>
 
-
-
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="icon" href="../../favicon.ico">
-
-
-<!-- Bootstrap core CSS -->
-<link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
-
-<title></title>
-<link rel="stylesheet" type="text/css"
-	href="static/oldStyles/css/social-buttons-3.css" />
-<link rel="stylesheet" type="text/css"
-	href="static/oldStyles/css/bootstrap-theme.css" />
-<link rel="stylesheet" type="text/css"
-	href="static/oldStyles/css/bootstrap.css" />
-</head>
-<style>
-.list-group-item {
-    display: list-item;
-}
-</style>
-<body>
-
 	<div class="container">
-		<div class="header"></div>
 
 		<div>
 			<section>
@@ -45,7 +13,12 @@
 					<img alt="branch-logo" src="static/img/logo.png">
 				</center>
 			</section>
-			<div id="column-content" class="col-md-8">
+			<div class="col-md-12">
+			<div id="collection-wrapper">
+				<div id="collection-container"></div>
+			</div>
+		</div>
+			<div id="column-content" class="col-md-9">
 				<div id="sections" class="section">
 					<h3 class="about">Decision Trees</h3>
 					<p id="about">
@@ -91,18 +64,12 @@
 			-->
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
 
 				<div id="login-main-wrapper" class="panel panel-info pull-right">
 					<div class="panel-heading">
 						<section id="head" class="working">
-							<div class="inner">
-
-								<span id="toggleDiv" style="display: block; width: 250px;">
-									<a class="btn btn-primary btn-block" href="#" role="button">Login</a>
-								</span>
-
-							</div>
+							<h4>Login</h4>
 						</section>
 					</div>
 					<div id="toggleContent" class="panel-body">
@@ -119,7 +86,7 @@
 													<spring:message code="text.login.page.login.failed.error" />
 												</div>
 											</c:if>
-											<form action="${pageContext.request.contextPath}/login/authenticate" method="POST"
+											<form action="${pageContext.request.contextPath}/login" method="POST"
 												role="form">
 												<input type="hidden" name="${_csrf.parameterName}"
 													value="${_csrf.token}" /> <input type="hidden"
@@ -264,17 +231,53 @@
 		</div>
 
 	</div>
-	<script src="./static/lib/jquery-1.10.1.js"></script>
-	<script type="text/javascript">
-		$("#toggleDiv").on("click", function() {
-			$('#toggleContent').slideToggle();
-		});
-
-		if ($(".alert-danger").length == 0) {
-			$('#toggleContent').css({
-				'display' : 'none'
-			});
-		}
+	<script type="text/template" id="empty-tree-collection">
+		Loading ... 
 	</script>
-</body>
-</html>
+	<script type="text/template" id="score-entry-template">
+	<span class='keyValue'><@ print(Math.round(json_tree.pct_correct*10)/10) @>% accurate</span>
+	<span>Created by <b><@= user.firstName @></b> on <b><@= score.dataset.name @></b> at <b><@ print(created.hourOfDay+":"+created.minuteOfHour+" "+created.monthOfYear+"/"+created.dayOfMonth+"/"+created.yearOfEra) @></b></span>
+	<svg id="treePreview<@= cid @>"></svg>
+	<span>"<@= comment @>"</span>
+	<a href="${pageContext.request.contextPath}/?treeid=<@= id @>&dataset=<@= score.dataset.id @>"><i class="glyphicon glyphicon-edit"></i></a>
+	</script>
+	<script src="${pageContext.request.contextPath}/static/lib/underscore.js"></script>
+	<script src="${pageContext.request.contextPath}/static/lib/jquery-1.10.1.js"></script>
+	<script src="${pageContext.request.contextPath}/static/lib/backbone.js"></script>
+	<script src="${pageContext.request.contextPath}/static/lib/marionette.backbone.min.js"></script>
+	<script src="${pageContext.request.contextPath}/static/lib/d3.v3.js"></script>
+	<script>
+    //CSRF
+	var token = $("meta[name='_csrf']").attr("content");
+	  var header = $("meta[name='_csrf_header']").attr("content");
+	  $(document).ajaxSend(function(e, xhr, options) {
+	    xhr.setRequestHeader(header, token);
+	  });
+	  var base_url = "${pageContext.request.contextPath}";
+	</script>
+	<script src="${pageContext.request.contextPath}/static/login/js/script.js"></script>
+	<style>
+	#collection-wrapper{
+		overflow: auto;
+		margin-bottom: 20px;
+	}
+	
+	#collection-container{
+		min-width: 100%;
+	}
+	
+	.tree-list{
+		list-style:none;
+		width: 6240px;
+	}
+		.tree-list li {
+			float: left;
+			padding: 2px;
+			width: 300px;
+			padding: 5px;
+			border: 1px solid #ddd;
+			height: 400px;
+			overflow: hidden;
+			margin: 5px;
+		}
+	</style>

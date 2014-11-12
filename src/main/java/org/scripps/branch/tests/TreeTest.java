@@ -54,9 +54,6 @@ public class TreeTest {
 		tList = t.getByOtherUser(user);
 		assertEquals(tList.size() == 0, false);
 
-		tList = t.getAllTrees();
-		assertEquals(tList.size() == 0, false);
-
 		long count = t.getTotalCount();
 		assertEquals(count != 0, true);
 

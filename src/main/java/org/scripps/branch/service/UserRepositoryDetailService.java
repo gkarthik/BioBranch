@@ -34,10 +34,8 @@ public class UserRepositoryDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		LOGGER.debug("Loading user by username: {}", username);
 
 		User user = repository.findByEmail(username);
-		LOGGER.debug("Found user: {}", user);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("No user found with username: "
@@ -51,9 +49,6 @@ public class UserRepositoryDetailService implements UserDetailsService {
 				.socialSignInProvider(user.getSignInProvider())
 				.username(user.getEmail()).build();
 
-		LOGGER.debug("Returning user details: {}", principal);
-
-		LOGGER.debug("Returning the userID as a token" + user.getId());
 
 		return principal;
 	}

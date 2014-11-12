@@ -30,30 +30,16 @@ public class UserRepositoryService implements UserService {
 	}
 
 	private boolean emailExist(String email) {
-		LOGGER.debug(
-				"Checking if email {} is already found from the database.",
-				email);
-
 		User user = repository.findByEmail(email);
-
 		if (user != null) {
-			LOGGER.debug(
-					"User account: {} found with email: {}. Returning true.",
-					user, email);
 			return true;
 		}
-
-		LOGGER.debug("No user account found with email: {}. Returning false.",
-				email);
-
 		return false;
 	}
 
 	private String encodePassword(RegistrationForm dto) {
 		String encodedPassword = null;
-
 		if (dto.isNormalRegistration()) {
-			LOGGER.debug("Registration is normal registration. Encoding password.");
 			encodedPassword = passwordEncoder.encode(dto.getPassword());
 		}
 
@@ -64,19 +50,12 @@ public class UserRepositoryService implements UserService {
 	@Override
 	public User registerNewUserAccount(RegistrationForm userAccountData)
 			throws DuplicateEmailException {
-		LOGGER.debug("Registering new user account with information: {}",
-				userAccountData);
-
 		if (emailExist(userAccountData.getEmail())) {
 			LOGGER.debug("Email: {} exists. Throwing exception.",
 					userAccountData.getEmail());
 			throw new DuplicateEmailException("The email address: "
 					+ userAccountData.getEmail() + " is already in use.");
 		}
-
-		LOGGER.debug("Email: {} does not exist. Continuing registration.",
-				userAccountData.getEmail());
-
 		String encodedPassword = encodePassword(userAccountData);
 
 		User.Builder user = User.getBuilder().email(userAccountData.getEmail())
@@ -89,11 +68,7 @@ public class UserRepositoryService implements UserService {
 		if (userAccountData.isSocialSignIn()) {
 			user.signInProvider(userAccountData.getSignInProvider());
 		}
-
 		User registered = user.build();
-
-		LOGGER.debug("Persisting new user with information: {}", registered);
-
 		return repository.save(registered);
 	}
 }
