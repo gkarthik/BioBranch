@@ -158,7 +158,6 @@ define([
 			return [ d.x, d.y ];
 		});
 		Cure.TestSets = new DatasetCollection();
-		Cure.ClinicalFeatureCollection = new ClinicalFeatureCollection();
 		Cure.ScoreBoard = new ScoreBoard();
 		
 		Cure.addRegions(options.regions);

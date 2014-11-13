@@ -229,7 +229,7 @@ AddRootNodeView = searchFeature.extend({
 					"unique_id" : ui.item.unique_id,
 					"kind" : "split_node",
 					"full_name" : ui.item.long_name,
-					"description" : ui.item.description,
+					"description" : ui.item.long_name
 				});
 			} else {
 				var newNode = new Node({

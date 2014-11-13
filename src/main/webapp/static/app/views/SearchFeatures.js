@@ -27,7 +27,6 @@ define([
 			this.listenTo(Cure.dataset, 'change:validatecf', this.render);
 			this.listenTo(Cure.dataset, 'change:validatecc', this.render);
 			this.listenTo(Cure.dataset, 'change:validatet', this.render);
-			this.listenTo(Cure.ClinicalFeatureCollection, 'add', this.render);
 			this.parentViewName = (args) ? args.view : null;
 		},
 			getTemplate: function(serialized_model){
@@ -59,10 +58,14 @@ define([
 				'click .open-addnode': 'openAggNode',
 				'click .choose-category': 'chooseCategory',
 				'click .show-pick-instance': 'showPickInstance',
-				'click .rank-attributes': 'listAllRanked'
+				'click .rank-attributes': 'listAllRanked',
+				'click .rank-nongene-features': 'listAllNonGeneFeatures'
 			},
 			listAllRanked: function(){
 				$(this.ui.gene_query).genequery_autocomplete("search");
+			},
+			listAllNonGeneFeatures: function(){
+				$(this.ui.cf_query).autocomplete("search");
 			},
 			openAggNode: function(){
 				Cure.appLayout.AggNodeRegion.close();
@@ -204,8 +207,6 @@ define([
 		          	model.set('pickInst', true);
 		          	tree = Cure.PlayerNodeCollection.at(0).toJSON();
 		         }
-				//Clinical Features Autocomplete
-				var availableTags = Cure.ClinicalFeatureCollection.toJSON();
 				
 				$(this.ui.cf_query).autocomplete({
 					create: function(){
@@ -227,7 +228,52 @@ define([
 							.appendTo( ul );
 						}
 					},
-					source : availableTags,
+					source: function( request, response ) {
+						 var testOptions = {
+                 				value: $("input[name='testOptions']:checked").val(),
+                 				percentSplit:  $("input[name='percent-split']").val()
+                 		};
+                         var tree = {};
+                         if(Cure.PlayerNodeCollection.length>0){
+                         	model.set('pickInst', true);
+                         	tree = Cure.PlayerNodeCollection.at(0).toJSON();
+                         }
+	  					var args = {
+	    	        command : "search_clinical_features",
+	    	        query: request.term,
+	    	        dataset: Cure.dataset.get('id'),
+    				treestruct : tree,
+    				comment: Cure.Comment.get("content"),
+    				testOptions: testOptions
+	    	      };
+	    	      $.ajax({
+	    	          type : 'POST',
+	    	          url : thisView.url,
+	    	          data : JSON.stringify(args),
+	    	          dataType : 'json',
+	    	          contentType : "application/json; charset=utf-8",
+	    	          success : function(data){
+	    	        	  if(data.length==0){
+	    	        		  response([{label:'no matched feature found.', value:''}]);
+	    	        	  }
+	    	          	response( $.map( data, function( item ) {
+	    	          		return {
+	    	          		  label: item.short_name,
+	    	          		  value: item.name,
+	    	          		  data: item,
+	    	          		  unique_id: item.unique_id,
+	    	          		  long_name: item.long_name,
+	    	          		  short_name: item.short_name,
+	    	          		  infogain: item.infogain,
+	    	          		  description: item.description
+	    	          	  };
+	    	          	}));
+	    	        },
+	    	        error : function(data){
+        				response([{label:'no matched feature found.', value:''}]);
+        			}
+	    	      });
+	  				},
 					minLength: 0,
 					open: function(event){
 						var scrollTop = $(event.target).offset().top-400;
@@ -275,7 +321,7 @@ define([
 						$("#SpeechBubble").remove();
 					},
 					select : thisView.selectCf
-				}).bind('focus', function(){ $(this).autocomplete("search"); } );
+				});
 			},
 			onRender : function() {
 				if (this.model) {
@@ -420,7 +466,6 @@ define([
 					select : thisView.selectGene
 				});
 				$(this.ui.gene_query).focus();
-				Cure.ClinicalFeatureCollection.fetch();
 				this.showCustomFeatures();
 				this.showCf();
 				this.showAggregateNodes();
