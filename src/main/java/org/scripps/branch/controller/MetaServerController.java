@@ -195,9 +195,9 @@ public class MetaServerController {
 				}
 				result_json = mapper.writeValueAsString(tList);
 			}
-		} else if (command.equals("get_clinical_features")) {
+		} else if (command.equals("search_clinical_features")) {
 			Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
-			List<Feature> fList = featureRepo.getNonGeneFeatures(d);
+			List<Feature> fList = featureRepo.searchNonGeneFeatures(d, data.get("query").asText());
 			List<String> entrezIds = new ArrayList<String>();
 			for(Feature f: fList){
 				entrezIds.add(f.getUnique_id());

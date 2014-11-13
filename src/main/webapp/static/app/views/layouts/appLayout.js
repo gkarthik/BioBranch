@@ -1,7 +1,6 @@
 define([
 	 'marionette', 'd3', 'jquery',
 	// Collection
-    'app/collections/ClinicalFeatureCollection',
     'app/collections/NodeCollection', 
     'app/collections/ScoreBoard',
     'app/collections/TreeBranchCollection', 
@@ -25,7 +24,7 @@ define([
     'app/views/zoomView', 
     'app/views/LoginView',
     'text!static/app/templates/appLayout.html'
-    ], function(Marionette, d3, $, ClinicalFeatureCollection, NodeCollection,
+    ], function(Marionette, d3, $, NodeCollection,
     		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, TutorialCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
     		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, LoginView, appLayoutTemplate) {
 appLayout = Marionette.Layout.extend({
