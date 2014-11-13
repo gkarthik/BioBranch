@@ -343,7 +343,7 @@ public class MetaServerController {
 						fList.remove(f);
 					}
 				}
-				result_json = mapper.writeValueAsString(fSer.rankFeatures(null/*getReqInstances(data)*/, entrezIds, d));
+				result_json = mapper.writeValueAsString(fSer.rankFeatures(getReqInstances(data), entrezIds, d));
 			}
 		} else if (command.contains("rank_")){
 			if(command.equals("rank_attributes")){

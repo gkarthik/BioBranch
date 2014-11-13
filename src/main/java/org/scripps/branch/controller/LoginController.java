@@ -19,12 +19,6 @@ public class LoginController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String showLoginPage(ModelMap model,HttpServletRequest request) {
-		String referrer = request.getHeader("Referer");
-		if(referrer!=null){
-			if(!referrer.contains("/login") && !referrer.contains("/datasets") ){
-			    request.getSession().setAttribute("url_prior_login", referrer);
-			}
-		}
 		return VIEW_NAME_LOGIN_PAGE;
 	}
 }

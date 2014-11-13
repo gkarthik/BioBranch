@@ -10,6 +10,7 @@ import org.scripps.branch.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,15 +44,10 @@ public class HomeController {
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			model.addAttribute("userId", user.getId());
-			model.addAttribute("firstName", user.getFirstName());
-		} else {
-			LOGGER.debug("redirecting to Login");
-			return "user/login";
-		}
+		userDetails = (UserDetails) auth.getPrincipal();
+		User user = userRepo.findByEmail(userDetails.getUsername());
+		model.addAttribute("userId", user.getId());
+		model.addAttribute("firstName", user.getFirstName());
 		if(request.getParameter("dataset")!=null){
 			long id = Long.valueOf(request.getParameter("dataset"));
 			Weka weka = wekaMap.getWeka(id);
@@ -64,8 +60,6 @@ public class HomeController {
 		} else {
 			return "redirect:/datasets";
 		}
-		model.addAttribute("userId", -1);
-		model.addAttribute("firstName", "Guest");
 		return VIEW_NAME_HOMEPAGE;
 	}
 }

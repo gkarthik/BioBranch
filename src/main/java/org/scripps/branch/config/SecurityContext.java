@@ -1,5 +1,6 @@
 package org.scripps.branch.config;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.scripps.branch.login.CustomLoginSuccessHandler;
@@ -9,11 +10,17 @@ import org.scripps.branch.service.UserRepositoryDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +34,7 @@ import org.springframework.social.security.SpringSocialConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -86,6 +94,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	}
 	
+	
+	private AuthenticationManager authenticationManager; // specific for Spring Security
+	
+	
+	@Bean
+	public AuthenticationManager getAuthenticationManager(){
+		return authenticationManager;
+	}
+	
 	@Bean
 	public AuthenticationSuccessHandler successHandler() {
 	    return new CustomLoginSuccessHandler();
@@ -140,5 +157,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	public UserDetailsService userDetailsService() {
 		return new UserRepositoryDetailService(userRepository);
 	}
+	
+	
 
 }
