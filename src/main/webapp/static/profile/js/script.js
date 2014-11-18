@@ -190,12 +190,12 @@ TreeItemView = Marionette.ItemView.extend({
 		var json = JSON.stringify(this.model.get('json_tree').treestruct);
 		var nodes = cluster.nodes(JSON.parse(json)),
     links = cluster.links(nodes);
-	  var link = svg.selectAll(".link")
+		var link = svg.selectAll(".link")
 	      .data(links)
 	    .enter().append("path")
 	      .attr("class", "link")
 	      .attr("d", diagonal)
-	      .style("stroke","steelblue")
+	      .style("stroke","blue")
 	      .style("stroke-width", "2");
 	
 	  var node = svg.selectAll(".node")
@@ -203,11 +203,13 @@ TreeItemView = Marionette.ItemView.extend({
 	    .enter().append("g")
 	      .attr("class", "node")
 	      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-	
+	  
+	  node.append("svg:circle").style("fill","lightgreen").style("stroke","blue").attr("r",5).style("stroke-width", "2");
+	  
 	  node.append("text")
 	      .attr("dx", function(d) { return d.children ? -8 : 8; })
 	      .attr("dy", 3)
-	      .style("text-anchor", "middle")
+	      .style("text-anchor", "end")
 	      .text(function(d) { return d.name; });
 	},
 	onShow: function(){

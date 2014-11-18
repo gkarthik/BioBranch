@@ -126,7 +126,7 @@ DistChartView = Marionette.ItemView.extend({
 				}
 			}
 			thisModel.set('range',range,{'silent':true});
-			$(this.ui.rangeInput).val(parseInt(range*100)/100);
+			$(this.ui.rangeInput).val(parseFloat(range*100)/100);
 			//Check if numeric or nominal attribute
 			if(data.length>0){
 				if(!isNominal){

@@ -18,8 +18,7 @@ public class LoginController {
 	protected static final String VIEW_NAME_LOGIN_PAGE = "user/login";
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String showLoginPage(ModelMap model,HttpServletRequest request) {
+	public String showLoginPage(ModelMap model, HttpServletRequest request) {
 		return VIEW_NAME_LOGIN_PAGE;
 	}
 }
-
