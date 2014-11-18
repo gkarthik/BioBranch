@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.scripps.branch.login.CustomLoginSuccessHandler;
+import org.scripps.branch.login.CustomLoginUrlAuthenticationEntryPoint;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.SocialUserDetailsServices;
 import org.scripps.branch.service.UserRepositoryDetailService;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -42,6 +44,12 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+
+    @Bean( name = "authenticationEntryPoint" )
+    public LoginUrlAuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomLoginUrlAuthenticationEntryPoint("/login?reutrnto=");
+    }
 
 	/**
 	 * Configures the authentication manager bean which processes authentication
@@ -56,11 +64,11 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
+		http.httpBasic().authenticationEntryPoint(authenticationEntryPoint())
 		// Configures form login
-		.formLogin()
+		.and().formLogin()
 				.loginPage("/login")
-				.successHandler(successHandler())
+				.defaultSuccessUrl("/")
 				.loginProcessingUrl("/login")
 				.failureUrl("/login?error=bad_credentials")
 				// Configures the logout function
@@ -76,12 +84,12 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.key("uniqueSecret")
 				.rememberMeServices(rememberMeServices())
 				.tokenValiditySeconds(172800)
-				// Configures url based authorization
+				//Configures url based authorization
 				.and()
 				.authorizeRequests()
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
-						"/user/register/**", "/profile", "/save",
+						"/user/register/**", "/save",
 						"/publicCollection", "/features", "/contact", "/MetaServer").permitAll()
 				// The rest of the our application is protected.
 				.antMatchers("/**").hasRole("USER").antMatchers("/new")

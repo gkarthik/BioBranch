@@ -92,11 +92,15 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		continue;
 	      }
 	      if (pred.actual() == classIndex) {
-	    	  rocDataPoints[i] = 1.00;
 		cumulativePos += pred.weight();
 	      } else {
-	    	  rocDataPoints[i] = 0.00;
 		cumulativeNeg += pred.weight();
+	      }
+	      
+	      if (pred.actual() == classIndex) {
+	    	  rocDataPoints[i] = 1.00;
+	      } else {
+	    	  rocDataPoints[i] = 0.00;
 	      }
 
 	      /*

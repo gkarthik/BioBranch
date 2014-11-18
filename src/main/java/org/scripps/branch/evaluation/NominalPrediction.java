@@ -35,9 +35,6 @@ public class NominalPrediction extends weka.classifiers.evaluation.NominalPredic
 	}
 	
 	public double getActual(){
-		if(m_pred!=-1){
-			return m_pred;
-		}
 		return m_Actual;
 	}
 

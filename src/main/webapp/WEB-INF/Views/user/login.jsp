@@ -14,16 +14,17 @@
 				</center>
 			</section>
 			<div class="col-md-12">
-			<div id="collection-wrapper">
-				<div id="collection-container"></div>
-			</div>
-		</div>
-			<div id="column-content" class="col-md-9">
-				<div id="sections" class="section">
-					<h3 class="about">Decision Trees</h3>
+			<h3 class="about">Decision Trees</h3>
 					<p id="about">
 						Decision trees help visualize a sequence of rules in a hierarchical fashion.  Rules can encapsulate *hypotheses that can be tested* with data.  They can also be used to make *predictions*.  
 					</p>
+			<h3 class="about">Examples</h3>		
+			<div id="collection-wrapper">
+				<div id="collection-container"></div>
+			</div>
+			</div>
+			<div id="column-content" class="col-md-9">
+				<div id="sections" class="section">
 					<h3 class="background">TOOL: "BRANCH"</h3>
 					<div id="background">
 						<ul class="unordered">
@@ -260,6 +261,9 @@
 	#collection-wrapper{
 		overflow: auto;
 		margin-bottom: 20px;
+		border: 1px solid rgb(221, 221, 221);
+		border-radius: 10px;
+		box-shadow: 0px 0px 1px 0px rgb(0, 0, 0) inset;
 	}
 	
 	#collection-container{
@@ -268,7 +272,9 @@
 	
 	.tree-list{
 		list-style:none;
-		width: 6240px;
+		width: 6200px;
+		padding:0px;
+		margin:0px;
 	}
 		.tree-list li {
 			float: left;
@@ -279,5 +285,6 @@
 			height: 400px;
 			overflow: hidden;
 			margin: 5px;
+			border-radius: 10px;
 		}
 	</style>

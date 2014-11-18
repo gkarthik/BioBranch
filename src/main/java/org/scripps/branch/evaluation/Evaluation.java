@@ -22,6 +22,8 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		
 	private FastVector m_Predictions;
 	
+	private int m_Predicted = -1;
+	
 	private int m_pred = -1;
 	
 	private Double[] rocDataPoints;
@@ -60,11 +62,11 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	      if (dist[(int)pred] <= 0) {
 		pred = Instance.missingValue();
 	      }
-	      m_pred = (int) pred;
+	      m_Predicted = (int) pred;
 	      updateStatsForClassifier(dist, instance);
 	      NominalPrediction n = new NominalPrediction(instance.classValue(), dist, 
 	    		  instance.weight());
-	      n.setM_pred(m_pred);
+	      n.setM_pred(pred);
 	      n.updatePredicted();
 	      m_Predictions.addElement(n);
 	    } else {
@@ -106,8 +108,8 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		      // classifications)
 		      int predictedClass = -1;
 		      double bestProb = 0.0;
-		      bestProb = predictedDistribution[m_pred];
-		      predictedClass = m_pred;
+		      bestProb = predictedDistribution[m_Predicted];
+		      predictedClass = m_Predicted;
 //		      for(int i = 0; i < m_NumClasses; i++) {
 //			if (predictedDistribution[i] > bestProb) {
 //			  predictedClass = i;
@@ -189,7 +191,6 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		      return Instance.missingValue();
 		    } else {
 		      ThresholdCurve tc = new ThresholdCurve();
-		      LOGGER.debug("predictions length eval: "+m_Predictions.size());
 		      Instances result = tc.getCurve(m_Predictions, classIndex);
 		      rocDataPoints = tc.getRocDataPoints();
 		      return ThresholdCurve.getROCArea(result);
