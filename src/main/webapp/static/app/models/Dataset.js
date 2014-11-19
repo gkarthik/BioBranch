@@ -7,7 +7,8 @@ Dataset = Backbone.RelationalModel.extend({
 		setTest: false,
 		cc: false,
 		cf: false,
-		t: false
+		t: false,
+		split: false
 	}	
 });
 return Dataset;

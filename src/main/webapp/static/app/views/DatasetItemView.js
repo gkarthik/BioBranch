@@ -14,7 +14,6 @@ DatasetItemView = Marionette.ItemView.extend({
 		'click .choose-training-dataset': 'setTestVal'
 	},
 	setTestVal: function(){
-		$($("input[name='testOptions']")[1]).prop("checked",true);
 		this.model.set('setTest',true);
 	}
 });

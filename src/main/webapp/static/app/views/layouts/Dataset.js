@@ -3,9 +3,10 @@ define([
 	'marionette',
 	//Views
 	'app/views/DatasetCollectionView',
+	'app/views/layouts/appLayout',
 	//Templates
 	'text!static/app/templates/Dataset.html'
-    ], function($, Marionette, DatasetCollectionView, DatasetTmpl) {
+    ], function($, Marionette, DatasetCollectionView, appLayout, DatasetTmpl) {
 DatasetLayout = Marionette.Layout.extend({
    template: DatasetTmpl,
    regions: {
@@ -21,7 +22,8 @@ DatasetLayout = Marionette.Layout.extend({
    ui:{
 	 wrapper: "#dataset-wrapper",
 	 showWrapper: "#show-dataset-wrapper",
-	 TestSets: '.show-testing-sets'
+	 TestSets: '.show-testing-sets',
+	 error: "#error-msg"
    },
    checkVal: function(){
 	   $("input[name='percent-split']").val("");
@@ -35,23 +37,22 @@ DatasetLayout = Marionette.Layout.extend({
 		   $("input[name='percent-split']").val(66);
 	   }
    },
-   setTestSetLabel: function(){
-	   var el = $("#test-set-label");
+   setTestSet: function(){
 	   switch($("input[name='testOptions']:checked").val()) {
 		case "0":
-			el.html(Cure.dataset.get('name'));
+			Cure.TestDataset = Cure.dataset;
 			break;
 		case "1":
-			el.html(Cure.TestSets.findWhere({setTest:true}).get('name'));
+			Cure.TestDataset = Cure.TestSets.findWhere({setTest:true});
 			break;
 		case "2": 
-			el.html("Training set split - "+$("input[name='percent-split']").val()+"%");
+			Cure.TestDataset = Cure.dataset;
+			Cure.TestDataset.set('split', true);
+			Cure.TestDataset.set('splitPercentage', $("input[name='percent-split']").val());
 			break;
 	   }
    },
    showWrapper: function(){
-	   $(this.ui.wrapper).show();
-	   this.checkVal();
 	   var args = {
 				command : "get_dataset_training",
 				dataset: Cure.dataset.get('id')
@@ -72,12 +73,39 @@ DatasetLayout = Marionette.Layout.extend({
 			}
 		});
    },
+   validateValues: function(){
+	   if(!Cure.TestDataset){
+			 $(this.ui.error).html("Please choose a test dataset.");
+			 return false;
+		 }   
+	 if(!Cure.TestDataset.get('name')){
+		 $(this.ui.error).html("Please choose a test dataset.");
+		 return false;
+	 }  
+	 if(Cure.TestDataset.get('split')){
+		 if(!Cure.TestDataset.get('splitPercentage')){
+			 $(this.ui.error).html("Please specify a split %");
+			 return false;
+		 }
+		 if(Cure.TestDataset.get('splitPercentage')<=0 || Cure.TestDataset.get('splitPercentage') >=100){
+			 $(this.ui.error).html("Please specify a split % between 1 and 99");
+			 return false;
+		 }
+	 }
+	 return true;
+   },
    applyOptions: function(){
-	   this.setTestSetLabel();
-	   Cure.PlayerNodeCollection.sync();
+	   this.setTestSet();
+	   if(this.validateValues()){
+		   this.close();
+		   Cure.appLayout = new appLayout();
+		   Cure.appRegion.show(Cure.appLayout);
+	   }
    },
    onRender: function(){
+	   Cure.TestDataset = Cure.dataset;//Since Training is default
 	   this.TestSetsRegion.show(new DatasetCollectionView({collection: Cure.TestSets}));
+	   this.showWrapper();
    }
 });
 return DatasetLayout;
