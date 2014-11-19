@@ -126,7 +126,7 @@ DistChartView = Marionette.ItemView.extend({
 				}
 			}
 			thisModel.set('range',range,{'silent':true});
-			$(this.ui.rangeInput).val(parseFloat(range*100)/100);
+			$(this.ui.rangeInput).val(parseInt(range*100)/100);
 			//Check if numeric or nominal attribute
 			if(data.length>0){
 				if(!isNominal){
@@ -282,7 +282,7 @@ DistChartView = Marionette.ItemView.extend({
 			
 			if(!isNominal && this.model.get('splitNode')){
 				xLength = xLength - ((xLength)/(plotValues.length));
-				var splitScale = d3.scale.linear().domain([plotValues[0].value, plotValues[plotValues.length-1].value]).range([0,xLength]);
+				var splitScale = d3.scale.linear().domain([parseFloat(plotValues[0].value), parseFloat(plotValues[plotValues.length-1].value)]).range([0,xLength]);
 				var reverseSplitScale = d3.scale.linear().domain([0,xLength]).range([plotValues[0].value, plotValues[plotValues.length-1].value]);
 				var splitPointIndicator = SVG.append("g").attr("class","split_point_indicator")
 				.attr("transform",function(){
@@ -318,6 +318,7 @@ DistChartView = Marionette.ItemView.extend({
 	        d3.select(this).attr("transform","translate("+translateX+","+o.y+")");
 		    }).on("dragend",function(){
 		    	var options = thisModel.get('splitNode').get('options');
+		    	console.log(splitPoint);
 		    	options.set('split_point', splitPoint);
 		    	Cure.PlayerNodeCollection.sync();
 		    	delete this.__customorigin__;
