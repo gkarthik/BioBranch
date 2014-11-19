@@ -840,6 +840,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
 				evalresults.put("kind", "leaf_node");
+				LOGGER.debug("leaf Node"+ bin_size);
 				evalresults.put("bin_size", Utils.doubleToString(bin_size, 2));
 				evalresults.put("errors", Utils.doubleToString(errors, 2));
 				evalresults.put("pct_correct",
@@ -882,6 +883,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				ObjectNode c_options = mapper.createObjectNode();
 				c_options.put("attribute_name", class_name);
 				c_options.put("kind", "leaf_node");
+				LOGGER.debug("new leaf Node"+ bin_size);
 				c_options.put("bin_size", Utils.doubleToString(bin_size, 2));
 				c_options.put("errors", Utils.doubleToString(errors, 2));
 				c_options.put("pct_correct",
@@ -1047,6 +1049,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 								origSplitPoint = (inst.value(att) + currSplit) / 2.0;
 							}
 						}
+						currSplit = inst.value(att);
+						// Shift over the weight
+						currDist[0][(int) inst.classValue()] += inst.weight();
+						currDist[1][(int) inst.classValue()] -= inst.weight();
 						if (inst.value(att) <= splitPoint) {
 							// Save distribution since split point is specified
 							for (int j = 0; j < currDist.length; j++) {
@@ -1054,10 +1060,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 										dist[j].length);
 							}
 						}
-						currSplit = inst.value(att);
-						// Shift over the weight
-						currDist[0][(int) inst.classValue()] += inst.weight();
-						currDist[1][(int) inst.classValue()] -= inst.weight();
 					}
 				}
 			}

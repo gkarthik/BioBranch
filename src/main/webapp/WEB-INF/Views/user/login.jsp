@@ -6,7 +6,20 @@
 <%@page import="org.scripps.branch.service.GoogleAuthHelper"%>
 
 	<div class="container">
-
+	<c:if test="${param.error eq 'bad_credentials'}">
+												<div class="alert alert-danger alert-dismissable">
+													<button type="button" class="close" data-dismiss="alert"
+														aria-hidden="true">&times;</button>
+													<spring:message code="text.login.page.login.failed.error" />
+												</div>
+											</c:if>
+	<c:if test="${param.error eq 'access_denied'}">
+												<div class="alert alert-danger alert-dismissable">
+													<button type="button" class="close" data-dismiss="alert"
+														aria-hidden="true">&times;</button>
+													Please login to proceed.
+												</div>
+											</c:if>
 		<div>
 			<section>
 				<center>
@@ -79,14 +92,14 @@
 
 								<sec:authorize access="isAnonymous()" >
 									<div>
-										<div>
-											<c:if test="${param.error eq 'bad_credentials'}">
+									<c:if test="${param.error eq 'bad_credentials'}">
 												<div class="alert alert-danger alert-dismissable">
 													<button type="button" class="close" data-dismiss="alert"
 														aria-hidden="true">&times;</button>
 													<spring:message code="text.login.page.login.failed.error" />
 												</div>
 											</c:if>
+										<div>
 											<form action="${pageContext.request.contextPath}/login" method="POST"
 												role="form">
 												<input type="hidden" name="${_csrf.parameterName}"
