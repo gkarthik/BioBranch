@@ -10,14 +10,13 @@ define([
   'app/views/ConfusionMatrixView',
   'app/views/CustomFeatureBuilder',
   'app/views/RocCurve',
-  'app/views/layouts/Dataset',
   'app/views/layouts/PathwaySearchLayout',
   'app/views/layouts/AggregateNodeLayout',
 	//Templates
 	'text!static/app/templates/sidebarLayout.html',
 	//Plugins
 	'odometer'
-    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, RocCurve, DatasetLayout, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
+    ], function($, Marionette, AddRootNodeView, CommentView, TreeBranchCollectionView, ScoreBoardView, ScoreView, CollaborativeCollectionView, ScoreKeyView, BadgeCollectionView, CfMatrixView, FeatureBuilder, RocCurve, PathwaySearchLayout, AggNodeLayout, sidebarLayoutTemplate, Odometer) {
 sidebarLayout = Marionette.Layout.extend({
     template: sidebarLayoutTemplate,
     regions: {
@@ -28,7 +27,6 @@ sidebarLayout = Marionette.Layout.extend({
 	    "CollaboratorsRegion": "#CollaboratorsRegion",
 	    "ScoreKeyRegion": "#ScoreKeyRegion",
 	    "BadgeRegion": "#BadgeRegion",
-	    "DatasetRegion":"#DatasetRegion",
 	    "ConfusionMatrixRegion": "#CfMatrixRegion",
 	    "RocRegion": "#RocRegion"
     },
@@ -144,7 +142,6 @@ sidebarLayout = Marionette.Layout.extend({
       Cure.CfMatrixView = new CfMatrixView({
     	  model: Cure.CfMatrix
       });
-      Cure.datasetLayout = new DatasetLayout();
       //this.ScoreRegion.show(Cure.ScoreView);
       this.ScoreBoardRegion.show(Cure.ScoreBoardView);
       this.CommentRegion.show(Cure.CommentView);
@@ -152,7 +149,6 @@ sidebarLayout = Marionette.Layout.extend({
       this.CollaboratorsRegion.show(Cure.CollaboratorCollectionView);
       this.ScoreKeyRegion.show(Cure.ScoreKeyView);
       this.BadgeRegion.show(Cure.BadgeCollectionView);
-      this.DatasetRegion.show(Cure.datasetLayout);
       this.ConfusionMatrixRegion.show(Cure.CfMatrixView);
       this.RocRegion.show(Cure.RocCurve);
     },

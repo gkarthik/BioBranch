@@ -2,14 +2,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-<div id="main-app-wrapper"></div>
+<div id="main-app-wrapper">
+<span>Loading Dependencies ... </span>
+</div>
 		<script type="text/javascript">
 					var cure_user_id = ${userId}, 
 						cure_user_name = "${firstName}", 
 						cure_tree_id = null, 
 						badge_desc = null, 
 						badge_id = null, 
-						base_url = (document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href/*(document.location.href.indexOf("?")!=-1) ? document.location.href.split("?")[0] : document.location.href.split("branch")[0]+"branch/"*/,
+						base_url = "${pageContext.request.contextPath}/",
 						dataset = {},
 						_csb = [ [ null, null ] ],
 						classValues = ["y","n"],

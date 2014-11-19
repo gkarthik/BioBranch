@@ -2,14 +2,15 @@ define([
         // Libraries
         'marionette', 'd3', 'jquery',
         //Layouts
-        'app/views/layouts/appLayout',
+        'app/models/Dataset',
+        'app/views/layouts/Dataset',
         // Utilitites
         'app/utilities/utilities',
         //Tour
         'app/tour/tour',
         'app/tour/tree'
         ],
-        function(Marionette, d3, $, appLayout, CureUtils, InitTour, TreeTour) {
+        function(Marionette, d3, $, Dataset, datasetLayout, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
 	var token = $("meta[name='_csrf']").attr("content");
@@ -158,11 +159,11 @@ define([
 			return [ d.x, d.y ];
 		});
 		Cure.TestSets = new DatasetCollection();
+		Cure.TestDataset = new Dataset();
 		Cure.ScoreBoard = new ScoreBoard();
 		
 		Cure.addRegions(options.regions);
-		Cure.appLayout = new appLayout();
-		Cure.appRegion.show(Cure.appLayout);
+		Cure.appRegion.show(new datasetLayout());
 		
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
 		Cure.instanceData = {};

@@ -4,7 +4,6 @@
 		id="new-tree">
 		<i class="glyphicon glyphicon-off"></i>
 	</button>
-	<div id="DatasetRegion"></div>
 	<div id="CommentRegion"></div>
 	<button
 		class="btn btn-xs btn-primary sidebar-open-feature-builder pull-right">
@@ -33,11 +32,13 @@
 		<div id="RocRegion"></div>
 		<div id="CfMatrixRegion" class="eval-tab-content"></div>
 		<p>
-			<b>Training Set:</b> <%= Cure.dataset.get('name') %>
+			<b>Training Set</b>: <%= Cure.dataset.get('name') %>
 		</p>
 		<p>
-			<b>Test Set:</b> <span id="test-set-label"><%=
-				Cure.dataset.get('name') %></span>
+			<b>Test Set</b>: <span id="test-set-label"><%= Cure.TestDataset.get('name') %></span><br>
+			<% if(Cure.TestDataset.get('split')){ %>
+			<span><b>Split</b>: <%= Cure.TestDataset.get('splitPercentage') %>%</span>
+			<% } %>
 		</p>
 		<!-- 
 	<span id="sidebar-toggle" class="pull-right btn btn-default sidebar-show">
