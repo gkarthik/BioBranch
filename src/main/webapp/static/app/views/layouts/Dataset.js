@@ -23,7 +23,8 @@ DatasetLayout = Marionette.Layout.extend({
 	 wrapper: "#dataset-wrapper",
 	 showWrapper: "#show-dataset-wrapper",
 	 TestSets: '.show-testing-sets',
-	 error: "#error-msg"
+	 error: "#error-msg",
+	 availTestsets: "#avail-testsets"
    },
    checkVal: function(){
 	   $("input[name='percent-split']").val("");
@@ -56,6 +57,7 @@ DatasetLayout = Marionette.Layout.extend({
 	   }
    },
    showWrapper: function(){
+	   var thisView = this;
 	   var args = {
 				command : "get_dataset_training",
 				dataset: Cure.dataset.get('id')
@@ -70,6 +72,9 @@ DatasetLayout = Marionette.Layout.extend({
 			success : function(data){
 				Cure.TestSets.reset();
 				Cure.TestSets.add(data);
+				if(Cure.TestSets.length>0){
+					$(thisView.ui.availTestsets).show();
+				}
 			},
 			error : function(data){
 				console.log(data);

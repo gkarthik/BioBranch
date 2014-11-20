@@ -61,11 +61,21 @@ PathwayLayout = Marionette.Layout.extend({
   				},
   				minLength: 3,
   				select: function( event, ui ) {
+  					var tree = {};
+  				  if (Cure.PlayerNodeCollection.lenght>0) {
+  				      tree = Cure.PlayerNodeCollection.at(0).toJSON();
+  				  }
   					var args = {
   	  	        command : "get_genes_of_pathway",
   	  	        pathway_id:	ui.item.data.id,
-  	  	        dataset: Cure.dataset.get('id')
+  	  	        dataset: Cure.dataset.get('id'),
+		        treestruct : tree,
+		        player_id : Cure.Player.get('id'),
+//		        comment : Cure.Comment.get("content"),
+//		        previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
+//		        privateflag : Cure.Comment.get('flagPrivate'),
   	  	      };
+  					Cure.utils.addTestsetDetails(args);
   			  Cure.utils.showLoading(null);
   	  	      $.ajax({
   	  	          type : 'POST',
