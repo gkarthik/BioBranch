@@ -157,10 +157,6 @@ PickInstanceView = Marionette.Layout.extend({
 					thisView.changeUIDinJSON(json, model.get('options').get('cid'), data.id);
 				}
 				Cure.utils.showLoading(null);
-				var testOptions = {
-						value: $("input[name='testOptions']:checked").val(),
-						percentSplit:  $("input[name='percent-split']").val()
-				};
 				var args = {
 						command : "scoretree",
 						dataset : Cure.dataset.get('id'),
@@ -168,8 +164,9 @@ PickInstanceView = Marionette.Layout.extend({
 						comment: Cure.Comment.get("content"),
 						player_id : Cure.Player.get('id'),
 						previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
-						testOptions: testOptions
 					};
+				
+				Cure.utils.addTestsetDetails(args);
 				
 				//POST request to server.		
 				$.ajax({

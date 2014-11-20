@@ -840,7 +840,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
 				evalresults.put("kind", "leaf_node");
-				LOGGER.debug("leaf Node"+ bin_size);
 				evalresults.put("bin_size", Utils.doubleToString(bin_size, 2));
 				evalresults.put("errors", Utils.doubleToString(errors, 2));
 				evalresults.put("pct_correct",
@@ -883,7 +882,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				ObjectNode c_options = mapper.createObjectNode();
 				c_options.put("attribute_name", class_name);
 				c_options.put("kind", "leaf_node");
-				LOGGER.debug("new leaf Node"+ bin_size);
 				c_options.put("bin_size", Utils.doubleToString(bin_size, 2));
 				c_options.put("errors", Utils.doubleToString(errors, 2));
 				c_options.put("pct_correct",
@@ -1167,64 +1165,66 @@ public class ManualTree extends Classifier implements OptionHandler,
 				m_Successors[i].setParentNode(parentNode);
 			}
 		}
+		
+		if(m_Info != null){
+			if (m_Attribute > -1 && m_Attribute < m_Info.numAttributes()) {
 
-		if (m_Attribute > -1 && m_Attribute < m_Info.numAttributes()) {
+				// Node is not a leaf
+				if (instance.isMissing(m_Attribute)) {
 
-			// Node is not a leaf
-			if (instance.isMissing(m_Attribute)) {
+					// Value is missing
+					returnedDist = new double[m_Info.numClasses()];
 
-				// Value is missing
-				returnedDist = new double[m_Info.numClasses()];
-
-				// Split instance up
-				for (int i = 0; i < m_Successors.length; i++) {
-					double[] help = m_Successors[i]
-							.distributionForInstance(instance);
-					if (help != null) {
-						for (int j = 0; j < help.length; j++) {
-							returnedDist[j] += m_Prop[i] * help[j];
+					// Split instance up
+					for (int i = 0; i < m_Successors.length; i++) {
+						double[] help = m_Successors[i]
+								.distributionForInstance(instance);
+						if (help != null) {
+							for (int j = 0; j < help.length; j++) {
+								returnedDist[j] += m_Prop[i] * help[j];
+							}
 						}
 					}
-				}
-			} else if (m_Info.attribute(m_Attribute).isNominal()) {
+				} else if (m_Info.attribute(m_Attribute).isNominal()) {
 
-				// For nominal attributes
-				returnedDist = m_Successors[(int) instance.value(m_Attribute)]
-						.distributionForInstance(instance);
-			} else {
-
-				// For numeric attributes
-				if (instance.value(m_Attribute) < m_SplitPoint) {
-					returnedDist = m_Successors[0]
+					// For nominal attributes
+					returnedDist = m_Successors[(int) instance.value(m_Attribute)]
 							.distributionForInstance(instance);
 				} else {
-					returnedDist = m_Successors[1]
-							.distributionForInstance(instance);
-				}
-			}
-		} else if (m_Attribute >= m_Info.numAttributes()-1) {
-			if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
-				CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
-				JsonNode vertices = mapper.readTree(cSet.getConstraints());
-				ArrayList<double[]> attrVertices = generateVerticesList(vertices);
-				List<Attribute> aList = generateAttributeList(cSet, m_Info, d);
-				double[] testPoint = new double[2];
-					testPoint[0] = instance.value(aList.get(0));
-					testPoint[1] = instance.value(aList.get(1));
-					int check = checkPointInPolygon(attrVertices, testPoint);
-					if(m_Successors[check].getM_Attribute() == -1){
-						parentNode.setM_pred(m_ClassAssignment.get((check == 0) ? "Outside": "Inside"));
+
+					// For numeric attributes
+					if (instance.value(m_Attribute) < m_SplitPoint) {
+						returnedDist = m_Successors[0]
+								.distributionForInstance(instance);
+					} else {
+						returnedDist = m_Successors[1]
+								.distributionForInstance(instance);
 					}
-					returnedDist = m_Successors[check].distributionForInstance(instance);
-				
-			} else {
-				String classifierId = "";
-				classifierId = getKeyinMap(listOfFc, m_Attribute, m_Info);
-				Classifier fc = listOfFc.get(classifierId);
-				double predictedClass = fc.classifyInstance(instance);
-				if (predictedClass != Instance.missingValue()) {
-					returnedDist = m_Successors[(int) predictedClass]
-							.distributionForInstance(instance);
+				}
+			} else if (m_Attribute >= m_Info.numAttributes()-1) {
+				if(m_Attribute>=(listOfFc.size()+m_Info.numAttributes())-1){
+					CustomSet cSet = getReqCustomSet(m_Attribute-(listOfFc.size()-1+m_Info.numAttributes()), cSetList);
+					JsonNode vertices = mapper.readTree(cSet.getConstraints());
+					ArrayList<double[]> attrVertices = generateVerticesList(vertices);
+					List<Attribute> aList = generateAttributeList(cSet, m_Info, d);
+					double[] testPoint = new double[2];
+						testPoint[0] = instance.value(aList.get(0));
+						testPoint[1] = instance.value(aList.get(1));
+						int check = checkPointInPolygon(attrVertices, testPoint);
+						if(m_Successors[check].getM_Attribute() == -1){
+							parentNode.setM_pred(m_ClassAssignment.get((check == 0) ? "Outside": "Inside"));
+						}
+						returnedDist = m_Successors[check].distributionForInstance(instance);
+					
+				} else {
+					String classifierId = "";
+					classifierId = getKeyinMap(listOfFc, m_Attribute, m_Info);
+					Classifier fc = listOfFc.get(classifierId);
+					double predictedClass = fc.classifyInstance(instance);
+					if (predictedClass != Instance.missingValue()) {
+						returnedDist = m_Successors[(int) predictedClass]
+								.distributionForInstance(instance);
+					}
 				}
 			}
 		}
@@ -1246,7 +1246,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			try{
 				Utils.normalize(normalizedDistribution);
 			} catch(Exception e) {
-				LOGGER.debug("Sum is 0. Coudln't Normalize");
+				LOGGER.error("Sum is 0. Coudln't Normalize");
 			}
 			return normalizedDistribution;
 		} else {

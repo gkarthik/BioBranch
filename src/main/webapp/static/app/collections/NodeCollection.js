@@ -30,14 +30,6 @@ NodeCollection = Backbone.Collection.extend({
 		}
 		
 		Cure.utils.showLoading(null);
-		var testOptions = {
-				value: $("input[name='testOptions']:checked").val(),
-				percentSplit:  $("input[name='percent-split']").val(),
-		};
-		var testset = Cure.TestSets.findWhere({setTest:true});
-		if(testset){
-			testOptions.testsetid = testset.get('id'); 
-		}
 		var pickedAttrs = [];
 		if(reqArgs){
 			if(reqArgs.pickedAttrs){
@@ -51,9 +43,10 @@ NodeCollection = Backbone.Collection.extend({
 				comment: Cure.Comment.get("content"),
 				player_id : Cure.Player.get('id'),
 				previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
-				testOptions: testOptions,
 				pickedAttrs: pickedAttrs
 			};
+		
+		Cure.utils.addTestsetDetails(args);
 		
 		//POST request to server.
 		$.ajax({
@@ -256,11 +249,6 @@ NodeCollection = Backbone.Collection.extend({
 		var thisURL = this.url;
     if (Cure.PlayerNodeCollection.models[0]) {
       tree = Cure.PlayerNodeCollection.models[0].toJSON();
-      var testOptions = {
-				value: $("input[name='testOptions']:checked").val(),
-				percentSplit:  $("input[name='percent-split']").val()
-		};
-      console.log(Cure.Comment.get('flagPrivate'));
       var args = {
         command : "savetree",
         dataset : Cure.dataset.get('id'),
@@ -269,9 +257,9 @@ NodeCollection = Backbone.Collection.extend({
         comment : Cure.Comment.get("content"),
         previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
         privateflag : Cure.Comment.get('flagPrivate'),
-        testOptions: testOptions,
         pickedAttrs:[]
       };
+      Cure.utils.addTestsetDetails(args);
       $.ajax({
             type : 'POST',
             url : thisURL,

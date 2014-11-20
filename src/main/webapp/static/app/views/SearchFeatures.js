@@ -229,10 +229,6 @@ define([
 						}
 					},
 					source: function( request, response ) {
-						 var testOptions = {
-                 				value: $("input[name='testOptions']:checked").val(),
-                 				percentSplit:  $("input[name='percent-split']").val()
-                 		};
                          var tree = {};
                          if(Cure.PlayerNodeCollection.length>0){
                          	model.set('pickInst', true);
@@ -244,8 +240,8 @@ define([
 	    	        dataset: Cure.dataset.get('id'),
     				treestruct : tree,
     				comment: Cure.Comment.get("content"),
-    				testOptions: testOptions
 	    	      };
+	  					Cure.utils.addTestsetDetails(args);
 	    	      $.ajax({
 	    	          type : 'POST',
 	    	          url : thisView.url,
@@ -364,10 +360,6 @@ define([
 		                            $.map( hits, function( item ) {
 		                              entrezids.push(String(item.entrezgene));
 		                            });
-		                            var testOptions = {
-		                    				value: $("input[name='testOptions']:checked").val(),
-		                    				percentSplit:  $("input[name='percent-split']").val()
-		                    		};
 		                            var tree = {};
 		                            if(Cure.PlayerNodeCollection.length>0){
 		                            	model.set('pickInst', true);
@@ -378,10 +370,11 @@ define([
 		                    				dataset : Cure.dataset.get('id'),
 		                    				treestruct : tree,
 		                    				comment: Cure.Comment.get("content"),
-		                    				testOptions: testOptions,
 		                    				unique_ids: entrezids
 		                    			};
 		                    		
+		                            Cure.utils.addTestsetDetails(args);
+		                            
 		                    		//POST request to server.
 		                    		$.ajax({
 		                    			type : 'POST',
