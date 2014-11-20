@@ -82,6 +82,10 @@ public class Dataset {
 	@OneToMany(mappedBy = "dataset")
 	@JsonBackReference
 	private List<Score> score;
+	
+	@OneToMany(mappedBy = "testset")
+	@JsonBackReference
+	private List<Score> testscore;
 
 	public List<Attribute> getAttributes() {
 		return attributes;

@@ -4,13 +4,14 @@ define([
         //Layouts
         'app/models/Dataset',
         'app/views/layouts/Dataset',
+        'app/views/layouts/appLayout',
         // Utilitites
         'app/utilities/utilities',
         //Tour
         'app/tour/tour',
         'app/tour/tree'
         ],
-        function(Marionette, d3, $, Dataset, datasetLayout, CureUtils, InitTour, TreeTour) {
+        function(Marionette, d3, $, Dataset, datasetLayout, appLayout, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
 	var token = $("meta[name='_csrf']").attr("content");
@@ -162,13 +163,13 @@ define([
 		Cure.TestDataset = new Dataset();
 		Cure.ScoreBoard = new ScoreBoard();
 		
-		Cure.addRegions(options.regions);
-		Cure.appRegion.show(new datasetLayout());
-		
 		Cure.relCoord = $('#PlayerTreeRegionSVG').offset();
 		Cure.instanceData = {};
+		Cure.addRegions(options.regions);
 		
 		if(cure_tree_id!=undefined){
+			Cure.appLayout = new appLayout();
+			Cure.appRegion.show(Cure.appLayout);
 			var args = {
 					command : "get_tree_by_id",
 					dataset : "metabric_with_clinical",
@@ -185,6 +186,20 @@ define([
 				success : function(data){
 					if(data.json_tree){
 						Cure.PlayerNodeCollection.parseTreeinList(data);
+						switch(data.score.testoption){
+							case 0:
+								Cure.TestDataset.set(Cure.dataset.attributes);
+								break;
+							case 1:
+								Cure.TestDataset.set(data.score.testset);
+								break;
+							case 2:
+								Cure.TestDataset.set(Cure.dataset.attributes);
+								Cure.TestDataset.set('split', true);
+								Cure.TestDataset.set('splitPercentage', data.score.testsplit);
+								break;
+						}
+						Cure.TestDataset.set('optionId', data.score.testoption);
 					} else {
 						Cure.utils
 						.showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);
@@ -195,6 +210,8 @@ define([
 					.showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);
 				}
 			});
+		} else {
+			Cure.appRegion.show(new datasetLayout());
 		}
 	});
 	return Cure;

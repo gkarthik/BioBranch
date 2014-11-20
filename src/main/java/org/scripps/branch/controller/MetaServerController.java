@@ -517,6 +517,7 @@ public class MetaServerController {
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
 		Instances train = wekaObj.getOrigTrain();
+		Score newScore = new Score();
 		switch (data.get("testOptions").get("value").asInt()) {
 		case 0:
 			wekaObj.setTrain(train);
@@ -526,6 +527,8 @@ public class MetaServerController {
 			wekaObj.setTrain(train);
 			long testsetid = data.get("testOptions").get("testsetid").asLong();
 			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
+			newScore.setTestoption(1);
+			newScore.setTestset(dataRepo.findById(testsetid));
 			break;
 		case 2:
 			float limitPercent = (data.get("testOptions").get("percentSplit")
@@ -540,6 +543,7 @@ public class MetaServerController {
 			for (int j = 0; j < classLimits.length; j++) {
 				numLimit = limitPercent * classLimits[j].numInstances();
 				for (int i = 0; i < classLimits[j].numInstances(); i++) {
+					//Remove randomize to ensure reproducibility.
 //					if (i == 0) {
 //						classLimits[j].randomize(new Random(1));
 //					}
@@ -554,6 +558,9 @@ public class MetaServerController {
 			}
 			wekaObj.setTrain(newTrain);
 			wekaObj.setTest(newTest);
+			newScore.setTestoption(2);
+			newScore.setTestsplit(data.get("testOptions").get("percentSplit")
+					.asLong());
 			break;
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
@@ -592,7 +599,6 @@ public class MetaServerController {
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
 				treeRepo, customSetRepo, sccRepo);
 		User user = userRepo.findById(data.get("player_id").asLong());
-		Score newScore = new Score();
 		double nov = 0;
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
