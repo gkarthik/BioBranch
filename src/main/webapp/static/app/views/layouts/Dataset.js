@@ -40,13 +40,13 @@ DatasetLayout = Marionette.Layout.extend({
    setTestSet: function(){
 	   switch($("input[name='testOptions']:checked").val()) {
 		case "0":
-			Cure.TestDataset = Cure.dataset;
+			Cure.TestDataset.set(Cure.dataset.attributes);
 			break;
 		case "1":
 			Cure.TestDataset = Cure.TestSets.findWhere({setTest:true});
 			break;
-		case "2": 
-			Cure.TestDataset = Cure.dataset;
+		case "2":
+			Cure.TestDataset.set(Cure.dataset.attributes);
 			Cure.TestDataset.set('split', true);
 			Cure.TestDataset.set('splitPercentage', $("input[name='percent-split']").val());
 			break;

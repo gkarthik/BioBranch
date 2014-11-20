@@ -35,7 +35,8 @@ sidebarLayout = Marionette.Layout.extend({
     	TreeExpWrapper: "#tree-explanation-outerWrapper",
     	displayWrapper: "#displayWrapper",
     	panelBody: ".controls-extra-wrapper",
-    	togglePanelBody: "#sidebar-toggle"
+    	togglePanelBody: "#sidebar-toggle",
+    	testsetEl: "#test-set-label" 
     },
     events:{
     	'click #current-tree-rank': 'showCurrentRank',
@@ -51,6 +52,16 @@ sidebarLayout = Marionette.Layout.extend({
     className: 'panel panel-default',
     initialize: function(){
     	_.bindAll(this,'toggleTreeExp');
+    	this.listenTo(Cure.TestDataset, 'change', this.setTestset);
+    },
+    setTestset: function(){
+    	var html = Cure.TestDataset.get('name')+"<br>";
+    	if(Cure.TestDataset.get('split')){ 
+    		html+="<span><b>Split</b>: "+Cure.TestDataset.get('splitPercentage')+"%</span>";
+		}
+    	console.log(Cure.TestDataset);
+    	console.log(html);
+    	$(this.ui.testsetEl).html(html);
     },
     openFeatureBuilder: function(){
     	Cure.appLayout.FeatureBuilderRegion.close();
@@ -151,6 +162,7 @@ sidebarLayout = Marionette.Layout.extend({
       this.BadgeRegion.show(Cure.BadgeCollectionView);
       this.ConfusionMatrixRegion.show(Cure.CfMatrixView);
       this.RocRegion.show(Cure.RocCurve);
+  		this.setTestset();
     },
     onShow: function(){
     	this.$el.attr('id',"cure-panel");

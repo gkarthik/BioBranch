@@ -21,6 +21,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "tree_score")
 public class Score {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
+	
 	@Column(name = "created", nullable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime created = null;
@@ -29,11 +34,17 @@ public class Score {
 	@JsonManagedReference
 	@JoinColumn(name = "dataset", insertable = true, updatable = true)
 	private Dataset dataset;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonManagedReference
+	@JoinColumn(name = "testset", insertable = true, updatable = true)
+	private Dataset testset;
+	
+	@Column
+	private Float testsplit;
+	
+	@Column(name="testoption", nullable = false, columnDefinition = "int default 0")
+	private int testoption;
 
 	@Column
 	private double novelty;
@@ -103,5 +114,45 @@ public class Score {
 
 	public void setTree(Tree tree) {
 		this.tree = tree;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public DateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	public Dataset getTestset() {
+		return testset;
+	}
+
+	public void setTestset(Dataset testset) {
+		this.testset = testset;
+	}
+
+	public Float getTestsplit() {
+		return testsplit;
+	}
+
+	public void setTestsplit(float testsplit) {
+		this.testsplit = testsplit;
+	}
+
+	public double getTestoption() {
+		return testoption;
+	}
+
+	public void setTestoption(int testoption) {
+		this.testoption = testoption;
 	}
 }

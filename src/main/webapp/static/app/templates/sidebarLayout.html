@@ -35,10 +35,7 @@
 			<b>Training Set</b>: <%= Cure.dataset.get('name') %>
 		</p>
 		<p>
-			<b>Test Set</b>: <span id="test-set-label"><%= Cure.TestDataset.get('name') %></span><br>
-			<% if(Cure.TestDataset.get('split')){ %>
-			<span><b>Split</b>: <%= Cure.TestDataset.get('splitPercentage') %>%</span>
-			<% } %>
+			<b>Test Set</b>: <span id="test-set-label"></span>
 		</p>
 		<!-- 
 	<span id="sidebar-toggle" class="pull-right btn btn-default sidebar-show">

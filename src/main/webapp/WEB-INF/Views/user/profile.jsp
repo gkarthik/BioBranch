@@ -36,6 +36,19 @@
 	<td><center><@= comment @></center></td>
 	<td><svg id="treePreview<@= cid @>"></svg></td>
 	<td><span class="keyValue"><@= score.dataset.name @></span></td>
+	<td><span class="keyValue"><@ 
+		switch(score.testoption){
+			case 0:
+				print(score.dataset.name);
+				break;
+			case 1:
+				print(score.testset.name);
+				break;
+			case 2:
+				print(score.dataset.name+"<br><b>Split</b>: "+score.testsplit+"%");
+				break;
+		}
+	 @></span></td>
 	<td><@ print(created.hourOfDay+":"+created.minuteOfHour+" "+created.monthOfYear+"/"+created.dayOfMonth+"/"+created.yearOfEra) @></td>
 	<td><center><a href="../?treeid=<@= id @>&dataset=<@= score.dataset.id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
 	<@ } else { @>
@@ -47,7 +60,8 @@
 	<th><span class='keyValue'><@= json_tree.novelty @></span></th>
 	<th><center><@= comment @></center></th>
 	<th><center>Preview</center></th>
-	<th>Dataset</th>
+	<th>Training Set</th>
+	<th>Test Set</th>
 	<th>Created</th>
 	<th><center>View Tree</center></td>
 	<@ } @>
