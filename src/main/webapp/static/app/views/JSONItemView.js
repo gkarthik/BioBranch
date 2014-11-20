@@ -209,14 +209,11 @@ JSONItemView = Marionette.ItemView.extend({
 			tree = Cure.PlayerNodeCollection.at(0).toJSON();
 		}
 		Cure.utils.showLoading(null);
-		var testOptions = {
-				value: $("input[name='testOptions']:checked").val(),
-				percentSplit:  $("input[name='percent-split']").val()
-		};
 		var pickedAttrs = [];
 		for(var temp in data.features){
 			pickedAttrs.push(data.features[temp].unique_id);
 		}
+		
 		var args = {
 				command : "scoretree",
 				dataset : Cure.dataset.get('id'),
@@ -224,9 +221,9 @@ JSONItemView = Marionette.ItemView.extend({
 				comment: Cure.Comment.get("content"),
 				player_id : Cure.Player.get('id'),
 				previous_tree_id: Cure.PlayerNodeCollection.prevTreeId,
-				testOptions: testOptions,
 				pickedAttrs: pickedAttrs
 			};
+		Cure.utils.addTestsetDetails(args);
 		
 		//POST request to server.		
 		$.ajax({

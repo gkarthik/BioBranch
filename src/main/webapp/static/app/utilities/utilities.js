@@ -226,6 +226,20 @@ CureUtils.render_network = function() {
 	}
 }
 
+CureUtils.addTestsetDetails = function(args){
+	var testOptions = {
+			value: Cure.TestDataset.get('optionId')
+	};
+	if(Cure.TestDataset.get('split')){
+		testOptions.percentSplit = Cure.TestDataset.get('splitPercentage'); 
+	}
+	if(Cure.TestDataset.get('id')!=Cure.dataset.get('id')){
+		testOptions.testsetid = Cure.TestDataset.get('id'); 
+	}
+	args.testOptions = testOptions;
+	return args;
+}
+
 CureUtils.showAlert = function(message, success){
 	if(success){
 		$("#alertWrapper").removeClass("alert-danger");

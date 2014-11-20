@@ -46,7 +46,7 @@ CommunityTreeCollection = Backbone.Collection.extend({
 		_.bindAll(this,'parseResponse');
 	},
 	lowerLimit: 0,
-	upperLimit: 200,
+	upperLimit: 20,
 	sort_key: 'rank',
 	comparator: function(a, b) {
     a = a.get(this.sort_key);

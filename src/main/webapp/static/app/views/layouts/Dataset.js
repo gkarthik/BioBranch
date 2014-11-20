@@ -51,6 +51,9 @@ DatasetLayout = Marionette.Layout.extend({
 			Cure.TestDataset.set('splitPercentage', $("input[name='percent-split']").val());
 			break;
 	   }
+	   if(Cure.TestDataset){
+		   Cure.TestDataset.set('optionId',$("input[name='testOptions']:checked").val());
+	   }
    },
    showWrapper: function(){
 	   var args = {

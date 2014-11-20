@@ -468,7 +468,7 @@ public class MetaServerController {
 			break;
 		case 1:
 			wekaObj.setTrain(train);
-			long testsetid = data.get("testsetid").asLong();
+			long testsetid = data.get("testOptions").get("testsetid").asLong();
 			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
 			break;
 		case 2:
@@ -496,6 +496,8 @@ public class MetaServerController {
 					}
 				}
 			}
+			LOGGER.debug("Train: "+newTrain.numInstances());
+			LOGGER.debug("Test: "+newTest.numInstances());
 			wekaObj.setTrain(newTrain);
 			wekaObj.setTest(newTest);
 			break;
@@ -538,9 +540,9 @@ public class MetaServerController {
 			for (int j = 0; j < classLimits.length; j++) {
 				numLimit = limitPercent * classLimits[j].numInstances();
 				for (int i = 0; i < classLimits[j].numInstances(); i++) {
-					if (i == 0) {
-						classLimits[j].randomize(new Random(1));
-					}
+//					if (i == 0) {
+//						classLimits[j].randomize(new Random(1));
+//					}
 					if (classLimits[j].instance(i) != null) {
 						if (i <= numLimit) {
 							newTrain.add(classLimits[j].instance(i));
