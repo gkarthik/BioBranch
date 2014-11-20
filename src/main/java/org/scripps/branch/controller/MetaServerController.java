@@ -484,9 +484,9 @@ public class MetaServerController {
 			for (int j = 0; j < classLimits.length; j++) {
 				numLimit = limitPercent * classLimits[j].numInstances();
 				for (int i = 0; i < classLimits[j].numInstances(); i++) {
-					if (i == 0) {
-						classLimits[j].randomize(new Random(1));
-					}
+//					if (i == 0) {
+//						classLimits[j].randomize(new Random(1));
+//					}
 					if (classLimits[j].instance(i) != null) {
 						if (i <= numLimit) {
 							newTrain.add(classLimits[j].instance(i));
