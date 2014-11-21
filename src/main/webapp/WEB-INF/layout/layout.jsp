@@ -50,7 +50,7 @@ footer{
 
 				<ul class="nav navbar-nav navbar-right header-right-menu">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="${pageContext.request.contextPath}/user/login">Login</a></li>
+						<li><a href="${pageContext.request.contextPath}/login">Login</a></li>
 						<li><a href="${pageContext.request.contextPath}/user/register">Register</a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
@@ -94,6 +94,11 @@ footer{
 						</li>
  -->
  					</sec:authorize>
+ 					<li>
+ 						<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+ 							<a href="${pageContext.request.contextPath}/workflow">Workflow</a>
+ 						</p>
+ 					</li>
  					<li>
  						<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
  							<a href="${pageContext.request.contextPath}/contact">Contact</a>

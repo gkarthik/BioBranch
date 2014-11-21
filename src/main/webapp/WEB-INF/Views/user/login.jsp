@@ -21,62 +21,14 @@
 												</div>
 											</c:if>
 		<div>
-			<section>
+			<div class="col-md-9">
 				<center>
-					<img alt="branch-logo" src="static/img/logo.png">
+					<img alt="branch-logo" class="img-responsive" src="static/img/logo.png">
 				</center>
-			</section>
-			<div class="col-md-12">
-			<h3 class="about">Decision Trees</h3>
+				<h3 class="about">Decision Trees</h3>
 					<p id="about">
 						Decision trees help visualize a sequence of rules in a hierarchical fashion.  Rules can encapsulate *hypotheses that can be tested* with data.  They can also be used to make *predictions*.  
 					</p>
-			<h3 class="about">Examples</h3>		
-			<div id="collection-wrapper">
-				<div id="collection-container"></div>
-			</div>
-			</div>
-			<div id="column-content" class="col-md-9">
-				<div id="sections" class="section">
-					<h3 class="background">TOOL: "BRANCH"</h3>
-					<div id="background">
-						<ul class="unordered">
-							<li>Allows you to incrementally construct a decision tree</li>
-							<li>At every stage, provides feedback about the accuracy of the tree based on its agreement with known examples from a training dataset.</li>
-							<li>Allows you to evaluate the tree on examples from a separate test data set</li>
-							<li>
-								Provides access to public datasets related to:
-								<ol>
-									<li>breast cancer progression</li>
-									<li>kidney transplant rejection</li>
-									<li>HIV tropism</li>
-								</ol>
-								....coming soon - your dataset!
-							</li>
-						</ul>
-					</div>
-
-					<h3 class="contact">Contact</h3>
-					<div id="contact">
-						<p>Please feel free to get in touch with us via email,
-							twitter, messenger pigeon etc. See details on <a href="${pageContext.request.contextPath}/contact">Contact Page</a>.
-					</div>
-					<!--
-            <h3 class="faq">FAQ</h3>
-            <div id="faq" style="display: none;">
-              <ol>
-                <li><h4>Who can play?</h4>
-                  <p>Anyone is welcome to play.  The more you know about biology and disease at the level of gene function, the better you are likely to do, but you can also learn as you go.  The game provides a lot of information about the genes as well as links off to related Web resources.  We hope that anyone who plays will learn something about gene function.</p>
-                </li>
-                <li><h4>How do you evaluate the quality of the data provided by game players?</h4>
-                  <p>The predictors generated using The Cure data are evaluated for accuracy on independent test datasets - just like any other predictor inferred by experts or by statistics would be.
-              By testing on real data, we can tell the good players apart from those that are guessing randomly.  Since each player action in the game is associated with their account, it is then very easy to filter out data that is not useful.  
-              This approach, while it may seem strange for a scientific project, follows the &lsquo;publish then filter&rsquo; approach that has made the Web so successful.  We hope that it encourages many people to share their time and their intelligence with the project.</p>
-              </li>
-              </ol>
-              </div>
-			-->
-				</div>
 			</div>
 			<div class="col-md-3">
 
@@ -143,13 +95,6 @@
 
 									<div>
 										<div>
-											<!-- 
-									<div class="panel-heading">
-										<h2>
-											<spring:message code="label.social.sign.in.title" />
-										</h2>
-									</div>
-									 -->
 											<div>
 												<div class="social-button-row" style="display: none;">
 													<a href="<c:url value="/auth/facebook"/>"><button
@@ -165,12 +110,8 @@
 															<i class="icon-twitter"></i>
 															<spring:message code="label.twitter.sign.in.button" />
 														</button>
-
-
 													</a>
 												</div>
-
-
 												<div class="social-button-row" style="display: none;">
 
 													<%
@@ -230,16 +171,57 @@
 										<spring:message code="text.login.page.authenticated.user.help" />
 									</p>
 								</sec:authorize>
-
-
 							</div>
-
 						</div>
-
-
-
-
 					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+			<h3 class="about">Examples</h3>		
+			<div id="collection-wrapper">
+				<div id="collection-container"></div>
+			</div>
+			</div>
+			<div id="column-content" class="col-md-9">
+				<div id="sections" class="section">
+					<h3 class="background">TOOL: "BRANCH"</h3>
+					<div id="background">
+						<ul class="unordered">
+							<li>Allows you to incrementally construct a decision tree</li>
+							<li>At every stage, provides feedback about the accuracy of the tree based on its agreement with known examples from a training dataset.</li>
+							<li>Allows you to evaluate the tree on examples from a separate test data set</li>
+							<li>
+								Provides access to public datasets related to:
+								<ol>
+									<li>breast cancer progression</li>
+									<li>kidney transplant rejection</li>
+									<li>HIV tropism</li>
+								</ol>
+								....coming soon - your dataset!
+							</li>
+						</ul>
+					</div>
+
+					<h3 class="contact">Contact</h3>
+					<div id="contact">
+						<p>Please feel free to get in touch with us via email,
+							twitter, messenger pigeon etc. See details on <a href="${pageContext.request.contextPath}/contact">Contact Page</a>.
+					</div>
+					<!--
+            <h3 class="faq">FAQ</h3>
+            <div id="faq" style="display: none;">
+              <ol>
+                <li><h4>Who can play?</h4>
+                  <p>Anyone is welcome to play.  The more you know about biology and disease at the level of gene function, the better you are likely to do, but you can also learn as you go.  The game provides a lot of information about the genes as well as links off to related Web resources.  We hope that anyone who plays will learn something about gene function.</p>
+                </li>
+                <li><h4>How do you evaluate the quality of the data provided by game players?</h4>
+                  <p>The predictors generated using The Cure data are evaluated for accuracy on independent test datasets - just like any other predictor inferred by experts or by statistics would be.
+              By testing on real data, we can tell the good players apart from those that are guessing randomly.  Since each player action in the game is associated with their account, it is then very easy to filter out data that is not useful.  
+              This approach, while it may seem strange for a scientific project, follows the &lsquo;publish then filter&rsquo; approach that has made the Web so successful.  We hope that it encourages many people to share their time and their intelligence with the project.</p>
+              </li>
+              </ol>
+              </div>
+			-->
 				</div>
 			</div>
 		</div>
