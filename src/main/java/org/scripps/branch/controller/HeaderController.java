@@ -22,7 +22,7 @@ public class HeaderController {
 
 	protected static final String VIEW_NAME_PROFILEPAGE = "help";
 
-	@RequestMapping(value = "/features", method = RequestMethod.GET)
+	@RequestMapping(value = "/workflow", method = RequestMethod.GET)
 	public String showHomePage(WebRequest request, Model model) {
 		return VIEW_NAME_PROFILEPAGE;
 	}
