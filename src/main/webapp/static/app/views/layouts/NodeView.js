@@ -46,7 +46,8 @@ NodeView = Marionette.Layout.extend({
 		'click .chart': 'showNodeDetails',
 		'click .showDistribution': 'getDistributionData'
 	},
-	initialize : function() {
+	initialize : function(args) {
+		this.condensed = args.condensed;
 		_.bindAll(this, 'remove', 'addChildren', 'showSummary', 'renderPlaceholder');
 		this.listenTo(this.model, 'change:x', this.setWidthandPos);
 		this.listenTo(this.model, 'change:y', this.setWidthandPos);
@@ -58,6 +59,18 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(this.model, 'change:name', this.render);
 		this.listenTo(this.model.get('options'), 'change:accLimit', this.setNodeClass);
 		this.listenTo(this.model, 'change:highlight', this.setHighlight);
+		this.listenTo(Cure.vent, 'condensed:true', function(){
+			this.condensed = true;
+			this.chartRegion.close();
+			Cure.utils.updatepositions(Cure.PlayerNodeCollection);
+			Cure.utils.render_network();
+		});
+		this.listenTo(Cure.vent, 'condensed:false', function(){
+			Cure.utils.updatepositions(Cure.PlayerNodeCollection);
+			Cure.utils.render_network();
+			this.condensed = false;
+			this.showOptionsView();
+		});
 		
 		var options = this.model.get('options');
 		options.set('cid',this.cid);
@@ -309,11 +322,14 @@ NodeView = Marionette.Layout.extend({
 		this.addGeneRegion.show(ShowGeneInfoWidget);
 	},
 	onRender: function(){
-		if(this.model.get('options').get('kind')=="split_node" || this.model.get('options').get('kind')=="leaf_node"){
+		this.showOptionsView();
+		this.renderPlaceholder();	
+	},
+	showOptionsView: function(){
+		if(!this.condensed && (this.model.get('options').get('kind')=="split_node" || this.model.get('options').get('kind')=="leaf_node")){
 			var newOptionsView = new optionsView({model: this.model.get('options')});
 			this.chartRegion.show(newOptionsView);
 		}
-		this.renderPlaceholder();	
 	},
 	onShow: function(){
 		this.render();//To draw chart for final element.

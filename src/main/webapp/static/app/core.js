@@ -1,6 +1,6 @@
 define([
         // Libraries
-        'marionette', 'd3', 'jquery',
+        'marionette', 'd3', 'jquery', 'backbone',
         //Layouts
         'app/models/Dataset',
         'app/views/layouts/Dataset',
@@ -11,7 +11,7 @@ define([
         'app/tour/tour',
         'app/tour/tree'
         ],
-        function(Marionette, d3, $, Dataset, datasetLayout, appLayout, CureUtils, InitTour, TreeTour) {
+        function(Marionette, d3, $, Backbone, Dataset, datasetLayout, appLayout, CureUtils, InitTour, TreeTour) {
 
 	//CSRF
 	var token = $("meta[name='_csrf']").attr("content");
@@ -35,6 +35,7 @@ define([
 		Cure.scoreWeights = options.scoreWeights;
 		Cure.startTour = options.startTour;
 		Cure.sidebarHeight = options.sidebarHeight;
+		Cure.vent = _.extend({}, Backbone.Events);
 		
 		//Dataset
 		Cure.dataset = new Dataset();

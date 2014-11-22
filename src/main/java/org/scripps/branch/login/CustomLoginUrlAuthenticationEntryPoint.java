@@ -30,7 +30,6 @@ public class CustomLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticati
 	    if(request.getQueryString()!=null){
 	    	referrer+="?"+request.getQueryString();
 	    }
-		LOGGER.debug(referrer);
 		if (referrer != null && !referrer.contains("login") && !referrer.contains("datasets")) {
 			request.getSession().setAttribute("url_prior_login", referrer);
 		}

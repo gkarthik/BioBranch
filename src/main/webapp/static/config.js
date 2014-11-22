@@ -7,7 +7,7 @@ require.config({
         backboneRelational : 'lib/backbone-relational',
         backboneDeepModel: 'lib/deep-model.min',
         marionette : 'lib/marionette.backbone.min',
-        csb: "http://yako.io/jsapi/csb",
+        //csb: ""/*"http://yako.io/jsapi/csb"*/,
 
         // jQuery
         jquery : 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min',
@@ -85,7 +85,7 @@ require.config({
     });
 
 // Starting the app
-require([ "csb", "app/core" ], function(csb, Cure) {
+require([ /*"csb",*/ "app/core" ], function(/*csb, */Cure) {
 	Cure.start({
 	  "height" : 300,
 	  "width" : window.innerWidth - 365,
@@ -104,42 +104,43 @@ require([ "csb", "app/core" ], function(csb, Cure) {
 	  	size: 750
 	  }
 	});
-	if(_csb){
-	  if(csb.inSession()){
-	  	console.log("In Session!");
-	  	csb.getUserInfo(function(err, res) {
-	  		 if(!err) {
-	  		  console.log("@collection info test", res);
-	  		 }
-	  	});
-	  	csb.getUserInfo(function(err, res) {
-	  		 if(!err && res.user_token!="Guest") {
-	  			 var args = {
-		  					command : "user_ref_login",		  					
-		  					token: 	res.userToken
-		  				};
-		  				//POST request to server.		
-		  				$.ajax({
-		  					type : 'POST',
-		  					url : '/cure/SocialServer',
-		  					data : JSON.stringify(args),
-		  					dataType : 'json',
-		  					contentType : "application/json; charset=utf-8",
-		  					success : function(data){
-		  						if(data.success==true){
-		  							Cure.Player.set("username",data.player_name);
-			  						Cure.Player.set("id",data.player_id);	
-		  						} else {
-		  							Cure.utils
-		  					    .showAlert("<strong>Error!</strong><br>"+data.message, 0);
-		  						}
-		  					},
-		  					error : function(error){
-		  						console.log(error);
-		  					}
-		  				});
-	  		 }
-	  	});
-	  }
-	}
+	//CSB Connection with Yako
+//	if(_csb){
+//	  if(csb.inSession()){
+//	  	console.log("In Session!");
+//	  	csb.getUserInfo(function(err, res) {
+//	  		 if(!err) {
+//	  		  console.log("@collection info test", res);
+//	  		 }
+//	  	});
+//	  	csb.getUserInfo(function(err, res) {
+//	  		 if(!err && res.user_token!="Guest") {
+//	  			 var args = {
+//		  					command : "user_ref_login",		  					
+//		  					token: 	res.userToken
+//		  				};
+//		  				//POST request to server.		
+//		  				$.ajax({
+//		  					type : 'POST',
+//		  					url : '/cure/SocialServer',
+//		  					data : JSON.stringify(args),
+//		  					dataType : 'json',
+//		  					contentType : "application/json; charset=utf-8",
+//		  					success : function(data){
+//		  						if(data.success==true){
+//		  							Cure.Player.set("username",data.player_name);
+//			  						Cure.Player.set("id",data.player_id);	
+//		  						} else {
+//		  							Cure.utils
+//		  					    .showAlert("<strong>Error!</strong><br>"+data.message, 0);
+//		  						}
+//		  					},
+//		  					error : function(error){
+//		  						console.log(error);
+//		  					}
+//		  				});
+//	  		 }
+//	  	});
+//	  }
+//	}
 });
