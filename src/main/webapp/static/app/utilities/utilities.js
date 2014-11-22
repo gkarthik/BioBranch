@@ -38,6 +38,10 @@ CureUtils.prettyPrint = function(json) {
 // -- Function to get positions from d3 and update the attributes of the NodeCollection.
 //
 CureUtils.updatepositions = function(NodeCollection) {
+	var depth = {maj: 200, min: 100};
+	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
+		depth = {maj: 100, min: 100}; 
+	}
 	var Collection = [];
 	if (NodeCollection.toJSON()[0]) {
 		Collection = NodeCollection.toJSON()[0];
@@ -51,9 +55,9 @@ CureUtils.updatepositions = function(NodeCollection) {
 			d.y = 0;
 			for(i=1;i<=d.depth;i++){
 				if(i%2!=0){
-					depthDiff = 200;
+					depthDiff = depth.maj;
 				} else {
-					depthDiff = 100;
+					depthDiff = depth.min;
 				}
 				d.y += depthDiff;
 				if (d.y > maxDepth) {
@@ -99,6 +103,11 @@ CureUtils.delete_all_children = function(seednode) {
 // -- Render d3 Network
 //
 CureUtils.render_network = function() {
+	var depth = { split: 107, leaf: 34, depthDiff: 200};
+	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
+		depth = { split: 0, leaf: 34, depthDiff: 100}; 
+	}
+	console.log(depth);
 	var dataset = Cure.PlayerNodeCollection.at(0) ? Cure.PlayerNodeCollection.at(0).toJSON() : undefined;
 	if (dataset) {
 		var binY = d3.scale.linear().domain([ 0, dataset.options.bin_size ])
@@ -125,14 +134,14 @@ CureUtils.render_network = function() {
 	if (dataset) {
 		SVG = Cure.PlayerSvg;
 		var nodes = Cure.cluster.nodes(dataset), links = Cure.cluster.links(nodes);
-		var depthDiff = 180;
+		var depthDiff = 0;
 		nodes.forEach(function(d) {
 			d.y = 0;
 			for(i=1;i<=d.depth;i++){
 				if(i%2!=0){
-					depthDiff = 200;
+					depthDiff = depth.depthDiff;
 				} else {
-					depthDiff = 100;
+					depthDiff = depth.depthDiff/2;
 				}
 				d.y += depthDiff;
 			}
@@ -169,9 +178,9 @@ CureUtils.render_network = function() {
 				count = allLinks[temp].linkNumber;
 			}
 			if(allLinks[temp].target.options.kind == "split_value"){
-				allLinks[temp].source.y = parseFloat(allLinks[temp].source.y + 107);//For Split Nodes 
+				allLinks[temp].source.y = parseFloat(allLinks[temp].source.y + depth.split);//For Split Nodes 
 			} else if(allLinks[temp].target.options.kind == "leaf_node") {
-				allLinks[temp].target.y = parseFloat(allLinks[temp].target.y - 34);//For Leaf Nodes
+				allLinks[temp].target.y = parseFloat(allLinks[temp].target.y - depth.leaf);//For Leaf Nodes
 			}
 			allLinks[temp].source.x = parseFloat(divLeft + allLinks[temp].source.x);
 			allLinks[temp].target.x = parseFloat(divLeft + allLinks[temp].target.x);
