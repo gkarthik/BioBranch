@@ -62,12 +62,8 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(Cure.vent, 'condensed:true', function(){
 			this.condensed = true;
 			this.chartRegion.close();
-			Cure.utils.updatepositions(Cure.PlayerNodeCollection);
-			Cure.utils.render_network();
 		});
 		this.listenTo(Cure.vent, 'condensed:false', function(){
-			Cure.utils.updatepositions(Cure.PlayerNodeCollection);
-			Cure.utils.render_network();
 			this.condensed = false;
 			this.showOptionsView();
 		});

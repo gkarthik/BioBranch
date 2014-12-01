@@ -18,6 +18,8 @@ NodeCollectionView = Marionette.CollectionView.extend({
 		} else {
 			Cure.vent.trigger("condensed:false");
 		}
+		Cure.utils.updatepositions(Cure.PlayerNodeCollection);
+		Cure.utils.render_network();
 	},
 	itemViewOptions : function () { return { condensed: this.condensed } },
 	initialize : function() {
