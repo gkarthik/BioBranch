@@ -178,14 +178,13 @@ NodeView = Marionette.Layout.extend({
 	},
 	setWidthandPos: function(){
 	//Render the positions of each node as obtained from d3.
-		var numNodes = Cure.utils.getNumNodesatDepth(Cure.PlayerNodeCollection.models[0], Cure.utils.getDepth(this.model));
+		var numNodes = Cure.utils.getMaxNodesInLevel(Cure.PlayerNodeCollection.at(0));
 		
 		if(numNodes * 100 >= Cure.width-100){//TODO: find way to get width of node dynamically.
 			this.$el.addClass('shrink_'+this.model.get('options').get('kind'));
 			this.$el.css({
 				width: (Cure.width - 10*numNodes) /numNodes,//TODO: account for border-width and padding programmatically.	
 				height: 'auto',
-				'font-size': '0.5vw',
 				'min-width': '0'
 			});
 		} else {
@@ -215,7 +214,8 @@ NodeView = Marionette.Layout.extend({
 		var width = this.$el.outerWidth();
 		var styleObject = {
 				"left": (this.model.get('x') - ((width) / 2)) +"px",
-				"top": (this.model.get('y')+71) +"px"
+				"top": (this.model.get('y')+71) +"px",
+				'font-size': ((width/100)*13)+"px",
 			};
 		this.$el.css(styleObject);
 		this.model.get('options').set("viewWidth", width);
@@ -318,7 +318,9 @@ NodeView = Marionette.Layout.extend({
 		this.addGeneRegion.show(ShowGeneInfoWidget);
 	},
 	onRender: function(){
-		this.showOptionsView();
+		if((this.model.get('options').get("viewWidth")-24)/10 > 0.5){
+			this.showOptionsView();
+		}
 		this.renderPlaceholder();	
 	},
 	showOptionsView: function(){

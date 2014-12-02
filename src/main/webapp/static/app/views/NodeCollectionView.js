@@ -11,8 +11,12 @@ NodeCollectionView = Marionette.CollectionView.extend({
 	itemView : NodeView,
 	emptyView : emptyLayout,
 	condensed: false,
-	setCondensed: function(val){
+	setCondensed: function(val, args){
 		this.condensed = val;
+		var silent = args.silent || false;
+		if(!silent){
+			Cure.vent.trigger("condensed:changed");
+		}
 		if(this.condensed){
 			Cure.vent.trigger("condensed:true");
 		} else {

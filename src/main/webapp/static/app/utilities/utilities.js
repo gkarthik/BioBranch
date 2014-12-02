@@ -39,9 +39,14 @@ CureUtils.prettyPrint = function(json) {
 //
 CureUtils.updatepositions = function(NodeCollection) {
 	var depth = {maj: 200, min: 100};
-	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
-		depth = {maj: 100, min: 100}; 
+	if(Cure.PlayerNodeCollection.length>0){
+		depth.maj = Cure.PlayerNodeCollectionView.children.findByIndex(0).$el.outerHeight()+60;
+		depth.min = depth.maj/2;
 	}
+//	var depth = {maj: 200, min: 100};
+//	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
+//		depth = {maj: 100, min: 100}; 
+//	}
 	var Collection = [];
 	if (NodeCollection.toJSON()[0]) {
 		Collection = NodeCollection.toJSON()[0];
@@ -349,6 +354,31 @@ CureUtils.getDepth = function(node){
 		givenDepth++;
 	}
 	return givenDepth;
+}
+
+CureUtils.getMaxDepth = function(node){
+	var depth = CureUtils.getDepth(node),
+		d = 0;
+	if(node.get('children')){
+		for(var i=0;i < node.get('children').length; i++){
+			d = CureUtils.getMaxDepth(node.get('children').at(i))
+			if(depth < d){
+				depth = d;
+			}
+		}
+	}
+	return depth;
+}
+
+CureUtils.getMaxNodesInLevel = function(root){
+	var m = 0,n;
+	for(var i=0;i<CureUtils.getMaxDepth(root);i++){
+		n = Cure.utils.getNumNodesatDepth(root, i);
+		if(n>m){
+			m=n;
+		}
+	}
+	return m;
 }
 
 CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, nodeName, predictedClass){

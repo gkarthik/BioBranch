@@ -148,13 +148,13 @@ define([
 		Cure.duration = 500;
 		Cure.cluster = d3.layout.tree().size([ (Cure.width-10), "auto" ])
 		.separation(function(a, b) {
-			try {
-				if (a.children.length > 2) {
-					return a.children.length;
-				}
-			} catch (e) {
-
-			}
+//			try {
+//				if (a.children.length > 2) {
+//					return a.children.length;
+//				}
+//			} catch (e) {
+//
+//			}
 			return (a.parent == b.parent) ? 1 : 2;
 		});
 		Cure.diagonal = d3.svg.diagonal().projection(function(d) {
