@@ -509,6 +509,10 @@ display: block;
 	
 }
 
+.condensed-node{
+	padding: 0px;
+}
+
 .link {
   fill: none;
   stroke: #ccc;
