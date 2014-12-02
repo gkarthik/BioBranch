@@ -15,18 +15,32 @@ ZoomView = Marionette.ItemView.extend({
 		this.listenTo(this.model,'change', this.render);
 		this.listenTo(Cure.PlayerNodeCollection,'change', this.render);
 		this.listenTo(Cure.PlayerNodeCollection,'remove', this.render);
+		this.listenTo(Cure.vent, 'condensed:changed', this.render);
 	},
 	ui: {
 		'fitToScreen':'#toggle-fittoscreen',
 		'zoomOut': '.zoomout',
-		'zoomIn': '.zoomin'
+		'zoomIn': '.zoomin',
+		'setViz': '.setViz'
 	},
 	events:{
 		'click #toggle-fittoscreen': 'clickFitToScreen',
 		'click .zoomin': 'zoomIn',
 		'click .zoomout': 'zoomOut',
 		'click .expand-desc': 'expandDesc',
-		'click .reduce-desc': 'reduceDesc'
+		'click .reduce-desc': 'reduceDesc',
+		'change .setViz': 'setViz',
+	},
+	setViz: function(e){
+		console.log($(this.ui.setViz).val());
+		switch($(this.ui.setViz).val()){
+			case "0":
+				Cure.PlayerNodeCollectionView.setCondensed(false, {silent: true});
+				break;
+			case "1":
+				Cure.PlayerNodeCollectionView.setCondensed(true, {silent: true});
+				break;
+		}
 	},
 	expandDesc: function(){
 		this.model.set('expandDesc',true);

@@ -5,6 +5,14 @@
           				<input id="toggle-fittoscreen" type="checkbox" value="true" <% if(fitToScreen){ print("checked");} %>> Fit To Screen
         			</label>
       			</div>
+      			<div class="viz-wrapper">
+      				<h4>Visualization</h4>
+      					<select class="setViz">
+						  <option value="0" default>Standard</option>
+						  <option value="1">Condensed</option>
+						</select>
+      			</div>
+      			
       			<% if(Cure.PlayerNodeCollection.length>0){
       				if(badge_desc==null){
       					if(expandDesc){
