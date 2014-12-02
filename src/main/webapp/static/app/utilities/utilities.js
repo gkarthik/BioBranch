@@ -112,7 +112,6 @@ CureUtils.render_network = function() {
 	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
 		depth = { split: 0, leaf: 34, depthDiff: 100}; 
 	}
-	console.log(depth);
 	var dataset = Cure.PlayerNodeCollection.at(0) ? Cure.PlayerNodeCollection.at(0).toJSON() : undefined;
 	if (dataset) {
 		var binY = d3.scale.linear().domain([ 0, dataset.options.bin_size ])

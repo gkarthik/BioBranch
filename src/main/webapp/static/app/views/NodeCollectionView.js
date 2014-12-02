@@ -27,7 +27,15 @@ NodeCollectionView = Marionette.CollectionView.extend({
 	},
 	itemViewOptions : function () { return { condensed: this.condensed } },
 	initialize : function() {
-		
+		var _this = this;
+		$(window).resize(function(){
+			Cure.width = window.innerWidth - 365;
+			Cure.PlayerSvgWrapper.attr("width", Cure.width);
+			Cure.cluster.size([ (Cure.width-10), "auto" ]);
+			Cure.vent.trigger("window:resized");
+			Cure.utils.updatepositions(Cure.PlayerNodeCollection);
+			Cure.utils.render_network();
+		});
 	}
 });
 
