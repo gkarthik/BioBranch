@@ -102,10 +102,10 @@ appLayout = Marionette.Layout.extend({
 				}
 			}
 		});
-		Cure.PlayerSvg = d3.select("#PlayerTreeRegionSVG").attr("width",
-				Cure.width).attr("height", Cure.height).call(zoom).append(
-				"svg:g").attr("transform", "translate(0,0)").attr("class",
-				"dragSvgGroup");
+		Cure.PlayerSvgWrapper = d3.select("#PlayerTreeRegionSVG");
+		Cure.PlayerSvg = d3.select("#PlayerTreeRegionSVG").attr("width", Cure.width)
+			.attr("height", Cure.height).call(zoom).append("svg:g")
+			.attr("transform", "translate(0,0)").attr("class", "dragSvgGroup");
     	Cure.PlayerNodeCollection = new NodeCollection();
 		Cure.TreeBranchCollection = new TreeBranchCollection();
 		Cure.CollaboratorCollection = new CollaboratorCollection();

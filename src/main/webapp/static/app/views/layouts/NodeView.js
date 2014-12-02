@@ -57,6 +57,7 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(this.model, 'change:showPickInst',this.showPickInst);
 		this.listenTo(this.model.get('options'), 'change:kind', this.render);
 		this.listenTo(this.model, 'change:name', this.render);
+		this.listenTo(this.model, 'window:resized', this.render);
 		this.listenTo(this.model.get('options'), 'change:accLimit', this.setNodeClass);
 		this.listenTo(this.model, 'change:highlight', this.setHighlight);
 		this.listenTo(Cure.vent, 'condensed:true', function(){
@@ -215,7 +216,7 @@ NodeView = Marionette.Layout.extend({
 		var styleObject = {
 				"left": (this.model.get('x') - ((width) / 2)) +"px",
 				"top": (this.model.get('y')+71) +"px",
-				'font-size': ((width/100)*13)+"px",
+				'font-size': ((width/100)*16)+"px",
 			};
 		this.$el.css(styleObject);
 		this.model.get('options').set("viewWidth", width);
