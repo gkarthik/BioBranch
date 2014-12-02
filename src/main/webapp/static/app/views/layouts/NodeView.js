@@ -48,6 +48,7 @@ NodeView = Marionette.Layout.extend({
 	},
 	initialize : function(args) {
 		this.condensed = args.condensed;
+		var _this = this;
 		_.bindAll(this, 'remove', 'addChildren', 'showSummary', 'renderPlaceholder');
 		this.listenTo(this.model, 'change:x', this.setWidthandPos);
 		this.listenTo(this.model, 'change:y', this.setWidthandPos);
@@ -61,29 +62,30 @@ NodeView = Marionette.Layout.extend({
 		this.listenTo(this.model.get('options'), 'change:accLimit', this.setNodeClass);
 		this.listenTo(this.model, 'change:highlight', this.setHighlight);
 		this.listenTo(Cure.vent, 'condensed:true', function(){
-			this.condensed = true;
-			this.chartRegion.close();
+			_this.condensed = true;
+			_this.$el.addClass("condensed-node");
+			_this.chartRegion.close();
 		});
 		this.listenTo(Cure.vent, 'condensed:false', function(){
-			this.condensed = false;
-			this.showOptionsView();
+			_this.condensed = false;
+			_this.$el.removeClass("condensed-node");
+			_this.showOptionsView();
 		});
 		
 		var options = this.model.get('options');
 		options.set('cid',this.cid);
 		
 		//Mouse close events
-		var thisView = this;
 		 $(document).on("mouseup",
         function(e) {
           classToclose = $('.distribution-chart-wrapper');
           if (!classToclose.is(e.target)
               && classToclose.has(e.target).length == 0) {
-          	if (thisView.distributionChartRegion && thisView.distributionChartRegion.currentView) {
-          		var el = "."+thisView.distributionChartRegion.currentView.className+" .distribution-chart-wrapper";
+          	if (_this.distributionChartRegion && _this.distributionChartRegion.currentView) {
+          		var el = "."+_this.distributionChartRegion.currentView.className+" .distribution-chart-wrapper";
           		if(!$(el).hasClass("ui-draggable-dragging")){
-            		thisView.distributionChartRegion.close();
-            		thisView.$el.css({'z-index':'3'});
+            		_this.distributionChartRegion.close();
+            		_this.$el.css({'z-index':'3'});
             		//Replace IDs with variables.
             		$("#PlayerTreeRegionTree").css({'z-index':4});
           		}
@@ -96,10 +98,10 @@ NodeView = Marionette.Layout.extend({
                   && classToclose.has(e.target).length == 0
                   && !geneList.is(e.target)
                   && geneList.has(e.target).length == 0) {
-        	  if (thisView.pickInstRegion && thisView.pickInstRegion.currentView) {
-            		var el = "."+thisView.pickInstRegion.currentView.className+" .pick-instance-wrapper";
-              		thisView.pickInstRegion.close();
-              		thisView.$el.css({'z-index':'3'});
+        	  if (_this.pickInstRegion && _this.pickInstRegion.currentView) {
+            		var el = "."+_this.pickInstRegion.currentView.className+" .pick-instance-wrapper";
+              		_this.pickInstRegion.close();
+              		_this.$el.css({'z-index':'3'});
               		//Replace IDs with variables.
               		$("#PlayerTreeRegionTree").css({'z-index':4});
               }
@@ -111,8 +113,8 @@ NodeView = Marionette.Layout.extend({
               && !geneList.is(e.target)
               && geneList.has(e.target).length == 0) {
             $("input.mygene_query_target").val("");
-            if (thisView.addGeneRegion) {
-            	thisView.addGeneRegion.close();
+            if (_this.addGeneRegion) {
+            	_this.addGeneRegion.close();
             }
           }
       });
@@ -319,6 +321,7 @@ NodeView = Marionette.Layout.extend({
 		this.addGeneRegion.show(ShowGeneInfoWidget);
 	},
 	onRender: function(){
+		this.$el.removeClass("condensed-node");
 		if((this.model.get('options').get("viewWidth")-24)/10 > 0.5){
 			this.showOptionsView();
 		}
@@ -328,6 +331,8 @@ NodeView = Marionette.Layout.extend({
 		if(!this.condensed && (this.model.get('options').get('kind')=="split_node" || this.model.get('options').get('kind')=="leaf_node")){
 			var newOptionsView = new optionsView({model: this.model.get('options')});
 			this.chartRegion.show(newOptionsView);
+		} else if(this.condensed) {
+			this.$el.addClass("condensed-node");
 		}
 	},
 	onShow: function(){

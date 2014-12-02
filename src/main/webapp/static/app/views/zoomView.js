@@ -16,6 +16,7 @@ ZoomView = Marionette.ItemView.extend({
 		this.listenTo(Cure.PlayerNodeCollection,'change', this.render);
 		this.listenTo(Cure.PlayerNodeCollection,'remove', this.render);
 		this.listenTo(Cure.vent, 'condensed:changed', this.render);
+		this.listenTo(Cure.vent, 'window:resized', this.clickFitToScreen);
 	},
 	ui: {
 		'fitToScreen':'#toggle-fittoscreen',
@@ -32,7 +33,6 @@ ZoomView = Marionette.ItemView.extend({
 		'change .setViz': 'setViz',
 	},
 	setViz: function(e){
-		console.log($(this.ui.setViz).val());
 		switch($(this.ui.setViz).val()){
 			case "0":
 				Cure.PlayerNodeCollectionView.setCondensed(false, {silent: true});
