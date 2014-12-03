@@ -6,8 +6,8 @@ define([
 	'text!static/app/templates/ConfusionMatrix.html',
     ], function($, Marionette, CfTmpl) {
 CfMatrixView = Backbone.Marionette.ItemView.extend({
-	tagName: 'table',
-	className: 'table table-bordered table-condensed',
+	tagName: 'div',
+	className: 'table-responsive',
 	template : CfTmpl,
 	initialize : function(){
 		this.model.bind('change', this.render);

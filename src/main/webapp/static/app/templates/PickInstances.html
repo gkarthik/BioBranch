@@ -1,15 +1,15 @@
-<div id="preview-overlay">
-<button type="button" id="preview-close" class="pull-right" data-dismiss="alert" aria-hidden="true">&times;</button>
-</div>
-<div class="pick-instance-wrapper panel panel-default">
-<div class="panel-heading">
-Plot Graph<span><button type="button" class="close pick-instance-close" data-dismiss="alert" aria-hidden="true">&times;</button></span>
-</div>
-<div class="panel-content">
-<span class="row col-md-2">
-<h4>Y Axis</h4>
-<div id="pick-yaxis" style="margin-bottom:40px;"></div>
-<!-- 
+	<div class="pick-instance-wrapper panel panel-default">
+		<div class="panel-heading">
+			Plot Graph<span><button type="button"
+					class="close pick-instance-close" data-dismiss="alert"
+					aria-hidden="true">&times;</button></span>
+		</div>
+		<div class="panel-content">
+		<div class="container-fluid">
+		<div class="row">
+			<span class="col-md-2">
+				<h4>Y Axis</h4>
+				<div id="pick-yaxis" style="margin-bottom: 40px;"></div> <!-- 
 <div class="form-group pull-left choose-attribute-group">
 	<h4>Y Axis : <span class="attribute-label"></span></h4>
  		<label class="label label-default">Choose Genes</label>
@@ -18,36 +18,33 @@ Plot Graph<span><button type="button" class="close pick-instance-close" data-dis
   		<input class="pick_cf_instances" class="query_target" placeholder="Enter Non Gene Feature">
   		 <input type="hidden" class="pick-attribute-uniqueid" id="pick-attribute-uniqueid-one">
   	</div>
--->
-<b>Selection Statistics</b>
-<div id="plotStatsRegion"></div>
-  	<div class="preview-results">
-	<b>Classifier Evaluation(Preview)</b>
-	<table class="table table-condensed">
-		<tr>
-			<td>Accuracy</td>
-			<td><span id="preview-acc"></span></td>
-		</tr>
-	</table>
-<div id="preview-cfmatrix"></div>
-</div>
-  	  	</span>
-<span id="instance-data-chart-wrapper" class="row col-md-10">
-<button class="btn btn-warning chart-functions" id="clear-selection">Clear Selection</button>
-<span class="row">
-<svg id="instance-data-chart"></svg>
-</span>
-<span class="row">
-<div id="pick-instance-draw-controls" class="chart-functions">
-	<button class="btn btn-primary" id="preview-selection">Preview</button>
-	<button class="btn btn-primary" id="build-selection">Build Split</button>
-</div>
-</span>
-</span>
-<span class="row col-md-2" id="pick-instance-xaxis">
-<h4>X Axis</h4>
-<div id="pick-xaxis"></div>
-<!-- 
+--> <b>Selection Statistics</b>
+				<div id="plotStatsRegion"></div>
+				<div class="preview-results">
+					<b>Classifier Evaluation(Preview)</b>
+					<table class="table table-condensed">
+						<tr>
+							<td>Accuracy</td>
+							<td><span id="preview-acc"></span></td>
+						</tr>
+					</table>
+					<div id="preview-cfmatrix"></div>
+				</div>
+			</span> 
+			<span id="instance-data-chart-wrapper" class="col-md-10 row">
+				<button class="btn btn-warning chart-functions" id="clear-selection">Clear Selection</button> 
+				<svg id="instance-data-chart"></svg>
+				<div id="pick-instance-draw-controls" class="chart-functions">
+					<button class="btn btn-primary" id="preview-selection">Preview</button>
+					<button class="btn btn-primary" id="build-selection">Build
+						Split</button>
+				</div>
+			</span> 
+			</div>
+			<div class="row">
+			<span class="col-md-2" id="pick-instance-xaxis">
+				<h4>X Axis</h4>
+				<div id="pick-xaxis"></div> <!-- 
 	<div class="form-group pull-right choose-attribute-group">
 		<h4>X Axis : <span class="attribute-label"></span></h4>
   		<label class="label label-default">Choose Genes</label>
@@ -58,9 +55,11 @@ Plot Graph<span><button type="button" class="close pick-instance-close" data-dis
   		  	  	
   	</div>
   	 -->
-</span>
-<span class="col-md-2 pull-right">
-	<button class="btn btn-primary btn-block" id="get-instances">Plot Graph</button>
-</span>
-</div>
-</div>
+			</span> <span class="col-md-2 pull-right">
+				<button class="btn btn-primary btn-block" id="get-instances">Plot
+					Graph</button>
+			</span>
+			</div>
+		</div>
+		</div>
+	</div>

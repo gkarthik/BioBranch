@@ -10,6 +10,10 @@ html, body{
   height:100%;
 }
 
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
 .overlay-regions{
 	z-index: 4;	
 }
@@ -472,7 +476,7 @@ display: block;
 	border-radius: 15px;
 }
 
-.leaf_node .btn{
+.leaf_node .btn-link{
 	float:none;
 	color: #000;
 }
@@ -881,14 +885,17 @@ margin-top: 5px;
 position: fixed;
 margin-top: 5px;
 margin-left: 5px;
-width: 200px;
 padding-top:2px;
 padding-left: 2px;
 background:#FFF;
 }
 
 .description-wrapper{
-	background:#FFF;
+	padding: 5px;
+	background: none repeat scroll 0% 0% #ECECEC;
+	border-radius: 5px;
+	margin-left: 20px;
+	margin-bottom: 20px;
 }
 
 .description-mini{
@@ -1086,8 +1093,7 @@ text-align:left;
 }
 
 .aimWrapper{
-	color: rgb(255, 102, 153);
-	font-weight:bold;
+	
 }
 
 .aimWrapper h1{
@@ -1095,7 +1101,6 @@ text-align:left;
 }
 
 .aimWrapper p{
-	color: #555;
 	text-align: left;
 	font-size: 1em;
 	font-weight: normal;
