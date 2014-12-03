@@ -876,20 +876,26 @@ float: right;
 margin-top: 5px;
 }
 
-#zoom-controls{
+#zoom-controls-wrapper{
 	z-index: 5;
 position: fixed;
 margin-top: 5px;
 margin-left: 5px;
 width: 200px;
+padding-top:2px;
+padding-left: 2px;
+background:#FFF;
+}
+
+.description-wrapper{
+	background:#FFF;
 }
 
 .description-mini{
 height: 100%;
 overflow: auto;
 color: #000;
-padding: 5px;
-width: 90%;
+padding: 2px;
 }
 
 .branch-nodes-list{

@@ -22,11 +22,12 @@ define([
     'app/views/layouts/sidebarLayout',
     'app/views/layouts/GenePoolLayout',
     'app/views/zoomView', 
+    'app/views/DatasetDescriptionView', 
     'app/views/LoginView',
     'text!static/app/templates/appLayout.html'
     ], function(Marionette, d3, $, NodeCollection,
     		ScoreBoard, TreeBranchCollection, CollaboratorCollection, BadgeCollection, GeneCollection, DatasetCollection, TutorialCollection, Comment, Score, Zoom, Player, CfMatrix, Dataset, JSONCollectionView,
-    		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, LoginView, appLayoutTemplate) {
+    		NodeCollectionView, sidebarLayout, GenePoolLayout, ZoomView, DDescView, LoginView, appLayoutTemplate) {
 appLayout = Marionette.Layout.extend({
     template: appLayoutTemplate,
     regions: {
@@ -42,7 +43,8 @@ appLayout = Marionette.Layout.extend({
 	    "PathwaySearchRegion": "#PathwaySearchRegion",
 	    "pickInstanceRegion": "#pickInstRegion",
 	    "AggNodeRegion":"#AggNodeRegion",
-	    "AttrRankRegion": "#AttrRankRegion"
+	    "AttrRankRegion": "#AttrRankRegion",
+	    "DatasetDescriptionRegion": "#DatasetDescriptionRegion"
     },
     ui: {
       	"PlayerTreeRegion" : "#PlayerTreeRegion",
@@ -136,6 +138,7 @@ appLayout = Marionette.Layout.extend({
 		this.SideBarRegion.show(new sidebarLayout());
 		this.ZoomControlsRegion.show(Cure.ZoomView);
 		this.LoginRegion.show(Cure.LoginView);
+		this.DatasetDescriptionRegion.show(new DDescView());
     }
 });
 return appLayout;

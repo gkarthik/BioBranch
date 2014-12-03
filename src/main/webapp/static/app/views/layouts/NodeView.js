@@ -21,7 +21,8 @@ NodeView = Marionette.Layout.extend({
 		name : ".name",
 		chart : ".chart",
 		collaboratorIcon: ".collaborator-icon",
-		distributionChart: ".distribution-chart"
+		distributionChart: ".distribution-chart",
+		addGeneRegion : ".addgeneinfo"
 	},
 	url: base_url+"MetaServer",
 	template : function(serialized_model) {
@@ -318,6 +319,13 @@ NodeView = Marionette.Layout.extend({
 		var ShowGeneInfoWidget = new AddRootNodeView({
 			'model' : this.model
 		});
+		var mX = -125;
+		if(this.$el.offset().left < 125){
+			mX = 0;
+		} else if(this.$el.offset().left+this.$el.outerWidth() > (Cure.width-50)){
+			mX = -250
+		}
+		this.ui.addGeneRegion.css({'margin-left': mX+'px'});
 		this.addGeneRegion.show(ShowGeneInfoWidget);
 	},
 	onRender: function(){
