@@ -36,7 +36,8 @@ PickInstanceView = Marionette.Layout.extend({
 	regions: {
 		cfMatrixRegion: "#preview-cfmatrix",
 		pickXaxis: "#pick-xaxis",
-		pickYaxis: "#pick-yaxis"
+		pickYaxis: "#pick-yaxis",
+		plotStatsRegion: "#plotStatsRegion"
 	},
 	closeView: function(e){
 		e.preventDefault();
@@ -347,24 +348,34 @@ PickInstanceView = Marionette.Layout.extend({
 	},
 	highlightDataPoints: function(attr, vertices){
 		var c;
-		var classValue = [0,0];
+		var classDist = { "sel": [0,0], "unsel": [0,0]};
 		var el;
 		for(var temp in attr){
 			if(!isNaN(attr[temp][0]) && !isNaN(attr[temp][1])){
 				c = this.pointInPolygon(vertices,attr[temp]);
 				if(c){
 					el = d3.select("#data-point-"+temp);
-					console.log(el.data()[0][2]);
-					classValue[el.data()[0][2]]++;
+					classDist.sel[el.data()[0][2]]++;
 					//el.style("stroke","lightgreen");
+				} else {
+					el = d3.select("#data-point-"+temp);
+					classDist.unsel[el.data()[0][2]]++;
 				}
 			}
 		}
-//		if(classValue[0]>classValue[1]){
-//			return "rgba(255,0,0,0.15)";
-//		} else if (classValue[0]<classValue[1]) {
-//			return "rgba(0,0,255,0.15)";
-//		}
+		var mat = [[0,0], [0,0]];
+		if(classDist.sel[0]>classDist.sel[1]){
+			mat[0][0] = classDist.sel[0];
+			mat[0][1] = classDist.unsel[0];
+			mat[1][1] = classDist.unsel[1];
+			mat[1][0] = classDist.sel[1];
+		} else {
+			mat[1][1] = classDist.sel[1];
+			mat[1][0] = classDist.unsel[1];
+			mat[0][0] = classDist.unsel[0];
+			mat[0][1] = classDist.sel[0];
+		}
+		this.plotStats.setupMatrix(mat);
 		return "rgba(0,0,0,0.15)";
 	},
 	pointInPolygon: function(vertices, testPoint){
@@ -404,10 +415,13 @@ PickInstanceView = Marionette.Layout.extend({
 	onShow: function(){
 		var thisUi = this.ui;
 		this.cfMatrix = new cfMatrix();
+		this.plotStats = new cfMatrix();
 		this.drawChart([[1,2,3,4,5],[1,2,3,4,5]]);
 		this.cfMatrixRegion.show(new cfMatrixView({model: this.cfMatrix}));
-		this.pickXaxis.show(new searchFeature({view: 'pickInst'}));
-		this.pickYaxis.show(new searchFeature({view: 'pickInst'}));
+		this.plotStatsRegion.show(new cfMatrixView({model: this.plotStats}));
+		var model = this.model;
+		this.pickXaxis.show(new searchFeature({view: 'pickInst', model: model}));
+		this.pickYaxis.show(new searchFeature({view: 'pickInst', model: model}));
 	}
 });
 
