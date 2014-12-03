@@ -1,5 +1,6 @@
+<% if(Cure.PlayerNodeCollection.length>0){%>
 <div class="description-wrapper" style="width: <%= Cure.width-150 %>px">
-<% if(Cure.PlayerNodeCollection.length>0){
+<%
       				if(badge_desc==null){
       					if(expandDesc){
       						print('<div class="description-mini"><b>Dataset Description</b>: '+Cure.dataset.get('description')+"<span class='reduce-desc btn-link'>Show Less</span></div>");	
@@ -9,6 +10,6 @@
       				} else {
       					print('<div class="description-mini"><b>'+badge_desc+"</b></div>");
       				}
-      			}
       			 %>
 </div>
+<% } %>

@@ -12,7 +12,6 @@ define([
 	selectCustomCLassifier: function(event, ui){},
 	selectCustomFeature: function(event, ui){},
 	selectCf: function(event, ui) {
-		console.log(event);
 		if(ui.item.short_name != undefined){//To ensure "no gene name has been selected" is not accepted.
 			$("#SpeechBubble").remove();
 			$(this.ui.cf_query).parent().parent().find(".pick-attribute-uniqueid").val(ui.item.unique_id);
@@ -24,7 +23,6 @@ define([
 		return false;
 	},
 	selectGene: function(event, ui) {
-		console.log(event);
 		if(ui.item.name != undefined){//To ensure "no gene name has been selected" is not accepted.
 			$("#SpeechBubble").remove();
 			$(this.ui.gene_query).parent().parent().find(".pick-attribute-uniqueid").val(ui.item.entrezgene);
