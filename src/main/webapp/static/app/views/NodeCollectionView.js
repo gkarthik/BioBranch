@@ -30,6 +30,7 @@ NodeCollectionView = Marionette.CollectionView.extend({
 		var _this = this;
 		$(window).resize(function(){
 			Cure.width = window.innerWidth - 365;
+			Cure.appLayout.ui.PlayerTreeRegion.width(Cure.width);
 			Cure.PlayerSvgWrapper.attr("width", Cure.width);
 			Cure.cluster.size([ (Cure.width-10), "auto" ]);
 			Cure.vent.trigger("window:resized");

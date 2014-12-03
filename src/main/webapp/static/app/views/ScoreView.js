@@ -11,6 +11,10 @@ ScoreView = Backbone.Marionette.ItemView.extend({
 	initialize : function() {
 		_.bindAll(this, 'updateScore', 'updateAxis', 'drawAxis', 'zoom');
 		this.listenTo(this.model,"change:score", this.updateScore);
+		this.listenTo(Cure.vent,"window:resized", function(){
+			console.log("score render!");
+			this.render();
+		});
 	},
 	ui : {
 		'svg' : "#ScoreSVG",
@@ -318,6 +322,7 @@ ScoreView = Backbone.Marionette.ItemView.extend({
 	onRender : function() {
 		Cure.ScoreSVG = d3.selectAll(this.ui.svg).attr("width", Cure.Scorewidth)
 				.attr("height", Cure.Scoreheight+50);
+		this.drawAxis();
 	}
 });
 return ScoreView;

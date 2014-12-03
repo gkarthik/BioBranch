@@ -72,9 +72,10 @@ CureUtils.updatepositions = function(NodeCollection) {
 	});
 	d3.select("#PlayerTreeRegionSVG").attr("height", maxDepth+300);
 	//If fit to screen is checked.
+	var dh = Cure.appLayout.DatasetDescriptionRegion.currentView.$el.outerHeight();
 	if((window.innerHeight - 100)<(maxDepth+300) && Cure.Zoom.get('fitToScreen')){
 		Cure.Zoom.set({
-			'scaleLevel': (window.innerHeight - 100)/(maxDepth+300) 
+			'scaleLevel': (window.innerHeight - (100 + dh))/(maxDepth+300) 
 		});
 	}
 	d3nodes.forEach(function(d) {

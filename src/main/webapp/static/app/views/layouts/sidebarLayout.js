@@ -51,8 +51,16 @@ sidebarLayout = Marionette.Layout.extend({
     },
     className: 'panel panel-default',
     initialize: function(){
+    	var _this = this;
     	_.bindAll(this,'toggleTreeExp');
     	this.listenTo(Cure.TestDataset, 'change', this.setTestset);
+    	$(window).scroll(function(){
+			if($(window).scrollTop() > 50){
+				_this.$el.css({'top':'10px'});
+			} else {
+				_this.$el.css({'top':'70px'});
+			}
+		});
     },
     setTestset: function(){
     	var html = Cure.TestDataset.get('name')+"<br>";

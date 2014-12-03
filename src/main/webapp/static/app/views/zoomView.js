@@ -7,29 +7,38 @@ define([
 	'text!static/app/templates/zoomControls.html'
     ], function($, Marionette, Zoom, ZoomTemplate) {
 ZoomView = Marionette.ItemView.extend({
-	model : Node,
+	model : Zoom,
 	template: ZoomTemplate,
 	initialize : function() {
+		var _this = this;
+		_this.$el.attr("id","zoom-controls-wrapper");
 		_.bindAll(this,'scaleLevelUpdate');
 		this.listenTo(this.model,'change:scaleLevel', this.scaleLevelUpdate);
 		this.listenTo(this.model,'change', this.render);
 		this.listenTo(Cure.PlayerNodeCollection,'change', this.render);
 		this.listenTo(Cure.PlayerNodeCollection,'remove', this.render);
-		this.listenTo(Cure.vent, 'condensed:changed', this.render);
-		this.listenTo(Cure.vent, 'window:resized', this.clickFitToScreen);
+		this.listenTo(Cure.vent, 'window:resized', function(){
+			_this.clickFitToScreen();
+		});
+		$(window).scroll(function(){
+			if($(window).scrollTop() > 50){
+				_this.$el.css({'top':'0px'});
+			} else {
+				_this.$el.css({'top':'auto'});
+			}
+		});
 	},
 	ui: {
 		'fitToScreen':'#toggle-fittoscreen',
 		'zoomOut': '.zoomout',
 		'zoomIn': '.zoomin',
-		'setViz': '.setViz'
+		'setViz': '.setViz',
+		'description': '.description-mini'
 	},
 	events:{
 		'click #toggle-fittoscreen': 'clickFitToScreen',
 		'click .zoomin': 'zoomIn',
 		'click .zoomout': 'zoomOut',
-		'click .expand-desc': 'expandDesc',
-		'click .reduce-desc': 'reduceDesc',
 		'change .setViz': 'setViz',
 	},
 	setViz: function(e){
@@ -41,12 +50,6 @@ ZoomView = Marionette.ItemView.extend({
 				Cure.PlayerNodeCollectionView.setCondensed(true, {silent: true});
 				break;
 		}
-	},
-	expandDesc: function(){
-		this.model.set('expandDesc',true);
-	},
-	reduceDesc: function(){
-		this.model.set('expandDesc',false);
 	},
 	zoomIn: function(){
 		if (Cure.PlayerNodeCollection.models.length > 0){
@@ -78,17 +81,18 @@ ZoomView = Marionette.ItemView.extend({
 	},
 	clickFitToScreen: function(){
 		if(Cure.PlayerNodeCollection.length>0){
-  		if($(this.ui.fitToScreen).is(':checked')){
-  			this.model.set('fitToScreen',true);
-  			var scaleLevel = (window.innerHeight-100)/(d3.select("#PlayerTreeRegionSVG").attr("height"));
-    		if(scaleLevel>1){
-    			scaleLevel = 1;
-    		}
-    		this.model.set('scaleLevel',scaleLevel);
-    	} else {
-    		this.model.set('fitToScreen',false);
-    	}
-  	}
+	  		if($(this.ui.fitToScreen).is(':checked')){
+	  			this.model.set('fitToScreen',true);
+	  			var dh = Cure.appLayout.DatasetDescriptionRegion.currentView.$el.height();
+	  			var scaleLevel = (window.innerHeight-(100+dh))/(d3.select("#PlayerTreeRegionSVG").attr("height"));
+	    		if(scaleLevel>1){
+	    			scaleLevel = 1;
+	    		}
+	    		this.model.set('scaleLevel',scaleLevel);
+	    	} else {
+	    		this.model.set('fitToScreen',false);
+	    	}
+		}
 	}
 });
 
