@@ -1,4 +1,4 @@
-package Validation;
+package org.scripps.branch.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

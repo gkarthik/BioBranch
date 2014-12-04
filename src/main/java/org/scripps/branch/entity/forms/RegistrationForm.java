@@ -6,9 +6,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.scripps.branch.service.SocialMediaService;
-
-import Validation.PasswordsNotEmpty;
-import Validation.PasswordsNotEqual;
+import org.scripps.branch.validation.PasswordsNotEmpty;
+import org.scripps.branch.validation.PasswordsNotEqual;
 
 @PasswordsNotEmpty(triggerFieldName = "signInProvider", passwordFieldName = "password", passwordVerificationFieldName = "passwordVerification")
 @PasswordsNotEqual(passwordFieldName = "password", passwordVerificationFieldName = "passwordVerification")
