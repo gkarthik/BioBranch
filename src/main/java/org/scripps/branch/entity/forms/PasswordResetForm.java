@@ -9,7 +9,7 @@ import org.scripps.branch.service.SocialMediaService;
 import org.scripps.branch.validation.PasswordsNotEmpty;
 import org.scripps.branch.validation.PasswordsNotEqual;
 
-@PasswordsNotEmpty(triggerFieldName = "", passwordFieldName = "password", passwordVerificationFieldName = "passwordVerification")
+@PasswordsNotEmpty(passwordFieldName = "password", passwordVerificationFieldName = "passwordVerification")
 @PasswordsNotEqual(passwordFieldName = "password", passwordVerificationFieldName = "passwordVerification")
 public class PasswordResetForm {
 
