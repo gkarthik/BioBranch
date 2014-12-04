@@ -83,8 +83,12 @@
 											</form>
 											<div>
 												<div class="form-group">
-													<a href="./user/register"><spring:message
-															code="label.navigation.registration.link" /></a> <span
+													<a href="./user/register">Sign Up</a> <span
+														id="toggleSocial"> </span>
+
+												</div>
+												<div class="form-group">
+													<a href="./forgot-password">Forgot Password</a> <span
 														id="toggleSocial"> </span>
 
 												</div>
