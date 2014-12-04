@@ -7,9 +7,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 import org.scripps.branch.service.SocialMediaService;
-
-import Validation.PasswordsNotEmpty;
-import Validation.PasswordsNotEqual;
+import org.scripps.branch.validation.PasswordsNotEmpty;
+import org.scripps.branch.validation.PasswordsNotEqual;
 
 public class TutorialForm {
 	

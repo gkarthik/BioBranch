@@ -15,12 +15,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.scripps.branch.service.SocialMediaService;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "user_accounts")
@@ -128,9 +130,21 @@ public class User extends BaseEntity<Long> {
 
 	@Column
 	private String purpose;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "token", insertable = true, updatable = true)
+	private Token token;
 
 	public User() {
 
+	}
+
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
 	}
 
 	public String getBackground() {

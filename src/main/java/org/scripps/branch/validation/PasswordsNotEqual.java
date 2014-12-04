@@ -1,4 +1,4 @@
-package Validation;
+package org.scripps.branch.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -13,19 +13,17 @@ import javax.validation.Payload;
 
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = PasswordsNotEmptyValidator.class)
+@Constraint(validatedBy = PasswordsNotEqualValidator.class)
 @Documented
-public @interface PasswordsNotEmpty {
+public @interface PasswordsNotEqual {
 
 	Class<?>[] groups() default {};
 
-	String message() default "PasswordsNotEmpty";
+	String message() default "PasswordsNotEqual";
 
 	String passwordFieldName() default "";
 
 	String passwordVerificationFieldName() default "";
 
 	Class<? extends Payload>[] payload() default {};
-
-	String triggerFieldName() default "";
 }

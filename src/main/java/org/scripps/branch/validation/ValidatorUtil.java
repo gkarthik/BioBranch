@@ -1,4 +1,4 @@
-package Validation;
+package org.scripps.branch.validation;
 
 import java.lang.reflect.Field;
 
