@@ -39,6 +39,47 @@ Tree = Backbone.Model.extend({
 	}
 });
 
+var comparator = function(a, b) {
+	if(a.get('created')=="Created"){
+		return 0;
+	}
+	switch(this.sort_key){
+		case 'acc':
+			a = a.get('json_tree').pct_correct;
+			b = b.get('json_tree').pct_correct;
+			break;
+		case 'player_name':
+			a = a.get('user').firstName;
+			b = b.get('user').firstName;
+			break;
+		case 'training':
+			a = a.get('score').dataset.name;
+			b = b.get('score').dataset.name;
+			break;
+		case 'test':
+			a = (a.get('score').testset) ? a.get('score').testset.name : a.get('score').dataset.name;
+			b = (b.get('score').testset) ? b.get('score').testset.name : b.get('score').dataset.name;
+			break;
+		case 'created':
+			var created = a.get('created');
+			a = new Date(created.yearOfEra, created.monthOfYear, created.dayOfMonth, created.hourOfDay, created.minuteOfHour, created.secondOfMinute, created.millisOfSecond);
+			created = b.get('created');
+			b = new Date(created.yearOfEra, created.monthOfYear, created.dayOfMonth, created.hourOfDay, created.minuteOfHour, created.secondOfMinute, created.millisOfSecond); 
+			break;
+		default:
+			a = a.get(this.sort_key);
+			b = b.get(this.sort_key);
+	}
+    if(this.sort_order == 'asc'){
+    	return a > b ?  1
+    	         : a < b ? -1
+    	         :          0;
+    }
+    return a > b ?  -1
+            : a < b ? 1
+            :          0;
+	};
+
 //Collections
 UserTreeCollection = Backbone.Collection.extend({
 	model: Tree,
@@ -46,19 +87,15 @@ UserTreeCollection = Backbone.Collection.extend({
 		_.bindAll(this,'parseResponse');
 	},
 	url: '../MetaServer',
-	sort_key: 'rank',
-	comparator: function(a, b) {
-    a = a.get(this.sort_key);
-    b = b.get(this.sort_key);
-    return a > b ?  1
-         : a < b ? -1
-         :          0;
-	},   
+	sort_key: 'acc',
+	sort_order: 'none',
+	comparator: comparator,
 	fetch: function(){
 		var args = {
 				command : "get_trees_user_id",
 				user_id: cure_user_id
 		};
+		$("#loading-wrapper").show();
 		$.ajax({
 			type : 'POST',
 			url : '../MetaServer',
@@ -70,26 +107,29 @@ UserTreeCollection = Backbone.Collection.extend({
 		});
 	},
 	parseResponse: function(data){
+		$("#loading-wrapper").hide();
 		var trees = data;
 		_.each(trees,function(tree){
 			tree.json_tree = JSON.parse(tree.json_tree);
 		});
-		trees.unshift({
-			comment: "Comment",
-			created: "Created",
-			id: "id",
-			ip: "ip",
-			player_name: "<i class='glyphicon glyphicon-user'></i>",
-			json_tree :{
-				novelty : "Nov",
-				pct_correct : "Acc",
-				size : "Size",
-				score : "Score",
-				text_tree : '',
-				treestruct : {}
-			}
-		});
-		this.add(trees);
+		if(trees.length>0){
+			trees.unshift({
+				comment: "Comment",
+				created: "Created",
+				id: "id",
+				ip: "ip",
+				player_name: "<i class='glyphicon glyphicon-user'></i>",
+				json_tree :{
+					novelty : "Nov",
+					pct_correct : "Acc",
+					size : "Size",
+					score : "Score",
+					text_tree : '',
+					treestruct : {}
+				}
+			});
+			this.add(trees);
+		}
 	}
 });
 
@@ -100,14 +140,9 @@ CommunityTreeCollection = Backbone.Collection.extend({
 	},
 	lowerLimit: 0,
 	upperLimit: 200,
-	sort_key: 'rank',
-	comparator: function(a, b) {
-    a = a.get(this.sort_key);
-    b = b.get(this.sort_key);
-    return a > b ?  1
-         : a < b ? -1
-         :          0;
-	},   
+	sort_key: 'acc',
+	sort_order: 'none',
+	comparator: comparator,   
 	url : '../MetaServer',
 	fetch: function(direction){
 		if(this.allowRequest){
@@ -119,6 +154,7 @@ CommunityTreeCollection = Backbone.Collection.extend({
 			};
 			this.lowerLimit +=200;
 			this.upperLimit += 200;
+			$("#loading-wrapper").show();
 			$.ajax({
 				type : 'POST',
 				url : this.url,
@@ -133,28 +169,28 @@ CommunityTreeCollection = Backbone.Collection.extend({
 	},
 	allowRequest : 1,
 	parseResponse : function(data) {
+		$("#loading-wrapper").hide();
 		//If empty tree is returned, no tree rendered.
 		var trees = data;
 		_.each(trees,function(tree){
 			tree.json_tree = JSON.parse(tree.json_tree);
 		});
-		trees.unshift({
-			comment: "Comment",
-			created: "Created",
-			id: "id",
-			ip: "ip",
-			player_name: "<i class='glyphicon glyphicon-user'></i>",
-			json_tree :{
-				novelty : "Nov",
-				pct_correct : "Acc",
-				size : "Size",
-				score : "Score",
-				text_tree : '',
-				treestruct : {}
-			}
-		});
-		
-		if(data.length > 0) {
+		if(trees.length>0){
+			trees.unshift({
+				comment: "Comment",
+				created: "Created",
+				id: "id",
+				ip: "ip",
+				player_name: "<i class='glyphicon glyphicon-user'></i>",
+				json_tree :{
+					novelty : "Nov",
+					pct_correct : "Acc",
+					size : "Size",
+					score : "Score",
+					text_tree : '',
+					treestruct : {}
+				}
+			});
 			this.add(trees);
 			this.allowRequest = 1;
 		} else {
@@ -187,8 +223,7 @@ TreeItemView = Marionette.ItemView.extend({
 	},
 	template: "#score-entry-template",
 	renderTreePreview: function(){
-		var id = $(this.ui.SvgPreview).attr('id');
-		var svg = d3.select("#"+id)
+		var svg = d3.select(this.ui.SvgPreview[0])
 			.attr("width",300)
 			.attr("height",300)
 			.append("g")
@@ -220,16 +255,38 @@ TreeItemView = Marionette.ItemView.extend({
 	      .style("text-anchor", "end")
 	      .text(function(d) { return d.name; });
 	},
-	onShow: function(){
-			this.renderTreePreview();
+	onRender: function(){
+		this.renderTreePreview();
 	}
+});
+
+EmptyCollectionView = Backbone.Marionette.ItemView.extend({
+	template: "#empty-collection-template"
 });
 
 TreeCollectionView = Backbone.Marionette.CollectionView.extend({
 	itemView : TreeItemView,
+	emptyView: EmptyCollectionView,
 	tagName: 'table',
 	className: 'table table-bordered',
 	initialize : function() {
+		this.listenTo(this.collection,'sort', this.render);
+	},
+	ui: {
+		sortAttr: '.sort-attr'
+	},
+	events: {
+		'click .sort-attr': 'sortByAttr'
+	},
+	sortByAttr: function(e){
+		var el = $(e.currentTarget);
+		this.collection.sort_key = el.attr("id").replace("sort_by_","");
+		if(this.collection.sort_order=="none" || this.collection.sort_order=="asc"){
+			this.collection.sort_order="desc";
+		} else {
+			this.collection.sort_order="asc";
+		}
+		this.collection.sort();
 	},
 	appendHtml: function(collectionView, itemView, index){
     	if(collectionView.children.findByModel(index-1)){
@@ -237,6 +294,13 @@ TreeCollectionView = Backbone.Marionette.CollectionView.extend({
     	} else {
     		collectionView.$el.append(itemView.$el);
     	}
+   },
+   onRender: function(){
+	   var iC = "glyphicon-sort-by-attributes";
+	   if(this.collection.sort_order == "desc"){
+		   iC = "glyphicon-sort-by-attributes-alt";
+	   }
+	   this.$el.find("#sort_by_"+this.collection.sort_key+" i").removeClass("glyphicon-sort").addClass(iC);
    },
    ScoreBoardRequestSent: false
 });
