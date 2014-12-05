@@ -22,6 +22,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.scripps.branch.service.SocialMediaService;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -109,7 +110,8 @@ public class User extends BaseEntity<Long> {
 
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
-
+	
+	@JsonIgnore
 	@Column(name = "password", length = 255)
 	private String password;
 	
@@ -131,8 +133,9 @@ public class User extends BaseEntity<Long> {
 	@Column
 	private String purpose;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "token", insertable = true, updatable = true)
+	@JsonIgnore
 	private Token token;
 
 	public User() {

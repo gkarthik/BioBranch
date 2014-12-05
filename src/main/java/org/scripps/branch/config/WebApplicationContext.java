@@ -42,15 +42,16 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 
 		Properties exceptionMappings = new Properties();
 
-		exceptionMappings.put("java.lang.Exception", "error/error");
-		exceptionMappings.put("java.lang.RuntimeException", "error/error");
+		exceptionMappings.put("java.lang.Exception", "error/500_error");
+		exceptionMappings.put("java.lang.RuntimeException", "error/500_error");
 
 		exceptionResolver.setExceptionMappings(exceptionMappings);
 
 		Properties statusCodes = new Properties();
 
-		statusCodes.put("error/404", "404");
-		statusCodes.put("error/error", "500");
+		statusCodes.put("error/404_error", "404");
+		statusCodes.put("error/500_error", "500");
+		statusCodes.put("error/400_error", "400");
 
 		exceptionResolver.setStatusCodes(statusCodes);
 

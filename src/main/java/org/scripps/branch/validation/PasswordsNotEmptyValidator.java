@@ -20,7 +20,7 @@ public class PasswordsNotEmptyValidator implements
 	@Override
 	public void initialize(PasswordsNotEmpty constraintAnnotation) {
 		validationTriggerFieldName = null;
-		if(constraintAnnotation.triggerFieldName()!=null){
+		if(!constraintAnnotation.triggerFieldName().equals("")){
 			LOGGER.debug(constraintAnnotation.triggerFieldName());
 			validationTriggerFieldName = constraintAnnotation.triggerFieldName();
 		}
@@ -42,7 +42,9 @@ public class PasswordsNotEmptyValidator implements
 				validationTrigger = ValidatorUtil.getFieldValue(value,
 						validationTriggerFieldName);
 			}
+			LOGGER.debug("Validation Trigger {}",validationTrigger);
 			if (validationTrigger == null) {
+				LOGGER.debug("valid password fields {}",passwordFieldsAreValid(value, context));
 				return passwordFieldsAreValid(value, context);
 			}
 		} catch (Exception ex) {

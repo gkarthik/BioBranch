@@ -28,15 +28,17 @@
 <div id="CollaboratorsRegion"></div>
 <div class='panel-body panel-static'>
 	<div id='displayWrapper'>
-		<div id="ScoreKeyRegion" class="eval-tab-content"></div>
-		<div id="RocRegion"></div>
-		<div id="CfMatrixRegion" class="eval-tab-content"></div>
 		<p>
 			<b>Training Set</b>: <%= Cure.dataset.get('name') %>
 		</p>
-		<p>
-			<b>Test Set</b>: <span id="test-set-label"></span>
-		</p>
+		<div class="well">
+			<p>
+				<b>Test Set</b>: <span id="test-set-label"></span>
+			</p>
+			<div id="ScoreKeyRegion" class="eval-tab-content"></div>
+			<div id="RocRegion"></div>
+			<div id="CfMatrixRegion" class="eval-tab-content"></div>
+		</div>
 		<!-- 
 	<span id="sidebar-toggle" class="pull-right btn btn-default sidebar-show">
 		<i class="glyphicon glyphicon-chevron-down"></i>

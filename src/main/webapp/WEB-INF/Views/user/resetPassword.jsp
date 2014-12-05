@@ -25,7 +25,6 @@
 						<div class="form-group">
 							<label class="control-label" for="passwordReset-password">Enter new Password</label>
 							<form:input path="password" cssClass="form-control" />
-							<form:errors path="password" cssClass="help-block" />
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="passwordReset-passwordVerification">Reenter new password</label>

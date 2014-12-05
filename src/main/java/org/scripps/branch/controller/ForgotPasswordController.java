@@ -16,6 +16,7 @@ import org.scripps.branch.entity.forms.TutorialForm;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.TokenRepository;
 import org.scripps.branch.repository.UserRepository;
+import org.scripps.branch.service.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ public class ForgotPasswordController {
 	
 	@Autowired
 	TokenRepository tRepo;
+	
+	@Autowired
+	MailService mailService;
 
 	@RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
 	public String sendPage(WebRequest request, Model model) {
@@ -74,19 +78,21 @@ public class ForgotPasswordController {
 	}
 	
 	@RequestMapping(value = "/authenticate/{uid}", method = RequestMethod.POST)
-    public String resetPassword(@Valid @ModelAttribute("passwordReset") PasswordResetForm resetPassForm,
-    		@PathVariable("uid") String uid,
+    public String resetPassword(@PathVariable("uid") String uid,
+    		@Valid @ModelAttribute("passwordReset") PasswordResetForm resetPassForm,
             BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+            return resetPassPage;
+        }
 		Token t = tRepo.findByUid(uid);
 		if(t==null){
 			return "redirect:/login";
 		}
-        if (bindingResult.hasErrors()) {
-            return resetPassPage;
-        }
+		LOGGER.debug("Token {}", t);
         User u = t.getUser();
         u.setPassword(pEncoder.encode(resetPassForm.getPassword()));
         uRepo.saveAndFlush(u);
+        model.addAttribute("success",true);
         model.addAttribute("msg", "Password has been reset. You can now login with new password.");
 		return resetPassPage;
 	}
@@ -104,7 +110,6 @@ public class ForgotPasswordController {
         	Token oldToken = u.getToken();
         	Token t = new Token();
         	String uid = new Timestamp(date.getTime())+u.getPassword();
-        	LOGGER.debug("UID {}", passwordEncoder.encodePassword(uid, "forgot-branch"));
         	t.setUid(passwordEncoder.encodePassword(uid, "forgot-branch"));
         	t = tRepo.saveAndFlush(t);
         	u.setToken(t);
@@ -113,6 +118,7 @@ public class ForgotPasswordController {
         	if(oldToken!=null){
         		tRepo.delete(oldToken);
         	}
+        	mailService.startSendResetMail(u);
         	model.addAttribute("success",true);
             model.addAttribute("msg","An email has been sent with instructions.");
         } else {
