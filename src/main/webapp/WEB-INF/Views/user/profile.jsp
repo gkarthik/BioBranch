@@ -29,10 +29,10 @@
 	<@	if(json_tree.score != "Score"){ @>
 <!--	<td><span class='keyValue'> <@= rank @></span></td> -->
 	<td><span class='keyValue'><@ if(private_tree){print("<i title='Private Tree' style='cursor: default;color:red;' class='glyphicon glyphicon-eye-close'></i>")} @> <@= user.firstName @></span></td>
-	<td><span class='keyValue'><@ print(Math.round(score.score)) @></span></td>
-	<td><span class='keyValue'><@= json_tree.size @></span></td>
+	<!-- <td><span class='keyValue'><@ print(Math.round(score.score)) @></span></td> -->
+	<!-- <td><span class='keyValue'><@= json_tree.size @></span></td> -->
 	<td><span class='keyValue'><@ print(Math.round(json_tree.pct_correct*10)/10) @></span></td>
-	<td><span class='keyValue'><@ print(Math.round(json_tree.novelty*10)/10) @></span></td>
+	<!-- <td><span class='keyValue'><@ print(Math.round(json_tree.novelty*10)/10) @></span></td> -->
 	<td><center><@= comment @></center></td>
 	<td><svg id="treePreview<@= cid @>"></svg></td>
 	<td><span class="keyValue"><@= score.dataset.name @></span></td>
@@ -54,10 +54,10 @@
 	<@ } else { @>
 <!--	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th> -->
 	<th><span class='keyValue'><@= player_name @></span></th>
-	<th><span class='keyValue'><@= json_tree.score @></span></th>
-	<th><span class='keyValue'><@= json_tree.size @></span></th>
+	<!-- <th><span class='keyValue'><@= json_tree.score @></span></th> -->
+	<!-- <th><span class='keyValue'><@= json_tree.size @></span></th> -->
 	<th><span class='keyValue'><@= json_tree.pct_correct @></span></th>
-	<th><span class='keyValue'><@= json_tree.novelty @></span></th>
+	<!-- <th><span class='keyValue'><@= json_tree.novelty @></span></th> -->
 	<th><center><@= comment @></center></th>
 	<th><center>Preview</center></th>
 	<th>Training Set</th>
