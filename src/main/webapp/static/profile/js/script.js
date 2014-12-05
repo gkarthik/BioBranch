@@ -46,6 +46,14 @@ UserTreeCollection = Backbone.Collection.extend({
 		_.bindAll(this,'parseResponse');
 	},
 	url: '../MetaServer',
+	sort_key: 'rank',
+	comparator: function(a, b) {
+    a = a.get(this.sort_key);
+    b = b.get(this.sort_key);
+    return a > b ?  1
+         : a < b ? -1
+         :          0;
+	},   
 	fetch: function(){
 		var args = {
 				command : "get_trees_user_id",
