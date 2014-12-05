@@ -127,6 +127,7 @@ sidebarLayout = Marionette.Layout.extend({
         	$(ev.target).addClass("showTreeExp");
         	$(ev.target).html('<i class="glyphicon glyphicon-pencil"></i>Show Tree Explanation');
         	$(this.ui.TreeExpWrapper).hide();
+        	_.each(Cure.PlayerNodeCollection.where({'highlight':1}),function(item){item.set('highlight',0);});
       	}
     	} else {
     		Cure.utils
