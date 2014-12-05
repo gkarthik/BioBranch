@@ -15,7 +15,7 @@
 	<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
 	<input type="text" class="form-control" id="search_collection" placeholder="Search through users, genes and comments.">
 </div>
-	<span id="loading-wrapper">Searching... </span>
+	<span id="loading-wrapper">Loading ... </span>
 </span>
 </div>
 	<div class="col-md-12 collection-wrapper" id="user-treecollection-wrapper">
@@ -53,16 +53,16 @@
 	<td><center><a href="../?treeid=<@= id @>&dataset=<@= score.dataset.id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
 	<@ } else { @>
 <!--	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th> -->
-	<th><span class='keyValue'><@= player_name @></span></th>
+	<th id="sort_by_player_name" class="sort-attr"><span class='keyValue'>User</span> <i class="glyphicon glyphicon-sort"></i></th>
 	<!-- <th><span class='keyValue'><@= json_tree.score @></span></th> -->
 	<!-- <th><span class='keyValue'><@= json_tree.size @></span></th> -->
-	<th><span class='keyValue'><@= json_tree.pct_correct @></span></th>
+	<th id="sort_by_acc" class="sort-attr"><span class='keyValue'>Accuracy</span> <i class="glyphicon glyphicon-sort"></i></th>
 	<!-- <th><span class='keyValue'><@= json_tree.novelty @></span></th> -->
-	<th><center><@= comment @></center></th>
+	<th id="sort_by_comment" class="sort-attr"><center><@= comment @></center> <i class="glyphicon glyphicon-sort"></th>
 	<th><center>Preview</center></th>
-	<th>Training Set</th>
-	<th>Test Set</th>
-	<th>Created</th>
+	<th id="sort_by_training" class="sort-attr">Training Set <i class="glyphicon glyphicon-sort"></i></th>
+	<th id="sort_by_test" class="sort-attr">Test Set <i class="glyphicon glyphicon-sort"></i></th>
+	<th id="sort_by_created" class="sort-attr">Created <i class="glyphicon glyphicon-sort"></i></th>
 	<th><center>View Tree</center></td>
 	<@ } @>
 	</script>
@@ -89,6 +89,9 @@
 	</script>
 	<script type="text/template" id="empty-badge-collection-template">
 		<h4><center>You are awarded <span class="badge player-badge">BADGES</span> for building trees and completing milestones.<br><br>Start collecting badges by clicking on "Get Badge!" in the "Badges to be Earned" section.</center></h4>
+	</script>
+	<script type="text/template" id="empty-collection-template">
+		<center><h3 class="well">No Trees Present.</h3></center>
 	</script>
 	<script type="text/javascript">
     var cure_user_experience =null,
