@@ -40,7 +40,7 @@ CureUtils.prettyPrint = function(json) {
 CureUtils.updatepositions = function(NodeCollection) {
 	var depth = {maj: 200, min: 100};
 	if(Cure.PlayerNodeCollection.length>0){
-		depth.maj = Cure.PlayerNodeCollectionView.children.findByIndex(0).$el.outerHeight()+60;
+		depth.maj = Cure.PlayerNodeCollectionView.children.findByIndex(0).$el.outerHeight()*1.3;
 		depth.min = depth.maj/2;
 	}
 //	var depth = {maj: 200, min: 100};
@@ -109,7 +109,11 @@ CureUtils.delete_all_children = function(seednode) {
 // -- Render d3 Network
 //
 CureUtils.render_network = function() {
-	var depth = { split: 107, leaf: 34, depthDiff: 200};
+	var depth = { split: 107, leaf: 34 };
+	if(Cure.PlayerNodeCollection.length>0){
+		depth.split = $($('.split_node')[0]).outerHeight()*0.75;
+		depth.leaf = 34;
+	}
 	if(Cure.appLayout.PlayerTreeRegionTree.currentView.condensed){
 		depth = { split: 0, leaf: 34, depthDiff: 100}; 
 	}
