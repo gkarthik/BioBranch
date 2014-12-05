@@ -43,7 +43,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 		"org.scripps.branch.service", "org.scripps.branch.repository",
 		"org.scripps.branch.utilities", "org.scripps.branch.globalentity",
 		"org.scripps.branch.viz", "org.scripps.branch.controller" })
-@Import({ WebApplicationContext.class, SecurityContext.class, SocialContext.class, FeatureJobConfig.class })
+@Import({ WebApplicationContext.class, SecurityContext.class, SocialContext.class, FeatureJobConfig.class, MailConfig.class })
 @EnableJpaRepositories(basePackages = { "org.scripps.branch.repository" })
 @EnableTransactionManagement
 @PropertySource("classpath:config_${spring.profiles.active}.properties")

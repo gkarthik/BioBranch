@@ -34,7 +34,7 @@ RocCurve = Marionette.ItemView.extend({
 	},
 	points : [],
 	template: RocCurveTemplate,
-	width: 280,
+	width: 270,
 	height: 200,
 	_x: 50,
 	_y: 50,
