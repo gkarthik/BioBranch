@@ -167,13 +167,13 @@ NodeView = Marionette.Layout.extend({
 		var content = "";
 		//% cases
 		if(this.model.get('options').get('bin_size') && this.model.get('options').get('kind') =="leaf_node"){
-			content+="<p class='binsizeNodeDetail'><span class='percentDetails'>"+Math.round((this.model.get('options').get('bin_size')/datasetBinSize)*10000)/100+"%</span><span class='textDetail'>of cases from the dataset fall here.</span></p>";
+			content+="<p class='binsizeNodeDetail'><span class='percentDetails'>"+Math.round((this.model.get('options').get('bin_size')/datasetBinSize)*10000)/100+"%</span><span class='textDetail'>of cases from the training set fall here.</span></p>";
 		} else if(this.model.get('options').get('bin_size') && this.model.get('options').get('kind') =="split_node") {
-			content+="<p class='binsizeNodeDetail'><span class='percentDetails'>"+Math.round((this.model.get('options').get('bin_size')/datasetBinSize)*10000)/100+"%</span><span class='textDetail'>of cases from the dataset pass through this node.</span></p>";
+			content+="<p class='binsizeNodeDetail'><span class='percentDetails'>"+Math.round((this.model.get('options').get('bin_size')/datasetBinSize)*10000)/100+"%</span><span class='textDetail'>of cases from the training set pass through this node.</span></p>";
 		}		
 		//Accuracy
 		if(this.model.get('options').get('pct_correct')){
-			content+="<p class='accuracyNodeDetail'><span class='percentDetails'>"+Math.round(this.model.get('options').get('pct_correct')*10000)/100+"%</span><span class='textDetail'>is the percentage accuracy at this node.</span></p>";
+			content+="<p class='accuracyNodeDetail'><span class='percentDetails'>"+Math.round(this.model.get('options').get('pct_correct')*10000)/100+"%</span><span class='textDetail'>is the percentage accuracy at this node based on the training set.</span></p>";
 		}
 		Cure.utils.showDetailsOfNode(content, this.$el.offset().top, this.$el.offset().left);
 	},

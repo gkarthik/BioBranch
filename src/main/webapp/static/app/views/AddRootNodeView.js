@@ -52,7 +52,7 @@ AddRootNodeView = searchFeature.extend({
 							"unique_id" : "custom_tree_"+ui.item.data.id,
 							"kind" : "split_node",
 							"full_name" : '',
-							"description" : name_node+ "| Created: "+ui.item.data.created
+							"description" : name_node+ "| Created: "+ui.item.data.created.hourOfDay+":"+ui.item.data.created.minuteOfHour+" "+ui.item.data.created.monthOfYear+"/"+ui.item.data.created.dayOfMonth+"/"+ui.item.data.created.yearOfEra
 						});
 					} else {
 						new Node({
@@ -61,7 +61,7 @@ AddRootNodeView = searchFeature.extend({
 								"unique_id" : "custom_tree_"+ui.item.data.id,
 								"kind" : "split_node",
 								"full_name" : '',
-								"description" : name_node+ "| Created: "+ui.item.data.created
+								"description" : name_node+ "| Created: "+ui.item.data.created.hourOfDay+":"+ui.item.data.created.minuteOfHour+" "+ui.item.data.created.monthOfYear+"/"+ui.item.data.created.dayOfMonth+"/"+ui.item.data.created.yearOfEra
 							}
 						});
 					}
