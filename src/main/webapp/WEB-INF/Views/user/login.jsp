@@ -44,13 +44,6 @@
 
 								<sec:authorize access="isAnonymous()" >
 									<div>
-									<c:if test="${param.error eq 'bad_credentials'}">
-												<div class="alert alert-danger alert-dismissable">
-													<button type="button" class="close" data-dismiss="alert"
-														aria-hidden="true">&times;</button>
-													<spring:message code="text.login.page.login.failed.error" />
-												</div>
-											</c:if>
 										<div>
 											<form action="${pageContext.request.contextPath}/login" method="POST"
 												role="form">
