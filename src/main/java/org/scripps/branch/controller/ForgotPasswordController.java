@@ -88,10 +88,11 @@ public class ForgotPasswordController {
 		if(t==null){
 			return "redirect:/login";
 		}
-		LOGGER.debug("Token {}", t);
         User u = t.getUser();
         u.setPassword(pEncoder.encode(resetPassForm.getPassword()));
+        u.setToken(null);
         uRepo.saveAndFlush(u);
+        tRepo.delete(t);
         model.addAttribute("success",true);
         model.addAttribute("msg", "Password has been reset. You can now login with new password.");
 		return resetPassPage;
@@ -114,7 +115,6 @@ public class ForgotPasswordController {
         	t = tRepo.saveAndFlush(t);
         	u.setToken(t);
         	uRepo.saveAndFlush(u);
-        	LOGGER.debug("Token {}", u.getToken());
         	if(oldToken!=null){
         		tRepo.delete(oldToken);
         	}

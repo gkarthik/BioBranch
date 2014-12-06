@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@page import="org.scripps.branch.service.GoogleAuthHelper"%>
@@ -56,6 +57,7 @@
 													<div id="form-group-email" class="form-group">
 														<input id="user-email" name="username" type="text"
 															class="form-control" placeholder="email@example.com" />
+															<form:errors path="username" cssClass="help-block" />
 													</div>
 												</div>
 
@@ -63,6 +65,7 @@
 													<div id="form-group-password" class="form-group">
 														<input id="user-password" name="password" type="password"
 															class="form-control" placeholder="password" />
+															<form:errors path="password" cssClass="help-block" />
 													</div>
 												</div>
 												<div>

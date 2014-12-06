@@ -1,6 +1,8 @@
 //App
 Library = new Backbone.Marionette.Application();
 
+var sortableHeaderTmpl = _.template($( "script#sortable-header" ).html()); 
+
 //Models
 Tree = Backbone.Model.extend({
 	defaults: {
@@ -40,8 +42,9 @@ Tree = Backbone.Model.extend({
 });
 
 var comparator = function(a, b) {
-	if(a.get('created')=="Created"){
-		return 0;
+	var x= a, y=b;
+	if(a.get('created')=="Created" || b.get('created')=="Created"){
+		return this.checkIndex(x,y);
 	}
 	switch(this.sort_key){
 		case 'acc':
@@ -73,23 +76,33 @@ var comparator = function(a, b) {
     if(this.sort_order == 'asc'){
     	return a > b ?  1
     	         : a < b ? -1
-    	         :          0;
+    	         :          this.checkIndex(x,y);
     }
     return a > b ?  -1
             : a < b ? 1
-            :          0;
+            :          this.checkIndex(x,y);
 	};
-
+	
+	var checkIndex = function(a,b){
+		a = this.indexOf(a);
+		b = this.indexOf(b);
+		if(this.sort_order == 'asc'){
+	    	return a-b;
+	    }
+	    return b-a;
+	}
+ 
 //Collections
 UserTreeCollection = Backbone.Collection.extend({
 	model: Tree,
 	initialize : function(){
-		_.bindAll(this,'parseResponse');
+		_.bindAll(this,'parseResponse', 'comparator');
 	},
 	url: '../MetaServer',
 	sort_key: 'acc',
-	sort_order: 'none',
+	sort_order: 'desc',
 	comparator: comparator,
+	checkIndex: checkIndex,
 	fetch: function(){
 		var args = {
 				command : "get_trees_user_id",
@@ -113,21 +126,6 @@ UserTreeCollection = Backbone.Collection.extend({
 			tree.json_tree = JSON.parse(tree.json_tree);
 		});
 		if(trees.length>0){
-			trees.unshift({
-				comment: "Comment",
-				created: "Created",
-				id: "id",
-				ip: "ip",
-				player_name: "<i class='glyphicon glyphicon-user'></i>",
-				json_tree :{
-					novelty : "Nov",
-					pct_correct : "Acc",
-					size : "Size",
-					score : "Score",
-					text_tree : '',
-					treestruct : {}
-				}
-			});
 			this.add(trees);
 		}
 	}
@@ -136,12 +134,13 @@ UserTreeCollection = Backbone.Collection.extend({
 CommunityTreeCollection = Backbone.Collection.extend({
 	model: Tree,
 	initialize : function(){
-		_.bindAll(this,'parseResponse');
+		_.bindAll(this,'parseResponse', 'comparator');
 	},
 	lowerLimit: 0,
 	upperLimit: 200,
 	sort_key: 'acc',
-	sort_order: 'none',
+	sort_order: 'desc',
+	checkIndex: checkIndex,
 	comparator: comparator,   
 	url : '../MetaServer',
 	fetch: function(direction){
@@ -176,21 +175,6 @@ CommunityTreeCollection = Backbone.Collection.extend({
 			tree.json_tree = JSON.parse(tree.json_tree);
 		});
 		if(trees.length>0){
-			trees.unshift({
-				comment: "Comment",
-				created: "Created",
-				id: "id",
-				ip: "ip",
-				player_name: "<i class='glyphicon glyphicon-user'></i>",
-				json_tree :{
-					novelty : "Nov",
-					pct_correct : "Acc",
-					size : "Size",
-					score : "Score",
-					text_tree : '',
-					treestruct : {}
-				}
-			});
 			this.add(trees);
 			this.allowRequest = 1;
 		} else {
@@ -296,6 +280,8 @@ TreeCollectionView = Backbone.Marionette.CollectionView.extend({
     	}
    },
    onRender: function(){
+	   this.$el.find("th").remove();
+	   this.$el.find("tbody").prepend(sortableHeaderTmpl());
 	   var iC = "glyphicon-sort-by-attributes";
 	   if(this.collection.sort_order == "desc"){
 		   iC = "glyphicon-sort-by-attributes-alt";
@@ -354,21 +340,6 @@ MainLayout = Marionette.Layout.extend({
   						var trees = data;
   						_.each(trees,function(tree){
   							tree.json_tree = JSON.parse(tree.json_tree);
-  						});
-  						trees.unshift({
-  							comment: "Comment",
-  							created: "Created",
-  							id: "id",
-  							ip: "ip",
-  							player_name: "<i class='glyphicon glyphicon-user'></i>",
-  							json_tree :{
-  								novelty : "Nov",
-  								pct_correct : "Acc",
-  								size : "Size",
-  								score : "Score",
-  								text_tree : '',
-  								treestruct : {}
-  							}
   						});
   						Library.SearchTreeCollection.reset(trees);
   						thisLayout.SearchRegion.show(Library.SearchTreeCollectionView);

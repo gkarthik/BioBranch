@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 	<div class="container-fluid" id="profile-container"></div>
 	<link href='../static/profile/css/profileStyle.css' rel='stylesheet'
 		type='text/css'>
@@ -26,7 +33,6 @@
 	</div>
 	</script>
 	<script type="text/template" id="score-entry-template">
-	<@	if(json_tree.score != "Score"){ @>
 <!--	<td><span class='keyValue'> <@= rank @></span></td> -->
 	<td><span class='keyValue'><@ if(private_tree){print("<i title='Private Tree' style='cursor: default;color:red;' class='glyphicon glyphicon-eye-close'></i>")} @> <@= user.firstName @></span></td>
 	<!-- <td><span class='keyValue'><@ print(Math.round(score.score)) @></span></td> -->
@@ -51,20 +57,22 @@
 	 @></span></td>
 	<td><@ print(created.hourOfDay+":"+created.minuteOfHour+" "+created.monthOfYear+"/"+created.dayOfMonth+"/"+created.yearOfEra) @></td>
 	<td><center><a href="../?treeid=<@= id @>&dataset=<@= score.dataset.id @>"><i class="glyphicon glyphicon-edit"></i></a></center></td>
-	<@ } else { @>
-<!--	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th> -->
+	</script>
+	<script type="text/template" id="sortable-header">
+<tr>
+	<!--	<th><span class='keyValue'><i class="glyphicon glyphicon-star"></i></span></th> -->
 	<th id="sort_by_player_name" class="sort-attr"><span class='keyValue'>User</span> <i class="glyphicon glyphicon-sort"></i></th>
-	<!-- <th><span class='keyValue'><@= json_tree.score @></span></th> -->
-	<!-- <th><span class='keyValue'><@= json_tree.size @></span></th> -->
+	<!-- <th><span class='keyValue'>Score</span></th> -->
+	<!-- <th><span class='keyValue'>Size</span></th> -->
 	<th id="sort_by_acc" class="sort-attr"><span class='keyValue'>Accuracy</span> <i class="glyphicon glyphicon-sort"></i></th>
-	<!-- <th><span class='keyValue'><@= json_tree.novelty @></span></th> -->
-	<th id="sort_by_comment" class="sort-attr"><center><@= comment @></center> <i class="glyphicon glyphicon-sort"></th>
+	<!-- <th><span class='keyValue'>Novelty</span></th> -->
+	<th id="sort_by_comment" class="sort-attr"><center>Comment</center> <i class="glyphicon glyphicon-sort"></th>
 	<th><center>Preview</center></th>
 	<th id="sort_by_training" class="sort-attr">Training Set <i class="glyphicon glyphicon-sort"></i></th>
 	<th id="sort_by_test" class="sort-attr">Test Set <i class="glyphicon glyphicon-sort"></i></th>
 	<th id="sort_by_created" class="sort-attr">Created <i class="glyphicon glyphicon-sort"></i></th>
-	<th><center>View Tree</center></td>
-	<@ } @>
+	<th><center>View Tree</center></th>
+</tr>
 	</script>
 	<script type="text/template" id="main-layout-tmpl">
 		<div class="col-md-6">
@@ -96,7 +104,8 @@
 	<script type="text/javascript">
     var cure_user_experience =null,
         cure_user_id = ${userId},
-        cure_user_name = "${firstName}";
+        cure_user_name = "${firstName}",
+        cure_user_email = "${email}";
 	</script>
 	<script src="../static/lib/underscore.js"></script>
 	<script src="../static/lib/jquery-1.10.1.js"></script>
