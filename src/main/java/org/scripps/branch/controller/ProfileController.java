@@ -41,6 +41,7 @@ public class ProfileController {
 				User user = userRepo.findByEmail(userDetails.getUsername());
 				model.addAttribute("userId", user.getId());
 				model.addAttribute("firstName", user.getFirstName());
+				model.addAttribute("email", user.getEmail());
 				// model.addAttribute("user_experience", null);
 			}
 		} else {
@@ -48,6 +49,7 @@ public class ProfileController {
 					.getParameter("playerid")));
 			model.addAttribute("userId", user.getId());
 			model.addAttribute("firstName", user.getFirstName());
+			model.addAttribute("email", user.getEmail());
 		}
 
 		return VIEW_NAME_PROFILEPAGE;

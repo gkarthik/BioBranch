@@ -32,23 +32,23 @@ public class MailService {
     @Async
     private void sendResetPasswordMail(User u){
     	LOGGER.debug("Thread name {}",Thread.currentThread().getName());
-//    	String htmlMsg = "Hello "
-//        		+ u.getFirstName()+",<br><br>"
-//        		+ "Please visit <a href=\"http://biobranch.org/authenticate/"+u.getToken().getUid()+"/\" target=\"_blank\">http://biobranch.org/authenticate/"+u.getToken().getUid()+"</a> to reset your password.<br><br>"
-//        		+ "Best Regards,<br>Ben";
-//    	MimeMessage mimeMessage = mailSender.createMimeMessage();
-//    	MimeMessageHelper helper;
-//		try {
-//			mimeMessage.setContent(htmlMsg, "text/html");
-//			helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
-//			helper.setTo("xraydiffraction@gmail.com");
-//	    	helper.setSubject("BioBranch: Reset Password Instructions");
-//	    	helper.setFrom(from);
-//	    	mailSender.send(mimeMessage);
-//		} catch (MessagingException e) {
-//			// TODO Auto-generated catch block
-//			LOGGER.error("Messaging Exception",e);
-//		}
+    	String htmlMsg = "Hello "
+        		+ u.getFirstName()+",<br><br>"
+        		+ "Please visit <a href=\"http://biobranch.org/authenticate/"+u.getToken().getUid()+"/\" target=\"_blank\">http://biobranch.org/authenticate/"+u.getToken().getUid()+"</a> to reset your password.<br><br>"
+        		+ "Best Regards,<br>Ben";
+    	MimeMessage mimeMessage = mailSender.createMimeMessage();
+    	MimeMessageHelper helper;
+		try {
+			mimeMessage.setContent(htmlMsg, "text/html");
+			helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
+			helper.setTo(u.getEmail());
+	    	helper.setSubject("BioBranch: Reset Password Instructions");
+	    	helper.setFrom(from);
+	    	mailSender.send(mimeMessage);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Messaging Exception",e);
+		}
     }
     
 }
