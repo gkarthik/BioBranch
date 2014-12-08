@@ -61,7 +61,7 @@ RocCurve = Marionette.ItemView.extend({
 			}
 			this.points[temp][1] = {x: pY, y:pX};
 		}
-		this.points = this.points.slice(0,data.length);
+		this.points = (data) ? this.points.slice(0,data.length): [];
 		w-=10;
 		var _x= parseFloat(this._x),
 			_y= parseFloat(this._y),

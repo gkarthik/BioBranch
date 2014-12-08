@@ -514,6 +514,7 @@ public class MetaServerController {
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
+		//readtree.setNumFolds(0);
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
 		Instances train = wekaObj.getOrigTrain();
@@ -612,7 +613,7 @@ public class MetaServerController {
 		result.put("size", numnodes);
 		result.put("novelty", nov);
 		result.put("confusion_matrix", cfmatrix);
-		result.put("auc", eval.areaUnderROC(0));
+		result.put("auc", eval.areaUnderROC(1));
 		result.put("auc_data_points", mapper.valueToTree(eval.getRocDataPoints()));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);

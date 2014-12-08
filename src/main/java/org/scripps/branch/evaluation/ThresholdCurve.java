@@ -113,7 +113,8 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 //	        insts.add(makeInstance(tc, probs[sorted[i]]));
 //	      }
 	    }
-	    
+	    LOGGER.debug("Cummlative Pos {}",cumulativePos);
+	    LOGGER.debug("Cummulative Neg {}", cumulativeNeg);
 	    // make sure a zero point gets into the curve
 	    if (tc.getFalseNegative() != totPos || tc.getTrueNegative() != totNeg) {
 	      tc = new TwoClassStats(0, 0, totNeg, totPos);
