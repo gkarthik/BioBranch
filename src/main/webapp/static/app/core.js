@@ -201,6 +201,7 @@ define([
 								break;
 						}
 						Cure.TestDataset.set('optionId', data.score.testoption);
+						//Cure.PlayerNodeCollection.sync();
 					} else {
 						Cure.utils
 						.showAlert("<strong>Server Error</strong><br>Please try again in a while.", 0);
