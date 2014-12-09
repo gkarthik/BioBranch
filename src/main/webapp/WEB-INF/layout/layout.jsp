@@ -13,14 +13,12 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-<link href='./static/css/bootstrap-tour.min.css' rel='stylesheet'
+<link href='${pageContext.request.contextPath}/static/css/bootstrap-tour.min.css' rel='stylesheet'
 	type='text/css'>
-<link href='./static/css/bootstrap-switch.css' rel='stylesheet'
+<link href='${pageContext.request.contextPath}/static/css/bootstrap-switch.css' rel='stylesheet'
 	type='text/css'>
-<link href='./static/css/style.css' rel='stylesheet'
+<link href='${pageContext.request.contextPath}/static/css/style.css' rel='stylesheet'
 	type='text/css'>
-<link rel="stylesheet"
-	href="./static/css/odometer-theme-train-station.css" />
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <style>
