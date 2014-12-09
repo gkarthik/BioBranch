@@ -3,6 +3,7 @@ package org.scripps.branch.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
@@ -332,7 +333,10 @@ public class MetaServerController {
 				List<Feature> fList = p.getFeatures();
 				Boolean exists = false;
 				List<String> entrezIds = new ArrayList<String>();
-				for(Feature f: fList){
+				Iterator<Feature> ite = fList.iterator();
+				Feature f;
+				while(ite.hasNext()){
+					f = ite.next();
 					for(Attribute a: f.getAttributes()){
 						if(a.getDataset().getId() == d.getId()){
 							exists = true;
@@ -340,7 +344,7 @@ public class MetaServerController {
 						}
 					}
 					if(!exists){
-						fList.remove(f);
+						ite.remove();
 					}
 				}
 				result_json = mapper.writeValueAsString(fSer.rankFeatures(getReqInstances(data), entrezIds, d));
