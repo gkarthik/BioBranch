@@ -1,5 +1,4 @@
 require.config({
-      baseUrl : base_url+"static/",
       waitSeconds: 40,
       paths : {
         underscore : 'lib/underscore',
@@ -8,25 +7,14 @@ require.config({
         backboneDeepModel: 'lib/deep-model.min',
         marionette : 'lib/marionette.backbone.min',
         //csb: ""/*"http://yako.io/jsapi/csb"*/,
-
-        // jQuery
         jquery : 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min',
         jqueryui : 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min',
-
-        // d3
         d3 : 'lib/d3.v3',
-
-        // mygeneautocomplete
         myGeneAutocomplete : 'lib/mygene_autocomplete_jqueryui',
         text : 'lib/text',
         odometer: 'lib/odometer',
-        
-        //Bootstrap Tour
         bootstrapTour: 'lib/bootstrap-tour-standalone.min',
-        
-        //Bootstrap Switch
         bootstrapSwitch : 'lib/bootstrap-switch',
-        tmpldir: base_url+"static",
       },
       shim : {
         jquery : {
