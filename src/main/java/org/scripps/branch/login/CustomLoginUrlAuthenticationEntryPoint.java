@@ -33,10 +33,10 @@ public class CustomLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticati
 		if (referrer != null && !referrer.contains("login") && !referrer.contains("datasets")) {
 			request.getSession().setAttribute("url_prior_login", referrer);
 		}
-		if(referrer.endsWith(request.getSession().getServletContext().getContextPath()) || referrer.endsWith(request.getSession().getServletContext().getContextPath()+"/")){
-			 redirectStrategy.sendRedirect(request, response, "/login");
-		} else {
+		if(referrer.contains("treeid") || referrer.contains("dataset")){
 			redirectStrategy.sendRedirect(request, response, "/login?error=access_denied");
+		} else {
+			redirectStrategy.sendRedirect(request, response, "/login");
 		}
 	}
 }

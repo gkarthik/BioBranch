@@ -1,12 +1,12 @@
 <div id="choose-category" class="btn-group" data-toggle="buttons">
   <label class="btn btn-primary active choose-category <% if(!Cure.dataset.get('validateGenes')){ print('disabled'); }%>" data-target="genes">
-    <input type="radio"><img title="Switch to Genes" src="<% print(base_url) %>/static/img/dna.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
+    <input type="radio"><img title="Switch to Genes" src="<% print(base_url) %>static/img/dna.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validateNonGenes')){ print('disabled'); }%>" data-target="clinicalfeatures">
-    <input type="radio"><img title="Switch to Non Gene Features" src="<% print(base_url) %>/static/img/doctor.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
+    <input type="radio"><img title="Switch to Non Gene Features" src="<% print(base_url) %>static/img/doctor.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
   <label class="btn btn-primary choose-category <% if(!Cure.dataset.get('validatecf')){ print('disabled'); }%>" data-target="customfeatures">
-    <input type="radio"><img title="Switch to Custom Features" src="<% print(base_url) %>/static/img/function.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
+    <input type="radio"><img title="Switch to Custom Features" src="<% print(base_url) %>static/img/function.png" class="switch-image" data-toggle="tooltip" data-placement="bottom">
   </label>
 </div>
 <%
