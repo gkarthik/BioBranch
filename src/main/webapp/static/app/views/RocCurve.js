@@ -43,25 +43,15 @@ RocCurve = Marionette.ItemView.extend({
 			w = parseFloat(this.width),
 			h = parseFloat(this.height),
 			SVGParent = d3.select(".roc-line-wrapper");
-		var t=[0 ,0];//X - FPR, Y - TPR
-		for(var temp in data){
-			if(data[temp]){
-				t[1]++;
-				continue;
-			} 
-			t[0]++;
-		}
-		var dX = 1/t[0], dY = 1/t[1], pX = 0 , pY = 0;
-		for(var temp in data){
-			this.points[temp] = [{x: pY, y:pX}, {}];
-			if(data[temp]){
-				pY+=dY;
-			} else {
-				pX += dX;
+		this.points = [];
+		if(data.length>0){
+			this.points.push([{x: 0, y:0}, {x: data[0][1], y:data[0][0]}]);
+			for(var i = 0; i<data.length-1;i++){
+				this.points.push([{x: data[i][1], y: data[i][0]}, {x: data[i+1][1], y: data[i+1][0]}]);
 			}
-			this.points[temp][1] = {x: pY, y:pX};
+			this.points.push([ {x: data[data.length-1][1], y:data[data.length-1][0]}, {x: 1, y:1}]);
 		}
-		this.points = (data) ? this.points.slice(0,data.length): [];
+		console.log(this.points);
 		w-=10;
 		var _x= parseFloat(this._x),
 			_y= parseFloat(this._y),
