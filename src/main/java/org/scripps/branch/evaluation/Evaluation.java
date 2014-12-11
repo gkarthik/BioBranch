@@ -1,5 +1,6 @@
 package org.scripps.branch.evaluation;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import org.scripps.branch.classifier.ManualTree;
@@ -26,7 +27,7 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	
 	private int m_pred = -1;
 	
-	private Double[] rocDataPoints;
+	private ArrayList<Double[]> rocDataPoints;
 	
 	LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 
@@ -197,11 +198,11 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		    }
 		  }
 
-		public Double[] getRocDataPoints() {
+		public ArrayList<Double[]> getRocDataPoints() {
 			return rocDataPoints;
 		}
 
-		public void setRocDataPoints(Double[] rocDataPoints) {
+		public void setRocDataPoints(ArrayList<Double[]> rocDataPoints) {
 			this.rocDataPoints = rocDataPoints;
 		}
 	

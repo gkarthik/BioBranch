@@ -1,6 +1,7 @@
 package org.scripps.branch.evaluation;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import weka.core.Utils;
 
 public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	
-	private Double[] rocDataPoints;
+	private static ArrayList<Double[]> rocDataPoints;
 
 	/**
 	   * Calculates the performance stats for the desired class and return 
@@ -34,6 +35,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	      return null;
 	    }
 	    
+	    double posIndex = classIndex;
 	    double totPos = 0, totNeg = 0;
 	    double [] probs = getProbabilities(predictions, classIndex);
 	    // Get distribution of positive/negatives
@@ -55,14 +57,14 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	        totNeg += pred.weight();
 	      }
 	    }
-
+	    
 	    Instances insts = makeHeader();
 	    int [] sorted = Utils.sort(probs);
-	    rocDataPoints = new Double[sorted.length];
 	    TwoClassStats tc = new TwoClassStats(totPos, totNeg, 0, 0);
 	    double threshold = 0;
 	    double cumulativePos = 0;
 	    double cumulativeNeg = 0;
+	    double maxIndex = ((NominalPrediction)predictions.elementAt(sorted[sorted.length-1])).predicted();
 	    for (int i = 0; i < sorted.length; i++) {
 
 	      if ((i == 0) || (probs[sorted[i]] > threshold)) {
@@ -96,13 +98,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	      } else {
 		cumulativeNeg += pred.weight();
 	      }
-	      
-	      if (pred.actual() == classIndex) {
-	    	  rocDataPoints[i] = 1.00;
-	      } else {
-	    	  rocDataPoints[i] = 0.00;
-	      }
-
 	      /*
 	      System.out.println(tc + " " + probs[sorted[i]] 
 	                         + " " + (pred.actual() == classIndex));
@@ -113,8 +108,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 //	        insts.add(makeInstance(tc, probs[sorted[i]]));
 //	      }
 	    }
-	    LOGGER.debug("Cummlative Pos {}",cumulativePos);
-	    LOGGER.debug("Cummulative Neg {}", cumulativeNeg);
+	    generateROCPoints(predictions, sorted, probs, maxIndex, totNeg, totPos);
 	    // make sure a zero point gets into the curve
 	    if (tc.getFalseNegative() != totPos || tc.getTrueNegative() != totNeg) {
 	      tc = new TwoClassStats(0, 0, totNeg, totPos);
@@ -125,6 +119,35 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    return insts;
 	  }
 	  
+	  public void generateROCPoints(FastVector predictions, int[] sorted, double[] probs, double classIndex, double totNeg, double totPos){
+		  int tp = 0;
+		  int fp = 0;
+		  int i=0;
+		  NominalPrediction pred;
+		  rocDataPoints = new ArrayList<Double[]>();
+		  Double[] tmp = new Double[2];
+		  double threshold = 0;
+		  LOGGER.debug("Probabilities {}", probs);
+		  while(i < sorted.length) {
+			  pred = (NominalPrediction)predictions.elementAt(sorted[i]);
+			  if(pred.actual() == classIndex){
+			    	 tp+=1;
+			     } else {
+			    	 fp+=1;
+			     }
+			  if(probs[sorted[i]]>threshold){
+				  tmp = new Double[2];
+				  tmp[0] = (double) (fp/(totNeg));  
+				  tmp[1] = (double) (tp/(totPos));
+				  rocDataPoints.add(tmp); 
+				  threshold = probs[sorted[i]];
+			  }
+			     i++;
+		  }
+		  LOGGER.debug("totNeg {}", totNeg);
+		  LOGGER.debug("totPos {}", totPos);
+		  LOGGER.debug("ROC {}", rocDataPoints.toArray());
+	  }
 	  /**
 	   * generates an instance out of the given data
 	   * 
@@ -241,11 +264,12 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    return area;
 	  }
 
-		public Double[] getRocDataPoints() {
+		public ArrayList<Double[]> getRocDataPoints() {
 			return rocDataPoints;
 		}
 
-		public void setRocDataPoints(Double[] rocDataPoints) {
+		public void setRocDataPoints(ArrayList<Double[]> rocDataPoints) {
 			this.rocDataPoints = rocDataPoints;
 		}
+		
 }
