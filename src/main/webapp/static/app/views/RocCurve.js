@@ -14,10 +14,12 @@ RocCurve = Marionette.ItemView.extend({
 	},
 	ui:{
 		rocChart: "#roc-curve",
-		toggleCurve: ".toggleCurve"
+		toggleCurve: ".toggleCurve",
+		rocClass: ".roc-class"
 	},
 	events: {
-		'click .toggleCurve': 'toggleCurve'
+		'click .toggleCurve': 'toggleCurve',
+		'change .roc-class': 'changeIndex'
 	},
 	toggleCurve: function(){
 		if($(this.ui.toggleCurve).hasClass("showCurve")){
@@ -32,24 +34,36 @@ RocCurve = Marionette.ItemView.extend({
 			$(this.ui.toggleCurve).html("Show ROC Curve");
 		}
 	},
+	changeIndex: function(){
+		this.model.set('auc_max_index', $(this.ui.rocClass).val());
+		this.drawChart();
+	},
 	points : [],
+	rocPoints: [],
 	template: RocCurveTemplate,
 	width: 270,
 	height: 200,
+	index: 0,
 	_x: 50,
 	_y: 50,
 	drawChart: function(){
+		this.index = this.model.get('auc_max_index');
+		$(this.ui.rocClass).val(this.index);
+		var color = (classValues[this.index] == Cure.posNodeName) ? "blue" : "red";
+		$(this.ui.rocClass).css({"color":color});
 		var data = this.model.get('auc_data_points'),
 			w = parseFloat(this.width),
 			h = parseFloat(this.height),
 			SVGParent = d3.select(".roc-line-wrapper");
 		this.points = [];
+		this.rocPoints = [];
 		if(data.length>0){
-			this.points.push([{x: 0, y:0}, {x: data[0][1], y:data[0][0]}]);
-			for(var i = 0; i<data.length-1;i++){
-				this.points.push([{x: data[i][1], y: data[i][0]}, {x: data[i+1][1], y: data[i+1][0]}]);
+			data = this.model.get('auc_data_points')[1-this.index];
+			data.reverse();
+			this.rocPoints = data;
+			for(var i = 0; i<data.length-1;i++){				
+				this.points.push([{x: data[i]["False Positive Rate"], y: data[i]["True Positive Rate"]}, {x: data[i+1]["False Positive Rate"], y: data[i+1]["True Positive Rate"]}]);
 			}
-			this.points.push([ {x: data[data.length-1][1], y:data[data.length-1][0]}, {x: 1, y:1}]);
 		}
 		console.log(this.points);
 		w-=10;
@@ -60,17 +74,40 @@ RocCurve = Marionette.ItemView.extend({
 		
 		 var SVG = d3.select(".roc-lines-wrapper");
 		 
+		 var P = SVG.selectAll(".roc-point").data(this.rocPoints);
+		 
+		 P.enter()
+		  .append("svg:circle")
+		  .attr("r",0)
+		  .attr("fill","steelblue")
+		  .attr("stroke","steelblue")
+		  .attr("stroke-width",2)
+		  .attr("cx",function(d){
+			  return xScale(d["False Positive Rate"]);
+		  })
+		  .attr("cy",function(d){
+			  return yScale(d["True Positive Rate"]);
+		  });
+		 
+		 P.transition().duration(500)
+		  .attr("r",5)
+		  .attr("fill","none");
+		 
+		 P.exit().transition().duration(500)
+		  .attr("r","0")
+		  .remove();
+		 
 		 var dP = SVG.selectAll(".roc-line").data(this.points);
 		 
 		 var dpEnter = dP.enter().append("svg:line")
 		 	.attr("class","roc-line").attr("x1",function(d){
-				return xScale(0);
+				return xScale(d[0].x);
 			}).attr("y1",function(d){
-				return yScale(0);
+				return yScale(d[0].y);
 			}).attr("x2",function(d){
-				return xScale(1);
+				return xScale(d[0].x);
 			}).attr("y2",function(d){
-				return yScale(1);
+				return yScale(d[0].y);
 			}).transition().duration(500).attr("x1",function(d){
 				return xScale(d[0].x);
 			}).attr("y1",function(d){
@@ -92,13 +129,13 @@ RocCurve = Marionette.ItemView.extend({
 			});
 		 
 		 dP.exit().transition().duration(500).attr("x1",function(d){
-				return xScale(0);
+				return xScale(d[1].x);
 			}).attr("y1",function(d){
-				return yScale(0);
+				return yScale(d[1].y);
 			}).attr("x2",function(d){
-				return xScale(1);
+				return xScale(d[1].x);
 			}).attr("y2",function(d){
-				return yScale(1);
+				return yScale(d[1].y);
 			}).remove();
 	},
 	drawAxis: function(){
@@ -139,6 +176,8 @@ RocCurve = Marionette.ItemView.extend({
 	 SVG.attr("transform", "translate("+_x+",0)");
 	},
 	onShow: function(){
+		this.index = this.model.get('auc_max_index');
+		$(this.ui.rocClass).val(this.index);
 		this.drawAxis();
 		this.drawChart();
 		if(window.innerHeight > Cure.sidebarHeight){

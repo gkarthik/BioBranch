@@ -15,7 +15,8 @@ define([
 		previousAttributes: {},
 		changeFlag: 0,
 		auc: 0,
-		auc_data_points: []
+		auc_data_points: [[],[]],
+		auc_max_index: 1
 	},
 	initialize: function(){
 		this.listenTo(this, 'change:score', this.updateScore);

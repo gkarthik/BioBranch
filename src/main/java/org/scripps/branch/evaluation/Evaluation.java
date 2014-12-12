@@ -19,15 +19,18 @@ public class Evaluation extends weka.classifiers.Evaluation{
 
 	public Evaluation(Instances data) throws Exception {
 		super(data);
+		m_Classes =data.classAttribute().numValues();
 	}
 		
 	private FastVector m_Predictions;
+	
+	private int m_Classes;
 	
 	private int m_Predicted = -1;
 	
 	private int m_pred = -1;
 	
-	private ArrayList<Double[]> rocDataPoints;
+	private ThresholdCurve tc = new ThresholdCurve();
 	
 	LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 
@@ -191,19 +194,20 @@ public class Evaluation extends weka.classifiers.Evaluation{
 		    if (m_Predictions == null) {
 		      return Instance.missingValue();
 		    } else {
-		      ThresholdCurve tc = new ThresholdCurve();
+		      tc = new ThresholdCurve();
+		      tc.setM_Classes(m_Classes);
 		      Instances result = tc.getCurve(m_Predictions, classIndex);
-		      rocDataPoints = tc.getRocDataPoints();
+		      tc.generateRocPoints(m_Predictions, classIndex);
 		      return ThresholdCurve.getROCArea(result);
 		    }
 		  }
 
-		public ArrayList<Double[]> getRocDataPoints() {
-			return rocDataPoints;
+		public ThresholdCurve getTc() {
+			return tc;
 		}
 
-		public void setRocDataPoints(ArrayList<Double[]> rocDataPoints) {
-			this.rocDataPoints = rocDataPoints;
+		public void setTc(ThresholdCurve tc) {
+			this.tc = tc;
 		}
 	
 }
