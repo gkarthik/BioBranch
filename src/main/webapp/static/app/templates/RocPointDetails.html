@@ -4,7 +4,7 @@ if(t=="Lift"){
 }
 %>
 <tr>
-	<td><%= t %> :</td>
-	<td><%= d[t] %></td>
+	<td style="text-align: right;"><%= t %> :</td>
+	<td><%= Math.round(d[t]*100)/100 %></td>
 </tr>
 <% } %>
