@@ -1,8 +1,7 @@
 package org.scripps.branch.evaluation;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,11 @@ import weka.core.Utils;
 
 public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	
-	private static ArrayList<Double[]> rocDataPoints;
+	private int m_Classes = 2;
+	
+	private double maxIndex = 0;
+
+	private static ArrayList<ArrayList<HashMap<String, Double>>> rocDataPoints = new ArrayList<ArrayList<HashMap<String, Double>>>();
 
 	/**
 	   * Calculates the performance stats for the desired class and return 
@@ -34,8 +37,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	         .distribution().length <= classIndex)) {
 	      return null;
 	    }
-	    
-	    double posIndex = classIndex;
 	    double totPos = 0, totNeg = 0;
 	    double [] probs = getProbabilities(predictions, classIndex);
 	    // Get distribution of positive/negatives
@@ -64,10 +65,13 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    double threshold = 0;
 	    double cumulativePos = 0;
 	    double cumulativeNeg = 0;
-	    double maxIndex = ((NominalPrediction)predictions.elementAt(sorted[sorted.length-1])).predicted();
+	    maxIndex = ((NominalPrediction)predictions.elementAt(sorted[sorted.length-1])).predicted();
 	    for (int i = 0; i < sorted.length; i++) {
 
 	      if ((i == 0) || (probs[sorted[i]] > threshold)) {
+	    	  if(classIndex == maxIndex){
+	    		  
+	    	  }
 		tc.setTruePositive(tc.getTruePositive() - cumulativePos);
 		tc.setFalseNegative(tc.getFalseNegative() + cumulativePos);
 		tc.setFalsePositive(tc.getFalsePositive() - cumulativeNeg);
@@ -108,7 +112,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 //	        insts.add(makeInstance(tc, probs[sorted[i]]));
 //	      }
 	    }
-	    generateROCPoints(predictions, sorted, probs, maxIndex, totNeg, totPos);
+	    
 	    // make sure a zero point gets into the curve
 	    if (tc.getFalseNegative() != totPos || tc.getTrueNegative() != totNeg) {
 	      tc = new TwoClassStats(0, 0, totNeg, totPos);
@@ -119,35 +123,168 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    return insts;
 	  }
 	  
-	  public void generateROCPoints(FastVector predictions, int[] sorted, double[] probs, double classIndex, double totNeg, double totPos){
-		  int tp = 0;
-		  int fp = 0;
-		  int i=0;
-		  NominalPrediction pred;
-		  rocDataPoints = new ArrayList<Double[]>();
-		  Double[] tmp = new Double[2];
-		  double threshold = 0;
-		  LOGGER.debug("Probabilities {}", probs);
-		  while(i < sorted.length) {
-			  pred = (NominalPrediction)predictions.elementAt(sorted[i]);
-			  if(pred.actual() == classIndex){
-			    	 tp+=1;
-			     } else {
-			    	 fp+=1;
-			     }
-			  if(probs[sorted[i]]>threshold){
-				  tmp = new Double[2];
-				  tmp[0] = (double) (fp/(totNeg));  
-				  tmp[1] = (double) (tp/(totPos));
-				  rocDataPoints.add(tmp); 
-				  threshold = probs[sorted[i]];
-			  }
-			     i++;
+	  public Instances getCurveByClass(FastVector predictions, int classIndex) {
+
+		    if ((predictions.size() == 0) ||
+		        (((NominalPrediction)predictions.elementAt(0))
+		         .distribution().length <= classIndex)) {
+		      return null;
+		    }
+		    double totPos = 0, totNeg = 0;
+		    double [] probs = getProbabilities(predictions, classIndex);
+		    // Get distribution of positive/negatives
+		    for (int i = 0; i < probs.length; i++) {
+		      NominalPrediction pred = (NominalPrediction)predictions.elementAt(i);
+		      if (pred.actual() == Prediction.MISSING_VALUE) {
+		        LOGGER.debug(getClass().getName() 
+		                           + " Skipping prediction with missing class value");
+		        continue;
+		      }
+		      if (pred.weight() < 0) {
+		    	  LOGGER.debug(getClass().getName() 
+		                           + " Skipping prediction with negative weight");
+		        continue;
+		      }
+		      if (pred.actual() == classIndex) {
+		        totPos += pred.weight();
+		      } else {
+		        totNeg += pred.weight();
+		      }
+		    }
+		    
+		    Instances insts = makeHeader();
+		    int [] sorted = Utils.sort(probs);
+		    TwoClassStats tc = new TwoClassStats(totPos, totNeg, 0, 0);
+		    double threshold = 0;
+		    double cumulativePos = 0;
+		    double cumulativeNeg = 0;
+		    for (int i = 0; i < sorted.length; i++) {
+
+		      if ((i == 0) || (probs[sorted[i]] > threshold)) {
+		  			tc.setTruePositive(tc.getTruePositive() - cumulativePos);
+					tc.setFalseNegative(tc.getFalseNegative() + cumulativePos);
+					tc.setFalsePositive(tc.getFalsePositive() - cumulativeNeg);
+					tc.setTrueNegative(tc.getTrueNegative() + cumulativeNeg);
+			threshold = probs[sorted[i]];
+			insts.add(makeInstance(tc, threshold));
+			cumulativePos = 0;
+			cumulativeNeg = 0;
+			if (i == sorted.length - 1) {
+			  break;
+			}
+		      }
+
+		      NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
+
+		      if (pred.actual() == Prediction.MISSING_VALUE) {
+			LOGGER.debug(getClass().getName()
+					   + " Skipping prediction with missing class value");
+			continue;
+		      }
+		      if (pred.weight() < 0) {
+			LOGGER.debug(getClass().getName() 
+					   + " Skipping prediction with negative weight");
+			continue;
+		      }
+		    	  if (pred.actual() == classIndex) {
+		  			cumulativePos += pred.weight();
+		  		      } else {
+		  			cumulativeNeg += pred.weight();
+		  		      }
+		      /*
+		      System.out.println(tc + " " + probs[sorted[i]] 
+		                         + " " + (pred.actual() == classIndex));
+		      */
+//		      if ((i != (sorted.length - 1)) &&
+//		          ((i == 0) ||  
+//		          (probs[sorted[i]] != probs[sorted[i - 1]]))) {
+//		        insts.add(makeInstance(tc, probs[sorted[i]]));
+//		      }
+		    }
+		    
+		    // make sure a zero point gets into the curve
+		    if (tc.getFalseNegative() != totPos || tc.getTrueNegative() != totNeg) {
+		      tc = new TwoClassStats(0, 0, totNeg, totPos);
+		      threshold = probs[sorted[sorted.length - 1]] + 10e-6;
+		      insts.add(makeInstance(tc, threshold));
+		    }
+		        
+		    return insts;
 		  }
-		  LOGGER.debug("totNeg {}", totNeg);
-		  LOGGER.debug("totPos {}", totPos);
-		  LOGGER.debug("ROC {}", rocDataPoints.toArray());
+	  
+	  public void generateRocPoints(FastVector predictions, int classIndex){
+		  rocDataPoints = new ArrayList<ArrayList<HashMap<String, Double>>>();
+		  for(int i=0;i<m_Classes;i++){
+			  Instances t = getCurveByClass(predictions, i);
+		      rocDataPoints.add(convertToList(t));
+		    }
 	  }
+	  
+	  private ArrayList<HashMap<String, Double>> convertToList(Instances t){
+		  ArrayList<HashMap<String, Double>> data = new ArrayList<HashMap<String, Double>>();
+		  HashMap<String, Double> mp = new HashMap<String, Double>();
+		  for(int i=0;i<t.numInstances();i++){
+			  mp = new HashMap<String, Double>();
+			  for(int j=0;j<t.numAttributes();j++){
+				  mp.put(t.attribute(j).name(),t.instance(i).value(t.attribute(j)));
+			  }
+			  data.add(mp);
+		  }
+		  return data;
+	  }
+
+//	public ArrayList<Double[]> generateROCPoints(FastVector predictions, int classIndex){
+//		double totNeg = 0;
+//		double totPos = 0;
+//		 double [] probs = getProbabilities(predictions, classIndex);
+//		 int [] sorted = Utils.sort(probs);
+//		for (int i = 0; i < probs.length; i++) {
+//		      NominalPrediction pred = (NominalPrediction)predictions.elementAt(i);
+//		      if (pred.actual() == Prediction.MISSING_VALUE) {
+//		        LOGGER.debug(getClass().getName() 
+//		                           + " Skipping prediction with missing class value");
+//		        continue;
+//		      }
+//		      if (pred.weight() < 0) {
+//		    	  LOGGER.debug(getClass().getName() 
+//		                           + " Skipping prediction with negative weight");
+//		        continue;
+//		      }
+//		      if (pred.actual() == classIndex) {
+//		        totPos += pred.weight();
+//		      } else {
+//		        totNeg += pred.weight();
+//		      }
+//		    }
+//		  int tp = 0;
+//		  int fp = 0;
+//		  int i=0;
+//		  NominalPrediction pred;
+//		  ArrayList<Double[]> dataPoints = new ArrayList<Double[]>();
+//		  Double[] tmp = new Double[2];
+//		  double threshold = 0;
+//		  LOGGER.debug("Probabilities {}", probs);
+//		  while(i < sorted.length) {
+//			  pred = (NominalPrediction)predictions.elementAt(sorted[i]);
+//			  if(pred.actual() == classIndex){
+//			    	 tp+=1;
+//			     } else {
+//			    	 fp+=1;
+//			     }
+//			  if(probs[sorted[i]]>threshold){
+//				  tmp = new Double[2];
+//				  tmp[0] = (double) (fp/(totNeg));  
+//				  tmp[1] = (double) (tp/(totPos));
+//				  dataPoints.add(tmp); 
+//				  threshold = probs[sorted[i]];
+//			  }
+//			     i++;
+//		  }
+//		  LOGGER.debug("totNeg {}", totNeg);
+//		  LOGGER.debug("totPos {}", totPos);
+//		  LOGGER.debug("ROC {}", rocDataPoints.toArray());
+//		  return dataPoints;
+//	  }
 	  /**
 	   * generates an instance out of the given data
 	   * 
@@ -264,12 +401,27 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    return area;
 	  }
 
-		public ArrayList<Double[]> getRocDataPoints() {
+		public ArrayList<ArrayList<HashMap<String, Double>>> getRocDataPoints() {
 			return rocDataPoints;
 		}
 
-		public void setRocDataPoints(ArrayList<Double[]> rocDataPoints) {
+		public void setRocDataPoints(ArrayList<ArrayList<HashMap<String, Double>>> rocDataPoints) {
 			this.rocDataPoints = rocDataPoints;
 		}
 		
+		public int getM_Classes() {
+			return m_Classes;
+		}
+
+		public void setM_Classes(int m_Classes) {
+			this.m_Classes = m_Classes;
+		}
+		
+		public double getMaxIndex() {
+			return maxIndex;
+		}
+
+		public void setMaxIndex(double maxIndex) {
+			this.maxIndex = maxIndex;
+		}
 }

@@ -1,2 +1,7 @@
+<select class="form-control roc-class" style="color: <%= (classValues[auc_max_index] == Cure.posNodeName) ? "blue" : "red" %>">
+<% for(var i = classValues.length-1; i>=0; i--){ %>
+	<option style="color: <%= (classValues[i] == Cure.posNodeName) ? "blue" : "red" %>" value="<%= i %>"><%= classValues[i] %></option>
+<% } %>
+</select>
 <button class="btn btn-primary btn-sm pull-right toggleCurve showCurve">Show ROC Curve</button>
 <svg id="roc-curve" style="display:none;"></svg>

@@ -618,7 +618,8 @@ public class MetaServerController {
 		result.put("novelty", nov);
 		result.put("confusion_matrix", cfmatrix);
 		result.put("auc", eval.areaUnderROC(0));
-		result.put("auc_data_points", mapper.valueToTree(eval.getRocDataPoints()));
+		result.put("auc_data_points", mapper.valueToTree(eval.getTc().getRocDataPoints().toArray()));
+		result.put("auc_max_index", mapper.valueToTree(eval.getTc().getMaxIndex()));
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
