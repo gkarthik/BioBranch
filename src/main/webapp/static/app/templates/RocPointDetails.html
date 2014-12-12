@@ -1,0 +1,10 @@
+<% for(var t in d){ 
+if(t=="Lift"){
+	continue;
+}
+%>
+<tr>
+	<td><%= t %> :</td>
+	<td><%= d[t] %></td>
+</tr>
+<% } %>
