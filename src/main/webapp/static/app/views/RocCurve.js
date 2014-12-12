@@ -5,17 +5,27 @@ define([
 	'marionette',
 	'backbone',
 	//Templates
-	'text!static/app/templates/RocCurve.html'
-    ], function(d3, $, Marionette, Backbone, RocCurveTemplate) {
+	'text!static/app/templates/RocCurve.html',
+	'text!static/app/templates/RocPointDetails.html'
+    ], function(d3, $, Marionette, Backbone, RocCurveTemplate, RocDetailsTmpl) {
 RocCurve = Marionette.ItemView.extend({
 	initialize : function() {
 		_.bindAll(this, 'drawChart', 'drawAxis');
 		this.listenTo(this.model, 'change:auc', this.drawChart);
+		var thisView = this;
+		$(document).mouseup(function(e){
+			var classToclose = $(".roc-point-details");
+			if (!classToclose.is(e.target)	&& classToclose.has(e.target).length == 0) 
+			{
+				classToclose.hide();
+			}
+		});
 	},
 	ui:{
 		rocChart: "#roc-curve",
 		toggleCurve: ".toggleCurve",
-		rocClass: ".roc-class"
+		rocClass: ".roc-class",
+		rocPointDetails: '.roc-point-details'
 	},
 	events: {
 		'click .toggleCurve': 'toggleCurve',
@@ -47,6 +57,7 @@ RocCurve = Marionette.ItemView.extend({
 	_x: 50,
 	_y: 50,
 	drawChart: function(){
+		var detailsEl = $(this.ui.rocPointDetails);
 		this.index = this.model.get('auc_max_index');
 		$(this.ui.rocClass).val(this.index);
 		var color = (classValues[this.index] == Cure.posNodeName) ? "blue" : "red";
@@ -65,7 +76,7 @@ RocCurve = Marionette.ItemView.extend({
 				this.points.push([{x: data[i]["False Positive Rate"], y: data[i]["True Positive Rate"]}, {x: data[i+1]["False Positive Rate"], y: data[i+1]["True Positive Rate"]}]);
 			}
 		}
-		console.log(this.points);
+		console.log(this.rocPoints);
 		w-=10;
 		var _x= parseFloat(this._x),
 			_y= parseFloat(this._y),
@@ -73,29 +84,6 @@ RocCurve = Marionette.ItemView.extend({
 			yScale = d3.scale.linear().domain([0, 1]).range([parseFloat(h-_y), 0]);
 		
 		 var SVG = d3.select(".roc-lines-wrapper");
-		 
-		 var P = SVG.selectAll(".roc-point").data(this.rocPoints);
-		 
-		 P.enter()
-		  .append("svg:circle")
-		  .attr("r",0)
-		  .attr("fill","steelblue")
-		  .attr("stroke","steelblue")
-		  .attr("stroke-width",2)
-		  .attr("cx",function(d){
-			  return xScale(d["False Positive Rate"]);
-		  })
-		  .attr("cy",function(d){
-			  return yScale(d["True Positive Rate"]);
-		  });
-		 
-		 P.transition().duration(500)
-		  .attr("r",5)
-		  .attr("fill","none");
-		 
-		 P.exit().transition().duration(500)
-		  .attr("r","0")
-		  .remove();
 		 
 		 var dP = SVG.selectAll(".roc-line").data(this.points);
 		 
@@ -137,6 +125,38 @@ RocCurve = Marionette.ItemView.extend({
 			}).attr("y2",function(d){
 				return yScale(d[1].y);
 			}).remove();
+		 
+		 var P = SVG.selectAll(".roc-point").data(this.rocPoints);
+		 
+		 P.enter()
+		  .append("svg:circle")
+		  .attr("class","roc-point")
+		  .style("cursor","pointer")
+		  .attr("r",0)
+		  .attr("fill","white")
+		  .attr("stroke","steelblue")
+		  .attr("stroke-width",2)
+		  .attr("cx",function(d){
+			  return xScale(d["False Positive Rate"]);
+		  }).attr("cy",function(d){
+			  return yScale(d["True Positive Rate"]);
+		  }).on("click", function(d){
+			  detailsEl.show();
+			  detailsEl.html(RocDetailsTmpl({d:d}));
+		  });
+		 
+		 P.transition().duration(500)
+		  .attr("r",5)
+		  .attr("cx",function(d){
+			  return xScale(d["False Positive Rate"]);
+		  }).attr("cy",function(d){
+			  return yScale(d["True Positive Rate"]);
+		  });
+		 
+		 P.exit().transition().duration(500)
+		  .attr("r",0)
+		  .remove();
+		 
 	},
 	drawAxis: function(){
 		console.log(this.ui.rocChart);
