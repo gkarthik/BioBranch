@@ -255,6 +255,14 @@ TreeCollectionView = Backbone.Marionette.CollectionView.extend({
 	className: 'table table-bordered',
 	initialize : function() {
 		this.listenTo(this.collection,'sort', this.render);
+		this.listenTo(this.collection,'fetch', function(){
+			console.log("show");
+			$("#loading-wrapper").show();
+		});
+		this.listenTo(this.collection,'reset', function(){
+			console.log("hide");
+			$("#loading-wrapper").hide();
+		});
 	},
 	ui: {
 		sortAttr: '.sort-attr'
@@ -377,9 +385,7 @@ _.templateSettings = {
 Library.addRegions(options.regions);
 
 Library.UserTreeCollection = new UserTreeCollection();
-Library.UserTreeCollection.fetch();
 Library.CommunityTreeCollection = new CommunityTreeCollection();
-Library.CommunityTreeCollection.fetch();
 Library.SearchTreeCollection = new CommunityTreeCollection();
 
 Library.UserTreeCollectionView = new TreeCollectionView({
@@ -394,6 +400,8 @@ Library.SearchTreeCollectionView = new TreeCollectionView({
 
 Library.MainLayout = new MainLayout();
 Library.mainWrapper.show(Library.MainLayout);
+Library.UserTreeCollection.fetch();
+Library.CommunityTreeCollection.fetch();
 });
 
 //App Start

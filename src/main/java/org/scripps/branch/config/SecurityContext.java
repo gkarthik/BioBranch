@@ -64,7 +64,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic().authenticationEntryPoint(authenticationEntryPoint())
+		http.exceptionHandling().accessDeniedPage("/access-denied").and()
+		.httpBasic().authenticationEntryPoint(authenticationEntryPoint())
 		// Configures form login
 		.and().formLogin()
 				.loginPage("/login")
@@ -83,14 +84,13 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.rememberMe()
 				.key("uniqueSecret")
 				.rememberMeServices(rememberMeServices())
-				.tokenValiditySeconds(172800)
 				//Configures url based authorization
 				.and()
 				.authorizeRequests()
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
 						"/user/register/**", "/save",
-						"/publicCollection", "/workflow", "/contact", "/MetaServer", "/forgot-password", "/authenticate/**").permitAll()
+						"/publicCollection", "/workflow", "/contact", "/MetaServer", "/forgot-password", "/authenticate/**", "/request-dataset").permitAll()
 				// The rest of the our application is protected.
 				.antMatchers("/**").hasRole("USER").antMatchers("/new")
 				.hasRole("USER")

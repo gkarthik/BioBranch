@@ -62,4 +62,10 @@ public class HomeController {
 		}
 		return VIEW_NAME_HOMEPAGE;
 	}
+	
+	@RequestMapping(value = "/access-denied", method = RequestMethod.GET)
+	public String showAccessDeniedPage(WebRequest request, Model model) {
+		LOGGER.debug("Rendering homepage.");
+		return "error/AccessDenied";
+	}
 }
