@@ -37,7 +37,7 @@ stroke-width: 1.5px;
 
 #loading-wrapper{
 	width: 10%;
-	margin-left: 40%;
+	left: 40%;
 	padding: 1.5%;
 	background: none repeat scroll 0% 0% #FFF;
 	border-radius: 5px;
