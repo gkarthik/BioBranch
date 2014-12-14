@@ -1,5 +1,7 @@
 package org.scripps.branch.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -47,6 +49,16 @@ public class DatasetController {
 	@RequestMapping(value = "/datasets", method = RequestMethod.GET)
 	public String addCollection(WebRequest request, Model model) {
 		List<Dataset> dList = dRepo.findAll();
+		 Collections.sort(dList,new Comparator<Dataset>() {
+				@Override
+				public int compare(Dataset d1, Dataset d2) {
+					if(d2.getCollection().getId()!=d1.getCollection().getId()){
+						return (int) (d2.getCollection().getId()-d1.getCollection().getId());
+					} else {
+						return (d2.getName().compareTo(d1.getName()));
+					}
+				}
+	        });
 		model.addAttribute("datasets", dList);
 		return "user/Datasets";
 	}
