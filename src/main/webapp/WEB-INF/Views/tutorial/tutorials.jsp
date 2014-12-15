@@ -25,8 +25,12 @@
 		</c:choose>
 		</div>
 		<div class="row">
-			<h2>Populate Pathway</h2>
-			<form method="POST" action="./populate-pathway">
+			<h1>Admin Page</h1>
+			<hr>
+		</div>
+		<div class="row">
+			<h3>Populate Pathway</h3>
+			<form method="POST" action="${pageContext.request.contextPath}/populate-pathway">
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				Source: 
 				<select name="source">
@@ -37,8 +41,8 @@
 			</form>
 		</div>
 		<div class="row">
-			<h2>Tutorials</h2>
-			<a href="./new" class="btn btn-link">Add Tutorial</a>
+			<h3>Tutorials</h3>
+			<a href="${pageContext.request.contextPath}/tutorial/new" class="btn btn-link">Add Tutorial</a>
 			<table class="table table-striped">
 				<tr>
 					<th>Title</th>

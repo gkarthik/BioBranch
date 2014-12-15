@@ -100,7 +100,11 @@ footer{
  							<a href="${pageContext.request.contextPath}/contact">Contact</a>
  						</p>
  					</li>
- 					<li><a href="${pageContext.request.contextPath}/request-dataset">Request Dataset</a></li>
+ 					<li>
+ 						<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+ 							<a href="${pageContext.request.contextPath}/request-dataset">Request Dataset</a>
+ 						</p>
+ 					</li>
  					<sec:authorize access="isAuthenticated()">
 						<li>
 							<p>

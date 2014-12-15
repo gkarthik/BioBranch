@@ -178,11 +178,12 @@ NodeCollection = Backbone.Collection.extend({
 					if(scoreArray.novelty == "Infinity"){
 						scoreArray.novelty = 0;
 					}
-					if(scoreArray.auc_data_points.length == 2){
-						scoreArray.auc_data_points = (Cure.PlayerNodeCollection.length>0) ? scoreArray.auc_data_points : [];
-					} else {
-						Cure.PlayerNodeCollection.sync();
-					}
+					var sArray = (scoreArray.auc_data_points || []);
+						if(sArray.length == 2){
+							scoreArray.auc_data_points = (Cure.PlayerNodeCollection.length>0) ? scoreArray.auc_data_points : [];
+						} else {
+							Cure.PlayerNodeCollection.sync();
+						}
 					Cure.Score.set("previousAttributes",Cure.Score.toJSON());
 					Cure.Score.set(scoreArray);
 					if(Cure.PlayerNodeCollection.length>0){
