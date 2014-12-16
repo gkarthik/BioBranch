@@ -179,6 +179,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 	/** A tree captured from json **/
 	protected JsonNode jsontree;
 
+	protected ObjectNode[] jsonnode = new ObjectNode[2];
+
 	/** distribution array **/
 	protected HashMap m_distributionData = new HashMap();
 
@@ -561,6 +563,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 		// the evaluation
 		ObjectNode evalresults = (ObjectNode) options;
 		ObjectNode _node = (ObjectNode) node;
+		//For Roc - Node Match
+		_node.set("roc_uid_0", null);
+		_node.set("roc_uid_1", null);
 
 		Map<String, JsonNode> sons = new HashMap<String, JsonNode>();
 		// String name = node_name.asText();
@@ -821,6 +826,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					maxCount = m_ClassDistribution[maxIndex];
 					errors = bin_size - maxCount;
 					pct_correct = (bin_size - errors) / bin_size;
+					this.setJsonNodeByClass(maxIndex, _node);
 				}
 				if(node.get("pickInst") != null){
 					getInstanceData = node.get("pickInst").asBoolean();
@@ -836,6 +842,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if(node.get("setClass")!=null){
 					String setClass = node.get("setClass").asText();
 					class_name = m_Info.classAttribute().value(m_ClassAssignment.get(setClass));
+					this.setJsonNodeByClass(m_ClassAssignment.get(setClass), _node);
 				}
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
@@ -871,6 +878,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					children = mapper.createArrayNode();
 				}
 				ObjectNode child = mapper.createObjectNode();
+				this.setJsonNodeByClass(maxIndex, _node);
 				String class_name = m_Info.classAttribute().value(maxIndex);
 				child.put("majClass", class_name);
 				String nodeName = node.get("name").asText();
@@ -1171,7 +1179,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 				// Node is not a leaf
 				if (instance.isMissing(m_Attribute)) {
-
+						LOGGER.debug("Missing attribute");
 					// Value is missing
 					returnedDist = new double[m_Info.numClasses()];
 
@@ -1190,15 +1198,18 @@ public class ManualTree extends Classifier implements OptionHandler,
 					// For nominal attributes
 					returnedDist = m_Successors[(int) instance.value(m_Attribute)]
 							.distributionForInstance(instance);
+					parentNode.setJsonnode(m_Successors[(int) instance.value(m_Attribute)].getJsonnode());
 				} else {
 
 					// For numeric attributes
 					if (instance.value(m_Attribute) < m_SplitPoint) {
 						returnedDist = m_Successors[0]
 								.distributionForInstance(instance);
+						parentNode.setJsonnode(m_Successors[0].getJsonnode());
 					} else {
 						returnedDist = m_Successors[1]
 								.distributionForInstance(instance);
+						parentNode.setJsonnode(m_Successors[1].getJsonnode());
 					}
 				}
 			} else if (m_Attribute >= m_Info.numAttributes()-1) {
@@ -1215,6 +1226,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 							parentNode.setM_pred(m_ClassAssignment.get((check == 0) ? "Outside": "Inside"));
 						}
 						returnedDist = m_Successors[check].distributionForInstance(instance);
+						parentNode.setJsonnode(m_Successors[check].getJsonnode());
 					
 				} else {
 					String classifierId = "";
@@ -1224,6 +1236,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					if (predictedClass != Instance.missingValue()) {
 						returnedDist = m_Successors[(int) predictedClass]
 								.distributionForInstance(instance);
+						parentNode.setJsonnode(m_Successors[(int) predictedClass].getJsonnode());
 					}
 				}
 			}
@@ -2311,5 +2324,21 @@ public class ManualTree extends Classifier implements OptionHandler,
 			LOGGER.error("Excepion",e);
 			return "RandomTree: tree can't be printed";
 		}
+	}
+	
+	public ObjectNode[] getJsonnode() {
+		return jsonnode;
+	}
+
+	public void setJsonnode(ObjectNode[] jsonnode) {
+		this.jsonnode = jsonnode;
+	}
+	
+	public ObjectNode getJsonNodeByClass(int classIndex){
+		return jsonnode[classIndex];
+	}
+	
+	public void setJsonNodeByClass(int classIndex, ObjectNode jsonnode){
+		this.jsonnode[classIndex] = jsonnode;
 	}
 }
