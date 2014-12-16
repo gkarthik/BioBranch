@@ -179,7 +179,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 	/** A tree captured from json **/
 	protected JsonNode jsontree;
 
-	protected ObjectNode[] jsonnode = new ObjectNode[2];
+	protected ObjectNode jsonnode;
 
 	/** distribution array **/
 	protected HashMap m_distributionData = new HashMap();
@@ -826,7 +826,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 					maxCount = m_ClassDistribution[maxIndex];
 					errors = bin_size - maxCount;
 					pct_correct = (bin_size - errors) / bin_size;
-					this.setJsonNodeByClass(maxIndex, _node);
+					this.setJsonnode(_node);
 				}
 				if(node.get("pickInst") != null){
 					getInstanceData = node.get("pickInst").asBoolean();
@@ -842,7 +842,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if(node.get("setClass")!=null){
 					String setClass = node.get("setClass").asText();
 					class_name = m_Info.classAttribute().value(m_ClassAssignment.get(setClass));
-					this.setJsonNodeByClass(m_ClassAssignment.get(setClass), _node);
+					this.setJsonnode(_node);
 				}
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
@@ -878,7 +878,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 					children = mapper.createArrayNode();
 				}
 				ObjectNode child = mapper.createObjectNode();
-				this.setJsonNodeByClass(maxIndex, _node);
 				String class_name = m_Info.classAttribute().value(maxIndex);
 				child.put("majClass", class_name);
 				String nodeName = node.get("name").asText();
@@ -897,6 +896,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				child.put("options", c_options);
 				children.add(child);
 				_node.put("children", children);
+				this.setJsonnode(child);
 			}
 		}
 	}
@@ -2326,19 +2326,11 @@ public class ManualTree extends Classifier implements OptionHandler,
 		}
 	}
 	
-	public ObjectNode[] getJsonnode() {
+	public ObjectNode getJsonnode() {
 		return jsonnode;
 	}
 
-	public void setJsonnode(ObjectNode[] jsonnode) {
+	public void setJsonnode(ObjectNode jsonnode) {
 		this.jsonnode = jsonnode;
-	}
-	
-	public ObjectNode getJsonNodeByClass(int classIndex){
-		return jsonnode[classIndex];
-	}
-	
-	public void setJsonNodeByClass(int classIndex, ObjectNode jsonnode){
-		this.jsonnode[classIndex] = jsonnode;
 	}
 }
