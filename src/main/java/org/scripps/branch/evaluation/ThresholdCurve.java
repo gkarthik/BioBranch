@@ -167,7 +167,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 					tc.setFalsePositive(tc.getFalsePositive() - cumulativeNeg);
 					tc.setTrueNegative(tc.getTrueNegative() + cumulativeNeg);
 			threshold = probs[sorted[i]];
-			pred.getTree().getJsonnode()[classIndex].put("roc_uid_"+classIndex, i+1);
+			pred.getNode().put("roc_uid_"+classIndex, i+1);
 			insts.add(makeInstanceWithPred(tc, threshold, i+1));
 			cumulativePos = 0;
 			cumulativeNeg = 0;
@@ -402,6 +402,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	      NominalPrediction pred = (NominalPrediction)predictions.elementAt(i);
 	      probs[i] = pred.distribution()[classIndex];
 	    }
+	    LOGGER.debug("Probabilities {}", probs);
 	    return probs;
 	  }
 	

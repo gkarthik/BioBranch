@@ -2,6 +2,8 @@ package org.scripps.branch.evaluation;
 
 import org.scripps.branch.classifier.ManualTree;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class NominalPrediction extends weka.classifiers.evaluation.NominalPrediction{
 	  /** The predicted probabilities */
 	  private double [] m_Distribution;
@@ -17,14 +19,14 @@ public class NominalPrediction extends weka.classifiers.evaluation.NominalPredic
 	  
 	  private double m_pred = -1;
 	  
-	  private ManualTree tree;
-	  
-	public ManualTree getTree() {
-		return tree;
+	  private ObjectNode node;
+
+	public ObjectNode getNode() {
+		return node;
 	}
 
-	public void setTree(ManualTree t) {
-		this.tree = t;
+	public void setNode(ObjectNode node) {
+		this.node = node;
 	}
 
 	public NominalPrediction(double actual, double[] distribution) {

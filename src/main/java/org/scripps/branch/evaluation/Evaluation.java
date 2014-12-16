@@ -71,7 +71,7 @@ public class Evaluation extends weka.classifiers.Evaluation{
 	      NominalPrediction n = new NominalPrediction(instance.classValue(), dist, 
 	    		  instance.weight());
 	      n.setM_pred(pred);
-	      n.setTree(t);
+	      n.setNode(t.getJsonnode());
 	      n.updatePredicted();
 	      m_Predictions.addElement(n);
 	    } else {
