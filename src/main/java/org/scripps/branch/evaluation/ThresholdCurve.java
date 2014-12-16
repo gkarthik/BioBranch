@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import weka.classifiers.evaluation.Prediction;
 import weka.classifiers.evaluation.TwoClassStats;
 import weka.core.Attribute;
@@ -67,6 +69,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    double cumulativeNeg = 0;
 	    maxIndex = ((NominalPrediction)predictions.elementAt(sorted[sorted.length-1])).predicted();
 	    for (int i = 0; i < sorted.length; i++) {
+	    	NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
 
 	      if ((i == 0) || (probs[sorted[i]] > threshold)) {
 	    	  if(classIndex == maxIndex){
@@ -84,8 +87,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		  break;
 		}
 	      }
-
-	      NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
 
 	      if (pred.actual() == Prediction.MISSING_VALUE) {
 		LOGGER.debug(getClass().getName()
@@ -159,14 +160,15 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		    double cumulativePos = 0;
 		    double cumulativeNeg = 0;
 		    for (int i = 0; i < sorted.length; i++) {
-
+		    	NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
 		      if ((i == 0) || (probs[sorted[i]] > threshold)) {
 		  			tc.setTruePositive(tc.getTruePositive() - cumulativePos);
 					tc.setFalseNegative(tc.getFalseNegative() + cumulativePos);
 					tc.setFalsePositive(tc.getFalsePositive() - cumulativeNeg);
 					tc.setTrueNegative(tc.getTrueNegative() + cumulativeNeg);
 			threshold = probs[sorted[i]];
-			insts.add(makeInstance(tc, threshold));
+			pred.getTree().getJsonnode()[classIndex].put("roc_uid_"+classIndex, i+1);
+			insts.add(makeInstanceWithPred(tc, threshold, i+1));
 			cumulativePos = 0;
 			cumulativeNeg = 0;
 			if (i == sorted.length - 1) {
@@ -174,7 +176,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 			}
 		      }
 
-		      NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
+		      
 
 		      if (pred.actual() == Prediction.MISSING_VALUE) {
 			LOGGER.debug(getClass().getName()
@@ -226,6 +228,9 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		  for(int i=0;i<t.numInstances();i++){
 			  mp = new HashMap<String, Double>();
 			  for(int j=0;j<t.numAttributes();j++){
+				  if(t.attribute(j).name().equals("roc_uid")){
+					  LOGGER.debug("Map Value ROC {}", t.instance(i).value(t.attribute(j)));
+				  }
 				  mp.put(t.attribute(j).name(),t.instance(i).value(t.attribute(j)));
 			  }
 			  data.add(mp);
@@ -292,10 +297,10 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	   * @param prob the probability
 	   * @return the generated instance
 	   */
-	  private Instance makeInstance(TwoClassStats tc, double prob) {
+	  private Instance makeInstanceWithPred(TwoClassStats tc, double prob, double rocId) {
 
 	    int count = 0;
-	    double [] vals = new double[13];
+	    double [] vals = new double[14];
 	    vals[count++] = tc.getTruePositive();
 	    vals[count++] = tc.getFalseNegative();
 	    vals[count++] = tc.getFalsePositive();
@@ -306,6 +311,44 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    vals[count++] = tc.getRecall();
 	    vals[count++] = tc.getFallout();
 	    vals[count++] = tc.getFMeasure();
+	    vals[count++] = rocId;
+	    LOGGER.debug("Roc UID vals array {}", vals[count]);
+	      double ss = (tc.getTruePositive() + tc.getFalsePositive()) / 
+	        (tc.getTruePositive() + tc.getFalsePositive() + tc.getTrueNegative() + tc.getFalseNegative());
+	    vals[count++] = ss;
+	    double expectedByChance = (ss * (tc.getTruePositive() + tc.getFalseNegative()));
+	    if (expectedByChance < 1) {
+	      vals[count++] = Instance.missingValue();
+	    } else {
+	    vals[count++] = tc.getTruePositive() / expectedByChance; 
+	     
+	    }
+	    vals[count++] = prob;
+	    return new Instance(1.0, vals);
+	  }
+	  
+	  /**
+	   * generates an instance out of the given data
+	   * 
+	   * @param tc the statistics
+	   * @param prob the probability
+	   * @return the generated instance
+	   */
+	  private Instance makeInstance(TwoClassStats tc, double prob) {
+
+	    int count = 0;
+	    double [] vals = new double[14];
+	    vals[count++] = tc.getTruePositive();
+	    vals[count++] = tc.getFalseNegative();
+	    vals[count++] = tc.getFalsePositive();
+	    vals[count++] = tc.getTrueNegative();
+	    vals[count++] = tc.getFalsePositiveRate();
+	    vals[count++] = tc.getTruePositiveRate();
+	    vals[count++] = tc.getPrecision();
+	    vals[count++] = tc.getRecall();
+	    vals[count++] = tc.getFallout();
+	    vals[count++] = tc.getFMeasure();
+	    vals[count++] = 0.00;
 	      double ss = (tc.getTruePositive() + tc.getFalsePositive()) / 
 	        (tc.getTruePositive() + tc.getFalsePositive() + tc.getTrueNegative() + tc.getFalseNegative());
 	    vals[count++] = ss;
@@ -338,9 +381,10 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    fv.addElement(new Attribute(RECALL_NAME));
 	    fv.addElement(new Attribute(FALLOUT_NAME));
 	    fv.addElement(new Attribute(FMEASURE_NAME));
+	    fv.addElement(new Attribute("roc_uid"));
 	    fv.addElement(new Attribute(SAMPLE_SIZE_NAME));
 	    fv.addElement(new Attribute(LIFT_NAME));
-	    fv.addElement(new Attribute(THRESHOLD_NAME));      
+	    fv.addElement(new Attribute(THRESHOLD_NAME)); 
 	    return new Instances(RELATION_NAME, fv, 100);
 	  }
 	  

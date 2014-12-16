@@ -18,6 +18,7 @@ RocCurve = Marionette.ItemView.extend({
 			if (!classToclose.is(e.target)	&& classToclose.has(e.target).length == 0) 
 			{
 				classToclose.hide();
+				_.each(Cure.PlayerNodeCollection.where({'highlight':1}),function(item){item.set('highlight',0);});
 			}
 		});
 	},
@@ -65,11 +66,12 @@ RocCurve = Marionette.ItemView.extend({
 		var data = this.model.get('auc_data_points'),
 			w = parseFloat(this.width),
 			h = parseFloat(this.height),
-			SVGParent = d3.select(".roc-line-wrapper");
+			SVGParent = d3.select(".roc-line-wrapper"),
+			model = this.model;
 		this.points = [];
 		this.rocPoints = [];
 		if(data.length>0){
-			data = this.model.get('auc_data_points')[1-this.index];
+			data = model.get('auc_data_points')[1-this.index];
 			data.reverse();
 			this.rocPoints = data;
 			for(var i = 0; i<data.length-1;i++){				
@@ -126,7 +128,7 @@ RocCurve = Marionette.ItemView.extend({
 				return yScale(d[1].y);
 			}).remove();
 		 
-		 var P = SVG.selectAll(".roc-point").data(this.rocPoints);
+		 var P = SVG.selectAll(".roc-point").data(this.rocPoints), key,node;
 		 
 		 P.enter()
 		  .append("svg:circle")
@@ -142,6 +144,11 @@ RocCurve = Marionette.ItemView.extend({
 			  return yScale(d["True Positive Rate"]);
 		  }).on("click", function(d){
 			  detailsEl.show();
+			  key = 'roc_uid_'+(1-parseInt(model.get('auc_max_index')));
+			  node = Cure.PlayerNodeCollection.findWhere({'roc_uid_1':parseInt(d.roc_uid)});
+			  if(node!=undefined){
+				  node.set('highlight',1);
+			  }
 			  detailsEl.html(RocDetailsTmpl({d:d}));
 		  });
 		 
