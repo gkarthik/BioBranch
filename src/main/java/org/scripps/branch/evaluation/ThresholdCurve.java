@@ -168,7 +168,9 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 					tc.setFalsePositive(tc.getFalsePositive() - cumulativeNeg);
 					tc.setTrueNegative(tc.getTrueNegative() + cumulativeNeg);
 			threshold = probs[sorted[i]];
-			pred.getNode().put("roc_uid_"+classIndex, i+1);
+			if(pred.getNode()!=null){
+				pred.getNode().put("roc_uid_"+classIndex, i+1);
+			}
 			jsonNodeList = new ArrayList<ObjectNode>();
 			insts.add(makeInstanceWithPred(tc, threshold, i+1));
 			cumulativePos = 0;
