@@ -28,7 +28,6 @@ optionsView = Marionette.ItemView.extend({
 			} else {
 				classToChoose["color"]= "blue";
 			} 
-		
 		d3.selectAll(id+classToChoose["className"]).style("fill",classToChoose["color"]);
 	},
 	onRender: function(){
