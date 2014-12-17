@@ -128,7 +128,7 @@ RocCurve = Marionette.ItemView.extend({
 				return yScale(d[1].y);
 			}).remove();
 		 
-		 var P = SVG.selectAll(".roc-point").data(this.rocPoints), key,node;
+		 var P = SVG.selectAll(".roc-point").data(this.rocPoints), key,node, q;
 		 
 		 P.enter()
 		  .append("svg:circle")
@@ -144,11 +144,10 @@ RocCurve = Marionette.ItemView.extend({
 			  return yScale(d["True Positive Rate"]);
 		  }).on("click", function(d){
 			  detailsEl.show();
+			  q = {};
 			  key = 'roc_uid_'+(1-parseInt(model.get('auc_max_index')));
-			  node = Cure.PlayerNodeCollection.findWhere({'roc_uid_1':parseInt(d.roc_uid)});
-			  if(node!=undefined){
-				  node.set('highlight',1);
-			  }
+			  q[key] = parseInt(d.roc_uid);
+			  _.each(Cure.PlayerNodeCollection.where(q), function(model){model.set('highlight', 1)});
 			  detailsEl.html(RocDetailsTmpl({d:d}));
 		  });
 		 

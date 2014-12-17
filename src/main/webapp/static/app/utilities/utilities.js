@@ -425,7 +425,7 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 				} else if(nodeName.toUpperCase()==Cure.posNodeName.toUpperCase()) {
 					return "red";//Opposite Color
 				}
-				return "red";
+				return "black";
 			}).attr("transform","translate("+(radius*2)*(i%10)+","+((radius*19)-(radius*2)*parseInt(i/10))+")");
 		} else if(!CureUtils.isInt(accLimit) && i== parseInt((accLimit)/1)){//Final square to be printed
 			chartWrapper.append("rect").attr("class",function(){
@@ -435,8 +435,10 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 			}).style("fill",function(){
 				if(nodeName.toUpperCase()==Cure.negNodeName.toUpperCase()){
 					return "blue";//Opposite Color
+				} else if(nodeName.toUpperCase()==Cure.posNodeName.toUpperCase()){
+					return "red";//Opposite Color
 				}
-				return "red";//Opposite Color
+				return "black";
 			}).attr("transform","translate("+(radius*2)*(i%10)+","+((radius*19)-(radius*2)*parseInt(i/10))+")");
 			
 			chartWrapper.append("rect").attr("class",function(){
@@ -448,9 +450,11 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 				return 0;
 			}).style("fill",function(){
 				if(nodeName.toUpperCase()==Cure.negNodeName.toUpperCase()){
-					return "blue";//Opposite Color
+					return "blue";//Opposite Color`
+				} else if(nodeName.toUpperCase()==Cure.posNodeName.toUpperCase()){
+					return "red";//Opposite Color
 				}
-				return "red";//Opposite Color
+				return "black";//Opposite Color
 			}).attr("transform","translate("+parseInt((radius*2)*(i%10) + ((radius*2)-2) * (accLimit % 1)) + ","+((radius*19)-(radius*2)*parseInt(i/10))+")");
 		}
 	}

@@ -159,6 +159,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		    double threshold = 0;
 		    double cumulativePos = 0;
 		    double cumulativeNeg = 0;
+		    ArrayList<ObjectNode> jsonNodeList = new ArrayList<ObjectNode>();
 		    for (int i = 0; i < sorted.length; i++) {
 		    	NominalPrediction pred = (NominalPrediction)predictions.elementAt(sorted[i]);
 		      if ((i == 0) || (probs[sorted[i]] > threshold)) {
@@ -168,6 +169,7 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 					tc.setTrueNegative(tc.getTrueNegative() + cumulativeNeg);
 			threshold = probs[sorted[i]];
 			pred.getNode().put("roc_uid_"+classIndex, i+1);
+			jsonNodeList = new ArrayList<ObjectNode>();
 			insts.add(makeInstanceWithPred(tc, threshold, i+1));
 			cumulativePos = 0;
 			cumulativeNeg = 0;
@@ -175,8 +177,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 			  break;
 			}
 		      }
-
-		      
 
 		      if (pred.actual() == Prediction.MISSING_VALUE) {
 			LOGGER.debug(getClass().getName()
@@ -228,9 +228,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 		  for(int i=0;i<t.numInstances();i++){
 			  mp = new HashMap<String, Double>();
 			  for(int j=0;j<t.numAttributes();j++){
-				  if(t.attribute(j).name().equals("roc_uid")){
-					  LOGGER.debug("Map Value ROC {}", t.instance(i).value(t.attribute(j)));
-				  }
 				  mp.put(t.attribute(j).name(),t.instance(i).value(t.attribute(j)));
 			  }
 			  data.add(mp);
@@ -312,7 +309,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	    vals[count++] = tc.getFallout();
 	    vals[count++] = tc.getFMeasure();
 	    vals[count++] = rocId;
-	    LOGGER.debug("Roc UID vals array {}", vals[count]);
 	      double ss = (tc.getTruePositive() + tc.getFalsePositive()) / 
 	        (tc.getTruePositive() + tc.getFalsePositive() + tc.getTrueNegative() + tc.getFalseNegative());
 	    vals[count++] = ss;
@@ -402,7 +398,6 @@ public class ThresholdCurve extends weka.classifiers.evaluation.ThresholdCurve{
 	      NominalPrediction pred = (NominalPrediction)predictions.elementAt(i);
 	      probs[i] = pred.distribution()[classIndex];
 	    }
-	    LOGGER.debug("Probabilities {}", probs);
 	    return probs;
 	  }
 	
