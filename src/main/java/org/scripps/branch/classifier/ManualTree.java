@@ -566,7 +566,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		//For Roc - Node Match
 		_node.set("roc_uid_0", null);
 		_node.set("roc_uid_1", null);
-
 		Map<String, JsonNode> sons = new HashMap<String, JsonNode>();
 		// String name = node_name.asText();
 		if (kind != null && kind.equals("split_node") && att_name != null) { //
@@ -693,6 +692,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			int maxIndex = 0;
 			double maxCount = 0;
 			double errors = 0;
+			double[] classDist = new double[2];
 			double pct_correct = 0;
 			double bin_size = 0;
 
@@ -700,15 +700,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 				m_Successors[i] = new ManualTree();
 				m_Successors[i].setKValue(m_KValue);
 				m_Successors[i].setMaxDepth(getMaxDepth());
-
-				// Compute pct_correct from distributions and send to split_node
-				bin_size = Utils.sum(distribution[i]);
-				maxIndex = Utils.maxIndex(distribution[i]);
-				maxCount = distribution[i][maxIndex];
-				if (m_Info.classAttribute().value(maxIndex).equals(data.classAttribute().value(1))) {
-					errors += bin_size - maxCount;
-				} else {
-					errors += maxCount;
+				
+				//To compute class distribution for split node.
+				for(int j=0;j<distribution[i].length;j++){
+					classDist[j] += distribution[i][j];
 				}
 				// test an instance to see which child node to send its subset
 				// down.
@@ -791,6 +786,13 @@ public class ManualTree extends Classifier implements OptionHandler,
 					}
 				}
 			}
+			
+			// Compute pct_correct from distributions and send to split_node
+			bin_size = Utils.sum(classDist);
+			maxIndex = Utils.maxIndex(classDist);
+			maxCount = classDist[maxIndex];
+			
+			errors += bin_size - maxCount;
 
 			pct_correct = (quantity - errors) / quantity;
 			evalresults.put("pct_correct", pct_correct);
@@ -826,7 +828,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 					maxCount = m_ClassDistribution[maxIndex];
 					errors = bin_size - maxCount;
 					pct_correct = (bin_size - errors) / bin_size;
-					this.setJsonnode(_node);
 				}
 				if(node.get("pickInst") != null){
 					getInstanceData = node.get("pickInst").asBoolean();
@@ -842,7 +843,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 				if(node.get("setClass")!=null){
 					String setClass = node.get("setClass").asText();
 					class_name = m_Info.classAttribute().value(m_ClassAssignment.get(setClass));
-					this.setJsonnode(_node);
 				}
 				_node.put("name", class_name);
 				evalresults.put("attribute_name", class_name);
@@ -851,6 +851,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 				evalresults.put("errors", Utils.doubleToString(errors, 2));
 				evalresults.put("pct_correct",
 						Utils.doubleToString(pct_correct, 2));
+				this.setJsonnode(_node);
 			} else {
 				// Make leaf
 
@@ -1170,7 +1171,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 		//Set Parent Node to set m_pred in case custom set occurs.
 		if(m_Successors!=null){
 			for(int i=0;i<m_Successors.length;i++){
-				m_Successors[i].setParentNode(parentNode);
+				m_Successors[i].setParentNode(this.parentNode);
 			}
 		}
 		
@@ -1193,23 +1194,21 @@ public class ManualTree extends Classifier implements OptionHandler,
 							}
 						}
 					}
+					LOGGER.debug("Missing Instance");
 				} else if (m_Info.attribute(m_Attribute).isNominal()) {
 
 					// For nominal attributes
 					returnedDist = m_Successors[(int) instance.value(m_Attribute)]
 							.distributionForInstance(instance);
-					parentNode.setJsonnode(m_Successors[(int) instance.value(m_Attribute)].getJsonnode());
 				} else {
 
 					// For numeric attributes
 					if (instance.value(m_Attribute) < m_SplitPoint) {
 						returnedDist = m_Successors[0]
 								.distributionForInstance(instance);
-						parentNode.setJsonnode(m_Successors[0].getJsonnode());
 					} else {
 						returnedDist = m_Successors[1]
 								.distributionForInstance(instance);
-						parentNode.setJsonnode(m_Successors[1].getJsonnode());
 					}
 				}
 			} else if (m_Attribute >= m_Info.numAttributes()-1) {
@@ -1226,7 +1225,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 							parentNode.setM_pred(m_ClassAssignment.get((check == 0) ? "Outside": "Inside"));
 						}
 						returnedDist = m_Successors[check].distributionForInstance(instance);
-						parentNode.setJsonnode(m_Successors[check].getJsonnode());
 					
 				} else {
 					String classifierId = "";
@@ -1236,12 +1234,11 @@ public class ManualTree extends Classifier implements OptionHandler,
 					if (predictedClass != Instance.missingValue()) {
 						returnedDist = m_Successors[(int) predictedClass]
 								.distributionForInstance(instance);
-						parentNode.setJsonnode(m_Successors[(int) predictedClass].getJsonnode());
 					}
 				}
 			}
 		}
-
+		
 		// Node is a leaf or successor is empty?
 		if ((m_Attribute == -1) || (returnedDist == null)) {
 
@@ -1256,6 +1253,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 			// Else return normalized distribution
 			double[] normalizedDistribution = m_ClassDistribution.clone();
+			this.parentNode.setJsonnode(this.getJsonnode());
 			try{
 				Utils.normalize(normalizedDistribution);
 			} catch(Exception e) {
@@ -2331,6 +2329,13 @@ public class ManualTree extends Classifier implements OptionHandler,
 	}
 
 	public void setJsonnode(ObjectNode jsonnode) {
+		try{
+			if(jsonnode.get("name")==null){
+				
+			}
+		} catch (Exception e){
+			//LOGGER.error("NULL", e);
+		}
 		this.jsonnode = jsonnode;
 	}
 }
