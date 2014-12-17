@@ -791,7 +791,8 @@ public class ManualTree extends Classifier implements OptionHandler,
 			bin_size = Utils.sum(classDist);
 			maxIndex = Utils.maxIndex(classDist);
 			maxCount = classDist[maxIndex];
-			
+			String class_name = m_Info.classAttribute().value(maxIndex);
+			_node.put("majClass", class_name);
 			errors += bin_size - maxCount;
 
 			pct_correct = (quantity - errors) / quantity;

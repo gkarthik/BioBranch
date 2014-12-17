@@ -12,6 +12,7 @@ optionsView = Marionette.ItemView.extend({
 	initialize : function() {
 		this.listenTo(this.model,'change:accLimit', this.renderChart);
 		this.listenTo(this.model,'change:viewWidth', this.renderChart);
+		this.listenTo(this.model.get('AttributeNode'),'change:majClass', this.renderChart);
 	},
 	template: chartTmpl,
 	renderChart: function(){
