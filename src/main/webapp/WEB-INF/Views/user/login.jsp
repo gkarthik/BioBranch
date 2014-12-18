@@ -28,7 +28,7 @@
 				</center>
 				<h3 class="about">Decision Trees</h3>
 					<p id="about">
-						Decision trees help visualize a sequence of rules in a hierarchical fashion.  Rules can encapsulate *hypotheses that can be tested* with data.  They can also be used to make *predictions*.  
+						Decision trees help visualize a sequence of rules in a hierarchical fashion.  Rules can encapsulate <i><b>hypotheses that can be tested</b></i> with data.  They can also be used to make <i><b>predictions</b></i>.  
 					</p>
 			</div>
 			<div class="col-md-3">
