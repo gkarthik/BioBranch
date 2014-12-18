@@ -131,6 +131,10 @@ public class Tree {
 	public Tree getPrev_tree_id() {
 		return prevTree;
 	}
+	
+	public Boolean getPrivate_tree() {
+		return private_tree;
+	}
 
 	@Transient
 	public int getRank() {
@@ -221,6 +225,8 @@ public class Tree {
 	public void setUser_saved(boolean user_saved) {
 		this.user_saved = user_saved;
 	}
+	
+	
 
 	@Override
 	public String toString() {

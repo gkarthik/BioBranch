@@ -58,6 +58,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,6 +69,7 @@ import weka.core.Instances;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
@@ -140,27 +142,53 @@ public class MetaServerController {
 	private InstanceService instSer;
 	
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(value = "/update-trees", method = RequestMethod.POST, headers = { "Content-type=application/json" })
-	public @ResponseBody String updateTreeList(@RequestBody JsonNode data)
+	@RequestMapping(value = "/update-trees", method = RequestMethod.POST)
+	public String updateTreeList(String command, Model model)
 			throws Exception {
-		String command = data.get("command").asText();
 		if(command.equals("update")){
 			List<Tree> tList = treeRepo.findAll();
+			String result_json = "";
+			ObjectNode dataTable = mapper.createObjectNode();
+			JsonNode pickedAttrs = dataTable.putArray("pcikedAttrs");
+			model.addAttribute("success",true);
+		    model.addAttribute("message","Tree Json refreshed.");
+		    String message = "Tree Json refresh failed for ";
 			for(Tree t : tList){
-				try {
-					t.setJson_tree(scoreSaveManualTree(mapper.readTree(t.getJson_tree()), false));
-				} catch (JsonProcessingException e) {
-					LOGGER.error("Update trees error", e);
-				} catch (IOException e) {
-					LOGGER.error("Update trees error", e);
-				} catch (Exception e) {
-					LOGGER.error("Update trees error", e);
-				}
+					Dataset d = t.getScore().getDataset();
+					User u = t.getUser();
+					int testOption = (int) t.getScore().getTestoption();
+					int testsetId = -1;
+					Float percentSplit = null;
+					if(testOption == 1){
+						testsetId = (int) t.getScore().getTestset().getId();
+					} else if (testOption == 2) {
+						percentSplit = t.getScore().getTestsplit();
+					}
+					String comment = "";
+					comment = t.getComment();
+					Long prevTreeId = null;
+					if(t.getPrev_tree_id()!=null){
+						prevTreeId = t.getPrev_tree_id().getId();
+					}
+					int privateflag = (t.getPrivate_tree()) ? 1 : 0;
+					JsonNode treestruct = mapper.readTree(t.getJson_tree());
+					result_json = null;
+					if(t.isUser_saved()){
+						LOGGER.debug("Tree ID: {}", t.getId());
+						LOGGER.debug("Node: {}", treestruct.get("treestruct").get("name"));
+						result_json = scoreSaveManualTree(command, treestruct.get("treestruct"), d, u, testOption, testsetId, percentSplit, pickedAttrs, comment, prevTreeId, privateflag, false);
+						if(result_json == null){
+							model.addAttribute("success", false);
+						    model.addAttribute("message",message+=t.getId()+", ");
+						} else {
+							t.setJson_tree(result_json);
+						}
+					}
 			}
 			treeRepo.save(tList);
 			treeRepo.flush();
 		}
-		return "{\"success\":\"true\", \"message\":\"Trees in Database Refreshed.\"}";
+	    return "tutorial/tutorials";
 	}
 	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
@@ -169,7 +197,24 @@ public class MetaServerController {
 		String command = data.get("command").asText();
 		String result_json = "";
 		if (command.equals("scoretree") || command.equals("savetree")) {
-			result_json = scoreSaveManualTree(data, true);
+			Dataset d = dataRepo.findById(data.get("dataset").asLong());
+			User u = userRepo.findById(data.get("player_id").asInt());
+			int testOption = data.get("testOptions").get("value").asInt();
+			int testsetId = -1;
+			Float percentSplit = null;
+			if(testOption == 1){
+				testsetId = data.get("testOptions").get("testsetid").asInt();
+			} else if (testOption == 2) {
+				percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
+			}
+			String comment = "";
+			int privateflag = 0;
+			Long prevTreeId = data.get("previous_tree_id").asLong();
+			if(command.equals("savetree")){
+				comment = data.get("comment").asText();
+				privateflag = data.get("privateflag").asInt();
+			}
+			result_json = scoreSaveManualTree(command, data.get("treestruct"), d, u, testOption, testsetId, percentSplit, data.path("pickedAttrs"), comment, prevTreeId, privateflag, true);
 		} else if (command.contains("get_tree")) {
 			if (command.equals("get_tree_by_id")) {
 				Tree t = treeRepo.findById(data.get("treeid").asLong());
@@ -512,8 +557,7 @@ public class MetaServerController {
 		return readtree.getRequiredInst();
 	}
 	
-	public String scoreSaveManualTree(JsonNode data, Boolean saveFlag) throws Exception {
-		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+	public String scoreSaveManualTree(String command, JsonNode treestruct, Dataset d, User u, Integer testOption, Integer testsetId, Float percentSplit, JsonNode pickedAttrs, String comment, Long prevTreeId, Integer privateTree, Boolean saveFlag){
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
@@ -522,20 +566,25 @@ public class MetaServerController {
 				.getCustomClassifierObject();
 		Instances train = wekaObj.getOrigTrain();
 		Score newScore = new Score();
-		int testOption = data.get("testOptions").get("value").asInt();
-		int testsetId = -1;
-		Float percentSplit = null;
-		if(testOption == 1){
-			testsetId = data.get("testOptions").get("testsetid").asInt();
-		} else if (testOption == 2) {
-			percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
-		}
+		//int testsetId = -1;
+		//Float percentSplit = null;
+//		if(testOption == 1){
+//			//testsetId = data.get("testOptions").get("testsetid").asInt();
+//		} else if (testOption == 2) {
+//			//percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
+//		}
 		instSer.setTrainandTest(wekaObj, train, testOption, testsetId, percentSplit, newScore);
-		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
+		readtree = t.parseJsonTree(wekaObj, treestruct,
 				d, custom_classifiers, attr,
 				cClassifierService, customSetRepo, d);
-		Evaluation eval = new Evaluation(wekaObj.getTest());
-		eval.evaluateModel(readtree, wekaObj.getTest());
+		Evaluation eval = null;
+		try {
+			eval = new Evaluation(wekaObj.getTest());
+			eval.evaluateModel(readtree, wekaObj.getTest());
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Evaluaion Exeption", e1);
+		}
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
@@ -546,13 +595,15 @@ public class MetaServerController {
 		List<Integer> attrIndexes = new ArrayList<Integer>();
 		List<Attribute> attr;
 		int attrIndex = 0;
-		for (JsonNode el : data.path("pickedAttrs")) {
-			attr = new ArrayList<Attribute>();
-			attr = attrRepo.findByFeatureUniqueId(el.asText(), d);
-			for(Attribute a : attr){	
-				attrIndex = reqInstances.attribute(a.getName()).index();
+		if(pickedAttrs!=null){
+			for (JsonNode el : pickedAttrs) {
+				attr = new ArrayList<Attribute>();
+				attr = attrRepo.findByFeatureUniqueId(el.asText(), d);
+				for(Attribute a : attr){	
+					attrIndex = reqInstances.attribute(a.getName()).index();
+				}
+				attrIndexes.add(attrIndex);
 			}
-			attrIndexes.add(attrIndex);
 		}
 		for(int i=0;i<reqInstances.numInstances();i++){
 			values = new double[3];
@@ -566,7 +617,6 @@ public class MetaServerController {
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
 				treeRepo, customSetRepo, sccRepo);
-		User user = userRepo.findById(data.get("player_id").asLong());
 		double nov = 0;
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
@@ -574,7 +624,7 @@ public class MetaServerController {
 		List<Tree> tList = (List<Tree>) mp.get("tList");
 		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		nov = treeService
-				.getUniqueIdNovelty(fList, cfList, ccList, tList, user);
+				.getUniqueIdNovelty(fList, cfList, ccList, tList, u);
 		ObjectNode result = mapper.createObjectNode();
 		result.put("pct_correct", eval.pctCorrect());
 		result.put("size", numnodes);
@@ -586,7 +636,8 @@ public class MetaServerController {
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
-		if(data.path("pickedAttrs").size()>0){
+		//data.path("pickedAttrs").size()
+		if(attrIndexes.size()>0){
 			result.put("instances_data", mapper.valueToTree(instanceData));
 		}
 		result.put("treestruct", treenode);
@@ -596,9 +647,9 @@ public class MetaServerController {
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Couldn't write response from scoreSaveManualTree to String",e);
 		}
-		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0 && saveFlag == true){
+		if(distributionData.size()==0 && attrIndexes.size() == 0 && saveFlag == true){
 			newScore.setNovelty(nov);
-			newScore.setDataset(dataRepo.findById(data.get("dataset").asLong()));
+			newScore.setDataset(d);
 			newScore.setPct_correct(eval.pctCorrect());
 			newScore.setSize(numnodes);
 			double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval
@@ -606,7 +657,7 @@ public class MetaServerController {
 			newScore.setScore(score);
 			newScore = scoreRepo.saveAndFlush(newScore);
 			Tree newTree = new Tree();
-			newTree.setComment(data.get("comment").asText());
+			newTree.setComment(comment);
 			Date date = new Date();
 			newTree.setCreated(new DateTime(date.getTime()));
 			newTree.setFeatures(fList);
@@ -616,17 +667,18 @@ public class MetaServerController {
 			newTree.setCustomSets(csList);
 			newTree.setJson_tree(result_json);
 			newTree.setPrivate_tree(false);
-			newTree.setUser(user);
+			newTree.setUser(u);
 			newTree.setUser_saved(false);
 			newTree.setPrivate_tree(false);
 			newTree.setScore(newScore);
 			Tree prevTree = treeRepo
-					.findById(data.get("previous_tree_id").asLong());
+					.findById(prevTreeId);
+			//data.get("previous_tree_id").asLong()
+			//data.get("privateflag").asInt()
 			newTree.setPrev_tree_id(prevTree);
-			if (data.get("command").asText().equals("savetree")) {
+			if (command.equals("savetree")) {
 				newTree.setUser_saved(true);
-				int privateflag = data.get("privateflag").asInt();
-				if (privateflag == 1) {
+				if (privateTree == 1) {
 					newTree.setPrivate_tree(true);
 				}
 			}

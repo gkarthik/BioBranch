@@ -6,7 +6,8 @@
 		</div>
 		<div class="summary_content">
 		<%= summary.summaryText %>
-		<% if(summary.goTerms.MF) { %>
+		<% if(summary.goTerms){ %>
+			<% if(summary.goTerms.MF) { %>
 			<h4>Molecular Functions</h4>
 			<p>
 <ul>
@@ -60,6 +61,7 @@
 					</ul>
 				</p>
 			<% } %>
+		<% } %>
 			<% if(summary.generif) { %>
 			<h4>Gene Rifs</h4>
 			<ul>
