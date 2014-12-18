@@ -36,7 +36,7 @@ import org.springframework.social.security.SpringSocialConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled=true, securedEnabled=true)
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -48,7 +48,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Bean( name = "authenticationEntryPoint" )
     public LoginUrlAuthenticationEntryPoint authenticationEntryPoint() {
-        return new CustomLoginUrlAuthenticationEntryPoint("/login?reutrnto=");
+        return new CustomLoginUrlAuthenticationEntryPoint("/login?returnto=");
     }
 
 	/**
@@ -61,10 +61,10 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService()).passwordEncoder(
 				passwordEncoder());
 	}
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.exceptionHandling().accessDeniedPage("/access-denied").and()
+		http
 		.httpBasic().authenticationEntryPoint(authenticationEntryPoint())
 		// Configures form login
 		.and().formLogin()
@@ -92,8 +92,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 						"/user/register/**", "/save",
 						"/publicCollection", "/workflow", "/contact", "/MetaServer", "/forgot-password", "/authenticate/**", "/request-dataset").permitAll()
 				// The rest of the our application is protected.
-				.antMatchers("/**").hasRole("USER").antMatchers("/new")
-				.hasRole("USER")
+				.antMatchers("/**").hasAnyRole("USER","ADMIN")
 				// Adds the SocialAuthenticationFilter to Spring Security's
 				// filter chain.
 

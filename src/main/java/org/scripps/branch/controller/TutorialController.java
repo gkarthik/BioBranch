@@ -16,6 +16,7 @@ import org.scripps.branch.validation.DuplicateEmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,32 +50,16 @@ public class TutorialController {
 	@Autowired
 	TutorialRepository tRepo;
 	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/tutorial", method = RequestMethod.GET)
     public String showTutorials(WebRequest request, Model model) {
-		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			if(!user.getFirstName().equals("admin")){
-				return "index";
-			}
-		}		
 		model.addAttribute("tutorials", tRepo.findAll());
         return tutorialPage;
     }
 	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/tutorial", method = RequestMethod.POST)
     public String deleteTutorial(long id, WebRequest request, Model model) {
-		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			if(!user.getFirstName().equals("admin")){
-				return "index";
-			}
-		}	
 		for(User u: userRepo.findAll()){
 			for(int i =0;i<u.getTutorials().size();i++){
 				if(u.getTutorials().get(i).getId() == id){
@@ -92,34 +77,18 @@ public class TutorialController {
         return tutorialPage;
     }
 	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/tutorial/new", method = RequestMethod.GET)
     public String saveTutorialPage(Model model) {
-		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			if(!user.getFirstName().equals("admin")){
-				return "redirect:/";
-			}
-		}	
         model.addAttribute("tutorial", new TutorialForm());
         return SaveTutorialPage;
     }
 	
+	@Secured("ROLE_ADMIN")
     @RequestMapping(value = "/tutorial/new", method = RequestMethod.POST)
     public String saveTutorialAction(
             @Valid @ModelAttribute("tutorial") TutorialForm tutorial,
             BindingResult bindingResult, Model model) {
-    	UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			userDetails = (UserDetails) auth.getPrincipal();
-			User user = userRepo.findByEmail(userDetails.getUsername());
-			if(!user.getFirstName().equals("admin")){
-				return "index";
-			}
-		}	
         if (bindingResult.hasErrors()) {
             return SaveTutorialPage;
         }

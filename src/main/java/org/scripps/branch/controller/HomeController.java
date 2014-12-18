@@ -60,12 +60,12 @@ public class HomeController {
 		} else {
 			return "redirect:/datasets";
 		}
+		LOGGER.debug("Role {}",user.getRole());
 		return VIEW_NAME_HOMEPAGE;
 	}
 	
 	@RequestMapping(value = "/access-denied", method = RequestMethod.GET)
 	public String showAccessDeniedPage(WebRequest request, Model model) {
-		LOGGER.debug("Rendering homepage.");
 		return "error/AccessDenied";
 	}
 }
