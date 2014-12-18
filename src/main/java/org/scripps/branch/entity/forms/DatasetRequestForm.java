@@ -22,6 +22,7 @@ public class DatasetRequestForm {
 
 	private Boolean privateToken = true;
 	
+	@NotEmpty
 	@Email
 	private String email;
 	

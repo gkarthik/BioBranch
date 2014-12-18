@@ -80,7 +80,7 @@ public class DatasetController {
 		if(dr!=null){
 			mailService.startSendDatasetRequestMail(dr);
         	model.addAttribute("success",true);
-            model.addAttribute("msg","An email has been sent with instructions.");
+            model.addAttribute("msg","Thank you, your request has been received.");
 		} else {
 			model.addAttribute("success",false);
             model.addAttribute("msg","Sending Request failed. Please try again later. ");

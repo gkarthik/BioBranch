@@ -42,7 +42,8 @@
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="requestDataset-privateToken">Do you want the dataset to be public?</label>
-							<form:checkbox path="privateToken" cssClass="form-control" />
+							<form:radiobutton path="privateToken" value="true" /> Yes
+							<form:radiobutton path="privateToken" value="false" /> No
 							<form:errors path="privateToken" cssClass="help-block" />
 						</div>
 						<div class="form-group">
