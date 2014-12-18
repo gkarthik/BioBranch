@@ -1,5 +1,6 @@
 package org.scripps.branch.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
 import org.scripps.branch.service.FeatureService;
+import org.scripps.branch.service.InstanceService;
 import org.scripps.branch.service.TreeService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
@@ -49,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -132,14 +135,41 @@ public class MetaServerController {
 	
 	@Autowired
 	private TutorialRepository tRepo;
-
+	
+	@Autowired 
+	private InstanceService instSer;
+	
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/update-trees", method = RequestMethod.POST, headers = { "Content-type=application/json" })
+	public @ResponseBody String updateTreeList(@RequestBody JsonNode data)
+			throws Exception {
+		String command = data.get("command").asText();
+		if(command.equals("update")){
+			List<Tree> tList = treeRepo.findAll();
+			for(Tree t : tList){
+				try {
+					t.setJson_tree(scoreSaveManualTree(mapper.readTree(t.getJson_tree()), false));
+				} catch (JsonProcessingException e) {
+					LOGGER.error("Update trees error", e);
+				} catch (IOException e) {
+					LOGGER.error("Update trees error", e);
+				} catch (Exception e) {
+					LOGGER.error("Update trees error", e);
+				}
+			}
+			treeRepo.save(tList);
+			treeRepo.flush();
+		}
+		return "{\"success\":\"true\", \"message\":\"Trees in Database Refreshed.\"}";
+	}
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
 			throws Exception {
 		String command = data.get("command").asText();
 		String result_json = "";
 		if (command.equals("scoretree") || command.equals("savetree")) {
-			result_json = scoreSaveManualTree(data);
+			result_json = scoreSaveManualTree(data, true);
 		} else if (command.contains("get_tree")) {
 			if (command.equals("get_tree_by_id")) {
 				Tree t = treeRepo.findById(data.get("treeid").asLong());
@@ -465,47 +495,16 @@ public class MetaServerController {
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
 		Instances train = wekaObj.getOrigTrain();
-		switch (data.get("testOptions").get("value").asInt()) {
-		case 0:
-			wekaObj.setTrain(train);
-			wekaObj.setTest(train);
-			break;
-		case 1:
-			wekaObj.setTrain(train);
-			long testsetid = data.get("testOptions").get("testsetid").asLong();
-			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
-			break;
-		case 2:
-			float limitPercent = (data.get("testOptions").get("percentSplit")
-					.asLong()) / (float) 100;
-			Instances[] classLimits = wekaObj.getInstancesInClass();
-			float numLimit = 0;
-			numLimit = limitPercent * train.numInstances();
-			numLimit = Math.round(numLimit);
-			Instances newTrain = new Instances(train, Math.round(numLimit));
-			Instances newTest = new Instances(train, train.numInstances()
-					- Math.round(numLimit));
-			for (int j = 0; j < classLimits.length; j++) {
-				numLimit = limitPercent * classLimits[j].numInstances();
-				for (int i = 0; i < classLimits[j].numInstances(); i++) {
-//					if (i == 0) {
-//						classLimits[j].randomize(new Random(1));
-//					}
-					if (classLimits[j].instance(i) != null) {
-						if (i <= numLimit) {
-							newTrain.add(classLimits[j].instance(i));
-						} else {
-							newTest.add(classLimits[j].instance(i));
-						}
-					}
-				}
-			}
-			LOGGER.debug("Train: "+newTrain.numInstances());
-			LOGGER.debug("Test: "+newTest.numInstances());
-			wekaObj.setTrain(newTrain);
-			wekaObj.setTest(newTest);
-			break;
+		Score newScore = new Score();
+		int testOption = data.get("testOptions").get("value").asInt();
+		int testsetId = -1;
+		Float percentSplit = null;
+		if(testOption == 1){
+			testsetId = data.get("testOptions").get("testsetid").asInt();
+		} else if (testOption == 2) {
+			percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
 		}
+		instSer.setTrainandTest(wekaObj, train, testOption, testsetId, percentSplit, newScore);
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				d, custom_classifiers, attr,
 				cClassifierService, customSetRepo, d);
@@ -513,7 +512,7 @@ public class MetaServerController {
 		return readtree.getRequiredInst();
 	}
 	
-	public String scoreSaveManualTree(JsonNode data) throws Exception {
+	public String scoreSaveManualTree(JsonNode data, Boolean saveFlag) throws Exception {
 		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
@@ -523,51 +522,15 @@ public class MetaServerController {
 				.getCustomClassifierObject();
 		Instances train = wekaObj.getOrigTrain();
 		Score newScore = new Score();
-		switch (data.get("testOptions").get("value").asInt()) {
-		case 0:
-			wekaObj.setTrain(train);
-			wekaObj.setTest(train);
-			break;
-		case 1:
-			wekaObj.setTrain(train);
-			long testsetid = data.get("testOptions").get("testsetid").asLong();
-			wekaObj.setTest(weka.getWeka(testsetid).getOrigTrain());
-			newScore.setTestoption(1);
-			newScore.setTestset(dataRepo.findById(testsetid));
-			break;
-		case 2:
-			float limitPercent = (data.get("testOptions").get("percentSplit")
-					.asLong()) / (float) 100;
-			Instances[] classLimits = wekaObj.getInstancesInClass();
-			float numLimit = 0;
-			numLimit = limitPercent * train.numInstances();
-			numLimit = Math.round(numLimit);
-			Instances newTrain = new Instances(train, Math.round(numLimit));
-			Instances newTest = new Instances(train, train.numInstances()
-					- Math.round(numLimit));
-			for (int j = 0; j < classLimits.length; j++) {
-				numLimit = limitPercent * classLimits[j].numInstances();
-				for (int i = 0; i < classLimits[j].numInstances(); i++) {
-					//Remove randomize to ensure reproducibility.
-//					if (i == 0) {
-//						classLimits[j].randomize(new Random(1));
-//					}
-					if (classLimits[j].instance(i) != null) {
-						if (i <= numLimit) {
-							newTrain.add(classLimits[j].instance(i));
-						} else {
-							newTest.add(classLimits[j].instance(i));
-						}
-					}
-				}
-			}
-			wekaObj.setTrain(newTrain);
-			wekaObj.setTest(newTest);
-			newScore.setTestoption(2);
-			newScore.setTestsplit(data.get("testOptions").get("percentSplit")
-					.asLong());
-			break;
+		int testOption = data.get("testOptions").get("value").asInt();
+		int testsetId = -1;
+		Float percentSplit = null;
+		if(testOption == 1){
+			testsetId = data.get("testOptions").get("testsetid").asInt();
+		} else if (testOption == 2) {
+			percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
 		}
+		instSer.setTrainandTest(wekaObj, train, testOption, testsetId, percentSplit, newScore);
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				d, custom_classifiers, attr,
 				cClassifierService, customSetRepo, d);
@@ -633,7 +596,7 @@ public class MetaServerController {
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Couldn't write response from scoreSaveManualTree to String",e);
 		}
-		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
+		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0 && saveFlag == true){
 			newScore.setNovelty(nov);
 			newScore.setDataset(dataRepo.findById(data.get("dataset").asLong()));
 			newScore.setPct_correct(eval.pctCorrect());

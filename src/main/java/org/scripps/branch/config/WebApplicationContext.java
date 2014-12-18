@@ -44,7 +44,7 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 
 		exceptionMappings.put("java.lang.Exception", "error/500_error");
 		exceptionMappings.put("java.lang.RuntimeException", "error/500_error");
-
+		exceptionMappings.put("org.springframework.security.access.AccessDeniedException", "error/AccessDenied");
 		exceptionResolver.setExceptionMappings(exceptionMappings);
 
 		Properties statusCodes = new Properties();
@@ -52,7 +52,7 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 		statusCodes.put("error/404_error", "404");
 		statusCodes.put("error/500_error", "500");
 		statusCodes.put("error/400_error", "400");
-
+		statusCodes.put("error/AccessDenied", "403");
 		exceptionResolver.setStatusCodes(statusCodes);
 
 		return exceptionResolver;
