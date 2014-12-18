@@ -29,18 +29,6 @@
 			<hr>
 		</div>
 		<div class="row">
-			<h3>Populate Pathway</h3>
-			<form method="POST" action="${pageContext.request.contextPath}/populate-pathway">
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-				Source: 
-				<select name="source">
-					<option value="cpdb">CPDB</option>
-				</select>
-				<br><br>
-				<input type="submit" class="btn btn-primary">
-			</form>
-		</div>
-		<div class="row">
 			<h3>Tutorials</h3>
 			<a href="${pageContext.request.contextPath}/tutorial/new" class="btn btn-link">Add Tutorial</a>
 			<table class="table table-striped">
@@ -59,6 +47,31 @@
 					</tr>
 				</c:forEach>
 			</table>
+		</div>
+		<div class="row">
+		<span class="text-danger">
+		<h3>Database Changes (Keep in mind that these changes cannot be undone) <span class="glyphicon glyphicon-ban-circle"></span></h3>
+		</span>
+		</div>
+		<div class="row">
+			<h3>Populate Pathway</h3>
+			<form method="POST" action="${pageContext.request.contextPath}/populate-pathway">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				Source: 
+				<select name="source">
+					<option value="cpdb">CPDB</option>
+				</select>
+				<br><br>
+				<input type="submit" class="btn btn-primary">
+			</form>
+		</div>
+		<div class="row">
+			<h3>Recreate Json Structure in previous trees in Database</h3>
+			<form method="POST" action="${pageContext.request.contextPath}/update-trees">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				<input type="hidden" name="command" value="update" />
+				<input type="submit" class="btn btn-primary" value="Refresh Json">
+			</form>
 		</div>
 	</div>
 </body>
