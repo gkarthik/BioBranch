@@ -386,7 +386,6 @@ CureUtils.getMaxNodesInLevel = function(root){
 }
 
 CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, nodeName, predictedClass){
-	console.log(nodeName);
 	parentElement.selectAll(".chartWrapper").remove();
 	var chartWrapper = parentElement.attr("width",function(){
 		return (radius*20)+8;
@@ -421,7 +420,6 @@ CureUtils.drawChart = function(parentElement, limit, accLimit,radius, nodeKind, 
 					return "posCircle";
 				return "negCircle";
 			}).attr("height",(radius*2)-2).attr("width",(radius*2)-2).style("fill",function(){
-				console.log(nodeName.toUpperCase());
 				if(nodeName.toUpperCase()==Cure.negNodeName.toUpperCase()){
 					return "blue";//Opposite Color
 				} else if(nodeName.toUpperCase()==Cure.posNodeName.toUpperCase()) {

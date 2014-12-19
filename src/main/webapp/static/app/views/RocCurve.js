@@ -128,7 +128,7 @@ RocCurve = Marionette.ItemView.extend({
 				return yScale(d[1].y);
 			}).remove();
 		 
-		 var P = SVG.selectAll(".roc-point").data(this.rocPoints), key,node, q;
+		 var P = SVG.selectAll(".roc-point").data(this.rocPoints), key,node, q, pctCorrect = 0, className = "";
 		 
 		 P.enter()
 		  .append("svg:circle")
@@ -147,7 +147,16 @@ RocCurve = Marionette.ItemView.extend({
 			  q = {};
 			  key = 'roc_uid_'+(1-parseInt(model.get('auc_max_index')));
 			  q[key] = parseInt(d.roc_uid);
-			  _.each(Cure.PlayerNodeCollection.where(q), function(model){model.set('highlight', 1)});
+			  _.each(Cure.PlayerNodeCollection.where(q), function(model){
+				  model.set('highlight', 1);
+				  pctCorrect = parseFloat(model.get('options').get('pct_correct'));
+				  className = model.get('name');
+			  });
+			  _.each(Cure.PlayerNodeCollection.models, function(model){
+				  if(parseFloat(model.get('options').get('pct_correct')) == pctCorrect && model.get('name') == className && d["Sample Size"]>0){
+					  model.set('highlight',1);
+				  }
+			  });
 			  detailsEl.html(RocDetailsTmpl({d:d}));
 		  });
 		 
