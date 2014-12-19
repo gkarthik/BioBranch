@@ -16,7 +16,10 @@ DatasetLayout = Marionette.Layout.extend({
    events: {
 	   'click input[name="testOptions"]': 'checkVal',
 	   'click #show-dataset-wrapper': 'showWrapper',
-	   'click #apply-options': 'applyOptions'
+	   'click #apply-options': 'applyOptions',
+	   'click input[name="percent-split"]': function(){
+		   $(Cure.appRegion.currentView.$el.find('input[name="testOptions"]')[2]).attr('checked',true);
+	   }
    },
    url: base_url+'MetaServer',
    ui:{

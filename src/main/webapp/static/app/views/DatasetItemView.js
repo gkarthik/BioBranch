@@ -15,6 +15,7 @@ DatasetItemView = Marionette.ItemView.extend({
 	},
 	setTestVal: function(){
 		this.model.set('setTest',true);
+		$(Cure.appRegion.currentView.$el.find('input[name="testOptions"]')[1]).attr('checked',true);
 	}
 });
 
