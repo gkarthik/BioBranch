@@ -28,14 +28,6 @@ public class MetaServiceControllerTest {
 	@Autowired
 	MetaServerController con;
 
-	@Test
-	public void testCUstomSet() throws Exception{
-		HibernateAwareObjectMapper mp = new HibernateAwareObjectMapper();
-		String json = "{\"command\":\"scoretree\",\"dataset\":\"metabric_with_clinical\",\"treestruct\":{\"name\":\"Selection\",\"options\":{\"unique_id\":\"custom_set_12\",\"kind\":\"split_node\",\"full_name\":\"\",\"description\":\"[[68.96707698109537,9.77029191278141],[72.7365139784144,1.7817842071076524],[101.5098868924193,1.9306383879587166],[101.69835874228525,10.316090575901978]]\",\"cid\":\"view95\",\"viewCSS\":{},\"accLimit\":null,\"viewWidth\":100},\"cid\":0,\"getSplitData\":false,\"edit\":0,\"highlight\":0,\"modifyAccLimit\":1,\"pickInst\":false,\"children\":[],\"manual_pct_correct\":0,\"gene_summary\":{\"summaryText\":\"\",\"goTerms\":{},\"generif\":{},\"name\":\"\"},\"accLimit\":0,\"showJSON\":0,\"x\":0,\"y\":0,\"x0\":0,\"y0\":0,\"collaborator\":{\"name\":\"Karthik\",\"id\":1,\"created\":\"2014-07-28T18:26:56.437Z\"}},\"comment\":\"\",\"player_id\":1,\"previous_tree_id\":-1,\"testOptions\":{\"value\":\"0\",\"percentSplit\":\"\"},\"pickedAttrs\":[]}";
-		JsonNode data = mp.readTree(json);
-		String res = con.scoreSaveManualTree(data,true);
-		assertEquals(res!=null,true);
-	}
 	
 	@Test
 	public void testScoreSave() throws Exception {

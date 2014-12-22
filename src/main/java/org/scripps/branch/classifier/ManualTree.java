@@ -1254,7 +1254,9 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 			// Else return normalized distribution
 			double[] normalizedDistribution = m_ClassDistribution.clone();
-			this.parentNode.setJsonnode(this.getJsonnode());
+			if(this.parentNode!=null){
+				this.parentNode.setJsonnode(this.getJsonnode());
+			}
 			try{
 				Utils.normalize(normalizedDistribution);
 			} catch(Exception e) {
