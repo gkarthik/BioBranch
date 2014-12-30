@@ -86,6 +86,19 @@ public class Dataset {
 	@OneToMany(mappedBy = "testset")
 	@JsonBackReference
 	private List<Score> testscore;
+	
+	//holds class attribute of the dataset
+		@OneToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "attribute_id", insertable = true, updatable = true)
+		private Attribute attribute;
+
+		public Attribute getAttribute() {
+			return attribute;
+		}
+
+		public void setAttribute(Attribute attribute) {
+			this.attribute = attribute;
+		}
 
 	public List<Attribute> getAttributes() {
 		return attributes;

@@ -60,6 +60,42 @@ public class Attribute {
 	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updated;
+	
+	@Column
+	@Type(type="text")
+	private String value;
+	
+	@Column 
+	private boolean isNominal;
+	
+	@Column 
+	@Type(type="text")
+	private String labels;
+	
+
+	public String getLabels() {
+		return labels;
+	}
+
+	public void setLabels(String labels) {
+		this.labels = labels;
+	}
+
+	public boolean isNominal() {
+		return isNominal;
+	}
+
+	public void setNominal(boolean isNominal) {
+		this.isNominal = isNominal;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 	public Attribute() {
 
