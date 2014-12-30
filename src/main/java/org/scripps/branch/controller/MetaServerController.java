@@ -564,7 +564,8 @@ public class MetaServerController {
 		//readtree.setNumFolds(0);
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
-		Instances train = wekaObj.getOrigTrain();
+//		Instances train = wekaObj.getOrigTrain();
+		Instances train = instSer.createInstance(data, d);
 		Score newScore = new Score();
 		//int testsetId = -1;
 		//Float percentSplit = null;

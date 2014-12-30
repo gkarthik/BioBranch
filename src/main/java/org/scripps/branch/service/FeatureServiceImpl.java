@@ -129,7 +129,8 @@ public class FeatureServiceImpl implements FeatureService {
 			sortedList = new JsonNode[limit];
 			GainRatioAttributeEval eval = new GainRatioAttributeEval();
 			try{
-				eval.buildEvaluator(data);
+				//Enable for ranking of features
+				//eval.buildEvaluator(data);
 			} catch(Exception e) {
 				LOGGER.error("Couldn't evaluate gain ratio", e);
 			}
@@ -140,7 +141,9 @@ public class FeatureServiceImpl implements FeatureService {
 			for(int j=0;j<data.numAttributes();j++){
 				try {
 					ig[j][0] = j;
-					ig[j][1] = eval.evaluateAttribute(j);
+					//Enable for ranking
+					//ig[j][1] = eval.evaluateAttribute(j);
+					ig[j][1] = 0;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						LOGGER.error("Couldn't evaluate gain ratio for empty entrezIds.",e);
