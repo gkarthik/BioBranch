@@ -18,19 +18,22 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 
 	@Query("select A from Attribute A where feature_id= ?1 ")
 	List<Attribute> findByFeatureDbId(long db_id);
-	
+
 	List<Attribute> findByDataset(Dataset d);
-	
+
 	@Query("select A.relieff from Attribute A where A.dataset=?1 order by A.relieff desc")
 	List<Double> findByDatasetOrderByRelieffDesc(Dataset d);
-	
+
 	Attribute findByNameAndDataset(String name, Dataset d);
- 
+
 	@Query("select A from Attribute A, Feature F where A.feature=F.id and F.unique_id=?1 and A.dataset=?2 ORDER By A.relieff")
 	List<Attribute> findByFeatureUniqueId(String unique_id, Dataset dataset);
-	
+
 	@Query("select A from Attribute A, Feature F where A.feature=F.id and F.unique_id=?1 and A.dataset=?2 ORDER By A.relieff")
 	Attribute findByUniqueId(String unique_id, Dataset dataset);
+
+	@Query("select A from Attribute A where A.id=?1 and  A.col_index = ?2")
+	Attribute findByColIndex(int id, int colIndex);	
 
 }
 

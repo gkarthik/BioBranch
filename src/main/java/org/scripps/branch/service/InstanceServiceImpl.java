@@ -99,6 +99,153 @@ public class InstanceServiceImpl implements InstanceService {
 	@Qualifier("attributeRepository")
 	private AttributeRepository attr;
 
+//	public void checkChildren(JsonNode child, List<String> unique_id_list) {
+//
+//		if (child.get("options").get("kind").asText().equals("split_node")) {
+//			unique_id_list.add(child.get("options").get("unique_id").asText());
+//		}
+//		if (child.get("children") != null) {
+//			ArrayNode newChild = (ArrayNode) child.get("children");
+//			for (JsonNode node : newChild)
+//				checkChildren(node, unique_id_list);
+//		}
+//	}
+
+//	@Override
+//	public Instances createInstance(JsonNode jObj, Dataset dataset) {
+//
+//		LOGGER.debug("Create Instance: ");
+//		
+//		System.out.println("JSON Object"+jObj);
+//		
+//		List<Attribute> attrList = new ArrayList<Attribute>();
+//		attrList = getAttributeList(jObj, dataset);
+//
+//		// Adding class attribute
+//		attrList.add(dataset.getAttribute());
+//
+//		ObjectMapper mapper = new ObjectMapper();
+//		ArrayList<JsonNode> jsonValsArr = new ArrayList<JsonNode>();
+//
+//		for (Attribute at : attrList) {
+//			try {
+//				
+//				System.out.println("Valu"+at.getValue());
+//				jsonValsArr.add(mapper.readTree(at.getValue()));
+//			} catch (JsonProcessingException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+//
+//		List<weka.core.Attribute> wekaAttributeList = new ArrayList<weka.core.Attribute>();
+//		weka.core.Attribute wekaAttribute;
+//
+//		// adding nominal/numeric attribute labels to fast vector and creating
+//		// weka attribute list
+//		for (Attribute at : attrList) {
+//			if (at.isNominal()) {
+//				FastVector fVector = new FastVector();
+//				String[] labelVals = at.getLabels().replace("{", "")
+//						.replace("}", "").split(",");
+//
+//				for (String str : labelVals) {
+//					fVector.addElement(str);
+//				}
+//				wekaAttribute = new weka.core.Attribute(at.getName(), fVector);
+//			} else {
+//				wekaAttribute = new weka.core.Attribute(at.getName());
+//			}
+//			wekaAttributeList.add(wekaAttribute);
+//		}
+//
+//		FastVector fvWekaAttributes = new FastVector(attrList.size());
+//		for (weka.core.Attribute at : wekaAttributeList) {
+//			fvWekaAttributes.addElement(at);
+//		}
+//
+//		Instances insts = new Instances("Rel", fvWekaAttributes,
+//				jsonValsArr.size());
+//
+//		for (int s = 0; s < jsonValsArr.get(0).size(); s++) {
+//			insts.add(new Instance(jsonValsArr.size()));
+//		}
+//
+//		Instance inst;
+//		// creating instance and adding it to instances
+//		for (int l = 0; l < attrList.size(); l++) {
+//			JsonNode jNode = jsonValsArr.get(l);
+//			for (int m = 0; m < jNode.size(); m++) {
+//				inst = insts.instance(m);
+//				if (attrList.get(l).getFeature() != null
+//						&& !attrList.get(l).isNominal()) {
+//					inst.setValue(wekaAttributeList.get(l),
+//							jNode.findValue(String.valueOf(m)).asDouble());
+//				}
+//				else if (l == attrList.size() - 1
+//						|| attrList.get(l).isNominal()) {
+//					weka.core.Attribute a = wekaAttributeList.get(l);
+//					boolean t = a.isNominal();
+//					String tmp = String.valueOf(jNode.findValue(
+//							String.valueOf(m)).asText());
+//					inst.setValue(wekaAttributeList.get(l), String
+//							.valueOf(jNode.findValue(String.valueOf(m))
+//									.asText()));
+//				}
+//			}
+//		}
+//
+//		insts.setClassIndex(insts.numAttributes() - 1);
+//
+//		LOGGER.debug("inst structure: " + insts.stringFreeStructure());
+//		LOGGER.debug("NumInstances: " + insts.numInstances());
+//		LOGGER.debug("NumAttributes: " + insts.numAttributes());
+//
+//		return insts;
+//	}
+//
+//	@Override
+//	public List<Attribute> getAttributeList(JsonNode jObj, Dataset dataset) {
+//
+//		LOGGER.debug("Creating Attribute List!!");
+//		List<Attribute> attrList = new ArrayList<Attribute>();
+//
+////		if (!jObj.get("treestruct").has("options")) {
+////			return new ArrayList<Attribute>();
+////		}
+//		
+//		if (!jObj.has("options")) {
+//			return new ArrayList<Attribute>();
+//		}
+//
+////		JsonNode jOptions = jObj.get("treestruct").get("options");
+//		
+//		JsonNode jOptions = jObj.get("options");
+//		
+//		List<String> unique_id_List = new ArrayList<String>();
+//
+//		if (jOptions.has("unique_id")) {
+//			unique_id_List.add(jOptions.get("unique_id").asText());
+//		}
+//
+//		if (jObj.has("children")) {
+//			ArrayNode children = (ArrayNode) jObj.get(
+//					"children");
+//			for (JsonNode child : children) {
+//				checkChildren(child, unique_id_List);
+//			}
+//		}
+//
+//		for (String uniqueid : unique_id_List)
+//			attrList.add(attr.findByUniqueId(uniqueid, dataset));
+//		
+//		System.out.println("attribute List Size"+attrList.size());	
+//
+//		LOGGER.debug("Attribute List created!!");
+//		return attrList;
+//	}
 	public void checkChildren(JsonNode child, List<String> unique_id_list) {
 
 		if (child.get("options").get("kind").asText().equals("split_node")) {
@@ -185,9 +332,15 @@ public class InstanceServiceImpl implements InstanceService {
 					boolean t = a.isNominal();
 					String tmp = String.valueOf(jNode.findValue(
 							String.valueOf(m)).asText());
+					
+					LOGGER.debug("value of M "+ String.valueOf(jNode.findValue(String.valueOf(m)).asText()));
+					LOGGER.debug("Weka Attribute at l  "+ wekaAttributeList.get(l));
+
 					inst.setValue(wekaAttributeList.get(l), String
 							.valueOf(jNode.findValue(String.valueOf(m))
 									.asText()));
+					
+					LOGGER.debug("instance "+inst.toString());
 				}
 			}
 		}
@@ -200,26 +353,35 @@ public class InstanceServiceImpl implements InstanceService {
 
 		return insts;
 	}
-
+	
+	
 	@Override
 	public List<Attribute> getAttributeList(JsonNode jObj, Dataset dataset) {
 
+		
 		LOGGER.debug("Creating Attribute List!!");
 		List<Attribute> attrList = new ArrayList<Attribute>();
 
-		if (!jObj.get("treestruct").has("options")) {
+//		if (!jObj.get("treestruct").has("options")) {
+//			return new ArrayList<Attribute>();
+//		}
+		
+		if (!jObj.has("options")) {
 			return new ArrayList<Attribute>();
 		}
 
-		JsonNode jOptions = jObj.get("treestruct").get("options");
+//		JsonNode jOptions = jObj.get("treestruct").get("options");
+		
+		JsonNode jOptions = jObj.get("options");
+		
 		List<String> unique_id_List = new ArrayList<String>();
 
 		if (jOptions.has("unique_id")) {
 			unique_id_List.add(jOptions.get("unique_id").asText());
 		}
 
-		if (jObj.get("treestruct").has("children")) {
-			ArrayNode children = (ArrayNode) jObj.get("treestruct").get(
+		if (jObj.has("children")) {
+			ArrayNode children = (ArrayNode) jObj.get(
 					"children");
 			for (JsonNode child : children) {
 				checkChildren(child, unique_id_List);
@@ -228,6 +390,8 @@ public class InstanceServiceImpl implements InstanceService {
 
 		for (String uniqueid : unique_id_List)
 			attrList.add(attr.findByUniqueId(uniqueid, dataset));
+		
+		System.out.println("attribute List Size"+attrList.size());	
 
 		LOGGER.debug("Attribute List created!!");
 		return attrList;
