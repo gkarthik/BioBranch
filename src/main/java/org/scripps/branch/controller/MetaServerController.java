@@ -74,7 +74,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class MetaServerController {
-	
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MetaServerController.class);
 
@@ -113,13 +113,13 @@ public class MetaServerController {
 
 	@Autowired
 	private TreeService treeService;
-	
+
 	@Autowired
 	private AttributeRepository attrRepo;
-	
+
 	@Autowired
 	private CustomSetRepository customSetRepo;
-	
+
 	@Autowired
 	private SerializedCustomClassifierRepository sccRepo;
 
@@ -128,19 +128,19 @@ public class MetaServerController {
 
 	@Autowired
 	private DatasetMap weka;
-	
+
 	@Autowired
 	private DatasetRepository dataRepo;
-	
+
 	@Autowired
 	private FeatureService fSer;
-	
+
 	@Autowired
 	private TutorialRepository tRepo;
-	
+
 	@Autowired 
 	private InstanceService instSer;
-	
+
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/update-trees", method = RequestMethod.POST)
 	public String updateTreeList(String command, Model model)
@@ -151,46 +151,46 @@ public class MetaServerController {
 			ObjectNode dataTable = mapper.createObjectNode();
 			JsonNode pickedAttrs = dataTable.putArray("pcikedAttrs");
 			model.addAttribute("success",true);
-		    model.addAttribute("message","Tree Json refreshed.");
-		    String message = "Tree Json refresh failed for ";
+			model.addAttribute("message","Tree Json refreshed.");
+			String message = "Tree Json refresh failed for ";
 			for(Tree t : tList){
-					Dataset d = t.getScore().getDataset();
-					User u = t.getUser();
-					int testOption = (int) t.getScore().getTestoption();
-					int testsetId = -1;
-					Float percentSplit = null;
-					if(testOption == 1){
-						testsetId = (int) t.getScore().getTestset().getId();
-					} else if (testOption == 2) {
-						percentSplit = t.getScore().getTestsplit();
+				Dataset d = t.getScore().getDataset();
+				User u = t.getUser();
+				int testOption = (int) t.getScore().getTestoption();
+				int testsetId = -1;
+				Float percentSplit = null;
+				if(testOption == 1){
+					testsetId = (int) t.getScore().getTestset().getId();
+				} else if (testOption == 2) {
+					percentSplit = t.getScore().getTestsplit();
+				}
+				String comment = "";
+				comment = t.getComment();
+				Long prevTreeId = null;
+				if(t.getPrev_tree_id()!=null){
+					prevTreeId = t.getPrev_tree_id().getId();
+				}
+				int privateflag = (t.getPrivate_tree()) ? 1 : 0;
+				JsonNode treestruct = mapper.readTree(t.getJson_tree());
+				result_json = null;
+				if(t.isUser_saved()){
+					LOGGER.debug("Tree ID: {}", t.getId());
+					LOGGER.debug("Node: {}", treestruct.get("treestruct").get("name"));
+					result_json = scoreSaveManualTree(command, treestruct.get("treestruct"), d, u, testOption, testsetId, percentSplit, pickedAttrs, comment, prevTreeId, privateflag, false);
+					if(result_json == null){
+						model.addAttribute("success", false);
+						model.addAttribute("message",message+=t.getId()+", ");
+					} else {
+						t.setJson_tree(result_json);
 					}
-					String comment = "";
-					comment = t.getComment();
-					Long prevTreeId = null;
-					if(t.getPrev_tree_id()!=null){
-						prevTreeId = t.getPrev_tree_id().getId();
-					}
-					int privateflag = (t.getPrivate_tree()) ? 1 : 0;
-					JsonNode treestruct = mapper.readTree(t.getJson_tree());
-					result_json = null;
-					if(t.isUser_saved()){
-						LOGGER.debug("Tree ID: {}", t.getId());
-						LOGGER.debug("Node: {}", treestruct.get("treestruct").get("name"));
-						result_json = scoreSaveManualTree(command, treestruct.get("treestruct"), d, u, testOption, testsetId, percentSplit, pickedAttrs, comment, prevTreeId, privateflag, false);
-						if(result_json == null){
-							model.addAttribute("success", false);
-						    model.addAttribute("message",message+=t.getId()+", ");
-						} else {
-							t.setJson_tree(result_json);
-						}
-					}
+				}
 			}
 			treeRepo.save(tList);
 			treeRepo.flush();
 		}
-	    return "tutorial/tutorials";
+		return "tutorial/tutorials";
 	}
-	
+
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String metaServerAPI(@RequestBody JsonNode data)
 			throws Exception {
@@ -327,11 +327,11 @@ public class MetaServerController {
 					mp = cfeatureService.findOrCreateCustomFeature(data
 							.get("name").asText(), data.get("expression").asText(),
 							data.get("description").asText(), data.get("user_id")
-									.asLong(), d, cList, ref, weka
-									.getWeka(d.getId()));
+							.asLong(), d, cList, ref, weka
+							.getWeka(d.getId()));
 				} else if(command.equals("custom_feature_preview")) {
 					ArrayList l = cfeatureService.previewCustomFeature(data.get("name").asText(), data.get("expression").asText(),
-							 cList, ref, weka.getWeka(d.getId()).getOrigTrain(), d);
+							cList, ref, weka.getWeka(d.getId()).getOrigTrain(), d);
 					mp.put("isNominal", false);
 					mp.put("dataArray", l);
 				}
@@ -343,9 +343,9 @@ public class MetaServerController {
 				result_json = mapper.writeValueAsString(cfList);
 			} else if (command.equals("custom_feature_testcase")) {
 				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
-//				HashMap mp = cfeatureService.getTestCase(data.get("id")
-//						.asText(), weka.getWeka(d.getId()));
-//				result_json = mapper.writeValueAsString(mp);			
+				//				HashMap mp = cfeatureService.getTestCase(data.get("id")
+				//						.asText(), weka.getWeka(d.getId()));
+				//				result_json = mapper.writeValueAsString(mp);			
 			} else if (command.equals("custom_feature_getById")){
 				CustomFeature cf = cfeatureRepo.findById(data.get("id").asLong());
 				result_json = mapper.writeValueAsString(cf);
@@ -472,8 +472,8 @@ public class MetaServerController {
 			List<Double> aList = attrRepo.findByDatasetOrderByRelieffDesc(d);
 			mp.put("infoGainMax", aList.get(0));
 			mp.put("infoGainMin", aList.get(aList.size()-1));
-//			mp.put("infoGainMax", 1);
-//			mp.put("infoGainMin", 0);
+			//			mp.put("infoGainMax", 1);
+			//			mp.put("infoGainMin", 0);
 			result_json = mapper.writeValueAsString(mp);
 		} else if (command.equals("get_feature_limits")){
 			Weka wekaObj = weka.getWeka(data.get("dataset").asLong());
@@ -531,7 +531,7 @@ public class MetaServerController {
 		}
 		return result_json;
 	}
-	
+
 	public Instances getReqInstances(JsonNode data) throws Exception{
 		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
 		Weka wekaObj = weka.getWeka(d.getId());
@@ -556,7 +556,7 @@ public class MetaServerController {
 		LOGGER.debug(String.valueOf(readtree.getRequiredInst().numInstances()));
 		return readtree.getRequiredInst();
 	}
-	
+
 	public String scoreSaveManualTree(String command, JsonNode treestruct, Dataset d, User u, Integer testOption, Integer testsetId, Float percentSplit, JsonNode pickedAttrs, String comment, Long prevTreeId, Integer privateTree, Boolean saveFlag){
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
@@ -564,16 +564,16 @@ public class MetaServerController {
 		//readtree.setNumFolds(0);
 		LinkedHashMap<String, Classifier> custom_classifiers = weka
 				.getCustomClassifierObject();
-//		Instances train = wekaObj.getOrigTrain();
-		Instances train = instSer.createInstance(data, d);
+		//		Instances train = wekaObj.getOrigTrain();
+		Instances train = instSer.createInstance(treestruct, d);
 		Score newScore = new Score();
 		//int testsetId = -1;
 		//Float percentSplit = null;
-//		if(testOption == 1){
-//			//testsetId = data.get("testOptions").get("testsetid").asInt();
-//		} else if (testOption == 2) {
-//			//percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
-//		}
+		//		if(testOption == 1){
+		//			//testsetId = data.get("testOptions").get("testsetid").asInt();
+		//		} else if (testOption == 2) {
+		//			//percentSplit = (float) data.get("testOptions").get("percentSplit").asDouble();
+		//		}
 		instSer.setTrainandTest(wekaObj, train, testOption, testsetId, percentSplit, newScore);
 		readtree = t.parseJsonTree(wekaObj, treestruct,
 				d, custom_classifiers, attr,
@@ -605,14 +605,15 @@ public class MetaServerController {
 				}
 				attrIndexes.add(attrIndex);
 			}
-		}
-		for(int i=0;i<reqInstances.numInstances();i++){
-			values = new double[3];
-			for(int j=0;j<attrIndexes.size();j++){
-				values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
+
+			for(int i=0;i<reqInstances.numInstances();i++){
+				values = new double[3];
+				for(int j=0;j<attrIndexes.size();j++){
+					values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
+				}
+				values[2] = reqInstances.instance(i).classValue();
+				instanceData.add(values);
 			}
-			values[2] = reqInstances.instance(i).classValue();
-			instanceData.add(values);
 		}
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();

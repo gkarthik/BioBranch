@@ -14,6 +14,7 @@ import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,9 @@ public class AttributeServiceImpl implements AttributeService {
 	
 	@Autowired
 	ApplicationContext ctx;
+	
+	@Autowired
+	DatasetRepository dataRepo;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceImpl.class);
 	
@@ -60,28 +64,64 @@ public class AttributeServiceImpl implements AttributeService {
 		List<Attribute> attrList = new ArrayList<Attribute>();
 		Attribute attr;
 		Feature f;
+		
+		
+		Attribute classAttr=  new Attribute();
+		int ids=0;
+
 		HashMap<String, String> mp = getAttributeFeatureMapping(inputPath);
 		for (int i = 0; i < data.numAttributes(); i++) {
 			attr = new Attribute();
 			f = new Feature();
 			attr.setName(data.attribute(i).name());
+			attr.setValue(generateValues(data.attribute(i), data));
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-//			try{
-//				if(mp.get(data.attribute(i).name()).contains("metabric")){
-//					f.setUnique_id(hashAttrName(System.currentTimeMillis()+mp.get(data.attribute(i).name())));
-//					f = featureRepo.saveAndFlush(f);
-//				}
-//			} catch(Exception e) {
-//				
-//			}
+			//			try{
+			//				if(mp.get(data.attribute(i).name()).contains("metabric")){
+			//					f.setUnique_id(hashAttrName(System.currentTimeMillis()+mp.get(data.attribute(i).name())));
+			//					f = featureRepo.saveAndFlush(f);
+			//				}
+			//			} catch(Exception e) {
+			//				
+			//			}
+			
+//			if(data.attribute(i).index()==data.classIndex()) attribute_id =  attr.getId();
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name())+" - "+ i);
 			attr.setFeature(f);
+			
+			if(attr.getCol_index()==data.classIndex()) {
+				ids = attrRepo.save(attr).getId();
+				
+			}
+			else
 			attrList.add(attr);
 		}
+		
+		System.out.println("Attr name "+attrRepo.findByColIndex(ids,(int)data.classIndex()).getName() );
+		dataset.setAttribute(attrRepo.findByColIndex(ids,(int)data.classIndex()));
+		dataRepo.save(dataset);
+		
+		System.out.println("IDS: "+ ids);
 		attrRepo.save(attrList);
 		attrRepo.flush();
+		dataRepo.flush();
+
+
+	}
+
+	@Override
+	public String generateValues(weka.core.Attribute attr, Instances data) {
+		String values = "[";
+		for(int i=0;i<data.numInstances();i++){
+			values= values +"{\""+ i + "\":\"" + data.instance(i).value(attr) + "\"}";
+			if(i<data.numInstances()-1){
+				values+=",";
+			}
+		}
+		values+="]";
+		return values;
 	}
 
 	@Override

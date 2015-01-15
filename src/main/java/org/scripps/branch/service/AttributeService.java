@@ -8,6 +8,7 @@ import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.springframework.stereotype.Service;
 
+import weka.core.Attribute;
 import weka.core.Instances;
 
 @Service
@@ -17,4 +18,7 @@ public interface AttributeService {
 	public void generateAttributesFromDatasetWithoutMapping(Instances data, Dataset dataset, List<Feature> fList);
 
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath);
-}
+
+	public String generateValues(Attribute attr, Instances data);
+	
+	}
