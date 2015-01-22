@@ -77,6 +77,12 @@ public class AttributeServiceImpl implements AttributeService {
 			attr.setValue(generateValues(data.attribute(i), data));
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
+			attr.setNominal(data.attribute(i).isNominal());
+			if(data.attribute(i).isNominal()){
+				String[] s = data.attribute(i).toString().split(" ");
+				attr.setLabels(s[2]);
+			}
+			
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
 			//			try{
 			//				if(mp.get(data.attribute(i).name()).contains("metabric")){

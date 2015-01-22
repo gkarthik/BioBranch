@@ -316,6 +316,7 @@ public class InstanceServiceImpl implements InstanceService {
 		}
 
 		Instance inst;
+		LOGGER.debug("size of attrlist 2"+attrList.size());
 		// creating instance and adding it to instances
 		for (int l = 0; l < attrList.size(); l++) {
 			JsonNode jNode = jsonValsArr.get(l);
@@ -336,9 +337,7 @@ public class InstanceServiceImpl implements InstanceService {
 					LOGGER.debug("value of M "+ String.valueOf(jNode.findValue(String.valueOf(m)).asText()));
 					LOGGER.debug("Weka Attribute at l  "+ wekaAttributeList.get(l));
 
-					inst.setValue(wekaAttributeList.get(l), String
-							.valueOf(jNode.findValue(String.valueOf(m))
-									.asText()));
+					inst.setValue(wekaAttributeList.get(l), jNode.findValue(String.valueOf(m)).textValue());
 					
 					LOGGER.debug("instance "+inst.toString());
 				}
@@ -391,7 +390,7 @@ public class InstanceServiceImpl implements InstanceService {
 		for (String uniqueid : unique_id_List)
 			attrList.add(attr.findByUniqueId(uniqueid, dataset));
 		
-		System.out.println("attribute List Size"+attrList.size());	
+		LOGGER.debug("attribute List Size"+attrList.size());	
 
 		LOGGER.debug("Attribute List created!!");
 		return attrList;
