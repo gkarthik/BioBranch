@@ -83,7 +83,7 @@ footer{
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
 
 								<a
-									href="./collection?user_id=<sec:authentication property="principal.id" />">My
+									href="${pageContext.request.contextPath}/collection?user_id=<sec:authentication property="principal.id" />">My
 									Collection</a>
 
 							</p>
