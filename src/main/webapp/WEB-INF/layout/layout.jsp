@@ -78,7 +78,7 @@ footer{
 								<a href="${pageContext.request.contextPath}/profile/">Tree Collection</a>
 							</p>
 						</li>
-<!-- 
+<!-- Collection link -->
 						<li>
 							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
 
@@ -88,7 +88,7 @@ footer{
 
 							</p>
 						</li>
- -->
+<!-- Collection Link -->
  					</sec:authorize>
  					<li>
  						<p class="nav navbar-nav navbar-right navbar-text sign-in-text">

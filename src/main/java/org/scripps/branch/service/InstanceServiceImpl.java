@@ -267,6 +267,8 @@ public class InstanceServiceImpl implements InstanceService {
 
 		// Adding class attribute
 		attrList.add(dataset.getAttribute());
+		
+	
 
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<JsonNode> jsonValsArr = new ArrayList<JsonNode>();
