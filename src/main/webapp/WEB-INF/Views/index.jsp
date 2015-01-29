@@ -3,9 +3,9 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <div id="main-app-wrapper">
-<span>Loading Dependencies ... </span>
+	<span>Loading Dependencies ... </span>
 </div>
-		<script type="text/javascript">
+<script type="text/javascript">
 					var cure_user_id = ${userId}, 
 						cure_user_name = "${firstName}", 
 						cure_tree_id = null, 
@@ -28,16 +28,16 @@
 				<%}%>
 					
 				</script>
-		<%
+<%
 					if (request.getParameter("ref") != null) {
 							if (request.getParameter("ref").equals("yako")) {
 				%>
-		<script>
+<script>
 					_csb = [ [ 'token', 'R6TzQ7' ] ];
 				</script>
-		<%
+<%
 					}
 						}
 				%>
-		<script type="text/javascript" data-main="./static/config.js"
-			src="./static/lib/require.js" charset="utf-8"></script>
+<script type="text/javascript" data-main="./static/config.js"
+	src="./static/lib/require.js" charset="utf-8"></script>
