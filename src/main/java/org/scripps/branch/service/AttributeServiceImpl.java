@@ -64,9 +64,6 @@ public class AttributeServiceImpl implements AttributeService {
 		List<Attribute> attrList = new ArrayList<Attribute>();
 		Attribute attr;
 		Feature f;
-		
-		
-		Attribute classAttr=  new Attribute();
 		int ids=0;
 
 		HashMap<String, String> mp = getAttributeFeatureMapping(inputPath);
@@ -105,22 +102,20 @@ public class AttributeServiceImpl implements AttributeService {
 			attrList.add(attr);
 		}
 		
-		System.out.println("Attr name "+attrRepo.findByColIndex(ids,(int)data.classIndex()).getName() );
+		LOGGER.debug("Attr name: "+attrRepo.findByColIndex(ids,(int)data.classIndex()).getName() );
 		dataset.setAttribute(attrRepo.findByColIndex(ids,(int)data.classIndex()));
 		dataRepo.save(dataset);
 		
-		System.out.println("IDS: "+ ids);
+		LOGGER.debug("IDS: "+ ids);
 		attrRepo.save(attrList);
 		attrRepo.flush();
 		dataRepo.flush();
-
-
 	}
 
 	@Override
 	public String generateValues(weka.core.Attribute attr, Instances data) {
 		String values = "[";
-		System.out.println(data.classAttribute());
+		LOGGER.debug("Class Attribute: "+data.classAttribute());
 		for(int i=0;i<data.numInstances();i++){
 			if(attr.index()==data.classIndex()){
 				LOGGER.debug("data!!!"+data.classAttribute().value((int) data.instance(i).value(attr)));

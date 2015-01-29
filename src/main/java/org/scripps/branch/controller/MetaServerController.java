@@ -606,15 +606,18 @@ public class MetaServerController {
 				attrIndexes.add(attrIndex);
 			}
 
-			for(int i=0;i<reqInstances.numInstances();i++){
-				values = new double[3];
-				for(int j=0;j<attrIndexes.size();j++){
-					values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
-				}
-				values[2] = reqInstances.instance(i).classValue();
-				instanceData.add(values);
-			}
+		
 		}
+		
+		for(int i=0;i<reqInstances.numInstances();i++){
+			values = new double[3];
+			for(int j=0;j<attrIndexes.size();j++){
+				values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
+			}
+			values[2] = reqInstances.instance(i).classValue();
+			instanceData.add(values);
+		}
+		
 		int numnodes = readtree.numNodes();
 		HashMap mp = new HashMap();
 		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo,
